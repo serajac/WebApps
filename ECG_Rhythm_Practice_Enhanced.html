@@ -1,0 +1,3345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECG Rhythm Interpretation Practice | PDCCC EMS Program</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 20px;
+            background: rgba(41, 128, 185, 0.1);
+            border-radius: 30px;
+            margin-bottom: 25px;
+        }
+
+        .badge-text {
+            color: #2980b9;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        h1 span {
+            color: #2980b9;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #666666;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+        }
+
+        .stat-num {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2980b9;
+            margin-top: 10px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #888888;
+            margin-top: 5px;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 18px;
+            background: #ffffff;
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            color: #333333;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #2980b9;
+        }
+
+        .category-section {
+            margin-bottom: 25px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            color: #666666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .select-all-btn {
+            background: rgba(41, 128, 185, 0.1);
+            border: 1px solid rgba(41, 128, 185, 0.3);
+            color: #2980b9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .select-all-btn:hover {
+            background: rgba(41, 128, 185, 0.2);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .category-checkbox {
+            display: none;
+        }
+
+        .category-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: #ffffff;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-label:hover {
+            border-color: #2980b9;
+            background: #f8f9fa;
+        }
+
+        .category-checkbox:checked + .category-label {
+            border-color: #2980b9;
+            background: rgba(41, 128, 185, 0.1);
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #444444;
+            font-size: 13px;
+        }
+
+        .category-checkbox:checked + .category-label .category-name {
+            color: #333333;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .category-checkbox:checked + .category-label .check-icon {
+            background: #2980b9;
+            border-color: #2980b9;
+            color: #ffffff;
+        }
+
+        .category-count {
+            background: rgba(41, 128, 185, 0.15);
+            color: #2980b9;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .question-count-section {
+            margin-bottom: 25px;
+        }
+
+        .count-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .count-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .count-input {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 18px;
+            background: rgba(255,255,255,0.95);
+            border: 2px solid rgba(41, 128, 185, 0.5);
+            border-radius: 12px;
+            color: #333333;
+            outline: none;
+            text-align: center;
+        }
+
+        .count-input:focus {
+            border-color: #2980b9;
+        }
+
+        .quick-select-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            color: #666666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            border-color: rgba(41, 128, 185, 0.5);
+            color: #333333;
+        }
+
+        .quick-btn.active {
+            background: rgba(41, 128, 185, 0.15);
+            border-color: #2980b9;
+            color: #2980b9;
+        }
+
+        .available-count {
+            text-align: center;
+            margin-top: 12px;
+            color: #888888;
+            font-size: 13px;
+        }
+
+        .available-count strong {
+            color: #2980b9;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2980b9 0%, #1a5276 100%);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(100,100,100,0.3);
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            background: rgba(255,255,255,0.95);
+            border: 2px solid rgba(41, 128, 185, 0.5);
+            border-radius: 12px;
+            color: #333333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .selected-summary {
+            background: rgba(41, 128, 185, 0.05);
+            border: 1px solid rgba(41, 128, 185, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-text {
+            color: #666666;
+            font-size: 14px;
+        }
+
+        .summary-text strong {
+            color: #2980b9;
+        }
+
+        .summary-categories {
+            color: #888888;
+            font-size: 12px;
+            max-width: 60%;
+            text-align: right;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .student-info {
+            color: #666666;
+            font-size: 14px;
+        }
+
+        .student-info .name {
+            color: #2980b9;
+        }
+
+        .category-info {
+            color: #888888;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .score-badge {
+            background: rgba(41, 128, 185, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .score-num {
+            color: #2980b9;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .score-label {
+            color: #888888;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            background: rgba(41, 128, 185, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #2980b9, #1a5276);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .counter-badge {
+            background: rgba(255,255,255,0.95);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #666666;
+            font-size: 14px;
+        }
+
+        .counter-badge strong {
+            color: #333333;
+        }
+
+        .ecg-container {
+            background: #ffffff;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .ecg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ecg-label {
+            color: #2980b9;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 50, 50, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .live-indicator.paused {
+            background: rgba(255, 200, 50, 0.2);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff5050;
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .live-indicator.paused .live-dot {
+            background: #ffc832;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .live-text {
+            color: #ff5050;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .live-indicator.paused .live-text {
+            color: #ffc832;
+        }
+
+        .pause-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(41, 128, 185, 0.15);
+            border: 1px solid rgba(41, 128, 185, 0.4);
+            color: #2980b9;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 10px;
+        }
+
+        .pause-btn:hover {
+            background: rgba(41, 128, 185, 0.25);
+            transform: scale(1.02);
+        }
+
+        .pause-btn .pause-icon {
+            font-size: 12px;
+        }
+
+        .ecg-category {
+            color: #888888;
+            font-size: 12px;
+        }
+
+        .ecg-canvas-wrapper {
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            background: #FFF5EE;
+            border-radius: 8px;
+            border: 2px solid #CD5C5C;
+        }
+
+        #ecgCanvas {
+            max-width: 100%;
+        }
+
+        /* Monitor bezel effect */
+        .monitor-bezel {
+            position: relative;
+        }
+
+        .monitor-bezel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.95) 0%, 
+                transparent 5%, 
+                transparent 95%, 
+                rgba(255,255,255,0.95) 100%);
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        /* Parameter Input Section */
+        .param-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f8fa;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .param-title {
+            color: #2980b9;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .param-instructions {
+            color: #666666;
+            font-size: 12px;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .param-item {
+            text-align: center;
+        }
+
+        .param-label {
+            color: #888888;
+            font-size: 11px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .param-input {
+            width: 100%;
+            padding: 12px 8px;
+            font-size: 13px;
+            background: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            color: #333333;
+            outline: none;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232980b9' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        .param-input option {
+            background: #f8f9fa;
+            color: #333333;
+            padding: 10px;
+        }
+
+        .param-input:focus {
+            border-color: #2980b9;
+            background-color: rgba(41, 128, 185, 0.05);
+        }
+
+        .param-input::placeholder {
+            color: #4a5568;
+            font-size: 12px;
+        }
+
+        .param-input.correct {
+            border-color: #27ae60;
+            background-color: rgba(39, 174, 96, 0.15);
+            color: #27ae60;
+        }
+
+        .param-input.incorrect {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .param-input.show-answer {
+            border-color: #f39c12;
+            background-color: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+
+        .param-feedback {
+            font-size: 10px;
+            margin-top: 4px;
+            height: 14px;
+        }
+
+        .param-feedback.correct {
+            color: #2980b9;
+        }
+
+        .param-feedback.incorrect {
+            color: #ff5050;
+        }
+
+        .check-params-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(41, 128, 185, 0.15);
+            border: 1px solid rgba(41, 128, 185, 0.4);
+            border-radius: 8px;
+            color: #2980b9;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .check-params-btn:hover {
+            background: rgba(41, 128, 185, 0.25);
+        }
+
+        .check-params-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .question-text {
+            color: #333333;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            padding: 18px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: left;
+            background: #ffffff;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            color: #333333;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: #2980b9;
+            background: #f8f9fa;
+        }
+
+        .option-btn.selected {
+            border-color: #2980b9;
+            background: rgba(41, 128, 185, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.15);
+            color: #27ae60;
+        }
+
+        .option-btn.wrong {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #666666;
+            flex-shrink: 0;
+        }
+
+        .option-btn.correct .option-letter {
+            background: #27ae60;
+            color: #ffffff;
+        }
+
+        .option-btn.wrong .option-letter {
+            background: #e74c3c;
+            color: #ffffff;
+        }
+
+        .feedback-panel {
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .feedback-panel.correct-panel {
+            background: rgba(39, 174, 96, 0.1);
+            border: 2px solid #27ae60;
+        }
+
+        .feedback-panel.wrong-panel {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-icon {
+            font-size: 28px;
+        }
+
+        .feedback-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .correct-panel .feedback-title {
+            color: #27ae60;
+        }
+
+        .wrong-panel .feedback-title {
+            color: #e74c3c;
+        }
+
+        .correct-answer {
+            color: #666666;
+            margin-bottom: 15px;
+        }
+
+        .correct-answer strong {
+            color: #27ae60;
+        }
+
+        .characteristics-box {
+            background: #f5f8fa;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #ddd;
+        }
+
+        .characteristics-label {
+            color: #888888;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .characteristics-text {
+            color: #444444;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .characteristics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .char-item {
+            color: #666666;
+            font-size: 13px;
+        }
+
+        .char-item .label {
+            color: #888888;
+        }
+
+        .char-item .value {
+            color: #2980b9;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .results-icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+
+        .results-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .results-subtitle {
+            color: #666666;
+            font-size: 18px;
+        }
+
+        .score-card {
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(41, 128, 185, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-card.passed {
+            border-color: rgba(41, 128, 185, 0.4);
+        }
+
+        .score-card.failed {
+            border-color: rgba(255, 80, 80, 0.4);
+        }
+
+        .score-percentage {
+            font-size: 72px;
+            font-weight: 800;
+            color: #2980b9;
+        }
+
+        .failed .score-percentage {
+            color: #ff5050;
+        }
+
+        .score-fraction {
+            color: #666666;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .pass-badge {
+            display: inline-block;
+            background: rgba(41, 128, 185, 0.15);
+            color: #2980b9;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .failed .pass-badge {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff5050;
+        }
+
+        .breakdown-card {
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .breakdown-title {
+            color: #333333;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-item {
+            margin-bottom: 18px;
+        }
+
+        .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .breakdown-name {
+            color: #444444;
+            font-size: 14px;
+        }
+
+        .breakdown-score {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .breakdown-score.good {
+            color: #2980b9;
+        }
+
+        .breakdown-score.medium {
+            color: #ffd700;
+        }
+
+        .breakdown-score.poor {
+            color: #ff5050;
+        }
+
+        .breakdown-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .breakdown-fill.good {
+            background: #2980b9;
+        }
+
+        .breakdown-fill.medium {
+            background: #ffd700;
+        }
+
+        .breakdown-fill.poor {
+            background: #ff5050;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .actions-grid.two-col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .missed-questions {
+            background: rgba(255, 80, 80, 0.05);
+            border: 1px solid rgba(255, 80, 80, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .missed-title {
+            color: #ff5050;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .missed-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .missed-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .missed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .missed-category {
+            color: #666666;
+            font-size: 12px;
+        }
+
+        .missed-id {
+            color: #888888;
+            font-size: 12px;
+        }
+
+        .missed-answer {
+            color: #ff5050;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .missed-answer .label {
+            color: #666666;
+        }
+
+        .missed-correct {
+            color: #2980b9;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .missed-correct .label {
+            color: #666666;
+        }
+
+        .missed-explanation {
+            color: #888888;
+            font-size: 13px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .param-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions-grid.two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="container">
+        <div class="welcome-header">
+            <div class="badge">
+                <span class="badge-text">PDCCC EMS PROGRAM</span>
+            </div>
+            <h1>ECG Rhythm<br><span>Interpretation</span></h1>
+            <p class="subtitle">Master cardiac rhythm recognition with our comprehensive practice module aligned to CoAEMSP standards</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-num" id="totalRhythms">155</div>
+                <div class="stat-label">Practice Rhythms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-num" id="totalCategories">6</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-num">85%</div>
+                <div class="stat-label">Passing Score</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group">
+                <label class="form-label">Student Name</label>
+                <input type="text" id="studentNameInput" class="form-input" placeholder="Enter your full name">
+            </div>
+
+            <div class="category-section">
+                <div class="category-header">
+                    <span class="category-title">Select Categories to Practice</span>
+                    <button id="selectAllBtn" class="select-all-btn">Select All</button>
+                </div>
+                <div class="categories-grid" id="categoriesGrid"></div>
+            </div>
+
+            <div class="question-count-section">
+                <label class="form-label">Number of Questions</label>
+                <div class="count-controls">
+                    <div class="count-input-wrapper">
+                        <input type="number" id="questionCountInput" class="count-input" value="20" min="5" max="155">
+                    </div>
+                    <div class="quick-select-btns">
+                        <button class="quick-btn" data-count="10">10</button>
+                        <button class="quick-btn active" data-count="20">20</button>
+                        <button class="quick-btn" data-count="50">50</button>
+                        <button class="quick-btn" data-count="100">All</button>
+                    </div>
+                </div>
+                <p class="available-count">Available: <strong id="availableCount">0</strong> rhythms from selected categories</p>
+            </div>
+
+            <div class="selected-summary">
+                <span class="summary-text">Ready: <strong id="selectedCount">0</strong> questions</span>
+                <span class="summary-categories" id="summaryCategories">No categories selected</span>
+            </div>
+
+            <button id="startBtn" class="btn-primary" disabled>Begin Practice Session →</button>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="container hidden">
+        <div class="quiz-header">
+            <div>
+                <div class="student-info">Student: <span class="name" id="quizStudentName"></span></div>
+                <div class="category-info" id="quizCategory"></div>
+            </div>
+            <div class="score-badge">
+                <span class="score-num" id="currentScore">0/0</span>
+                <span class="score-label">correct</span>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-counter">
+            <span class="counter-badge">Question <strong id="currentQ">1</strong> of <span id="totalQ">200</span></span>
+        </div>
+
+        <div class="ecg-container">
+            <div class="ecg-header">
+                <span class="ecg-label">
+                    ECG RHYTHM STRIP
+                    <span class="live-indicator" id="liveIndicator">
+                        <span class="live-dot"></span>
+                        <span class="live-text" id="liveText">LIVE</span>
+                    </span>
+                    <button class="pause-btn" id="pauseBtn" onclick="togglePause()">
+                        <span class="pause-icon" id="pauseIcon">⏸</span>
+                        <span id="pauseBtnText">Pause</span>
+                    </button>
+                </span>
+                <span class="ecg-category" id="ecgCategory"></span>
+            </div>
+            <div class="ecg-canvas-wrapper monitor-bezel">
+                <canvas id="ecgCanvas" width="700" height="180"></canvas>
+            </div>
+            
+            <!-- Parameter Input Section -->
+            <div class="param-section">
+                <div class="param-header">
+                    <span class="param-title">📝 CALCULATE RHYTHM PARAMETERS</span>
+                    <span class="param-instructions">Select your measurements before identifying the rhythm</span>
+                </div>
+                <div class="param-grid">
+                    <div class="param-item">
+                        <div class="param-label">RATE (BPM)</div>
+                        <select id="paramRate" class="param-input">
+                            <option value="">-- Select Rate --</option>
+                            <option value="None">None / Cannot measure</option>
+                            <option value="<20 bpm">&lt;20 bpm</option>
+                            <option value="20-40 bpm">20-40 bpm</option>
+                            <option value="30-40 bpm">30-40 bpm</option>
+                            <option value="40-60 bpm">40-60 bpm</option>
+                            <option value="40-50 bpm">40-50 bpm</option>
+                            <option value="50-60 bpm">50-60 bpm</option>
+                            <option value="60-100 bpm">60-100 bpm</option>
+                            <option value="60-80 bpm">60-80 bpm</option>
+                            <option value="80-100 bpm">80-100 bpm</option>
+                            <option value="100-150 bpm">100-150 bpm</option>
+                            <option value="150-250 bpm">150-250 bpm</option>
+                            <option value=">250 bpm">&gt;250 bpm</option>
+                            <option value="Variable">Variable</option>
+                            <option value="Atrial vs Ventricular">Atrial vs Ventricular (different)</option>
+                        </select>
+                        <div class="param-feedback" id="feedbackRate"></div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">REGULARITY</div>
+                        <select id="paramRegularity" class="param-input">
+                            <option value="">-- Select Regularity --</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Irregular">Irregular</option>
+                            <option value="Regularly irregular">Regularly irregular</option>
+                            <option value="Irregularly irregular">Irregularly irregular</option>
+                            <option value="Chaotic">Chaotic</option>
+                            <option value="Cannot determine">Cannot determine</option>
+                        </select>
+                        <div class="param-feedback" id="feedbackRegularity"></div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">PRI (SEC)</div>
+                        <select id="paramPRI" class="param-input">
+                            <option value="">-- Select PR Interval --</option>
+                            <option value="None">None (no P waves)</option>
+                            <option value="<0.12 sec">&lt;0.12 sec (short)</option>
+                            <option value="0.12 sec">0.12 sec</option>
+                            <option value="0.14 sec">0.14 sec</option>
+                            <option value="0.16 sec">0.16 sec</option>
+                            <option value="0.18 sec">0.18 sec</option>
+                            <option value="0.20 sec">0.20 sec</option>
+                            <option value="0.22-0.24 sec">0.22-0.24 sec (prolonged)</option>
+                            <option value="0.24-0.30 sec">0.24-0.30 sec (prolonged)</option>
+                            <option value=">0.30 sec">&gt;0.30 sec (markedly prolonged)</option>
+                            <option value="Variable">Variable</option>
+                            <option value="Progressive lengthening">Progressive lengthening</option>
+                            <option value="Constant (with dropped beats)">Constant (with dropped beats)</option>
+                            <option value="Cannot measure">Cannot measure</option>
+                        </select>
+                        <div class="param-feedback" id="feedbackPRI"></div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-label">QRS WIDTH (SEC)</div>
+                        <select id="paramQRS" class="param-input">
+                            <option value="">-- Select QRS Width --</option>
+                            <option value="<0.10 sec">&lt;0.10 sec (narrow)</option>
+                            <option value="0.08 sec">0.08 sec (narrow)</option>
+                            <option value="0.10 sec">0.10 sec (narrow)</option>
+                            <option value="0.12 sec">0.12 sec (borderline)</option>
+                            <option value="0.12-0.14 sec">0.12-0.14 sec (wide)</option>
+                            <option value="0.14-0.16 sec">0.14-0.16 sec (wide)</option>
+                            <option value="0.16-0.20 sec">0.16-0.20 sec (wide)</option>
+                            <option value=">0.20 sec">&gt;0.20 sec (very wide)</option>
+                            <option value="Variable">Variable</option>
+                            <option value="Cannot measure">Cannot measure</option>
+                        </select>
+                        <div class="param-feedback" id="feedbackQRS"></div>
+                    </div>
+                </div>
+                <button id="checkParamsBtn" class="check-params-btn">✓ Check My Measurements</button>
+            </div>
+        </div>
+
+        <h2 class="question-text">Identify this cardiac rhythm:</h2>
+
+        <div class="options-grid" id="optionsGrid"></div>
+
+        <div id="feedbackPanel" class="feedback-panel hidden">
+            <div class="feedback-header">
+                <span class="feedback-icon" id="feedbackIcon"></span>
+                <span class="feedback-title" id="feedbackTitle"></span>
+            </div>
+            <p class="correct-answer hidden" id="correctAnswerText"></p>
+            <div class="characteristics-box">
+                <div class="characteristics-label">KEY CHARACTERISTICS:</div>
+                <p class="characteristics-text" id="characteristicsText"></p>
+                <div class="characteristics-grid">
+                    <div class="char-item">
+                        <span class="label">P Wave: </span>
+                        <span class="value" id="charPWave"></span>
+                    </div>
+                    <div class="char-item">
+                        <span class="label">PR Interval: </span>
+                        <span class="value" id="charPR"></span>
+                    </div>
+                </div>
+            </div>
+            <button id="nextBtn" class="btn-primary" style="margin-top: 20px;">Next Question →</button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="container hidden">
+        <div class="results-header">
+            <div class="results-icon" id="resultsIcon">🏆</div>
+            <h1 class="results-title" id="resultsTitle">Congratulations!</h1>
+            <p class="results-subtitle" id="resultsSubtitle"></p>
+        </div>
+
+        <div class="score-card" id="scoreCard">
+            <div class="score-percentage" id="scorePercentage">0%</div>
+            <div class="score-fraction" id="scoreFraction">0 out of 0 correct</div>
+            <div class="pass-badge" id="passBadge">✓ PASSED</div>
+        </div>
+
+        <div class="breakdown-card">
+            <h3 class="breakdown-title">Performance by Category</h3>
+            <div id="breakdownList"></div>
+        </div>
+
+        <div class="actions-grid" id="actionsGrid">
+            <button id="certificateBtn" class="btn-primary">📜 Download Certificate</button>
+            <button id="restartBtn" class="btn-secondary">🔄 Practice Again</button>
+        </div>
+
+        <div class="missed-questions hidden" id="missedQuestions">
+            <h3 class="missed-title">📝 Review Missed Questions</h3>
+            <div class="missed-list" id="missedList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Category definitions with CoAEMSP alignment
+        const CATEGORIES = {
+            'Sinus Rhythms': { icon: '💚', count: 40, fullName: 'Sinus Rhythms' },
+            'Atrial Dysrhythmias': { icon: '💛', count: 30, fullName: 'Atrial Dysrhythmias' },
+            'AV Node Dysrhythmias': { icon: '🧡', count: 15, fullName: 'AV Node Dysrhythmias' },
+            'Ventricular Dysrhythmias': { icon: '❤️', count: 20, fullName: 'Ventricular Dysrhythmias' },
+            'Heart Blocks': { icon: '💜', count: 25, fullName: 'AV Blocks' },
+            'Pacemaker and Other': { icon: '💙', count: 25, fullName: 'Pacemaker & Special Conditions' }
+        };
+
+        // Complete ECG rhythm database - CORRECTED with exact dropdown values
+        const ECG_RHYTHMS = [
+            // ==========================================
+            // SINUS RHYTHMS (1-40)
+            // ==========================================
+            { id: 1, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Classic NSR with all normal intervals' },
+            { id: 2, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'NSR with PR at upper normal' },
+            { id: 3, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'NSR at upper normal rate' },
+            { id: 4, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.10 sec', characteristics: 'NSR at lower normal rate' },
+            { id: 5, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Rate < 60 bpm, all else normal' },
+            { id: 6, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'Moderate bradycardia' },
+            { id: 7, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Significant bradycardia' },
+            { id: 8, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Severe bradycardia' },
+            { id: 9, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Mild tachycardia' },
+            { id: 10, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'Moderate tachycardia' },
+            { id: 11, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'Significant tachycardia' },
+            { id: 12, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, may merge with T', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'P waves may be hidden' },
+            { id: 13, category: 'Sinus Rhythms', rhythm: 'Sinus arrhythmia', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Rate varies with respiration' },
+            { id: 14, category: 'Sinus Rhythms', rhythm: 'Sinus arrhythmia', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Classic respiratory variation' },
+            { id: 15, category: 'Sinus Rhythms', rhythm: 'Sinus arrhythmia', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'More pronounced in younger patients' },
+            { id: 16, category: 'Sinus Rhythms', rhythm: 'Sinus arrest', rate: 'Variable', regularity: 'Irregular', pWave: 'Absent during pause', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Pause not multiple of P-P' },
+            { id: 17, category: 'Sinus Rhythms', rhythm: 'Sinus arrest', rate: 'Variable', regularity: 'Irregular', pWave: 'Absent during pause', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'SA node failure' },
+            { id: 18, category: 'Sinus Rhythms', rhythm: 'Sinus arrest', rate: 'Variable', regularity: 'Irregular', pWave: 'Absent during pause', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Brief sinus arrest' },
+            { id: 19, category: 'Sinus Rhythms', rhythm: 'Sinus arrest', rate: 'Variable', regularity: 'Irregular', pWave: 'Absent during pause', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Moderate pause' },
+            { id: 20, category: 'Sinus Rhythms', rhythm: 'Sinus arrest', rate: 'Variable', regularity: 'Irregular', pWave: 'Absent during pause', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Significant pause' },
+            { id: 21, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.20 sec', qrsWidth: '0.08 sec', characteristics: 'PR at upper limit of normal' },
+            { id: 22, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.10 sec', characteristics: 'QRS at upper normal' },
+            { id: 23, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Mild bradycardia' },
+            { id: 24, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'Marked bradycardia' },
+            { id: 25, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Just above normal rate' },
+            { id: 26, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'P waves visible' },
+            { id: 27, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'High rate' },
+            { id: 28, category: 'Sinus Rhythms', rhythm: 'Sinus arrhythmia', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Rate increases with inspiration' },
+            { id: 29, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Narrow QRS' },
+            { id: 30, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.10 sec', characteristics: 'QRS borderline' },
+            { id: 31, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'Common in athletes' },
+            { id: 32, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'Consider underlying cause' },
+            { id: 33, category: 'Sinus Rhythms', rhythm: 'Sinus arrhythmia', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Common in pediatrics' },
+            { id: 34, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, biphasic in V1', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Normal P wave variant' },
+            { id: 35, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'May see in hypothyroid' },
+            { id: 36, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, merging with T', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'P on preceding T wave' },
+            { id: 37, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'Textbook NSR' },
+            { id: 38, category: 'Sinus Rhythms', rhythm: 'Sinus bradycardia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Watch for symptoms' },
+            { id: 39, category: 'Sinus Rhythms', rhythm: 'Sinus tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Assess for cause' },
+            { id: 40, category: 'Sinus Rhythms', rhythm: 'Normal sinus rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, upright in II', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Perfect NSR' },
+
+            // ==========================================
+            // ATRIAL DYSRHYTHMIAS (101-130)
+            // ==========================================
+            { id: 101, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '100-150 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'RVR, needs rate control' },
+            { id: 102, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '60-100 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Rate controlled' },
+            { id: 103, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '100-150 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Moderate response' },
+            { id: 104, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Sawtooth flutter waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: '2:1 conduction' },
+            { id: 105, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Sawtooth flutter waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: '4:1 conduction' },
+            { id: 106, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: 'Variable', regularity: 'Irregular', pWave: 'Sawtooth flutter waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Variable block' },
+            { id: 107, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Different morphology on PAC', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Early beat, abnormal P' },
+            { id: 108, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Regularly irregular', pWave: 'Alternating normal/abnormal', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'PAC bigeminy' },
+            { id: 109, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Regularly irregular', pWave: 'Every 3rd beat abnormal', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'PAC trigeminy' },
+            { id: 110, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Two consecutive abnormal P', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'PAC couplet' },
+            { id: 111, category: 'Atrial Dysrhythmias', rhythm: 'Multifocal atrial tachycardia (MAT)', rate: '100-150 bpm', regularity: 'Irregularly irregular', pWave: '≥3 different P wave morphologies', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Common in COPD' },
+            { id: 112, category: 'Atrial Dysrhythmias', rhythm: 'Multifocal atrial tachycardia (MAT)', rate: '100-150 bpm', regularity: 'Irregularly irregular', pWave: '≥3 different P wave shapes', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Rate >100, multiple foci' },
+            { id: 113, category: 'Atrial Dysrhythmias', rhythm: 'Wandering atrial pacemaker (WAP)', rate: '60-100 bpm', regularity: 'Irregular', pWave: '≥3 different morphologies', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Rate <100, multiple foci' },
+            { id: 114, category: 'Atrial Dysrhythmias', rhythm: 'Supraventricular tachycardia (SVT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Hidden in QRS or T wave', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'Sudden onset, narrow QRS' },
+            { id: 115, category: 'Atrial Dysrhythmias', rhythm: 'Supraventricular tachycardia (SVT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Not visible', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'Very rapid' },
+            { id: 116, category: 'Atrial Dysrhythmias', rhythm: 'Supraventricular tachycardia (SVT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Retrograde P waves', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'AVNRT most common' },
+            { id: 117, category: 'Atrial Dysrhythmias', rhythm: 'Atrial tachycardia', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Abnormal but consistent', prInterval: '0.12 sec', qrsWidth: '0.08 sec', characteristics: 'Ectopic atrial focus' },
+            { id: 118, category: 'Atrial Dysrhythmias', rhythm: 'Atrial tachycardia', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Abnormal axis', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Single ectopic focus' },
+            { id: 119, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '150-250 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'RVR, urgent rate control' },
+            { id: 120, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '40-60 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Slow response, check meds' },
+            { id: 121, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Sawtooth flutter waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: '3:1 conduction' },
+            { id: 122, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Early abnormal P wave', prInterval: '0.14 sec', qrsWidth: '0.12 sec', characteristics: 'Aberrant conduction' },
+            { id: 123, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '60-100 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory baseline', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Chronic AF' },
+            { id: 124, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Classic sawtooth', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Typical flutter' },
+            { id: 125, category: 'Atrial Dysrhythmias', rhythm: 'Ectopic atrial rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Inverted in inferior leads', prInterval: '0.14 sec', qrsWidth: '0.08 sec', characteristics: 'Low atrial focus' },
+            { id: 126, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '40-60 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Slow ventricular response' },
+            { id: 127, category: 'Atrial Dysrhythmias', rhythm: 'Premature atrial contraction (PAC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Frequent abnormal P waves', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Frequent PACs' },
+            { id: 128, category: 'Atrial Dysrhythmias', rhythm: 'Supraventricular tachycardia (SVT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'Pseudo R-prime in V1', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'AVNRT' },
+            { id: 129, category: 'Atrial Dysrhythmias', rhythm: 'Atrial flutter', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Atypical flutter waves', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Atypical flutter' },
+            { id: 130, category: 'Atrial Dysrhythmias', rhythm: 'Atrial fibrillation', rate: '100-150 bpm', regularity: 'Irregularly irregular', pWave: 'Absent - fibrillatory waves', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'With aberrant conduction' },
+
+            // ==========================================
+            // AV NODE/JUNCTIONAL DYSRHYTHMIAS (151-165)
+            // ==========================================
+            { id: 151, category: 'AV Node Dysrhythmias', rhythm: 'Junctional escape rhythm', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Absent or inverted after QRS', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'SA node failure' },
+            { id: 152, category: 'AV Node Dysrhythmias', rhythm: 'Junctional escape rhythm', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Inverted before QRS', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'High junctional' },
+            { id: 153, category: 'AV Node Dysrhythmias', rhythm: 'Junctional escape rhythm', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Hidden in QRS', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'Mid-junctional' },
+            { id: 154, category: 'AV Node Dysrhythmias', rhythm: 'Accelerated junctional rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Absent', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Enhanced automaticity' },
+            { id: 155, category: 'AV Node Dysrhythmias', rhythm: 'Accelerated junctional rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Inverted in II, III, aVF', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'Digoxin toxicity' },
+            { id: 156, category: 'AV Node Dysrhythmias', rhythm: 'Accelerated junctional rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Retrograde (after QRS)', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Post-surgery common' },
+            { id: 157, category: 'AV Node Dysrhythmias', rhythm: 'Junctional tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Inverted or absent', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'Rate > 100 bpm' },
+            { id: 158, category: 'AV Node Dysrhythmias', rhythm: 'Junctional tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Retrograde or absent', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'May respond to adenosine' },
+            { id: 159, category: 'AV Node Dysrhythmias', rhythm: 'Premature junctional contraction (PJC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Inverted or absent on PJC', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'Early narrow QRS' },
+            { id: 160, category: 'AV Node Dysrhythmias', rhythm: 'Premature junctional contraction (PJC)', rate: '60-100 bpm', regularity: 'Regularly irregular', pWave: 'Alternating normal/inverted', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'PJC bigeminy' },
+            { id: 161, category: 'AV Node Dysrhythmias', rhythm: 'Junctional escape rhythm', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Absent', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Intrinsic rate 40-60' },
+            { id: 162, category: 'AV Node Dysrhythmias', rhythm: 'Accelerated junctional rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Inverted before QRS', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'Upper range' },
+            { id: 163, category: 'AV Node Dysrhythmias', rhythm: 'Junctional tachycardia', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Hidden in QRS', prInterval: 'Cannot measure', qrsWidth: '0.08 sec', characteristics: 'Just above 100' },
+            { id: 164, category: 'AV Node Dysrhythmias', rhythm: 'Premature junctional contraction (PJC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'Two consecutive inverted', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'PJC couplet' },
+            { id: 165, category: 'AV Node Dysrhythmias', rhythm: 'Junctional escape rhythm', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Inverted after QRS', prInterval: 'None (no P waves)', qrsWidth: '0.08 sec', characteristics: 'Low junctional' },
+
+            // ==========================================
+            // VENTRICULAR DYSRHYTHMIAS (201-220)
+            // ==========================================
+            { id: 201, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'None on PVC', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'Unifocal PVC' },
+            { id: 202, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'None on PVCs', prInterval: 'None (no P waves)', qrsWidth: 'Variable', characteristics: 'Multifocal PVCs' },
+            { id: 203, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Regularly irregular', pWave: 'None on PVCs', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'PVC bigeminy' },
+            { id: 204, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Regularly irregular', pWave: 'None on PVCs', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'PVC trigeminy' },
+            { id: 205, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'None on PVCs', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'PVC couplet' },
+            { id: 206, category: 'Ventricular Dysrhythmias', rhythm: 'Premature ventricular contraction (PVC)', rate: '60-100 bpm', regularity: 'Irregular', pWave: 'None on PVC', prInterval: 'None (no P waves)', qrsWidth: '0.12-0.14 sec', characteristics: 'R-on-T - dangerous' },
+            { id: 207, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular tachycardia (VT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'AV dissociation', prInterval: 'None (no P waves)', qrsWidth: '0.14-0.16 sec', characteristics: 'Monomorphic VT' },
+            { id: 208, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular tachycardia (VT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'AV dissociation', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Wide complex VT' },
+            { id: 209, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular tachycardia (VT)', rate: '150-250 bpm', regularity: 'Irregular', pWave: 'Not visible', prInterval: 'Cannot measure', qrsWidth: 'Variable', characteristics: 'Polymorphic VT' },
+            { id: 210, category: 'Ventricular Dysrhythmias', rhythm: 'Torsades de pointes', rate: '150-250 bpm', regularity: 'Irregular', pWave: 'Not visible', prInterval: 'Cannot measure', qrsWidth: 'Variable', characteristics: 'Twisting around baseline' },
+            { id: 211, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular fibrillation (VF)', rate: 'None', regularity: 'Chaotic', pWave: 'None', prInterval: 'Cannot measure', qrsWidth: 'Cannot measure', characteristics: 'Coarse VF' },
+            { id: 212, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular fibrillation (VF)', rate: 'None', regularity: 'Chaotic', pWave: 'None', prInterval: 'Cannot measure', qrsWidth: 'Cannot measure', characteristics: 'Fine VF' },
+            { id: 213, category: 'Ventricular Dysrhythmias', rhythm: 'Idioventricular rhythm', rate: '20-40 bpm', regularity: 'Regular', pWave: 'None or AV dissociation', prInterval: 'None (no P waves)', qrsWidth: '0.14-0.16 sec', characteristics: 'Ventricular escape' },
+            { id: 214, category: 'Ventricular Dysrhythmias', rhythm: 'Accelerated idioventricular rhythm (AIVR)', rate: '40-60 bpm', regularity: 'Regular', pWave: 'AV dissociation or absent', prInterval: 'None (no P waves)', qrsWidth: '0.14-0.16 sec', characteristics: 'Reperfusion rhythm' },
+            { id: 215, category: 'Ventricular Dysrhythmias', rhythm: 'Accelerated idioventricular rhythm (AIVR)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Absent or dissociated', prInterval: 'None (no P waves)', qrsWidth: '0.14-0.16 sec', characteristics: 'Post-thrombolytics' },
+            { id: 216, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular escape rhythm', rate: '20-40 bpm', regularity: 'Regular', pWave: 'None or AV dissociation', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Last resort pacemaker' },
+            { id: 217, category: 'Ventricular Dysrhythmias', rhythm: 'Asystole', rate: 'None', regularity: 'Cannot determine', pWave: 'None', prInterval: 'Cannot measure', qrsWidth: 'Cannot measure', characteristics: 'Confirm in 2 leads' },
+            { id: 218, category: 'Ventricular Dysrhythmias', rhythm: 'Pulseless electrical activity (PEA)', rate: 'Variable', regularity: 'Regular', pWave: 'May be present', prInterval: 'Variable', qrsWidth: 'Variable', characteristics: 'No pulse - clinical dx' },
+            { id: 219, category: 'Ventricular Dysrhythmias', rhythm: 'Agonal rhythm', rate: '<20 bpm', regularity: 'Irregular', pWave: 'None', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Dying heart pattern' },
+            { id: 220, category: 'Ventricular Dysrhythmias', rhythm: 'Ventricular tachycardia (VT)', rate: '150-250 bpm', regularity: 'Regular', pWave: 'AV dissociation', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Sustained VT' },
+
+            // ==========================================
+            // HEART BLOCKS (261-285)
+            // ==========================================
+            { id: 261, category: 'Heart Blocks', rhythm: 'First-degree AV block', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, 1:1 with QRS', prInterval: '0.22-0.24 sec (prolonged)', qrsWidth: '0.08 sec', characteristics: 'PR >0.20 sec' },
+            { id: 262, category: 'Heart Blocks', rhythm: 'First-degree AV block', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, 1:1 with QRS', prInterval: '0.24-0.30 sec (prolonged)', qrsWidth: '0.08 sec', characteristics: 'Marked first-degree' },
+            { id: 263, category: 'Heart Blocks', rhythm: 'First-degree AV block', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, 1:1 with QRS', prInterval: '>0.30 sec (markedly prolonged)', qrsWidth: '0.08 sec', characteristics: 'Very prolonged PR' },
+            { id: 264, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type I (Wenckebach)', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Progressive lengthening', qrsWidth: '0.08 sec', characteristics: 'PR lengthens then drops' },
+            { id: 265, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type I (Wenckebach)', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Progressive lengthening', qrsWidth: '0.08 sec', characteristics: 'Group beating pattern' },
+            { id: 266, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type I (Wenckebach)', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Progressive lengthening', qrsWidth: '0.08 sec', characteristics: 'Usually benign' },
+            { id: 267, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Constant (with dropped beats)', qrsWidth: '0.12-0.14 sec', characteristics: 'Sudden dropped QRS' },
+            { id: 268, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Constant (with dropped beats)', qrsWidth: '0.14-0.16 sec', characteristics: 'High risk, needs pacing' },
+            { id: 269, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P waves than QRS', prInterval: 'Constant (with dropped beats)', qrsWidth: '0.12-0.14 sec', characteristics: 'Infranodal block' },
+            { id: 270, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type I (Wenckebach)', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Every other P conducted', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: '2:1 block, narrow QRS' },
+            { id: 271, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '40-60 bpm', regularity: 'Regular', pWave: '2 P waves per QRS', prInterval: '0.18 sec', qrsWidth: '0.14-0.16 sec', characteristics: '2:1 block, wide QRS' },
+            { id: 272, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '20-40 bpm', regularity: 'Regular', pWave: '3:1 or higher ratio', prInterval: 'Constant (with dropped beats)', qrsWidth: '0.14-0.16 sec', characteristics: 'High-grade block' },
+            { id: 273, category: 'Heart Blocks', rhythm: 'Third-degree (complete) AV block', rate: 'Atrial vs Ventricular', regularity: 'Regular', pWave: 'P waves march through', prInterval: 'Variable', qrsWidth: '0.14-0.16 sec', characteristics: 'Complete AV dissociation' },
+            { id: 274, category: 'Heart Blocks', rhythm: 'Third-degree (complete) AV block', rate: 'Atrial vs Ventricular', regularity: 'Regular', pWave: 'Dissociated from QRS', prInterval: 'Variable', qrsWidth: '0.16-0.20 sec', characteristics: 'Ventricular escape' },
+            { id: 275, category: 'Heart Blocks', rhythm: 'Third-degree (complete) AV block', rate: 'Atrial vs Ventricular', regularity: 'Regular', pWave: 'Independent of QRS', prInterval: 'Variable', qrsWidth: '0.08 sec', characteristics: 'Junctional escape' },
+            { id: 276, category: 'Heart Blocks', rhythm: 'Bundle branch block (RBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.16 sec', qrsWidth: '0.12-0.14 sec', characteristics: 'RSR-prime in V1' },
+            { id: 277, category: 'Heart Blocks', rhythm: 'Bundle branch block (RBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.18 sec', qrsWidth: '0.12 sec', characteristics: 'Classic RBBB' },
+            { id: 278, category: 'Heart Blocks', rhythm: 'Bundle branch block (LBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.16 sec', qrsWidth: '0.14-0.16 sec', characteristics: 'Broad notched R' },
+            { id: 279, category: 'Heart Blocks', rhythm: 'Bundle branch block (LBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.14 sec', qrsWidth: '0.12-0.14 sec', characteristics: 'No septal Q' },
+            { id: 280, category: 'Heart Blocks', rhythm: 'Bundle branch block (RBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.18 sec', qrsWidth: '0.12-0.14 sec', characteristics: 'Bifascicular block' },
+            { id: 281, category: 'Heart Blocks', rhythm: 'First-degree AV block', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, 1:1 with QRS', prInterval: '0.22-0.24 sec (prolonged)', qrsWidth: '0.08 sec', characteristics: 'Mild first-degree' },
+            { id: 282, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type I (Wenckebach)', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P than QRS', prInterval: 'Progressive lengthening', qrsWidth: '0.08 sec', characteristics: 'Typical pattern' },
+            { id: 283, category: 'Heart Blocks', rhythm: 'Second-degree AV block Type II', rate: '40-60 bpm', regularity: 'Irregular', pWave: 'More P than QRS', prInterval: 'Constant (with dropped beats)', qrsWidth: '0.14-0.16 sec', characteristics: 'High risk for CHB' },
+            { id: 284, category: 'Heart Blocks', rhythm: 'Third-degree (complete) AV block', rate: 'Atrial vs Ventricular', regularity: 'Regular', pWave: 'Completely dissociated', prInterval: 'Variable', qrsWidth: '0.16-0.20 sec', characteristics: 'Requires pacing' },
+            { id: 285, category: 'Heart Blocks', rhythm: 'Bundle branch block (RBBB)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.16 sec', qrsWidth: '0.12-0.14 sec', characteristics: 'Classic RBBB' },
+
+            // ==========================================
+            // PACEMAKER AND OTHER (286-310)
+            // ==========================================
+            { id: 286, category: 'Pacemaker and Other', rhythm: 'Ventricular paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'May be present', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Pacing spike before QRS' },
+            { id: 287, category: 'Pacemaker and Other', rhythm: 'Ventricular paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'May be present', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'VVI pacing mode' },
+            { id: 288, category: 'Pacemaker and Other', rhythm: 'Dual chamber paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Paced (spike before P)', prInterval: '0.16 sec', qrsWidth: '0.16-0.20 sec', characteristics: 'DDD pacing' },
+            { id: 289, category: 'Pacemaker and Other', rhythm: 'Atrial paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Paced (spike before P)', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'AAI pacing' },
+            { id: 290, category: 'Pacemaker and Other', rhythm: 'Pacemaker malfunction', rate: 'Variable', regularity: 'Irregular', pWave: 'Variable', prInterval: 'Variable', qrsWidth: 'Variable', characteristics: 'Failure to capture' },
+            { id: 291, category: 'Pacemaker and Other', rhythm: 'Pacemaker malfunction', rate: 'Variable', regularity: 'Irregular', pWave: 'Variable', prInterval: 'Variable', qrsWidth: 'Variable', characteristics: 'Failure to sense' },
+            { id: 292, category: 'Pacemaker and Other', rhythm: 'Pacemaker malfunction', rate: 'Variable', regularity: 'Irregular', pWave: 'Variable', prInterval: 'Variable', qrsWidth: 'Variable', characteristics: 'Failure to pace' },
+            { id: 293, category: 'Pacemaker and Other', rhythm: 'Wolff-Parkinson-White (WPW)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '<0.12 sec (short)', qrsWidth: '0.12-0.14 sec', characteristics: 'Delta wave present' },
+            { id: 294, category: 'Pacemaker and Other', rhythm: 'Wolff-Parkinson-White (WPW)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '<0.12 sec (short)', qrsWidth: '0.12-0.14 sec', characteristics: 'Accessory pathway' },
+            { id: 295, category: 'Pacemaker and Other', rhythm: 'Wolff-Parkinson-White (WPW)', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '<0.12 sec (short)', qrsWidth: '0.08 sec', characteristics: 'LGL syndrome' },
+            { id: 296, category: 'Pacemaker and Other', rhythm: 'Artifact', rate: 'None', regularity: 'Cannot determine', pWave: 'Obscured', prInterval: 'Cannot measure', qrsWidth: 'Cannot measure', characteristics: '60 Hz interference' },
+            { id: 297, category: 'Pacemaker and Other', rhythm: 'Artifact', rate: 'Variable', regularity: 'Cannot determine', pWave: 'Obscured', prInterval: 'Cannot measure', qrsWidth: 'Variable', characteristics: 'Muscle tremor' },
+            { id: 298, category: 'Pacemaker and Other', rhythm: 'Artifact', rate: 'None', regularity: 'Cannot determine', pWave: 'Variable', prInterval: 'Cannot measure', qrsWidth: 'Variable', characteristics: 'Loose lead' },
+            { id: 299, category: 'Pacemaker and Other', rhythm: 'Hyperkalemia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Flattened or absent', prInterval: 'Variable', qrsWidth: '0.14-0.16 sec', characteristics: 'Peaked T, wide QRS' },
+            { id: 300, category: 'Pacemaker and Other', rhythm: 'Hyperkalemia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Absent', prInterval: 'Cannot measure', qrsWidth: '>0.20 sec', characteristics: 'Sine wave - EMERGENCY' },
+            { id: 301, category: 'Pacemaker and Other', rhythm: 'Hypokalemia', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.18 sec', qrsWidth: '0.08 sec', characteristics: 'U waves, flat T' },
+            { id: 302, category: 'Pacemaker and Other', rhythm: 'Digitalis effect', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.22-0.24 sec (prolonged)', qrsWidth: '0.08 sec', characteristics: 'Scooped ST depression' },
+            { id: 303, category: 'Pacemaker and Other', rhythm: 'Hypothermia', rate: '40-60 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.20 sec', qrsWidth: '0.10 sec', characteristics: 'Osborn (J) waves' },
+            { id: 304, category: 'Pacemaker and Other', rhythm: 'Long QT syndrome', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.16 sec', qrsWidth: '0.08 sec', characteristics: 'Prolonged QT interval' },
+            { id: 305, category: 'Pacemaker and Other', rhythm: 'Brugada syndrome', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Present, normal', prInterval: '0.16 sec', qrsWidth: '0.10 sec', characteristics: 'Coved ST in V1-V3' },
+            { id: 306, category: 'Pacemaker and Other', rhythm: 'Ventricular paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Not tracked', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Rate-responsive' },
+            { id: 307, category: 'Pacemaker and Other', rhythm: 'Dual chamber paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'Paced', prInterval: '0.18 sec', qrsWidth: '0.16-0.20 sec', characteristics: 'A and V pacing' },
+            { id: 308, category: 'Pacemaker and Other', rhythm: 'Wolff-Parkinson-White (WPW)', rate: '>250 bpm', regularity: 'Irregularly irregular', pWave: 'Absent (AF)', prInterval: 'None (no P waves)', qrsWidth: 'Variable', characteristics: 'WPW with AFib - DANGEROUS' },
+            { id: 309, category: 'Pacemaker and Other', rhythm: 'Ventricular paced rhythm', rate: '100-150 bpm', regularity: 'Regular', pWave: 'Retrograde P waves', prInterval: 'None (no P waves)', qrsWidth: '0.16-0.20 sec', characteristics: 'Pacemaker-mediated tachy' },
+            { id: 310, category: 'Pacemaker and Other', rhythm: 'Ventricular paced rhythm', rate: '60-100 bpm', regularity: 'Regular', pWave: 'May be native or paced', prInterval: '0.16 sec', qrsWidth: '0.12 sec', characteristics: 'Biventricular (CRT)' }
+        ];
+
+        // State variables
+        let studentName = '';
+        let selectedCategories = [];
+        let questionCount = 20;
+        let currentQuestion = 0;
+        let score = 0;
+        let questions = [];
+        let answeredQuestions = [];
+        let showFeedback = false;
+        let paramsChecked = false;
+        let animationId = null;
+        let ecgOffset = 0;
+        let ecgData = [];
+        let isPaused = false;
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const studentNameInput = document.getElementById('studentNameInput');
+        const startBtn = document.getElementById('startBtn');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const questionCountInput = document.getElementById('questionCountInput');
+
+        // Initialize categories
+        function initCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = '';
+
+            Object.entries(CATEGORIES).forEach(([cat, data]) => {
+                const id = cat.replace(/\s+/g, '-').toLowerCase();
+                grid.innerHTML += `
+                    <div>
+                        <input type="checkbox" class="category-checkbox" id="${id}" value="${cat}">
+                        <label class="category-label" for="${id}">
+                            <span class="category-name">
+                                <span class="check-icon">✓</span>
+                                <span>${data.icon} ${cat}</span>
+                            </span>
+                            <span class="category-count">${data.count}</span>
+                        </label>
+                    </div>
+                `;
+            });
+
+            document.querySelectorAll('.category-checkbox').forEach(cb => {
+                cb.addEventListener('change', updateSelection);
+            });
+        }
+
+        function toggleSelectAll() {
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            selectAllBtn.textContent = !allChecked ? 'Deselect All' : 'Select All';
+            updateSelection();
+        }
+
+        function updateSelection() {
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            selectedCategories = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const available = ECG_RHYTHMS.filter(r => selectedCategories.includes(r.category)).length;
+            document.getElementById('availableCount').textContent = available;
+            document.getElementById('selectedCount').textContent = Math.min(questionCount, available);
+            
+            const catNames = selectedCategories.length > 0 
+                ? selectedCategories.join(', ') 
+                : 'No categories selected';
+            document.getElementById('summaryCategories').textContent = 
+                catNames.length > 50 ? catNames.substring(0, 47) + '...' : catNames;
+
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+            
+            validateForm();
+        }
+
+        function handleCountChange(e) {
+            let value = parseInt(e.target.value) || 5;
+            value = Math.max(5, Math.min(155, value));
+            questionCount = value;
+            
+            document.querySelectorAll('.quick-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            updateSelection();
+        }
+
+        function handleQuickCount(count) {
+            document.querySelectorAll('.quick-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.count === count) btn.classList.add('active');
+            });
+            
+            if (count === '100') {
+                const available = ECG_RHYTHMS.filter(r => selectedCategories.includes(r.category)).length;
+                questionCount = available;
+                questionCountInput.value = available;
+            } else {
+                questionCount = parseInt(count);
+                questionCountInput.value = count;
+            }
+            
+            updateSelection();
+        }
+
+        function validateForm() {
+            const nameValid = studentNameInput.value.trim().length >= 2;
+            const categoriesValid = selectedCategories.length > 0;
+            startBtn.disabled = !(nameValid && categoriesValid);
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function generateOptions(correctRhythm, allRhythms) {
+            const options = [correctRhythm.rhythm];
+            const sameCategoryRhythms = allRhythms
+                .filter(r => r.category === correctRhythm.category && r.rhythm !== correctRhythm.rhythm)
+                .map(r => r.rhythm);
+            
+            const uniqueSameCat = [...new Set(sameCategoryRhythms)];
+            const shuffledSameCat = shuffleArray(uniqueSameCat);
+            
+            let addedFromSameCat = 0;
+            for (const rhythm of shuffledSameCat) {
+                if (options.length < 4 && !options.includes(rhythm)) {
+                    options.push(rhythm);
+                    addedFromSameCat++;
+                    if (addedFromSameCat >= 2) break;
+                }
+            }
+            
+            const otherRhythms = allRhythms
+                .filter(r => r.category !== correctRhythm.category)
+                .map(r => r.rhythm);
+            const uniqueOther = [...new Set(otherRhythms)];
+            const shuffledOther = shuffleArray(uniqueOther);
+            
+            for (const rhythm of shuffledOther) {
+                if (options.length >= 4) break;
+                if (!options.includes(rhythm)) {
+                    options.push(rhythm);
+                }
+            }
+            
+            return shuffleArray(options);
+        }
+
+        // Generate ECG waveform data based on AHA rhythm criteria
+        function generateECGData(rhythm) {
+            const data = [];
+            const width = 1400;
+            const height = 180;
+            const baseline = height / 2;
+            let x = 0;
+            
+            const rhythmName = rhythm.rhythm.toLowerCase();
+            const rate = rhythm.rate ? rhythm.rate.toLowerCase() : '60-100 bpm';
+            
+            // Calculate RR interval based on rate (pixels between beats)
+            function getRRInterval(rateStr) {
+                if (rateStr.includes('150-250') || rateStr.includes('>250')) return 28;
+                if (rateStr.includes('100-150')) return 45;
+                if (rateStr.includes('60-100')) return 65;
+                if (rateStr.includes('40-60')) return 95;
+                if (rateStr.includes('20-40')) return 140;
+                if (rateStr.includes('<20')) return 200;
+                return 65;
+            }
+            const baseRR = getRRInterval(rate);
+            
+            // Helper: Add flat baseline segment
+            function addBaseline(len) {
+                for (let i = 0; i < len; i++) {
+                    data.push({ x: x++, y: baseline + (Math.random() * 1 - 0.5) });
+                }
+            }
+            
+            // Helper: Add P wave - AHA: Small, rounded, upright in Lead II
+            function addPWave(h = 10, inverted = false) {
+                const dir = inverted ? 1 : -1;
+                for (let i = 0; i < 10; i++) {
+                    const py = Math.sin((i / 10) * Math.PI) * h;
+                    data.push({ x: x++, y: baseline + (dir * py) });
+                }
+            }
+            
+            // Helper: Add PR segment (isoelectric)
+            function addPRSegment(len = 6) {
+                for (let i = 0; i < len; i++) {
+                    data.push({ x: x++, y: baseline + (Math.random() * 0.5 - 0.25) });
+                }
+            }
+            
+            // Helper: Add narrow QRS complex - AHA: <0.12 sec (3 small boxes)
+            function addNarrowQRS() {
+                data.push({ x: x++, y: baseline + 3 });
+                data.push({ x: x++, y: baseline + 5 });
+                for (let i = 0; i < 4; i++) data.push({ x: x++, y: baseline + 5 - (i * 15) });
+                for (let i = 0; i < 3; i++) data.push({ x: x++, y: baseline - 55 + (i * 22) });
+                data.push({ x: x++, y: baseline + 8 });
+                data.push({ x: x++, y: baseline + 3 });
+                data.push({ x: x++, y: baseline });
+            }
+            
+            // Helper: Add wide QRS complex - AHA: >0.12 sec, bizarre morphology if ventricular
+            function addWideQRS(type = 'ventricular') {
+                if (type === 'rbbb') {
+                    // RBBB: rsR' pattern, M-shaped in V1
+                    data.push({ x: x++, y: baseline + 2 });
+                    for (let i = 0; i < 3; i++) data.push({ x: x++, y: baseline - (i * 10) });
+                    for (let i = 0; i < 3; i++) data.push({ x: x++, y: baseline - 30 + (i * 12) });
+                    for (let i = 0; i < 4; i++) data.push({ x: x++, y: baseline + 6 - (i * 16) });
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline - 58 + (i * 14) });
+                    data.push({ x: x++, y: baseline + 8 });
+                    data.push({ x: x++, y: baseline });
+                } else if (type === 'lbbb') {
+                    // LBBB: Broad, notched R wave, no Q in lateral leads
+                    data.push({ x: x++, y: baseline + 2 });
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline - (i * 10) });
+                    for (let i = 0; i < 2; i++) data.push({ x: x++, y: baseline - 50 + (i * 3) });
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline - 44 - (i * 3) });
+                    for (let i = 0; i < 6; i++) data.push({ x: x++, y: baseline - 59 + (i * 12) });
+                    data.push({ x: x++, y: baseline + 8 });
+                    data.push({ x: x++, y: baseline });
+                } else {
+                    // Ventricular origin: Wide, bizarre, discordant T wave
+                    data.push({ x: x++, y: baseline + 5 });
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline + 5 - (i * 12) });
+                    for (let i = 0; i < 6; i++) data.push({ x: x++, y: baseline - 55 + (i * 12) });
+                    for (let i = 0; i < 4; i++) data.push({ x: x++, y: baseline + 17 - (i * 5) });
+                    data.push({ x: x++, y: baseline });
+                }
+            }
+            
+            // Helper: Add ST segment
+            function addSTSegment(len = 6) {
+                for (let i = 0; i < len; i++) {
+                    data.push({ x: x++, y: baseline + (Math.random() * 0.5 - 0.25) });
+                }
+            }
+            
+            // Helper: Add T wave - AHA: Asymmetric, upright in most leads
+            function addTWave(h = 12, inverted = false, peaked = false) {
+                const dir = inverted ? 1 : -1;
+                const len = peaked ? 14 : 16;
+                const amp = peaked ? h * 1.8 : h;
+                for (let i = 0; i < len; i++) {
+                    const ty = Math.sin((i / len) * Math.PI) * amp;
+                    data.push({ x: x++, y: baseline + (dir * ty) });
+                }
+            }
+            
+            // Helper: Add pacing spike
+            function addPacingSpike() {
+                data.push({ x: x++, y: baseline });
+                data.push({ x: x++, y: baseline - 40 });
+                data.push({ x: x++, y: baseline });
+            }
+            
+            // Helper: Add fibrillatory waves (f waves) - AHA: Irregular, chaotic atrial activity
+            function addFibrillatoryBaseline(len) {
+                for (let i = 0; i < len; i++) {
+                    const f = Math.sin(i * 0.7) * 3 + Math.sin(i * 1.3) * 2 + (Math.random() * 2 - 1);
+                    data.push({ x: x++, y: baseline + f });
+                }
+            }
+            
+            // Helper: Add flutter waves - AHA: Sawtooth pattern at ~300/min
+            function addFlutterWaves(num = 4) {
+                for (let w = 0; w < num; w++) {
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline - 12 + (i * 4) });
+                    for (let i = 0; i < 8; i++) data.push({ x: x++, y: baseline + 8 - (i * 2.5) });
+                }
+            }
+            
+            // ============================================
+            // RHYTHM-SPECIFIC WAVEFORM GENERATION
+            // Based on AHA ECG Rhythm Recognition Criteria
+            // ============================================
+            
+            // --- NORMAL SINUS RHYTHM ---
+            // AHA: Rate 60-100, Regular, P wave before each QRS, PR 0.12-0.20, QRS <0.12
+            if (rhythmName === 'normal sinus rhythm') {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- SINUS BRADYCARDIA ---
+            // AHA: Same as NSR but rate <60 bpm (long RR intervals)
+            else if (rhythmName === 'sinus bradycardia') {
+                while (x < width - 130) {
+                    addBaseline(10);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(6);
+                    addTWave(12);
+                    addBaseline(baseRR - 45);
+                }
+            }
+            
+            // --- SINUS TACHYCARDIA ---
+            // AHA: Same as NSR but rate >100 bpm (P waves may merge with preceding T)
+            else if (rhythmName === 'sinus tachycardia') {
+                while (x < width - 70) {
+                    addBaseline(5);
+                    addPWave(9);
+                    addPRSegment(4);
+                    addNarrowQRS();
+                    addSTSegment(4);
+                    addTWave(10);
+                    addBaseline(baseRR - 40);
+                }
+            }
+            
+            // --- SINUS ARRHYTHMIA ---
+            // AHA: Normal P-QRS-T, RR interval varies with respiration (irregular)
+            else if (rhythmName === 'sinus arrhythmia') {
+                let phase = 0;
+                while (x < width - 100) {
+                    const varRR = baseRR + Math.sin(phase) * 25;
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(Math.max(15, varRR - 50));
+                    phase += 0.6;
+                }
+            }
+            
+            // --- SINUS ARREST ---
+            // AHA: Normal rhythm with sudden pause (not a multiple of PP interval)
+            else if (rhythmName === 'sinus arrest') {
+                // Two normal beats
+                for (let b = 0; b < 2; b++) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(25);
+                }
+                // Long pause (sinus arrest)
+                addBaseline(160);
+                // Resume normal
+                for (let b = 0; b < 2; b++) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(25);
+                }
+            }
+            
+            // --- ATRIAL FIBRILLATION ---
+            // AHA: No P waves (fibrillatory baseline), irregularly irregular RR, narrow QRS
+            else if (rhythmName.includes('atrial fibrillation')) {
+                while (x < width - 70) {
+                    // Fibrillatory baseline (variable length = irregular RR)
+                    const fLen = 20 + Math.random() * 40;
+                    addFibrillatoryBaseline(fLen);
+                    addNarrowQRS();
+                    addSTSegment(4);
+                    addTWave(10);
+                }
+            }
+            
+            // --- ATRIAL FLUTTER ---
+            // AHA: Sawtooth flutter waves (~300/min), regular or variable ventricular response
+            else if (rhythmName.includes('atrial flutter')) {
+                while (x < width - 90) {
+                    addFlutterWaves(4);
+                    addNarrowQRS();
+                    addSTSegment(3);
+                    addTWave(9);
+                    addBaseline(8);
+                }
+            }
+            
+            // --- PREMATURE ATRIAL CONTRACTION (PAC) ---
+            // AHA: Early P wave (different morphology), narrow QRS, non-compensatory pause
+            else if (rhythmName.includes('premature atrial contraction') || rhythmName.includes('(pac)')) {
+                while (x < width - 200) {
+                    // Normal beat
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(25);
+                    // PAC (early, different P)
+                    addBaseline(5);
+                    addPWave(7); // Different P morphology
+                    addPRSegment(5);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(11);
+                    // Non-compensatory pause
+                    addBaseline(40);
+                    // Normal beat
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(25);
+                }
+            }
+            
+            // --- MULTIFOCAL ATRIAL TACHYCARDIA (MAT) ---
+            // AHA: Rate >100, ≥3 different P wave morphologies, irregular
+            else if (rhythmName.includes('multifocal atrial tachycardia') || rhythmName.includes('(mat)')) {
+                const pMorphs = [{h:10,inv:false}, {h:6,inv:true}, {h:12,inv:false}, {h:8,inv:true}];
+                let mi = 0;
+                while (x < width - 80) {
+                    addBaseline(5 + Math.random() * 10);
+                    const m = pMorphs[mi % 4];
+                    addPWave(m.h, m.inv);
+                    addPRSegment(4 + Math.random() * 3);
+                    addNarrowQRS();
+                    addSTSegment(4);
+                    addTWave(10);
+                    addBaseline(10 + Math.random() * 15);
+                    mi++;
+                }
+            }
+            
+            // --- WANDERING ATRIAL PACEMAKER (WAP) ---
+            // AHA: Rate <100, ≥3 different P wave morphologies
+            else if (rhythmName.includes('wandering atrial pacemaker') || rhythmName.includes('(wap)')) {
+                const pMorphs = [{h:10,inv:false}, {h:7,inv:true}, {h:11,inv:false}];
+                let mi = 0;
+                while (x < width - 100) {
+                    addBaseline(8 + Math.random() * 8);
+                    const m = pMorphs[mi % 3];
+                    addPWave(m.h, m.inv);
+                    addPRSegment(5 + Math.random() * 3);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(11);
+                    addBaseline(25 + Math.random() * 20);
+                    mi++;
+                }
+            }
+            
+            // --- SUPRAVENTRICULAR TACHYCARDIA (SVT) ---
+            // AHA: Rate 150-250, regular, P waves hidden or absent, narrow QRS
+            else if (rhythmName.includes('supraventricular tachycardia') || rhythmName.includes('(svt)')) {
+                while (x < width - 50) {
+                    addBaseline(3);
+                    addNarrowQRS();
+                    addSTSegment(3);
+                    addTWave(8);
+                    addBaseline(baseRR - 25);
+                }
+            }
+            
+            // --- ATRIAL TACHYCARDIA ---
+            // AHA: Rate 150-250, abnormal but consistent P waves, narrow QRS
+            else if (rhythmName.includes('atrial tachycardia') && !rhythmName.includes('multifocal')) {
+                while (x < width - 60) {
+                    addBaseline(4);
+                    addPWave(7);
+                    addPRSegment(3);
+                    addNarrowQRS();
+                    addSTSegment(3);
+                    addTWave(9);
+                    addBaseline(baseRR - 30);
+                }
+            }
+            
+            // --- ECTOPIC ATRIAL RHYTHM ---
+            // AHA: Rate 60-100, abnormal P wave axis, regular
+            else if (rhythmName.includes('ectopic atrial rhythm')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(8, true); // Inverted P (low atrial focus)
+                    addPRSegment(5);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(11);
+                    addBaseline(baseRR - 45);
+                }
+            }
+            
+            // --- JUNCTIONAL ESCAPE RHYTHM ---
+            // AHA: Rate 40-60, regular, absent/inverted P (before, during, or after QRS), narrow QRS
+            else if (rhythmName.includes('junctional escape')) {
+                while (x < width - 120) {
+                    addBaseline(10);
+                    if (Math.random() > 0.5) {
+                        addPWave(5, true); // Retrograde P before QRS
+                        addPRSegment(2);
+                    }
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    if (Math.random() > 0.6) {
+                        addPWave(4, true); // Retrograde P after QRS
+                    }
+                    addTWave(11);
+                    addBaseline(baseRR - 40);
+                }
+            }
+            
+            // --- ACCELERATED JUNCTIONAL RHYTHM ---
+            // AHA: Rate 60-100, otherwise same as junctional escape
+            else if (rhythmName.includes('accelerated junctional')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    if (Math.random() > 0.6) {
+                        addPWave(5, true);
+                        addPRSegment(2);
+                    }
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(11);
+                    addBaseline(baseRR - 35);
+                }
+            }
+            
+            // --- JUNCTIONAL TACHYCARDIA ---
+            // AHA: Rate >100, inverted/absent P waves, narrow QRS
+            else if (rhythmName.includes('junctional tachycardia')) {
+                while (x < width - 70) {
+                    addBaseline(5);
+                    addNarrowQRS();
+                    addSTSegment(4);
+                    addTWave(9);
+                    addBaseline(baseRR - 28);
+                }
+            }
+            
+            // --- PREMATURE JUNCTIONAL CONTRACTION (PJC) ---
+            // AHA: Early narrow QRS, absent/inverted P, non-compensatory pause
+            else if (rhythmName.includes('premature junctional') || rhythmName.includes('(pjc)')) {
+                // Normal beat
+                addBaseline(8);
+                addPWave(10);
+                addPRSegment(6);
+                addNarrowQRS();
+                addSTSegment(5);
+                addTWave(12);
+                addBaseline(25);
+                // PJC (early)
+                addBaseline(5);
+                addPWave(4, true);
+                addPRSegment(2);
+                addNarrowQRS();
+                addSTSegment(5);
+                addTWave(10);
+                addBaseline(40);
+                // Normal beats
+                addBaseline(8);
+                addPWave(10);
+                addPRSegment(6);
+                addNarrowQRS();
+                addSTSegment(5);
+                addTWave(12);
+                addBaseline(25);
+            }
+            
+            // --- PREMATURE VENTRICULAR CONTRACTION (PVC) ---
+            // AHA: Early wide bizarre QRS, no preceding P, discordant T, compensatory pause
+            else if (rhythmName.includes('premature ventricular contraction') || rhythmName.includes('(pvc)')) {
+                while (x < width - 220) {
+                    // Normal beat
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(20);
+                    // PVC (no P, wide QRS, discordant T)
+                    addBaseline(5);
+                    addWideQRS('ventricular');
+                    addSTSegment(4);
+                    addTWave(14, true); // Discordant (opposite direction)
+                    // Compensatory pause
+                    addBaseline(55);
+                    // Normal beat
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(20);
+                }
+            }
+            
+            // --- VENTRICULAR TACHYCARDIA (VT) ---
+            // AHA: Rate 100-250, wide QRS (>0.12), regular, AV dissociation
+            else if (rhythmName.includes('ventricular tachycardia') || rhythmName.includes('(vt)')) {
+                while (x < width - 60) {
+                    addBaseline(3);
+                    addWideQRS('ventricular');
+                    addSTSegment(3);
+                    addTWave(12, true);
+                    addBaseline(baseRR - 35);
+                }
+            }
+            
+            // --- TORSADES DE POINTES ---
+            // AHA: Polymorphic VT, QRS axis twists around baseline, associated with long QT
+            else if (rhythmName.includes('torsades')) {
+                let phase = 0;
+                while (x < width) {
+                    const twist = Math.sin(phase * 0.06) * 40;
+                    const amp = 25 + Math.sin(phase * 0.25) * 20;
+                    data.push({ x: x++, y: baseline + twist + (Math.random() * amp - amp/2) });
+                    phase++;
+                }
+            }
+            
+            // --- VENTRICULAR FIBRILLATION (VF) ---
+            // AHA: Chaotic, no organized QRS/T, coarse (>3mm) vs fine (<3mm)
+            else if (rhythmName.includes('ventricular fibrillation') || rhythmName.includes('(vf)')) {
+                while (x < width) {
+                    const amp = Math.random() * 50 - 25;
+                    data.push({ x: x++, y: baseline + amp });
+                }
+            }
+            
+            // --- IDIOVENTRICULAR RHYTHM ---
+            // AHA: Rate 20-40, wide QRS, no P waves, regular (ventricular escape)
+            else if (rhythmName === 'idioventricular rhythm') {
+                while (x < width - 180) {
+                    addBaseline(15);
+                    addWideQRS('ventricular');
+                    addSTSegment(8);
+                    addTWave(13, true);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- ACCELERATED IDIOVENTRICULAR RHYTHM (AIVR) ---
+            // AHA: Rate 40-100, wide QRS, no P waves, regular
+            else if (rhythmName.includes('accelerated idioventricular') || rhythmName.includes('(aivr)')) {
+                while (x < width - 110) {
+                    addBaseline(10);
+                    addWideQRS('ventricular');
+                    addSTSegment(6);
+                    addTWave(12, true);
+                    addBaseline(baseRR - 45);
+                }
+            }
+            
+            // --- VENTRICULAR ESCAPE RHYTHM ---
+            // AHA: Rate 20-40, wide QRS, last resort pacemaker
+            else if (rhythmName.includes('ventricular escape')) {
+                while (x < width - 200) {
+                    addBaseline(20);
+                    addWideQRS('ventricular');
+                    addSTSegment(10);
+                    addTWave(14, true);
+                    addBaseline(baseRR - 60);
+                }
+            }
+            
+            // --- ASYSTOLE ---
+            // AHA: Flatline, no electrical activity
+            else if (rhythmName.includes('asystole')) {
+                while (x < width) {
+                    data.push({ x: x++, y: baseline + (Math.random() * 1.5 - 0.75) });
+                }
+            }
+            
+            // --- AGONAL RHYTHM ---
+            // AHA: <20 bpm, wide irregular complexes, dying heart pattern
+            else if (rhythmName.includes('agonal')) {
+                addBaseline(60);
+                // Wide, bizarre QRS
+                for (let i = 0; i < 8; i++) data.push({ x: x++, y: baseline - (i * 5) });
+                for (let i = 0; i < 10; i++) data.push({ x: x++, y: baseline - 40 + (i * 7) });
+                addBaseline(200);
+                // Another wide complex (different morphology)
+                for (let i = 0; i < 10; i++) data.push({ x: x++, y: baseline + (i * 4) });
+                for (let i = 0; i < 8; i++) data.push({ x: x++, y: baseline + 40 - (i * 6) });
+                addBaseline(250);
+            }
+            
+            // --- FIRST-DEGREE AV BLOCK ---
+            // AHA: PR >0.20 sec (>5 small boxes), all P waves conducted, regular
+            else if (rhythmName.includes('first-degree')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(16); // Prolonged PR (>0.20 sec)
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- SECOND-DEGREE TYPE I (WENCKEBACH/MOBITZ I) ---
+            // AHA: Progressive PR lengthening until dropped QRS, grouped beating
+            else if (rhythmName.includes('type i') || rhythmName.includes('wenckebach')) {
+                let beat = 0;
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    if (beat % 4 === 3) {
+                        // Dropped QRS (P wave not conducted)
+                        addBaseline(45);
+                        beat = 0;
+                    } else {
+                        // Progressive PR lengthening
+                        addPRSegment(6 + (beat * 4));
+                        addNarrowQRS();
+                        addSTSegment(5);
+                        addTWave(11);
+                        addBaseline(20);
+                        beat++;
+                    }
+                }
+            }
+            
+            // --- SECOND-DEGREE TYPE II (MOBITZ II) ---
+            // AHA: Constant PR, sudden dropped QRS without warning, often wide QRS
+            else if (rhythmName.includes('type ii') && !rhythmName.includes('type i')) {
+                let beat = 0;
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    if (beat % 3 === 2) {
+                        // Dropped QRS (no PR lengthening)
+                        addBaseline(50);
+                    } else {
+                        addPRSegment(8); // Constant PR
+                        addWideQRS('ventricular'); // Often wide QRS
+                        addSTSegment(5);
+                        addTWave(11);
+                        addBaseline(20);
+                    }
+                    beat++;
+                }
+            }
+            
+            // --- THIRD-DEGREE (COMPLETE) AV BLOCK ---
+            // AHA: Complete AV dissociation, P waves and QRS independent, regular P, regular QRS
+            else if (rhythmName.includes('third-degree') || rhythmName.includes('complete')) {
+                // P waves march through at one rate, QRS at independent slower rate
+                let pTimer = 0;
+                let qrsTimer = 0;
+                const pInt = 35;  // Atrial rate
+                const qrsInt = 85; // Ventricular rate (escape)
+                
+                while (x < width - 50) {
+                    if (pTimer <= 0) {
+                        for (let i = 0; i < 8; i++) {
+                            const py = Math.sin((i / 8) * Math.PI) * 10;
+                            data.push({ x: x++, y: baseline - py });
+                        }
+                        pTimer = pInt;
+                    }
+                    if (qrsTimer <= 0) {
+                        addWideQRS('ventricular');
+                        addSTSegment(5);
+                        addTWave(12, true);
+                        qrsTimer = qrsInt;
+                    }
+                    data.push({ x: x++, y: baseline + (Math.random() * 0.5 - 0.25) });
+                    pTimer--;
+                    qrsTimer--;
+                }
+            }
+            
+            // --- BUNDLE BRANCH BLOCK (RBBB) ---
+            // AHA: QRS >0.12, rsR' in V1, wide S in I/V6, normal P and PR
+            else if (rhythmName.includes('(rbbb)') || (rhythmName.includes('bundle branch') && rhythmName.includes('right'))) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addWideQRS('rbbb');
+                    addSTSegment(5);
+                    addTWave(10, true);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- BUNDLE BRANCH BLOCK (LBBB) ---
+            // AHA: QRS >0.12, broad notched R in I/V6, no Q in lateral, normal P and PR
+            else if (rhythmName.includes('(lbbb)') || (rhythmName.includes('bundle branch') && rhythmName.includes('left'))) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addWideQRS('lbbb');
+                    addSTSegment(5);
+                    addTWave(10, true);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- GENERIC BUNDLE BRANCH BLOCK ---
+            else if (rhythmName.includes('bundle branch')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addWideQRS('rbbb');
+                    addSTSegment(5);
+                    addTWave(10, true);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- WOLFF-PARKINSON-WHITE (WPW) ---
+            // AHA: Short PR (<0.12), delta wave (slurred QRS upstroke), wide QRS
+            else if (rhythmName.includes('wolff-parkinson-white') || rhythmName.includes('(wpw)')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(2); // Short PR (<0.12 sec)
+                    // Delta wave + wide QRS
+                    for (let i = 0; i < 7; i++) data.push({ x: x++, y: baseline - (i * 3) }); // Delta wave (slurred)
+                    for (let i = 0; i < 5; i++) data.push({ x: x++, y: baseline - 21 - (i * 8) });
+                    for (let i = 0; i < 6; i++) data.push({ x: x++, y: baseline - 61 + (i * 13) });
+                    data.push({ x: x++, y: baseline + 10 });
+                    data.push({ x: x++, y: baseline });
+                    addSTSegment(5);
+                    addTWave(11);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- VENTRICULAR PACED RHYTHM ---
+            // AHA: Pacing spike followed by wide QRS (LBBB-like if RV paced)
+            else if (rhythmName.includes('ventricular paced')) {
+                while (x < width - 100) {
+                    addBaseline(10);
+                    addPacingSpike();
+                    addBaseline(2);
+                    addWideQRS('ventricular');
+                    addSTSegment(5);
+                    addTWave(12, true);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- ATRIAL PACED RHYTHM ---
+            // AHA: Pacing spike before P wave, normal QRS
+            else if (rhythmName.includes('atrial paced')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPacingSpike();
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(11);
+                    addBaseline(baseRR - 52);
+                }
+            }
+            
+            // --- DUAL CHAMBER PACED RHYTHM ---
+            // AHA: Pacing spikes before P and QRS
+            else if (rhythmName.includes('dual chamber')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPacingSpike();
+                    addPWave(10);
+                    addPRSegment(5);
+                    addPacingSpike();
+                    addWideQRS('ventricular');
+                    addSTSegment(5);
+                    addTWave(12, true);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- PACEMAKER MALFUNCTION ---
+            // AHA: Failure to capture (spike without QRS), sense, or pace
+            else if (rhythmName.includes('pacemaker malfunction')) {
+                addBaseline(20);
+                addPacingSpike();
+                addBaseline(35); // Failure to capture
+                addPacingSpike();
+                addBaseline(35);
+                // Intrinsic beat
+                addPWave(10);
+                addPRSegment(6);
+                addNarrowQRS();
+                addSTSegment(5);
+                addTWave(11);
+                addBaseline(40);
+                addPacingSpike();
+                addBaseline(30);
+            }
+            
+            // --- ARTIFACT ---
+            // AHA: Not a rhythm - interference patterns
+            else if (rhythmName.includes('artifact')) {
+                while (x < width) {
+                    data.push({ x: x++, y: baseline + Math.sin(x * 0.4) * 25 + (Math.random() * 20 - 10) });
+                }
+            }
+            
+            // --- HYPERKALEMIA ---
+            // AHA: Peaked T waves, widened QRS, flattened P waves, eventual sine wave
+            else if (rhythmName.includes('hyperkalemia')) {
+                while (x < width - 110) {
+                    addBaseline(10);
+                    // Flattened or absent P wave
+                    addBaseline(8);
+                    addWideQRS('ventricular');
+                    addSTSegment(4);
+                    addTWave(28, false, true); // Tall peaked T waves
+                    addBaseline(baseRR - 60);
+                }
+            }
+            
+            // --- HYPOKALEMIA ---
+            // AHA: Flattened T waves, prominent U waves, ST depression
+            else if (rhythmName.includes('hypokalemia')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    // ST depression
+                    for (let i = 0; i < 6; i++) data.push({ x: x++, y: baseline + 4 });
+                    addTWave(5); // Flattened T
+                    // Prominent U wave
+                    for (let i = 0; i < 10; i++) {
+                        const uy = Math.sin((i / 10) * Math.PI) * 8;
+                        data.push({ x: x++, y: baseline - uy });
+                    }
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- DIGITALIS EFFECT ---
+            // AHA: Scooped ST depression ("reverse tick"), prolonged PR
+            else if (rhythmName.includes('digitalis')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(12); // Prolonged PR
+                    addNarrowQRS();
+                    // Scooped ST depression
+                    for (let i = 0; i < 10; i++) {
+                        data.push({ x: x++, y: baseline + 6 + Math.sin((i / 10) * Math.PI) * 8 });
+                    }
+                    addTWave(10);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- HYPOTHERMIA ---
+            // AHA: Osborn waves (J waves), bradycardia, prolonged intervals
+            else if (rhythmName.includes('hypothermia')) {
+                while (x < width - 130) {
+                    addBaseline(10);
+                    addPWave(10);
+                    addPRSegment(8);
+                    addNarrowQRS();
+                    // Osborn wave (J wave) - positive deflection at J point
+                    for (let i = 0; i < 10; i++) {
+                        const jy = Math.sin((i / 10) * Math.PI) * 18;
+                        data.push({ x: x++, y: baseline - jy });
+                    }
+                    addSTSegment(6);
+                    addTWave(11);
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- LONG QT SYNDROME ---
+            // AHA: Prolonged QT interval (QTc >0.44), risk of Torsades
+            else if (rhythmName.includes('long qt')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(12); // Prolonged ST
+                    addTWave(14); // Prolonged T
+                    addBaseline(baseRR - 60);
+                }
+            }
+            
+            // --- BRUGADA SYNDROME ---
+            // AHA: Coved ST elevation in V1-V3, RBBB-like pattern
+            else if (rhythmName.includes('brugada')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    // Coved ST elevation
+                    for (let i = 0; i < 12; i++) {
+                        data.push({ x: x++, y: baseline - 18 + (i * 1.5) });
+                    }
+                    addTWave(10, true); // Inverted T
+                    addBaseline(baseRR - 55);
+                }
+            }
+            
+            // --- PULSELESS ELECTRICAL ACTIVITY (PEA) ---
+            // AHA: Organized electrical activity without pulse (clinical diagnosis)
+            else if (rhythmName.includes('pulseless electrical activity') || rhythmName.includes('(pea)')) {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // --- DEFAULT: NORMAL SINUS RHYTHM ---
+            else {
+                while (x < width - 100) {
+                    addBaseline(8);
+                    addPWave(10);
+                    addPRSegment(6);
+                    addNarrowQRS();
+                    addSTSegment(5);
+                    addTWave(12);
+                    addBaseline(baseRR - 50);
+                }
+            }
+            
+            // Fill remaining with baseline
+            while (data.length < width) {
+                data.push({ x: data.length, y: baseline + (Math.random() * 0.5 - 0.25) });
+            }
+            
+            return data;
+        }
+
+        // Draw animated ECG
+        function drawAnimatedECG(rhythm) {
+            const canvas = document.getElementById('ecgCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Generate ECG data if not already generated
+            if (ecgData.length === 0) {
+                ecgData = generateECGData(rhythm);
+            }
+            
+            function animate() {
+                // Clear canvas - cream/peach ECG paper background
+                ctx.fillStyle = '#FFF5EE'; // Seashell/cream color like real ECG paper
+                ctx.fillRect(0, 0, width, height);
+                
+                // Draw grid - Standard ECG paper at 25mm/sec
+                // Each small box (1mm) = 0.04 sec = 5 pixels
+                // Each large box (5mm) = 0.20 sec = 25 pixels (5 small boxes)
+                const smallGrid = 5;  // 0.04 sec per small box
+                const largeGrid = 25; // 0.20 sec per large box
+                
+                // Draw small grid lines (0.04 sec boxes) - light pink/salmon
+                ctx.strokeStyle = 'rgba(255, 180, 180, 0.6)';
+                ctx.lineWidth = 0.5;
+                for (let x = 0; x <= width; x += smallGrid) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y <= height; y += smallGrid) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Draw large grid lines (0.20 sec boxes) - darker red/salmon
+                ctx.strokeStyle = 'rgba(205, 92, 92, 0.8)';
+                ctx.lineWidth = 1.5;
+                for (let x = 0; x <= width; x += largeGrid) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y <= height; y += largeGrid) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Draw ECG trace - black like traditional ECG
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                
+                const dataLen = ecgData.length;
+                for (let i = 0; i < width; i++) {
+                    const dataIndex = Math.floor((i + ecgOffset) % dataLen);
+                    const point = ecgData[dataIndex];
+                    if (i === 0) {
+                        ctx.moveTo(i, point.y);
+                    } else {
+                        ctx.lineTo(i, point.y);
+                    }
+                }
+                ctx.stroke();
+                
+                // Draw subtle sweep line
+                const sweepX = width - 5;
+                ctx.fillStyle = 'rgba(255, 200, 200, 0.3)';
+                ctx.fillRect(sweepX - 20, 0, 25, height);
+                
+                // Increment offset for scrolling effect
+                ecgOffset += 2;
+                if (ecgOffset >= dataLen) {
+                    ecgOffset = 0;
+                }
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            animate();
+        }
+
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            
+            const liveIndicator = document.getElementById('liveIndicator');
+            const liveText = document.getElementById('liveText');
+            const pauseIcon = document.getElementById('pauseIcon');
+            const pauseBtnText = document.getElementById('pauseBtnText');
+            
+            if (isPaused) {
+                liveIndicator.classList.add('paused');
+                liveText.textContent = 'PAUSED';
+                pauseIcon.textContent = '▶';
+                pauseBtnText.textContent = 'Play';
+                stopAnimation();
+            } else {
+                liveIndicator.classList.remove('paused');
+                liveText.textContent = 'LIVE';
+                pauseIcon.textContent = '⏸';
+                pauseBtnText.textContent = 'Pause';
+                // Resume animation
+                const question = questions[currentQuestion];
+                if (question) {
+                    drawAnimatedECG(question);
+                }
+            }
+        }
+
+        // Check parameter answers
+        function checkParameters() {
+            const question = questions[currentQuestion];
+            let allCorrect = true;
+            
+            // Helper function to check if answer matches
+            function checkMatch(userValue, correctValue) {
+                if (!userValue) return false;
+                const user = userValue.toLowerCase().trim();
+                const correct = correctValue.toLowerCase().trim();
+                
+                // Direct match
+                if (user === correct) return true;
+                
+                // Check if user value is contained in correct or vice versa
+                if (correct.includes(user) || user.includes(correct)) return true;
+                
+                // Extract numbers for comparison
+                const userNums = user.match(/[\d.]+/g);
+                const correctNums = correct.match(/[\d.]+/g);
+                
+                if (userNums && correctNums) {
+                    // Check if any numbers match
+                    for (let uNum of userNums) {
+                        for (let cNum of correctNums) {
+                            if (parseFloat(uNum) === parseFloat(cNum)) return true;
+                        }
+                    }
+                }
+                
+                // Rate range matching
+                if (user.includes('bpm') || correct.includes('bpm')) {
+                    // Extract the rate value from correct answer
+                    const correctMatch = correct.match(/(\d+)(?:-(\d+))?\s*bpm/);
+                    const userMatch = user.match(/(\d+)(?:-(\d+))?\s*bpm/);
+                    
+                    if (correctMatch && userMatch) {
+                        const correctLow = parseInt(correctMatch[1]);
+                        const correctHigh = correctMatch[2] ? parseInt(correctMatch[2]) : correctLow;
+                        const userLow = parseInt(userMatch[1]);
+                        const userHigh = userMatch[2] ? parseInt(userMatch[2]) : userLow;
+                        
+                        // Check if ranges overlap
+                        if (userLow <= correctHigh && userHigh >= correctLow) return true;
+                    }
+                }
+                
+                // Special cases
+                if ((user.includes('none') || user.includes('cannot')) && 
+                    (correct.includes('none') || correct.includes('not measurable') || correct.includes('cannot'))) {
+                    return true;
+                }
+                
+                if ((user.includes('variable') && correct.includes('variable'))) return true;
+                if ((user.includes('progressive') && correct.includes('progressive'))) return true;
+                if ((user.includes('chaotic') && correct.includes('chaotic'))) return true;
+                
+                // Regularity matching
+                if (user.includes('irregularly irregular') && correct.includes('irregularly irregular')) return true;
+                if (user.includes('regularly irregular') && correct.includes('regularly irregular')) return true;
+                if (user === 'regular' && correct === 'regular') return true;
+                if (user === 'irregular' && correct === 'irregular') return true;
+                
+                return false;
+            }
+            
+            // Rate check
+            const rateInput = document.getElementById('paramRate');
+            const rateFeedback = document.getElementById('feedbackRate');
+            
+            if (checkMatch(rateInput.value, question.rate)) {
+                rateInput.classList.add('correct');
+                rateInput.classList.remove('incorrect', 'show-answer');
+                rateFeedback.textContent = '✓ Correct';
+                rateFeedback.className = 'param-feedback correct';
+            } else {
+                rateInput.classList.add('show-answer');
+                rateInput.classList.remove('incorrect', 'correct');
+                rateFeedback.textContent = question.rate;
+                rateFeedback.className = 'param-feedback incorrect';
+                allCorrect = false;
+            }
+            
+            // Regularity check
+            const regInput = document.getElementById('paramRegularity');
+            const regFeedback = document.getElementById('feedbackRegularity');
+            
+            if (checkMatch(regInput.value, question.regularity)) {
+                regInput.classList.add('correct');
+                regInput.classList.remove('incorrect', 'show-answer');
+                regFeedback.textContent = '✓ Correct';
+                regFeedback.className = 'param-feedback correct';
+            } else {
+                regInput.classList.add('show-answer');
+                regInput.classList.remove('incorrect', 'correct');
+                regFeedback.textContent = question.regularity;
+                regFeedback.className = 'param-feedback incorrect';
+                allCorrect = false;
+            }
+            
+            // PRI check
+            const priInput = document.getElementById('paramPRI');
+            const priFeedback = document.getElementById('feedbackPRI');
+            
+            if (checkMatch(priInput.value, question.prInterval)) {
+                priInput.classList.add('correct');
+                priInput.classList.remove('incorrect', 'show-answer');
+                priFeedback.textContent = '✓ Correct';
+                priFeedback.className = 'param-feedback correct';
+            } else {
+                priInput.classList.add('show-answer');
+                priInput.classList.remove('incorrect', 'correct');
+                priFeedback.textContent = question.prInterval;
+                priFeedback.className = 'param-feedback incorrect';
+                allCorrect = false;
+            }
+            
+            // QRS check
+            const qrsInput = document.getElementById('paramQRS');
+            const qrsFeedback = document.getElementById('feedbackQRS');
+            
+            if (checkMatch(qrsInput.value, question.qrsWidth)) {
+                qrsInput.classList.add('correct');
+                qrsInput.classList.remove('incorrect', 'show-answer');
+                qrsFeedback.textContent = '✓ Correct';
+                qrsFeedback.className = 'param-feedback correct';
+            } else {
+                qrsInput.classList.add('show-answer');
+                qrsInput.classList.remove('incorrect', 'correct');
+                qrsFeedback.textContent = question.qrsWidth;
+                qrsFeedback.className = 'param-feedback incorrect';
+                allCorrect = false;
+            }
+            
+            paramsChecked = true;
+            document.getElementById('checkParamsBtn').disabled = true;
+            document.getElementById('checkParamsBtn').textContent = allCorrect ? '✓ All Correct!' : 'Answers Revealed';
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            
+            document.getElementById('quizStudentName').textContent = studentName;
+            document.getElementById('quizCategory').textContent = selectedCategories.length === Object.keys(CATEGORIES).length 
+                ? 'All Categories (Shuffled)' 
+                : `${selectedCategories.length} Categories`;
+            document.getElementById('currentScore').textContent = `${score}/${currentQuestion}`;
+            document.getElementById('progressFill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('totalQ').textContent = questions.length;
+            document.getElementById('ecgCategory').textContent = CATEGORIES[question.category]?.fullName || question.category;
+            
+            // Reset parameter inputs
+            const paramInputs = ['paramRate', 'paramRegularity', 'paramPRI', 'paramQRS'];
+            paramInputs.forEach(id => {
+                const input = document.getElementById(id);
+                input.value = '';
+                input.classList.remove('correct', 'incorrect', 'show-answer');
+            });
+            
+            const feedbackIds = ['feedbackRate', 'feedbackRegularity', 'feedbackPRI', 'feedbackQRS'];
+            feedbackIds.forEach(id => {
+                document.getElementById(id).textContent = '';
+                document.getElementById(id).className = 'param-feedback';
+            });
+            
+            document.getElementById('checkParamsBtn').disabled = false;
+            document.getElementById('checkParamsBtn').textContent = '✓ Check My Measurements';
+            paramsChecked = false;
+            
+            // Reset and start animation
+            ecgData = [];
+            ecgOffset = 0;
+            isPaused = false;
+            
+            // Reset pause button UI
+            const liveIndicator = document.getElementById('liveIndicator');
+            const liveText = document.getElementById('liveText');
+            const pauseIcon = document.getElementById('pauseIcon');
+            const pauseBtnText = document.getElementById('pauseBtnText');
+            liveIndicator.classList.remove('paused');
+            liveText.textContent = 'LIVE';
+            pauseIcon.textContent = '⏸';
+            pauseBtnText.textContent = 'Pause';
+            
+            drawAnimatedECG(question);
+
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <span class="option-letter">${letters[index]}</span>
+                    <span>${option}</span>
+                `;
+                btn.addEventListener('click', () => handleAnswer(option, btn));
+                optionsGrid.appendChild(btn);
+            });
+
+            document.getElementById('feedbackPanel').classList.add('hidden');
+            showFeedback = false;
+        }
+
+        function handleAnswer(selected, btn) {
+            if (showFeedback) return;
+            showFeedback = true;
+
+            const question = questions[currentQuestion];
+            const isCorrect = selected === question.rhythm;
+            
+            // Stop animation when answer is selected
+            stopAnimation();
+            
+            if (isCorrect) {
+                score++;
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.option-btn').forEach(b => {
+                    if (b.querySelector('span:last-child').textContent === question.rhythm) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+            answeredQuestions.push({
+                id: question.id,
+                category: question.category,
+                rhythm: question.rhythm,
+                userAnswer: selected,
+                correct: isCorrect,
+                characteristics: question.characteristics
+            });
+
+            document.getElementById('currentScore').textContent = `${score}/${currentQuestion + 1}`;
+
+            const feedbackPanel = document.getElementById('feedbackPanel');
+            feedbackPanel.classList.remove('hidden', 'correct-panel', 'wrong-panel');
+            feedbackPanel.classList.add(isCorrect ? 'correct-panel' : 'wrong-panel');
+            
+            document.getElementById('feedbackIcon').textContent = isCorrect ? '✓' : '✗';
+            document.getElementById('feedbackTitle').textContent = isCorrect ? 'Correct!' : 'Incorrect';
+            
+            const correctAnswerText = document.getElementById('correctAnswerText');
+            if (!isCorrect) {
+                correctAnswerText.classList.remove('hidden');
+                correctAnswerText.innerHTML = `The correct answer is: <strong>${question.rhythm}</strong>`;
+            } else {
+                correctAnswerText.classList.add('hidden');
+            }
+            
+            document.getElementById('characteristicsText').textContent = question.characteristics;
+            document.getElementById('charPWave').textContent = question.pWave;
+            document.getElementById('charPR').textContent = question.prInterval;
+
+            if (currentQuestion >= questions.length - 1) {
+                document.getElementById('nextBtn').textContent = 'View Results →';
+            }
+        }
+
+        function handleNext() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            stopAnimation();
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            const passed = percentage >= 85;
+
+            document.getElementById('scorePercentage').textContent = `${percentage}%`;
+            document.getElementById('scoreFraction').textContent = `${score} out of ${questions.length} correct`;
+            
+            const scoreCard = document.getElementById('scoreCard');
+            scoreCard.classList.remove('passed', 'failed');
+            scoreCard.classList.add(passed ? 'passed' : 'failed');
+            
+            document.getElementById('passBadge').textContent = passed ? '✓ PASSED' : '✗ NEEDS IMPROVEMENT';
+            document.getElementById('resultsIcon').textContent = passed ? '🏆' : '📚';
+            document.getElementById('resultsTitle').textContent = passed ? 'Congratulations!' : 'Keep Practicing!';
+            document.getElementById('resultsSubtitle').textContent = passed 
+                ? `Great job, ${studentName}! You've demonstrated proficiency in ECG interpretation.`
+                : `${studentName}, review the missed questions and try again to reach the 85% passing score.`;
+
+            const categoryScores = {};
+            answeredQuestions.forEach(q => {
+                if (!categoryScores[q.category]) {
+                    categoryScores[q.category] = { correct: 0, total: 0 };
+                }
+                categoryScores[q.category].total++;
+                if (q.correct) categoryScores[q.category].correct++;
+            });
+
+            const breakdownList = document.getElementById('breakdownList');
+            breakdownList.innerHTML = '';
+
+            Object.entries(categoryScores).forEach(([cat, data]) => {
+                const catPercent = Math.round((data.correct / data.total) * 100);
+                let scoreClass = 'good';
+                if (catPercent < 50) scoreClass = 'poor';
+                else if (catPercent < 70) scoreClass = 'medium';
+
+                const displayName = CATEGORIES[cat]?.fullName || cat;
+
+                breakdownList.innerHTML += `
+                    <div class="breakdown-item">
+                        <div class="breakdown-header">
+                            <span class="breakdown-name">${displayName}</span>
+                            <span class="breakdown-score ${scoreClass}">${data.correct}/${data.total} (${catPercent}%)</span>
+                        </div>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill ${scoreClass}" style="width: ${catPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const actionsGrid = document.getElementById('actionsGrid');
+            if (passed) {
+                actionsGrid.classList.add('two-col');
+                document.getElementById('certificateBtn').classList.remove('hidden');
+            } else {
+                actionsGrid.classList.remove('two-col');
+                document.getElementById('certificateBtn').classList.add('hidden');
+            }
+
+            const missedQuestions = document.getElementById('missedQuestions');
+            const missed = answeredQuestions.filter(q => !q.correct);
+            
+            if (missed.length > 0) {
+                missedQuestions.classList.remove('hidden');
+                const missedList = document.getElementById('missedList');
+                missedList.innerHTML = '';
+
+                missed.forEach(q => {
+                    const displayCat = CATEGORIES[q.category]?.fullName || q.category;
+                    missedList.innerHTML += `
+                        <div class="missed-item">
+                            <div class="missed-header">
+                                <span class="missed-category">${displayCat}</span>
+                                <span class="missed-id">#${q.id}</span>
+                            </div>
+                            <div class="missed-answer">
+                                <span class="label">Your answer: </span>
+                                <span class="value">${q.userAnswer}</span>
+                            </div>
+                            <div class="missed-correct">
+                                <span class="label">Correct answer: </span>
+                                <span class="value">${q.rhythm}</span>
+                            </div>
+                            <div class="missed-explanation">${q.characteristics}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                missedQuestions.classList.add('hidden');
+            }
+        }
+
+        async function generateCertificate() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const width = 297;
+            const height = 210;
+            const percentage = Math.round((score / questions.length) * 100);
+            const date = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            doc.setFillColor(10, 22, 40);
+            doc.rect(0, 0, width, height, 'F');
+
+            doc.setDrawColor(0, 255, 136);
+            doc.setLineWidth(2);
+            doc.rect(10, 10, width - 20, height - 20);
+
+            doc.setLineWidth(0.5);
+            doc.rect(15, 15, width - 30, height - 30);
+
+            doc.setDrawColor(0, 200, 100);
+            doc.setLineWidth(1);
+            doc.line(20, 30, 20, 20);
+            doc.line(20, 20, 30, 20);
+            doc.line(width - 20, 30, width - 20, 20);
+            doc.line(width - 20, 20, width - 30, 20);
+            doc.line(20, height - 30, 20, height - 20);
+            doc.line(20, height - 20, 30, height - 20);
+            doc.line(width - 20, height - 30, width - 20, height - 20);
+            doc.line(width - 20, height - 20, width - 30, height - 20);
+
+            doc.setTextColor(0, 255, 136);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.text('PAUL D. CAMP COMMUNITY COLLEGE', width / 2, 35, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.setTextColor(150, 180, 200);
+            doc.text('Emergency Medical Services Program', width / 2, 43, { align: 'center' });
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(32);
+            doc.setFont('helvetica', 'bold');
+            doc.text('CERTIFICATE OF COMPLETION', width / 2, 65, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(0, 255, 136);
+            doc.setFont('helvetica', 'normal');
+            doc.text('ECG Rhythm Interpretation Proficiency Assessment', width / 2, 78, { align: 'center' });
+
+            doc.setTextColor(200, 200, 200);
+            doc.setFontSize(12);
+            doc.text('This certifies that', width / 2, 95, { align: 'center' });
+
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(28);
+            doc.setFont('helvetica', 'bold');
+            doc.text(studentName.toUpperCase(), width / 2, 112, { align: 'center' });
+
+            const nameWidth = doc.getTextWidth(studentName.toUpperCase());
+            doc.setDrawColor(0, 255, 136);
+            doc.setLineWidth(0.5);
+            doc.line((width - nameWidth) / 2 - 10, 117, (width + nameWidth) / 2 + 10, 117);
+
+            doc.setTextColor(200, 200, 200);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+            doc.text('has successfully completed the comprehensive', width / 2, 130, { align: 'center' });
+            doc.text('ECG Dysrhythmia Interpretation Practice Assessment', width / 2, 138, { align: 'center' });
+
+            doc.setFillColor(0, 50, 30);
+            doc.roundedRect(width / 2 - 45, 145, 90, 25, 3, 3, 'F');
+            doc.setDrawColor(0, 255, 136);
+            doc.roundedRect(width / 2 - 45, 145, 90, 25, 3, 3, 'S');
+
+            doc.setTextColor(0, 255, 136);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`SCORE: ${score}/${questions.length} (${percentage}%)`, width / 2, 161, { align: 'center' });
+
+            doc.setTextColor(180, 180, 180);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Completed on: ${date}`, width / 2, 180, { align: 'center' });
+
+            doc.setFontSize(8);
+            doc.setTextColor(100, 120, 140);
+            const catDisplay = selectedCategories.length === Object.keys(CATEGORIES).length 
+                ? 'All Categories' 
+                : selectedCategories.slice(0, 3).join(', ') + (selectedCategories.length > 3 ? '...' : '');
+            doc.text(`Categories tested: ${catDisplay}`, width / 2, 190, { align: 'center' });
+            doc.text('CoAEMSP Standards Aligned | Paul D. Camp Community College EMS Program', width / 2, 198, { align: 'center' });
+
+            doc.save(`ECG_Certificate_${studentName.replace(/\s+/g, '_')}.pdf`);
+        }
+
+        function startQuiz() {
+            studentName = studentNameInput.value.trim();
+
+            let rhythms = ECG_RHYTHMS.filter(r => selectedCategories.includes(r.category));
+            
+            const shuffled = shuffleArray(rhythms);
+            const selectedRhythms = shuffled.slice(0, questionCount);
+            
+            questions = selectedRhythms.map(rhythm => ({
+                ...rhythm,
+                options: generateOptions(rhythm, ECG_RHYTHMS)
+            }));
+
+            currentQuestion = 0;
+            score = 0;
+            answeredQuestions = [];
+            showFeedback = false;
+
+            welcomeScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            displayQuestion();
+        }
+
+        function restart() {
+            stopAnimation();
+            studentNameInput.value = '';
+            studentName = '';
+            selectedCategories = [];
+            questionCount = 20;
+            currentQuestion = 0;
+            score = 0;
+            questions = [];
+            answeredQuestions = [];
+            showFeedback = false;
+            ecgData = [];
+            ecgOffset = 0;
+            isPaused = false;
+
+            const checkboxes = document.querySelectorAll('.category-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+
+            questionCountInput.value = 20;
+            
+            const quickBtns = document.querySelectorAll('.quick-btn');
+            quickBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.count === '20') btn.classList.add('active');
+            });
+
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+
+            updateSelection();
+            startBtn.disabled = true;
+        }
+
+        // Event listeners
+        studentNameInput.addEventListener('input', validateForm);
+        startBtn.addEventListener('click', startQuiz);
+        selectAllBtn.addEventListener('click', toggleSelectAll);
+        questionCountInput.addEventListener('input', handleCountChange);
+        document.getElementById('nextBtn').addEventListener('click', handleNext);
+        document.getElementById('certificateBtn').addEventListener('click', generateCertificate);
+        document.getElementById('restartBtn').addEventListener('click', restart);
+        document.getElementById('checkParamsBtn').addEventListener('click', checkParameters);
+
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => handleQuickCount(btn.dataset.count));
+        });
+
+        // Initialize
+        initCategories();
+        updateSelection();
+    </script>
+    
+    <footer style="text-align: center; padding: 30px 20px; margin-top: 40px; border-top: 1px solid rgba(41, 128, 185, 0.2); color: #666666; font-size: 14px;">
+        Created by Dr. C
+    </footer>
+</body>
+</html>
