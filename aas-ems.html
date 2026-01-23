@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AAS in EMS | Paul D. Camp Community College</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --camp-green: #1A6B36;
+            --camp-green-dark: #145A2C;
+            --lime: #8CC63F;
+            --lime-dark: #72A832;
+            --aas-orange: #E65100;
+            --aas-orange-dark: #D84315;
+            --aas-orange-light: #FF6D00;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --gradient-orange: linear-gradient(135deg, var(--aas-orange) 0%, var(--aas-orange-light) 100%);
+            --gradient-green: linear-gradient(135deg, var(--camp-green) 0%, #238B47 100%);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-800); background: var(--white); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; font-weight: 700; line-height: 1.2; }
+        a { color: inherit; text-decoration: none; transition: all 0.3s ease; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navigation */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(20px); border-bottom: 3px solid var(--camp-green); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 80px; }
+        .nav-logo { display: flex; align-items: center; gap: 14px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--camp-green); }
+        .nav-logo-icon { width: 50px; height: 50px; background: var(--gradient-green); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; }
+        .nav-logo span { color: var(--lime-dark); }
+        .nav-menu { display: flex; align-items: center; gap: 8px; list-style: none; }
+        .nav-link { display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-weight: 500; color: var(--gray-700); border-radius: var(--radius-md); }
+        .nav-link:hover { color: var(--camp-green); background: var(--gray-50); }
+        .nav-cta { background: var(--gradient-green); color: white !important; padding: 12px 28px; border-radius: var(--radius-xl); font-weight: 600; }
+        .nav-toggle { display: none; flex-direction: column; gap: 5px; padding: 10px; cursor: pointer; background: none; border: none; }
+        .nav-toggle span { width: 26px; height: 3px; background: var(--camp-green); border-radius: 3px; }
+        .nav-item { position: relative; }
+        .nav-link i { font-size: 0.7rem; transition: transform 0.3s ease; }
+        .nav-item:hover .nav-link i { transform: rotate(180deg); }
+        .nav-dropdown { position: absolute; top: 100%; left: 0; min-width: 280px; background: var(--white); border-radius: var(--radius-md); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); border: 1px solid var(--gray-100); padding: 12px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; }
+        .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--radius-sm); transition: all 0.3s ease; }
+        .dropdown-item:hover { background: var(--gray-50); }
+        .dropdown-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; flex-shrink: 0; }
+        .dropdown-text { display: flex; flex-direction: column; }
+        .dropdown-text strong { color: var(--gray-800); font-size: 0.95rem; }
+        .dropdown-text small { color: var(--gray-500); font-size: 0.8rem; }
+
+        /* Hero */
+        .hero { padding: 140px 0 80px; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #ffccbc 100%); position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 80%; height: 150%; background: radial-gradient(circle, rgba(230, 81, 0, 0.1) 0%, transparent 70%); }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: var(--gray-600); }
+        .breadcrumb a:hover { color: var(--aas-orange); }
+        .breadcrumb span { color: var(--gray-400); }
+        .breadcrumb .current { color: var(--aas-orange); font-weight: 500; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 400px; gap: 60px; align-items: center; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 10px; background: white; padding: 10px 20px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 600; color: var(--aas-orange); box-shadow: var(--shadow-md); margin-bottom: 20px; }
+        .hero-badge i { color: var(--lime); }
+        .hero h1 { font-size: clamp(2.5rem, 4vw, 3.5rem); color: var(--gray-900); margin-bottom: 16px; }
+        .hero h1 span { color: var(--aas-orange); }
+        .hero-description { font-size: 1.15rem; color: var(--gray-600); margin-bottom: 32px; max-width: 540px; }
+        .hero-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+        .hero-stat { background: white; padding: 16px 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); text-align: center; min-width: 100px; }
+        .hero-stat-value { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--aas-orange); }
+        .hero-stat-label { font-size: 0.8rem; color: var(--gray-500); margin-top: 2px; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; border-radius: var(--radius-xl); font-weight: 600; font-size: 1rem; cursor: pointer; border: none; transition: all 0.3s ease; }
+        .btn-orange { background: var(--gradient-orange); color: white; box-shadow: var(--shadow-lg); }
+        .btn-orange:hover { transform: translateY(-3px); box-shadow: var(--shadow-xl); }
+        .btn-outline { background: white; color: var(--aas-orange); border: 2px solid var(--aas-orange); }
+        .btn-outline:hover { background: var(--aas-orange); color: white; }
+        .hero-card { background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-xl); position: relative; }
+        .hero-card::before { content: ''; position: absolute; inset: -3px; background: var(--gradient-orange); border-radius: calc(var(--radius-lg) + 3px); z-index: -1; }
+        .hero-card h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .hero-card h3 i { color: var(--aas-orange); }
+        .quick-facts { display: flex; flex-direction: column; gap: 14px; }
+        .quick-fact { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--gray-50); border-radius: var(--radius-md); }
+        .quick-fact i { width: 36px; height: 36px; background: var(--aas-orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .quick-fact-content { flex: 1; }
+        .quick-fact-label { font-size: 0.8rem; color: var(--gray-500); }
+        .quick-fact-value { font-weight: 600; color: var(--gray-800); }
+
+        /* Content Sections */
+        .section { padding: 80px 0; }
+        .section-alt { background: var(--gray-50); }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-label { display: inline-flex; align-items: center; gap: 8px; background: rgba(230, 81, 0, 0.1); color: var(--aas-orange); padding: 8px 18px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .section-title { font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--gray-900); margin-bottom: 12px; }
+        .section-subtitle { font-size: 1.1rem; color: var(--gray-500); max-width: 600px; margin: 0 auto; }
+
+        /* Why AAS Section */
+        .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .benefit-card { background: white; border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-md); transition: all 0.3s ease; border: 1px solid var(--gray-100); }
+        .benefit-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+        .benefit-icon { width: 56px; height: 56px; background: linear-gradient(135deg, rgba(230, 81, 0, 0.1), rgba(230, 81, 0, 0.05)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--aas-orange); margin-bottom: 20px; }
+        .benefit-card h3 { font-size: 1.15rem; color: var(--gray-900); margin-bottom: 10px; }
+        .benefit-card p { color: var(--gray-600); font-size: 0.95rem; }
+
+        /* Program Pathway */
+        .pathway-container { max-width: 900px; margin: 0 auto; }
+        .pathway-step { display: flex; gap: 24px; margin-bottom: 24px; }
+        .pathway-number { width: 60px; height: 60px; background: var(--gradient-orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; flex-shrink: 0; }
+        .pathway-content { flex: 1; background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); border-left: 4px solid var(--aas-orange); }
+        .pathway-content h3 { font-size: 1.15rem; color: var(--gray-900); margin-bottom: 8px; }
+        .pathway-content p { color: var(--gray-600); font-size: 0.95rem; margin-bottom: 12px; }
+        .pathway-credits { display: inline-flex; align-items: center; gap: 6px; background: rgba(230, 81, 0, 0.1); color: var(--aas-orange); padding: 6px 14px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 600; }
+
+        /* Curriculum Grid */
+        .curriculum-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .category-card { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); }
+        .category-header { background: var(--gradient-orange); padding: 20px; color: white; }
+        .category-header h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .category-credits { font-size: 0.9rem; opacity: 0.9; }
+        .category-body { padding: 20px; }
+        .category-list { list-style: none; }
+        .category-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 0.9rem; color: var(--gray-700); }
+        .category-list li:last-child { border-bottom: none; }
+        .category-list li i { color: var(--aas-orange); margin-top: 4px; }
+
+        /* Cost Section */
+        .cost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+        .cost-card { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); }
+        .cost-header { background: var(--gradient-orange); padding: 28px; color: white; text-align: center; }
+        .cost-header h3 { font-size: 1.3rem; margin-bottom: 8px; }
+        .cost-total { font-size: 2.5rem; font-weight: 800; }
+        .cost-total span { font-size: 1rem; font-weight: 400; opacity: 0.9; }
+        .cost-body { padding: 28px; }
+        .cost-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+        .cost-item:last-child { border-bottom: none; }
+        .cost-item-label { color: var(--gray-600); }
+        .cost-item-value { font-weight: 600; color: var(--gray-800); }
+        .financial-info { background: var(--gray-50); border-radius: var(--radius-lg); padding: 28px; }
+        .financial-info h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .financial-info h3 i { color: var(--lime); }
+        .financial-list { list-style: none; }
+        .financial-list li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; }
+        .financial-list li i { color: var(--aas-orange); margin-top: 4px; }
+        .financial-list li span { color: var(--gray-700); }
+        .g3-badge { background: var(--gradient-orange); color: white; padding: 20px; border-radius: var(--radius-md); margin-top: 20px; text-align: center; }
+        .g3-badge h4 { font-size: 1rem; margin-bottom: 6px; }
+        .g3-badge p { font-size: 0.9rem; opacity: 0.95; }
+
+        /* Career Section */
+        .career-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .career-stat { background: white; border-radius: var(--radius-lg); padding: 32px; text-align: center; box-shadow: var(--shadow-md); }
+        .career-stat-icon { width: 60px; height: 60px; background: linear-gradient(135deg, rgba(230, 81, 0, 0.1), rgba(230, 81, 0, 0.05)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--aas-orange); margin: 0 auto 16px; }
+        .career-stat-value { font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 800; color: var(--aas-orange); margin-bottom: 4px; }
+        .career-stat-label { color: var(--gray-500); font-size: 0.9rem; }
+
+        /* Transfer Opportunities */
+        .transfer-box { background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md); margin-top: 40px; }
+        .transfer-box h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .transfer-box h3 i { color: var(--aas-orange); }
+        .transfer-box p { color: var(--gray-600); margin-bottom: 20px; }
+        .transfer-schools { display: flex; flex-wrap: wrap; gap: 12px; }
+        .transfer-tag { background: var(--gray-50); padding: 10px 20px; border-radius: var(--radius-xl); font-size: 0.9rem; color: var(--gray-700); border: 1px solid var(--gray-200); }
+
+        /* CTA */
+        .cta { padding: 80px 0; background: var(--gradient-orange); }
+        .cta-content { text-align: center; }
+        .cta h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); color: white; margin-bottom: 16px; }
+        .cta p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .cta .btn { background: white; color: var(--aas-orange); }
+        .cta .btn:hover { background: var(--gray-100); transform: translateY(-3px); }
+
+        /* Footer */
+        .footer { background: var(--gray-900); color: var(--gray-300); padding: 60px 0 30px; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+        .footer-logo { display: flex; align-items: center; gap: 12px; color: white; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+        .footer-logo-icon { width: 40px; height: 40px; background: var(--gradient-green); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+        .footer-links { display: flex; gap: 24px; list-style: none; }
+        .footer-links a { color: var(--gray-400); font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--lime); }
+        .footer-bottom { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--gray-800); text-align: center; font-size: 0.85rem; color: var(--gray-500); }
+
+        /* Back to Top */
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: var(--aas-orange); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: var(--shadow-lg); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
+        .back-to-top.visible { opacity: 1; visibility: visible; }
+        .back-to-top:hover { background: var(--aas-orange-dark); transform: translateY(-4px); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .hero-card { max-width: 450px; }
+            .cost-grid { grid-template-columns: 1fr; }
+            .career-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-menu { display: none; }
+            .nav-toggle { display: flex; }
+            .hero { padding: 120px 0 60px; }
+            .hero-stats { justify-content: center; }
+            .hero-buttons { justify-content: center; }
+            .section { padding: 60px 0; }
+            .pathway-step { flex-direction: column; align-items: center; text-align: center; }
+            .pathway-content { border-left: none; border-top: 4px solid var(--aas-orange); }
+            .footer-content { flex-direction: column; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .btn { width: 100%; }
+            .hero-stat { min-width: 80px; padding: 12px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
+                CAMP <span>EMS</span>
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <span class="nav-link">Programs <i class="fas fa-chevron-down"></i></span>
+                    <div class="nav-dropdown">
+                        <a href="emt.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #1565C0;"><i class="fas fa-heartbeat"></i></div>
+                            <div class="dropdown-text"><strong>EMT Basic</strong><small>Emergency Medical Technician</small></div>
+                        </a>
+                        <a href="aemt.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #7B1FA2;"><i class="fas fa-user-md"></i></div>
+                            <div class="dropdown-text"><strong>AEMT</strong><small>Advanced EMT</small></div>
+                        </a>
+                        <a href="paramedic.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #00796B;"><i class="fas fa-ambulance"></i></div>
+                            <div class="dropdown-text"><strong>Paramedic</strong><small>National Registry Paramedic</small></div>
+                        </a>
+                        <a href="aas-ems.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #E65100;"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="dropdown-text"><strong>AAS Degree</strong><small>Associate of Applied Science</small></div>
+                        </a>
+                        <a href="cpl.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #1A6B36;"><i class="fas fa-award"></i></div>
+                            <div class="dropdown-text"><strong>Credit for Prior Learning</strong><small>Get credit for certifications</small></div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="https://www.pdc.edu/attend/advising-and-orientation/" class="nav-link" target="_blank">Admissions</a></li>
+                <li class="nav-item"><a href="https://www.pdc.edu/attend/paying-for-college/" class="nav-link" target="_blank">Financial Aid</a></li>
+                <li class="nav-item"><a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="nav-link" target="_blank">Contact</a></li>
+                <li class="nav-item"><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank" class="nav-cta">Apply Now</a></li>
+            </ul>
+            <button class="nav-toggle"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span class="current">AAS in EMS</span>
+            </div>
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge"><i class="fas fa-graduation-cap"></i> Associate Degree</div>
+                    <h1>AAS in <span>Emergency Medical Services</span></h1>
+                    <p class="hero-description">Earn a college degree while becoming a certified paramedic. Our Associate of Applied Science degree combines paramedic certification with general education for career advancement and transfer opportunities.</p>
+                    <div class="hero-stats">
+                        <div class="hero-stat"><div class="hero-stat-value">65</div><div class="hero-stat-label">Credits</div></div>
+                        <div class="hero-stat"><div class="hero-stat-value">2</div><div class="hero-stat-label">Years</div></div>
+                        <div class="hero-stat"><div class="hero-stat-value">$12K</div><div class="hero-stat-label">Total Cost</div></div>
+                        <div class="hero-stat"><div class="hero-stat-value">G3</div><div class="hero-stat-label">Eligible</div></div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank" class="btn btn-orange"><i class="fas fa-rocket"></i> Apply Now</a>
+                        <a href="#curriculum" class="btn btn-outline"><i class="fas fa-book"></i> View Curriculum</a>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <h3><i class="fas fa-clipboard-list"></i> Quick Facts</h3>
+                    <div class="quick-facts">
+                        <div class="quick-fact">
+                            <i class="fas fa-calendar"></i>
+                            <div class="quick-fact-content"><div class="quick-fact-label">Duration</div><div class="quick-fact-value">4-5 Semesters</div></div>
+                        </div>
+                        <div class="quick-fact">
+                            <i class="fas fa-certificate"></i>
+                            <div class="quick-fact-content"><div class="quick-fact-label">Credential</div><div class="quick-fact-value">AAS Degree + Paramedic Cert</div></div>
+                        </div>
+                        <div class="quick-fact">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="quick-fact-content"><div class="quick-fact-label">Location</div><div class="quick-fact-value">Suffolk Campus</div></div>
+                        </div>
+                        <div class="quick-fact">
+                            <i class="fas fa-user-graduate"></i>
+                            <div class="quick-fact-content"><div class="quick-fact-label">Prerequisite</div><div class="quick-fact-value">High School Diploma/GED</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why AAS Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><i class="fas fa-star"></i> Why Choose AAS?</div>
+                <h2 class="section-title">Benefits of a Degree</h2>
+                <p class="section-subtitle">Go beyond certification with a college degree that opens more doors.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <h3>Higher Earning Potential</h3>
+                    <p>Degree holders typically earn 15-20% more than those with certification only. Many departments offer degree-based pay incentives.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Career Advancement</h3>
+                    <p>Supervisory positions, instructor roles, and management tracks often require or prefer candidates with college degrees.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-university"></i></div>
+                    <h3>Transfer Opportunities</h3>
+                    <p>Credits transfer to four-year universities for bachelor's degrees in emergency management, healthcare administration, or nursing.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-brain"></i></div>
+                    <h3>Broader Knowledge Base</h3>
+                    <p>General education courses in communication, psychology, and anatomy provide a stronger foundation for patient care.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-piggy-bank"></i></div>
+                    <h3>G3 Tuition-Free</h3>
+                    <p>Virginia's G3 program covers tuition and fees for eligible students, making your degree essentially free.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-door-open"></i></div>
+                    <h3>Job Market Advantage</h3>
+                    <p>Stand out in competitive hiring processes. Many fire departments and hospitals prefer degree-holding paramedics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Pathway Section -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><i class="fas fa-route"></i> Program Pathway</div>
+                <h2 class="section-title">Your Journey to the AAS</h2>
+                <p class="section-subtitle">Follow a structured path from EMT to degreed paramedic.</p>
+            </div>
+            <div class="pathway-container">
+                <div class="pathway-step">
+                    <div class="pathway-number">1</div>
+                    <div class="pathway-content">
+                        <h3>EMT Basic Certification</h3>
+                        <p>Begin with foundational emergency care skills and earn your EMT certification.</p>
+                        <span class="pathway-credits"><i class="fas fa-book"></i> 9 Credits</span>
+                    </div>
+                </div>
+                <div class="pathway-step">
+                    <div class="pathway-number">2</div>
+                    <div class="pathway-content">
+                        <h3>General Education & AEMT</h3>
+                        <p>Complete courses in anatomy, psychology, composition, and advance to AEMT certification.</p>
+                        <span class="pathway-credits"><i class="fas fa-book"></i> 28 Credits</span>
+                    </div>
+                </div>
+                <div class="pathway-step">
+                    <div class="pathway-number">3</div>
+                    <div class="pathway-content">
+                        <h3>Paramedic Program</h3>
+                        <p>Complete comprehensive paramedic training with classroom, lab, and clinical experience.</p>
+                        <span class="pathway-credits"><i class="fas fa-book"></i> 28 Credits</span>
+                    </div>
+                </div>
+                <div class="pathway-step">
+                    <div class="pathway-number">4</div>
+                    <div class="pathway-content">
+                        <h3>Graduate with AAS + Paramedic Certification</h3>
+                        <p>Receive your associate degree and national paramedic certification simultaneously.</p>
+                        <span class="pathway-credits"><i class="fas fa-graduation-cap"></i> 65 Total Credits</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <section class="section" id="curriculum">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><i class="fas fa-book-open"></i> Curriculum</div>
+                <h2 class="section-title">Degree Requirements</h2>
+                <p class="section-subtitle">Comprehensive coursework for your AAS degree.</p>
+            </div>
+            <div class="curriculum-categories">
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>General Education</h3>
+                        <div class="category-credits">17 Credits</div>
+                    </div>
+                    <div class="category-body">
+                        <ul class="category-list">
+                            <li><i class="fas fa-check"></i> SDV 100 - College Success Skills (1)</li>
+                            <li><i class="fas fa-check"></i> BIO 145 - Human Anatomy and Physiology (4)</li>
+                            <li><i class="fas fa-check"></i> EMG 111 - College Composition I (3)</li>
+                            <li><i class="fas fa-check"></i> PSY 230 - Developmental Psychology (3)</li>
+                            <li><i class="fas fa-check"></i> General Educational Elective (3)</li>
+                            <li><i class="fas fa-check"></i> Humanities Elective (3)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>EMT Core</h3>
+                        <div class="category-credits">9 Credits</div>
+                    </div>
+                    <div class="category-body">
+                        <ul class="category-list">
+                            <li><i class="fas fa-check"></i> HLT 105 - Cardiopulmonary Resuscitation (1)</li>
+                            <li><i class="fas fa-check"></i> EMS 111 - Emergency Medical Technician (7)</li>
+                            <li><i class="fas fa-check"></i> EMS 120 - Emergency Medical Technician - Clinical (1)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>AEMT Core</h3>
+                        <div class="category-credits">11 Credits</div>
+                    </div>
+                    <div class="category-body">
+                        <ul class="category-list">
+                            <li><i class="fas fa-check"></i> EMS 123 - EMS Clinical Preparation (1)</li>
+                            <li><i class="fas fa-check"></i> EMS 170 - ALS Internship (1)</li>
+                            <li><i class="fas fa-check"></i> EMS 180-186 - Advanced EMS Courses (9)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-header">
+                        <h3>Paramedic Core</h3>
+                        <div class="category-credits">28 Credits</div>
+                    </div>
+                    <div class="category-body">
+                        <ul class="category-list">
+                            <li><i class="fas fa-check"></i> EMS 221-224 - Cardiovascular & Patient Care I (8)</li>
+                            <li><i class="fas fa-check"></i> EMS 225-226 - Patient Care II (7)</li>
+                            <li><i class="fas fa-check"></i> EMS 241, 246, 249 - Internships (6)</li>
+                            <li><i class="fas fa-check"></i> EMS 163, 164, 165, 169 - Life Support Certs (4)</li>
+                            <li><i class="fas fa-check"></i> EMS 210, 212, 216 - Operations & Review (3)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cost Section -->
+    <section class="section section-alt" id="cost">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><i class="fas fa-dollar-sign"></i> Investment</div>
+                <h2 class="section-title">Program Costs</h2>
+                <p class="section-subtitle">Affordable community college education with extensive financial aid.</p>
+            </div>
+            <div class="cost-grid">
+                <div class="cost-card">
+                    <div class="cost-header">
+                        <h3>Total Program Cost</h3>
+                        <div class="cost-total">~$12,000 <span>In-State</span></div>
+                    </div>
+                    <div class="cost-body">
+                        <div class="cost-item"><span class="cost-item-label">Tuition (65 credits × $171)</span><span class="cost-item-value">$11,115</span></div>
+                        <div class="cost-item"><span class="cost-item-label">Student Fees (Est.)</span><span class="cost-item-value">~$1,500</span></div>
+                        <div class="cost-item"><span class="cost-item-label">Books & Materials</span><span class="cost-item-value">~$1,200</span></div>
+                        <div class="cost-item"><span class="cost-item-label">Uniforms & Equipment</span><span class="cost-item-value">~$400</span></div>
+                    </div>
+                </div>
+                <div class="financial-info">
+                    <h3><i class="fas fa-hand-holding-usd"></i> Financial Assistance</h3>
+                    <ul class="financial-list">
+                        <li><i class="fas fa-check-circle"></i><span><strong>Federal Aid:</strong> Pell Grants, Direct Loans, Work-Study</span></li>
+                        <li><i class="fas fa-check-circle"></i><span><strong>Virginia G3:</strong> Tuition-free for qualifying students</span></li>
+                        <li><i class="fas fa-check-circle"></i><span><strong>VA Benefits:</strong> GI Bill, VR&E, state benefits</span></li>
+                        <li><i class="fas fa-check-circle"></i><span><strong>WIOA:</strong> Workforce development funding</span></li>
+                        <li><i class="fas fa-check-circle"></i><span><strong>Scholarships:</strong> EMS and VCCS scholarships</span></li>
+                    </ul>
+                    <a href="https://www.pdc.edu/attend/paying-for-college/" class="g3-badge" target="_blank" style="text-decoration: none; display: block;">
+                        <h4><i class="fas fa-star"></i> Virginia G3 Program</h4>
+                        <p>Qualifying Virginia residents can attend tuition-free! EMS is a designated high-demand field.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label"><i class="fas fa-briefcase"></i> Career Outlook</div>
+                <h2 class="section-title">Degree Advantage</h2>
+                <p class="section-subtitle">A degree positions you for long-term career success.</p>
+            </div>
+            <div class="career-grid">
+                <div class="career-stat">
+                    <div class="career-stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="career-stat-value">$60,000+</div>
+                    <div class="career-stat-label">Avg Salary (with degree)</div>
+                </div>
+                <div class="career-stat">
+                    <div class="career-stat-icon"><i class="fas fa-user-tie"></i></div>
+                    <div class="career-stat-value">85%</div>
+                    <div class="career-stat-label">Supervisors Have Degrees</div>
+                </div>
+                <div class="career-stat">
+                    <div class="career-stat-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="career-stat-value">100%</div>
+                    <div class="career-stat-label">Transferable Credits</div>
+                </div>
+            </div>
+
+            <div class="transfer-box">
+                <h3><i class="fas fa-university"></i> Transfer Opportunities</h3>
+                <p>Your AAS credits can transfer to these universities for bachelor's degree completion:</p>
+                <div class="transfer-schools">
+                    <span class="transfer-tag">Old Dominion University</span>
+                    <span class="transfer-tag">Virginia Commonwealth University</span>
+                    <span class="transfer-tag">George Mason University</span>
+                    <span class="transfer-tag">Eastern Virginia Career College</span>
+                    <span class="transfer-tag">Norfolk State University</span>
+                    <span class="transfer-tag">Liberty University</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Earn Your Degree?</h2>
+                <p>Combine paramedic certification with a college degree. Apply today.</p>
+                <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank" class="btn"><i class="fas fa-arrow-right"></i> Start Your Application</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="footer-logo-icon"><i class="fas fa-heartbeat" style="color: white;"></i></div>
+                    CAMP EMS
+                </div>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="emt.html">EMT</a></li>
+                    <li><a href="aemt.html">AEMT</a></li>
+                    <li><a href="paramedic.html">Paramedic</a></li>
+                    <li><a href="aas-ems.html">AAS</a></li>
+                    <li><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank">Apply</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Paul D. Camp Community College. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to top visibility
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            const menu = document.querySelector('.nav-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            menu.style.flexDirection = 'column';
+            menu.style.position = 'absolute';
+            menu.style.top = '80px';
+            menu.style.left = '0';
+            menu.style.right = '0';
+            menu.style.background = 'white';
+            menu.style.padding = '20px';
+            menu.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+        });
+    </script>
+</body>
+</html>

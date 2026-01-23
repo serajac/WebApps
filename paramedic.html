@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramedic Program | Paul D. Camp Community College</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --camp-green: #1A6B36;
+            --camp-green-dark: #145A2C;
+            --camp-green-light: #238B47;
+            --lime: #8CC63F;
+            --lime-light: #A8D86B;
+            --lime-dark: #72A832;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --emt-blue: #1565C0;
+            --aemt-purple: #7B1FA2;
+            --paramedic-green: #00796B;
+            --paramedic-green-light: #009688;
+            --paramedic-green-dark: #00695C;
+            --aas-orange: #E65100;
+            --gold: #FFD700;
+            --gradient-teal: linear-gradient(135deg, var(--paramedic-green) 0%, var(--paramedic-green-light) 100%);
+            --gradient-green: linear-gradient(135deg, var(--camp-green) 0%, var(--camp-green-light) 100%);
+            --gradient-gold: linear-gradient(135deg, var(--gold) 0%, #FFC107 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-800); background: var(--white); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; font-weight: 700; line-height: 1.2; }
+        a { color: inherit; text-decoration: none; transition: all 0.3s ease; }
+        a:hover { color: var(--paramedic-green); }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navigation */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(20px); border-bottom: 3px solid var(--paramedic-green); transition: all 0.3s ease; }
+        .nav.scrolled { box-shadow: var(--shadow-lg); }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 80px; }
+        .nav-logo { display: flex; align-items: center; gap: 14px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--camp-green); }
+        .nav-logo-icon { width: 50px; height: 50px; background: var(--gradient-green); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; box-shadow: var(--shadow-md); }
+        .nav-logo span { color: var(--lime-dark); }
+        .nav-menu { display: flex; align-items: center; gap: 8px; list-style: none; }
+        .nav-item { position: relative; }
+        .nav-link { display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-weight: 500; color: var(--gray-700); border-radius: var(--radius-md); transition: all 0.3s ease; cursor: pointer; }
+        .nav-link:hover { color: var(--paramedic-green); background: var(--gray-50); }
+        .nav-link i { font-size: 0.7rem; transition: transform 0.3s ease; }
+        .nav-item:hover .nav-link i { transform: rotate(180deg); }
+        .nav-dropdown { position: absolute; top: 100%; left: 0; min-width: 280px; background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-xl); border: 1px solid var(--gray-100); padding: 12px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; }
+        .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--radius-sm); transition: all 0.3s ease; }
+        .dropdown-item:hover { background: var(--gray-50); }
+        .dropdown-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; flex-shrink: 0; }
+        .dropdown-icon.emt { background: var(--emt-blue); }
+        .dropdown-icon.aemt { background: var(--aemt-purple); }
+        .dropdown-icon.paramedic { background: var(--paramedic-green); }
+        .dropdown-icon.aas { background: var(--aas-orange); }
+        .dropdown-text { display: flex; flex-direction: column; }
+        .dropdown-text strong { color: var(--gray-800); font-size: 0.95rem; }
+        .dropdown-text small { color: var(--gray-500); font-size: 0.8rem; }
+        .dropdown-content h4 { font-size: 0.95rem; font-weight: 600; color: var(--gray-800); margin-bottom: 2px; }
+        .dropdown-content p { font-size: 0.8rem; color: var(--gray-500); }
+        .nav-cta { background: var(--gradient-teal); color: white !important; padding: 12px 28px; border-radius: var(--radius-xl); font-weight: 600; box-shadow: var(--shadow-md); }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); color: white !important; }
+        .nav-toggle { display: none; flex-direction: column; gap: 5px; padding: 10px; cursor: pointer; background: none; border: none; }
+        .nav-toggle span { width: 26px; height: 3px; background: var(--paramedic-green); border-radius: 3px; }
+
+        /* LOR Banner */
+        .lor-banner { background: var(--gradient-gold); padding: 16px 0; position: relative; overflow: hidden; }
+        .lor-banner::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
+        .lor-content { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+        .lor-content i { font-size: 1.8rem; color: var(--gray-900); }
+        .lor-text { text-align: center; }
+        .lor-text h3 { font-size: 1.1rem; color: var(--gray-900); margin-bottom: 2px; }
+        .lor-text p { font-size: 0.85rem; color: var(--gray-700); }
+
+        /* Breadcrumb */
+        .breadcrumb { padding: 100px 0 20px; background: var(--gray-50); }
+        .breadcrumb-nav { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .breadcrumb-nav a { color: var(--gray-500); }
+        .breadcrumb-nav a:hover { color: var(--paramedic-green); }
+        .breadcrumb-nav span { color: var(--gray-400); }
+        .breadcrumb-nav .current { color: var(--paramedic-green); font-weight: 500; }
+
+        /* Hero */
+        .hero { padding: 40px 0 80px; background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 100%); }
+        .hero-grid { display: grid; grid-template-columns: 1fr 380px; gap: 60px; align-items: start; }
+        .hero-content h1 { font-size: clamp(2.5rem, 4vw, 3.5rem); color: var(--gray-900); margin-bottom: 16px; }
+        .hero-content h1 span { color: var(--paramedic-green); }
+        .hero-content .subtitle { font-size: 1.25rem; color: var(--gray-600); margin-bottom: 24px; }
+        .hero-content .description { color: var(--gray-700); margin-bottom: 32px; }
+        .hero-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-xl); font-size: 0.9rem; font-weight: 600; }
+        .badge-teal { background: rgba(0, 121, 107, 0.1); color: var(--paramedic-green); }
+        .badge-green { background: rgba(26, 107, 54, 0.1); color: var(--camp-green); }
+        .badge-gold { background: var(--gradient-gold); color: var(--gray-900); font-weight: 700; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 2px 10px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 2px 20px rgba(255, 215, 0, 0.6); } }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; border-radius: var(--radius-xl); font-weight: 600; font-size: 1rem; transition: all 0.3s ease; cursor: pointer; border: none; }
+        .btn-primary { background: var(--gradient-teal); color: white; box-shadow: var(--shadow-md); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); color: white; }
+        .btn-secondary { background: white; color: var(--paramedic-green); border: 2px solid var(--paramedic-green); }
+        .btn-secondary:hover { background: var(--paramedic-green); color: white; }
+
+        /* Quick Facts Card */
+        .quick-facts { background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-xl); border-top: 4px solid var(--paramedic-green); }
+        .quick-facts h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .quick-facts h3 i { color: var(--paramedic-green); }
+        .fact-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+        .fact-item:last-child { border-bottom: none; }
+        .fact-label { color: var(--gray-600); font-size: 0.9rem; }
+        .fact-value { font-weight: 700; color: var(--gray-900); font-size: 1rem; }
+        .fact-value.highlight { color: var(--paramedic-green); }
+        .lor-badge-card { display: flex; align-items: center; gap: 10px; background: var(--gradient-gold); padding: 14px 16px; border-radius: var(--radius-md); margin-top: 20px; }
+        .lor-badge-card i { color: var(--gray-900); font-size: 1.4rem; }
+        .lor-badge-card div { flex: 1; }
+        .lor-badge-card strong { display: block; font-size: 0.9rem; color: var(--gray-900); }
+        .lor-badge-card span { font-size: 0.8rem; color: var(--gray-700); }
+        .g3-badge { display: flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--lime) 0%, var(--lime-light) 100%); padding: 12px 16px; border-radius: var(--radius-md); margin-top: 12px; }
+        .g3-badge i { color: var(--camp-green-dark); font-size: 1.2rem; }
+        .g3-badge span { font-weight: 600; color: var(--camp-green-dark); font-size: 0.9rem; }
+
+        /* Main Content */
+        .main-content { padding: 80px 0; }
+        .content-grid { display: grid; grid-template-columns: 1fr 380px; gap: 60px; }
+
+        /* Section Styles */
+        .section { margin-bottom: 60px; }
+        .section:last-child { margin-bottom: 0; }
+        .section-title { font-size: 1.8rem; color: var(--gray-900); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title i { color: var(--paramedic-green); }
+
+        /* Program Timeline */
+        .timeline { position: relative; padding-left: 40px; }
+        .timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 3px; background: var(--gray-200); }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-dot { position: absolute; left: -40px; top: 0; width: 28px; height: 28px; background: var(--gradient-teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow-md); }
+        .timeline-content { background: white; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); overflow: hidden; }
+        .timeline-header { background: var(--gradient-teal); color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .timeline-header h4 { font-size: 1.2rem; }
+        .timeline-header .credits { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: var(--radius-xl); font-size: 0.9rem; }
+        .timeline-body { padding: 24px; }
+        .course-grid { display: grid; gap: 16px; }
+        .course-item { display: flex; gap: 16px; padding: 16px; background: var(--gray-50); border-radius: var(--radius-md); border-left: 3px solid var(--paramedic-green); }
+        .course-code { font-weight: 700; color: var(--paramedic-green); min-width: 80px; }
+        .course-info h5 { font-size: 0.95rem; color: var(--gray-900); margin-bottom: 4px; }
+        .course-info p { font-size: 0.85rem; color: var(--gray-500); }
+
+        /* Skills Grid */
+        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .skill-card { background: var(--gray-50); border-radius: var(--radius-md); padding: 24px; border-left: 4px solid var(--paramedic-green); transition: all 0.3s ease; }
+        .skill-card:hover { transform: translateX(5px); box-shadow: var(--shadow-md); }
+        .skill-card h4 { font-size: 1.1rem; color: var(--gray-900); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .skill-card h4 i { color: var(--paramedic-green); }
+        .skill-card p { color: var(--gray-600); font-size: 0.95rem; }
+
+        /* Career Section */
+        .career-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .career-card { background: white; border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--gray-200); text-align: center; transition: all 0.3s ease; }
+        .career-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--paramedic-green); }
+        .career-card i { font-size: 2.5rem; color: var(--paramedic-green); margin-bottom: 16px; }
+        .career-card h4 { font-size: 1.1rem; color: var(--gray-900); margin-bottom: 8px; }
+        .career-card p { color: var(--gray-600); font-size: 0.95rem; }
+        .career-card .salary { font-size: 1.5rem; font-weight: 800; color: var(--paramedic-green); margin-top: 12px; }
+
+        /* Employers List */
+        .employers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .employer-item { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--gray-50); border-radius: var(--radius-md); transition: all 0.3s ease; }
+        .employer-item:hover { background: white; box-shadow: var(--shadow-md); }
+        .employer-item i { font-size: 1.2rem; color: var(--paramedic-green); }
+        .employer-item span { font-weight: 500; color: var(--gray-700); }
+
+        /* Prerequisites */
+        .prereq-card { background: linear-gradient(135deg, rgba(0, 121, 107, 0.05) 0%, rgba(0, 121, 107, 0.1) 100%); border-radius: var(--radius-lg); padding: 28px; border: 1px solid rgba(0, 121, 107, 0.2); }
+        .prereq-card h4 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .prereq-card h4 i { color: var(--paramedic-green); }
+        .prereq-list { list-style: none; }
+        .prereq-list li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(0, 121, 107, 0.1); }
+        .prereq-list li:last-child { border-bottom: none; }
+        .prereq-list i { color: var(--paramedic-green); margin-top: 4px; }
+        .prereq-list span { color: var(--gray-700); }
+
+        /* Cost Breakdown */
+        .cost-table { width: 100%; border-collapse: collapse; }
+        .cost-table th, .cost-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        .cost-table th { background: var(--gray-50); font-weight: 600; color: var(--gray-700); }
+        .cost-table tr:last-child td { border-bottom: none; }
+
+        /* Sidebar */
+        .sidebar { position: sticky; top: 100px; }
+        .sidebar-card { background: white; border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-lg); margin-bottom: 24px; border: 1px solid var(--gray-200); }
+        .sidebar-card h3 { font-size: 1.1rem; color: var(--gray-900); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .sidebar-card h3 i { color: var(--paramedic-green); }
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: 12px; transition: all 0.3s ease; }
+        .sidebar-link:last-child { margin-bottom: 0; }
+        .sidebar-link:hover { background: var(--paramedic-green); color: white; }
+        .sidebar-link i { font-size: 1.1rem; }
+
+        /* Next Step CTA */
+        .next-step { background: var(--gradient-teal); border-radius: var(--radius-lg); padding: 32px; text-align: center; color: white; }
+        .next-step h3 { font-size: 1.3rem; margin-bottom: 12px; }
+        .next-step p { margin-bottom: 20px; opacity: 0.9; }
+        .next-step .btn { background: white; color: var(--paramedic-green); }
+        .next-step .btn:hover { background: var(--gray-100); color: var(--paramedic-green); }
+
+        /* CTA Section */
+        .cta { padding: 100px 0; background: var(--gradient-teal); position: relative; overflow: hidden; }
+        .cta::before { content: ''; position: absolute; top: -50%; right: -20%; width: 80%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .cta-content { text-align: center; position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+        .cta-content h2 { font-size: clamp(2rem, 4vw, 2.5rem); color: white; margin-bottom: 20px; }
+        .cta-content p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 32px; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .cta .btn-primary { background: white; color: var(--paramedic-green); }
+        .cta .btn-primary:hover { background: var(--gray-100); color: var(--paramedic-green); }
+        .cta .btn-secondary { background: transparent; color: white; border-color: white; }
+        .cta .btn-secondary:hover { background: white; color: var(--paramedic-green); }
+
+        /* Footer */
+        .footer { background: var(--gray-900); color: white; padding: 60px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 48px; margin-bottom: 48px; }
+        .footer-brand h3 { font-size: 1.5rem; margin-bottom: 16px; }
+        .footer-brand p { color: var(--gray-400); margin-bottom: 20px; }
+        .social-links { display: flex; gap: 12px; }
+        .social-link { width: 40px; height: 40px; background: var(--gray-800); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s ease; }
+        .social-link:hover { background: var(--paramedic-green); transform: translateY(-3px); color: white; }
+        .footer-column h4 { font-size: 1rem; margin-bottom: 20px; color: white; }
+        .footer-column ul { list-style: none; }
+        .footer-column li { margin-bottom: 12px; }
+        .footer-column a { color: var(--gray-400); }
+        .footer-column a:hover { color: var(--lime); }
+        .footer-bottom { padding-top: 30px; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-500); }
+        .footer-bottom a { color: var(--lime); }
+
+        /* Back to Top */
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: var(--paramedic-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; border: none; box-shadow: var(--shadow-lg); }
+        .back-to-top.visible { opacity: 1; visibility: visible; }
+        .back-to-top:hover { background: var(--paramedic-green-dark); transform: translateY(-3px); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-grid, .content-grid { grid-template-columns: 1fr; gap: 40px; }
+            .sidebar { position: static; }
+            .skills-grid, .career-grid { grid-template-columns: 1fr; }
+            .employers-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-menu { position: fixed; top: 80px; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; gap: 0; box-shadow: var(--shadow-lg); transform: translateY(-100%); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+            .nav-menu.active { transform: translateY(0); opacity: 1; visibility: visible; }
+            .nav-toggle { display: flex; }
+            .nav-item { width: 100%; }
+            .nav-link { width: 100%; padding: 16px; }
+            .nav-dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; padding: 0 0 0 20px; display: none; }
+            .nav-item.active .nav-dropdown { display: block; }
+            .employers-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .social-links { justify-content: center; }
+            .hero-buttons, .cta-buttons { flex-direction: column; }
+            .btn { justify-content: center; }
+            .lor-content { flex-direction: column; text-align: center; }
+            .timeline { padding-left: 30px; }
+            .timeline-dot { left: -30px; width: 24px; height: 24px; font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
+                CAMP <span>EMS</span>
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <span class="nav-link">Programs <i class="fas fa-chevron-down"></i></span>
+                    <div class="nav-dropdown">
+                        <a href="emt.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #1565C0;"><i class="fas fa-heartbeat"></i></div>
+                            <div class="dropdown-text"><strong>EMT Basic</strong><small>Emergency Medical Technician</small></div>
+                        </a>
+                        <a href="aemt.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #7B1FA2;"><i class="fas fa-user-md"></i></div>
+                            <div class="dropdown-text"><strong>AEMT</strong><small>Advanced EMT</small></div>
+                        </a>
+                        <a href="paramedic.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #00796B;"><i class="fas fa-ambulance"></i></div>
+                            <div class="dropdown-text"><strong>Paramedic</strong><small>National Registry Paramedic</small></div>
+                        </a>
+                        <a href="aas-ems.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #E65100;"><i class="fas fa-graduation-cap"></i></div>
+                            <div class="dropdown-text"><strong>AAS Degree</strong><small>Associate of Applied Science</small></div>
+                        </a>
+                        <a href="cpl.html" class="dropdown-item">
+                            <div class="dropdown-icon" style="background: #1A6B36;"><i class="fas fa-award"></i></div>
+                            <div class="dropdown-text"><strong>Credit for Prior Learning</strong><small>Get credit for certifications</small></div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="https://www.pdc.edu/attend/advising-and-orientation/" class="nav-link" target="_blank">Admissions</a></li>
+                <li class="nav-item"><a href="https://www.pdc.edu/attend/paying-for-college/" class="nav-link" target="_blank">Financial Aid</a></li>
+                <li class="nav-item"><a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="nav-link" target="_blank">Contact</a></li>
+                <li class="nav-item"><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="nav-cta" target="_blank">Apply Now</a></li>
+            </ul>
+            <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <section class="lor-banner">
+        <div class="container">
+            <div class="lor-content">
+                <i class="fas fa-certificate"></i>
+                <div class="lor-text">
+                    <h3>Letter of Review from CoAEMSP</h3>
+                    <p>Virginia's ONLY Paramedic program with Letter of Review accreditation status</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="breadcrumb">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span class="current">Paramedic</span>
+            </nav>
+        </div>
+    </section>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1><span>Paramedic</span> Program</h1>
+                    <p class="subtitle">Become a Leader in Pre-Hospital Emergency Care</p>
+                    <p class="description">The Paramedic program prepares you for the highest level of pre-hospital emergency care. Master advanced cardiac life support, pharmacology, and critical care interventions across five comprehensive semesters. CAMP is Virginia's only Paramedic program with a Letter of Review from CoAEMSP, ensuring the highest educational standards.</p>
+                    <div class="hero-badges">
+                        <span class="badge badge-gold"><i class="fas fa-award"></i> Letter of Review - CoAEMSP</span>
+                        <span class="badge badge-teal"><i class="fas fa-clock"></i> 5 Semesters</span>
+                        <span class="badge badge-teal"><i class="fas fa-book"></i> 33 Credits (Paramedic)</span>
+                        <span class="badge badge-green"><i class="fas fa-check-circle"></i> G3 Eligible</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="btn btn-primary" target="_blank"><i class="fas fa-rocket"></i> Apply Now</a>
+                        <a href="https://www.pdc.edu/attend/paying-for-college/" class="btn btn-secondary" target="_blank"><i class="fas fa-dollar-sign"></i> Financial Aid</a>
+                    </div>
+                </div>
+                <div class="quick-facts">
+                    <h3><i class="fas fa-clipboard-list"></i> Quick Facts</h3>
+                    <div class="fact-item">
+                        <span class="fact-label">Paramedic Courses</span>
+                        <span class="fact-value">EMS 221-249</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Paramedic Credits</span>
+                        <span class="fact-value">33</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Total Program</span>
+                        <span class="fact-value">5 Semesters</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">In-State Tuition</span>
+                        <span class="fact-value highlight">$5,674.35</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Out-of-State Tuition</span>
+                        <span class="fact-value">$12,838.65</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Hampton Roads Salary</span>
+                        <span class="fact-value highlight">$45,266/yr</span>
+                    </div>
+                    <div class="lor-badge-card">
+                        <i class="fas fa-certificate"></i>
+                        <div>
+                            <strong>Letter of Review</strong>
+                            <span>Only LOR Paramedic Program in Virginia</span>
+                        </div>
+                    </div>
+                    <a href="https://www.pdc.edu/attend/paying-for-college/" class="g3-badge" target="_blank" style="text-decoration: none;">
+                        <i class="fas fa-award"></i>
+                        <span>G3 Eligible - Tuition Assistance!</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <div class="content-main">
+                    <!-- Prerequisites Section -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-clipboard-check"></i> Prerequisites</h2>
+                        <div class="prereq-card">
+                            <h4><i class="fas fa-user-graduate"></i> Required Before Enrollment</h4>
+                            <ul class="prereq-list">
+                                <li><i class="fas fa-check"></i><span>Current AEMT certification (National Registry or Virginia)</span></li>
+                                <li><i class="fas fa-check"></i><span>CPR (BLS) certification for Healthcare Providers</span></li>
+                                <li><i class="fas fa-check"></i><span>Completion of AEMT courses or equivalent</span></li>
+                                <li><i class="fas fa-check"></i><span>BIO 145 - Human Anatomy and Physiology (4 credits)</span></li>
+                                <li><i class="fas fa-check"></i><span>High school diploma or GED</span></li>
+                                <li><i class="fas fa-check"></i><span>Valid driver's license</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-tools"></i> Advanced Skills You'll Master</h2>
+                        <div class="skills-grid">
+                            <div class="skill-card">
+                                <h4><i class="fas fa-heartbeat"></i> Advanced Cardiac Care</h4>
+                                <p>12-lead ECG interpretation, cardioversion, transcutaneous pacing, and cardiac pharmacology.</p>
+                            </div>
+                            <div class="skill-card">
+                                <h4><i class="fas fa-lungs"></i> Advanced Airway Management</h4>
+                                <p>Endotracheal intubation, RSI, surgical airways, and mechanical ventilation.</p>
+                            </div>
+                            <div class="skill-card">
+                                <h4><i class="fas fa-pills"></i> Pharmacology</h4>
+                                <p>Comprehensive medication administration including cardiac drugs, sedatives, and analgesics.</p>
+                            </div>
+                            <div class="skill-card">
+                                <h4><i class="fas fa-user-injured"></i> Critical Care Transport</h4>
+                                <p>Manage critically ill patients including ventilator patients and complex medical conditions.</p>
+                            </div>
+                            <div class="skill-card">
+                                <h4><i class="fas fa-baby"></i> Pediatric & OB Care</h4>
+                                <p>Neonatal resuscitation, pediatric emergencies, and obstetrical complications.</p>
+                            </div>
+                            <div class="skill-card">
+                                <h4><i class="fas fa-brain"></i> Medical Leadership</h4>
+                                <p>Scene management, team leadership, and critical decision-making under pressure.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum Timeline -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-book-open"></i> Complete Curriculum (5 Semesters)</h2>
+                        
+                        <div class="timeline">
+                            <!-- Semester 1 -->
+                            <div class="timeline-item">
+                                <div class="timeline-dot">1</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>Semester 1</h4>
+                                        <span class="credits">13 Credits</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="course-grid">
+                                            <div class="course-item">
+                                                <span class="course-code">HLT 105</span>
+                                                <div class="course-info">
+                                                    <h5>Cardiopulmonary Resuscitation</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 111</span>
+                                                <div class="course-info">
+                                                    <h5>Emergency Medical Technician</h5>
+                                                    <p>7 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 120</span>
+                                                <div class="course-info">
+                                                    <h5>Emergency Medical Technician - Clinical</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">BIO 145</span>
+                                                <div class="course-info">
+                                                    <h5>Human Anatomy and Physiology</h5>
+                                                    <p>4 Credits</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Semester 2 -->
+                            <div class="timeline-item">
+                                <div class="timeline-dot">2</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>Semester 2</h4>
+                                        <span class="credits">12 Credits</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="course-grid">
+                                            <div class="course-item">
+                                                <span class="course-code">SDV 100</span>
+                                                <div class="course-info">
+                                                    <h5>College Success Skills</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 123</span>
+                                                <div class="course-info">
+                                                    <h5>EMS Clinical Preparation</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 170</span>
+                                                <div class="course-info">
+                                                    <h5>ALS Internship</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 180</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced EMS Foundation</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 181</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Airway & Shock Management</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 182</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Airway & Shock Management Lab</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 183</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Medical Care</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 184</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Medical Care Lab</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 185</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Trauma Care</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 186</span>
+                                                <div class="course-info">
+                                                    <h5>Advanced Trauma Care Lab</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Semester 3 -->
+                            <div class="timeline-item">
+                                <div class="timeline-dot">3</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>Semester 3</h4>
+                                        <span class="credits">16 Credits</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="course-grid">
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 221</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care I</h5>
+                                                    <p>4 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 222</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care I Lab</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 223</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care II</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 224</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care II Lab</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 241</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Clinical I</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMG 111</span>
+                                                <div class="course-info">
+                                                    <h5>College Composition I</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">PSY 230</span>
+                                                <div class="course-info">
+                                                    <h5>Developmental Psychology</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Semester 4 -->
+                            <div class="timeline-item">
+                                <div class="timeline-dot">4</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>Semester 4</h4>
+                                        <span class="credits">12 Credits</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="course-grid">
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 225</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care III</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 226</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Emergency Care III Lab</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 246</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Clinical II</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">Elective</span>
+                                                <div class="course-info">
+                                                    <h5>General Educational Elective</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Semester 5 -->
+                            <div class="timeline-item">
+                                <div class="timeline-dot">5</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-header">
+                                        <h4>Semester 5</h4>
+                                        <span class="credits">12 Credits</span>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <div class="course-grid">
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 163</span>
+                                                <div class="course-info">
+                                                    <h5>EMS Leadership</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 164</span>
+                                                <div class="course-info">
+                                                    <h5>EMS Operations</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 165</span>
+                                                <div class="course-info">
+                                                    <h5>EMS Capstone</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 169</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Internship</h5>
+                                                    <p>4 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 210</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Pharmacology</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 212</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Cardiology</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 216</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Special Populations</h5>
+                                                    <p>1 Credit</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">EMS 249</span>
+                                                <div class="course-info">
+                                                    <h5>Paramedic Clinical III</h5>
+                                                    <p>2 Credits</p>
+                                                </div>
+                                            </div>
+                                            <div class="course-item">
+                                                <span class="course-code">Elective</span>
+                                                <div class="course-info">
+                                                    <h5>Humanities Elective</h5>
+                                                    <p>3 Credits</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Career Section -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-chart-line"></i> Career Outlook</h2>
+                        <div class="career-grid">
+                            <div class="career-card">
+                                <i class="fas fa-dollar-sign"></i>
+                                <h4>Hampton Roads Salary</h4>
+                                <p>Average annual salary for Paramedics in Hampton Roads</p>
+                                <div class="salary">$45,266/yr</div>
+                            </div>
+                            <div class="career-card">
+                                <i class="fas fa-clock"></i>
+                                <h4>Hourly Rate</h4>
+                                <p>Average hourly wage for Paramedics in Virginia Beach</p>
+                                <div class="salary">$29.36/hr</div>
+                            </div>
+                            <div class="career-card">
+                                <i class="fas fa-chart-bar"></i>
+                                <h4>Job Growth</h4>
+                                <p>Expected growth in Paramedic positions through 2032</p>
+                                <div class="salary">+7%</div>
+                            </div>
+                            <div class="career-card">
+                                <i class="fas fa-user-plus"></i>
+                                <h4>High Demand</h4>
+                                <p>Hampton Roads fire departments actively recruiting</p>
+                                <div class="salary">200+ Jobs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employers Section -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-building"></i> Where Our Graduates Work</h2>
+                        <div class="employers-grid">
+                            <div class="employer-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Norfolk Fire-Rescue</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Hampton Fire & Rescue</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Virginia Beach EMS</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Newport News Fire</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Chesapeake Fire</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-helicopter"></i>
+                                <span>Nightingale Air Ambulance</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>Sentara Healthcare</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>Riverside Health</span>
+                            </div>
+                            <div class="employer-item">
+                                <i class="fas fa-anchor"></i>
+                                <span>Naval Station Norfolk</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost Section -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-calculator"></i> Cost Breakdown</h2>
+                        <table class="cost-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Tuition (In-State, 33 Credits)</td>
+                                    <td>$5,674.35</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Tuition (Out-of-State, 33 Credits)</td>
+                                    <td>$12,838.65</td>
+                                </tr>
+                                <tr>
+                                    <td>Sanders' Paramedic Textbook (6th Edition)</td>
+                                    <td>$611.63</td>
+                                </tr>
+                                <tr>
+                                    <td>Uniform Polo Shirt</td>
+                                    <td>$31.00 + tax</td>
+                                </tr>
+                                <tr>
+                                    <td>Viewpoint Portal Access</td>
+                                    <td>$65.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Sterling Credentials Software</td>
+                                    <td>$154.44</td>
+                                </tr>
+                                <tr>
+                                    <td>Physical Exam & Immunizations</td>
+                                    <td>Varies</td>
+                                </tr>
+                                <tr>
+                                    <td>VA OEMS Background Check</td>
+                                    <td>Free</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-link"></i> Quick Links</h3>
+                        <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="sidebar-link" target="_blank">
+                            <i class="fas fa-file-alt"></i> Apply Now
+                        </a>
+                        <a href="https://www.pdc.edu/attend/paying-for-college/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-award"></i> G3 Program Info
+                        </a>
+                        <a href="https://studentaid.gov/h/apply-for-aid/fafsa" class="sidebar-link" target="_blank">
+                            <i class="fas fa-graduation-cap"></i> FAFSA Application
+                        </a>
+                        <a href="https://www.pdc.edu/attend/paying-for-college/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-flag-usa"></i> VA Benefits
+                        </a>
+                        <a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-map-marker-alt"></i> Campus Locations
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-info-circle"></i> Credit for Prior Learning</h3>
+                        <p style="color: var(--gray-600); font-size: 0.95rem; margin-bottom: 16px;">Already hold an AEMT certification? You may be eligible for credit for all EMT and AEMT courses, allowing you to start directly with Paramedic courses.</p>
+                        <a href="cpl.html" class="sidebar-link">
+                            <i class="fas fa-question-circle"></i> Learn More
+                        </a>
+                    </div>
+
+                    <div class="next-step">
+                        <h3>Earn Your Degree</h3>
+                        <p>Complete your Associate of Applied Science in EMS and open doors to leadership and advanced positions!</p>
+                        <a href="aas-ems.html" class="btn"><i class="fas fa-graduation-cap"></i> AAS in EMS</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Become a Paramedic?</h2>
+                <p>Join Virginia's only Paramedic program with a Letter of Review from CoAEMSP. Start your journey to becoming a pre-hospital emergency care leader.</p>
+                <div class="cta-buttons">
+                    <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="btn btn-primary" target="_blank"><i class="fas fa-rocket"></i> Apply Now</a>
+                    <a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="btn btn-secondary" target="_blank"><i class="fas fa-calendar-check"></i> Schedule Appointment</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>CAMP EMS</h3>
+                    <p>Paul D. Camp Community College's Emergency Medical Services program - training the next generation of EMS professionals in Hampton Roads.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/PaulDCampCC" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/pauldcampcc/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://twitter.com/pauldcampcc" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.youtube.com/@PaulDCampCC" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.linkedin.com/school/paul-d-camp-community-college/" class="social-link" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank">Apply Now</a></li>
+                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">Financial Aid</a></li>
+                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">G3 Program</a></li>
+                        <li><a href="https://www.nremt.org/" target="_blank">NREMT</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Paul D. Camp Community College. All rights reserved. | <a href="https://www.pdc.edu" target="_blank">www.pdc.edu</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Dropdown toggle for mobile
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768) {
+                    this.classList.toggle('active');
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Back to top button
+        const backToTop = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

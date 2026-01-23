@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit for Prior Learning | CAMP EMS Programs | Paul D. Camp Community College</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --camp-green: #1A6B36;
+            --camp-green-dark: #145A2C;
+            --camp-green-light: #238B47;
+            --lime: #8CC63F;
+            --lime-light: #A8D86B;
+            --lime-dark: #72A832;
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --gold: #FFD700;
+            --gradient-green: linear-gradient(135deg, var(--camp-green) 0%, var(--camp-green-light) 100%);
+            --gradient-lime: linear-gradient(135deg, var(--lime) 0%, var(--lime-light) 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-800); background: var(--white); }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; font-weight: 700; line-height: 1.2; }
+        a { color: inherit; text-decoration: none; transition: all 0.3s ease; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: var(--radius-xl); font-weight: 600; font-size: 1rem; cursor: pointer; border: none; transition: all 0.3s ease; }
+        .btn-primary { background: var(--gradient-green); color: white; box-shadow: var(--shadow-md); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn-secondary { background: white; color: var(--camp-green); border: 2px solid var(--camp-green); }
+        .btn-secondary:hover { background: var(--camp-green); color: white; }
+
+        /* Navigation */
+        .navbar { background: white; padding: 16px 0; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow-sm); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; }
+        .nav-logo { width: 50px; height: 50px; background: var(--gradient-green); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+        .nav-logo i { color: white; font-size: 1.5rem; }
+        .nav-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--camp-green); }
+        .nav-menu { display: flex; align-items: center; gap: 8px; }
+        .nav-item { list-style: none; position: relative; }
+        .nav-link { padding: 10px 18px; color: var(--gray-700); font-weight: 500; border-radius: var(--radius-xl); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .nav-link:hover { background: var(--gray-100); color: var(--camp-green); }
+        .nav-link i { font-size: 0.7rem; transition: transform 0.3s ease; }
+        .nav-item:hover .nav-link i { transform: rotate(180deg); }
+        .nav-cta { background: var(--gradient-green); color: white; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 600; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .nav-dropdown { position: absolute; top: 100%; left: 0; min-width: 280px; background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-xl); border: 1px solid var(--gray-100); padding: 12px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; }
+        .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--radius-sm); transition: all 0.3s ease; }
+        .dropdown-item:hover { background: var(--gray-50); }
+        .dropdown-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; flex-shrink: 0; }
+        .dropdown-text { display: flex; flex-direction: column; }
+        .dropdown-text strong { color: var(--gray-800); font-size: 0.95rem; }
+        .dropdown-text small { color: var(--gray-500); font-size: 0.8rem; }
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* Hero Section */
+        .hero { background: linear-gradient(135deg, var(--camp-green) 0%, var(--camp-green-light) 50%, var(--lime) 100%); padding: 80px 0; color: white; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; margin: 0 auto; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: var(--radius-xl); margin-bottom: 24px; font-size: 0.9rem; }
+        .hero h1 { font-size: 3rem; margin-bottom: 20px; }
+        .hero p { font-size: 1.25rem; opacity: 0.95; margin-bottom: 32px; }
+
+        /* Main Content */
+        .main-content { padding: 60px 0; }
+        .content-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
+        .main-column { }
+        .sidebar { }
+
+        /* Section Styles */
+        .section { margin-bottom: 48px; }
+        .section-title { font-size: 1.75rem; color: var(--camp-green-dark); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title i { color: var(--lime-dark); }
+
+        /* CPL Cards */
+        .cpl-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow-md); }
+        .cpl-card-header { background: var(--gradient-green); color: white; padding: 20px 24px; }
+        .cpl-card-header h3 { font-size: 1.3rem; margin-bottom: 4px; }
+        .cpl-card-header p { opacity: 0.9; font-size: 0.95rem; }
+        .cpl-card-body { padding: 24px; }
+        .cpl-card-body p { margin-bottom: 16px; color: var(--gray-700); }
+
+        /* Course List */
+        .course-list { list-style: none; }
+        .course-list li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-100); }
+        .course-list li:last-child { border-bottom: none; }
+        .course-list .course-code { background: var(--gray-100); padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.85rem; color: var(--camp-green-dark); min-width: 80px; text-align: center; }
+        .course-list .course-name { color: var(--gray-700); }
+        .course-list .course-credits { color: var(--gray-500); font-size: 0.9rem; margin-left: auto; }
+
+        /* Info Box */
+        .info-box { background: linear-gradient(135deg, var(--lime) 0%, var(--lime-light) 100%); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+        .info-box h4 { color: var(--camp-green-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .info-box p { color: var(--camp-green-dark); opacity: 0.9; }
+
+        /* Sidebar Styles */
+        .sidebar-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+        .sidebar-card h4 { font-size: 1.1rem; color: var(--camp-green-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .sidebar-card h4 i { color: var(--lime-dark); }
+        .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--gray-50); border-radius: var(--radius-md); margin-bottom: 10px; color: var(--gray-700); font-weight: 500; }
+        .sidebar-link:hover { background: var(--gray-100); color: var(--camp-green); }
+        .sidebar-link i { color: var(--camp-green); }
+
+        /* Steps */
+        .steps { }
+        .step { display: flex; gap: 16px; margin-bottom: 20px; }
+        .step-number { width: 36px; height: 36px; background: var(--gradient-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+        .step-content h5 { color: var(--camp-green-dark); margin-bottom: 4px; }
+        .step-content p { color: var(--gray-600); font-size: 0.95rem; }
+
+        /* CTA Section */
+        .cta { background: var(--gradient-green); padding: 60px 0; color: white; text-align: center; }
+        .cta h2 { font-size: 2rem; margin-bottom: 16px; }
+        .cta p { font-size: 1.1rem; opacity: 0.95; margin-bottom: 28px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .cta .btn-primary { background: white; color: var(--camp-green); }
+        .cta .btn-secondary { border-color: white; color: white; background: transparent; }
+        .cta .btn-secondary:hover { background: white; color: var(--camp-green); }
+
+        /* Footer */
+        .footer { background: var(--gray-900); color: var(--gray-300); padding: 48px 0 24px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 32px; }
+        .footer-brand h3 { color: white; margin-bottom: 12px; }
+        .footer-brand p { font-size: 0.95rem; line-height: 1.7; }
+        .footer h4 { color: white; font-size: 1rem; margin-bottom: 16px; }
+        .footer ul { list-style: none; }
+        .footer ul li { margin-bottom: 10px; }
+        .footer ul li a:hover { color: var(--lime); }
+        .footer-bottom { border-top: 1px solid var(--gray-700); padding-top: 24px; text-align: center; font-size: 0.9rem; }
+        .footer-bottom a { color: var(--lime); }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .content-grid { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .nav-menu { display: none; }
+            .section-title { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.html" class="nav-brand">
+                    <div class="nav-logo"><i class="fas fa-heartbeat"></i></div>
+                    <span class="nav-title">CAMP EMS</span>
+                </a>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <span class="nav-link">Programs <i class="fas fa-chevron-down"></i></span>
+                        <div class="nav-dropdown">
+                            <a href="emt.html" class="dropdown-item">
+                                <div class="dropdown-icon" style="background: #1565C0;"><i class="fas fa-heartbeat"></i></div>
+                                <div class="dropdown-text"><strong>EMT Basic</strong><small>Emergency Medical Technician</small></div>
+                            </a>
+                            <a href="aemt.html" class="dropdown-item">
+                                <div class="dropdown-icon" style="background: #7B1FA2;"><i class="fas fa-user-md"></i></div>
+                                <div class="dropdown-text"><strong>AEMT</strong><small>Advanced EMT</small></div>
+                            </a>
+                            <a href="paramedic.html" class="dropdown-item">
+                                <div class="dropdown-icon" style="background: #00796B;"><i class="fas fa-ambulance"></i></div>
+                                <div class="dropdown-text"><strong>Paramedic</strong><small>National Registry Paramedic</small></div>
+                            </a>
+                            <a href="aas-ems.html" class="dropdown-item">
+                                <div class="dropdown-icon" style="background: #E65100;"><i class="fas fa-graduation-cap"></i></div>
+                                <div class="dropdown-text"><strong>AAS Degree</strong><small>Associate of Applied Science</small></div>
+                            </a>
+                            <a href="cpl.html" class="dropdown-item">
+                                <div class="dropdown-icon" style="background: #1A6B36;"><i class="fas fa-award"></i></div>
+                                <div class="dropdown-text"><strong>Credit for Prior Learning</strong><small>Get credit for certifications</small></div>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a href="https://www.pdc.edu/attend/advising-and-orientation/" class="nav-link" target="_blank">Admissions</a></li>
+                    <li class="nav-item"><a href="https://www.pdc.edu/attend/paying-for-college/" class="nav-link" target="_blank">Financial Aid</a></li>
+                    <li class="nav-item"><a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="nav-link" target="_blank">Contact</a></li>
+                    <li class="nav-item"><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="nav-cta" target="_blank">Apply Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-award"></i>
+                    <span>Accelerate Your Education</span>
+                </div>
+                <h1>Credit for Prior Learning</h1>
+                <p>Already certified as an EMT or AEMT? You may be eligible to receive college credit for your existing certifications and experience.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <div class="main-column">
+                    <!-- Info Box -->
+                    <div class="info-box">
+                        <h4><i class="fas fa-lightbulb"></i> What is Credit for Prior Learning?</h4>
+                        <p>Credit for Prior Learning (CPL) recognizes that learning happens in many settings. If you hold a national or state certification in Emergency Medical Services, you may be eligible to receive college credit for courses that align with your existing knowledge and skills. This helps you progress through the program more efficiently.</p>
+                    </div>
+
+                    <!-- EMT Certification -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-certificate"></i> EMT Certification Holders</h2>
+                        <div class="cpl-card">
+                            <div class="cpl-card-header">
+                                <h3>Emergency Medical Technician (EMT)</h3>
+                                <p>National Registry or Virginia State Certification</p>
+                            </div>
+                            <div class="cpl-card-body">
+                                <p>If you possess a national or state certification in Emergency Medical Technician (EMT), you may be eligible to receive credit for the following courses:</p>
+                                <ul class="course-list">
+                                    <li>
+                                        <span class="course-code">HLT 105</span>
+                                        <span class="course-name">Cardiopulmonary Resuscitation</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 111</span>
+                                        <span class="course-name">Emergency Medical Technician</span>
+                                        <span class="course-credits">7 Credits</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 120</span>
+                                        <span class="course-name">Emergency Medical Technician - Clinical</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                </ul>
+                                <p style="margin-top: 16px; font-weight: 600; color: var(--camp-green-dark);"><i class="fas fa-check-circle"></i> Total Potential Credits: 9</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AEMT Certification -->
+                    <div class="section">
+                        <h2 class="section-title"><i class="fas fa-certificate"></i> AEMT Certification Holders</h2>
+                        <div class="cpl-card">
+                            <div class="cpl-card-header">
+                                <h3>Advanced Emergency Medical Technician (AEMT)</h3>
+                                <p>National Registry or Virginia State Certification</p>
+                            </div>
+                            <div class="cpl-card-body">
+                                <p>If you possess an Advanced Emergency Medical Technician (AEMT) certification, you may be eligible to receive credit for the EMT courses listed above, plus the following additional courses:</p>
+                                <ul class="course-list">
+                                    <li>
+                                        <span class="course-code">EMS 123</span>
+                                        <span class="course-name">EMS Clinical Preparation</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 170</span>
+                                        <span class="course-name">ALS Internship</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 180</span>
+                                        <span class="course-name">Advanced EMS Foundation</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 181</span>
+                                        <span class="course-name">Advanced Airway & Shock Management</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 182</span>
+                                        <span class="course-name">Advanced Airway & Shock Management Lab</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 183</span>
+                                        <span class="course-name">Advanced Medical Care</span>
+                                        <span class="course-credits">2 Credits</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 184</span>
+                                        <span class="course-name">Advanced Medical Care Lab</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 185</span>
+                                        <span class="course-name">Advanced Trauma Care</span>
+                                        <span class="course-credits">2 Credits</span>
+                                    </li>
+                                    <li>
+                                        <span class="course-code">EMS 186</span>
+                                        <span class="course-name">Advanced Trauma Care Lab</span>
+                                        <span class="course-credits">1 Credit</span>
+                                    </li>
+                                </ul>
+                                <p style="margin-top: 16px; font-weight: 600; color: var(--camp-green-dark);"><i class="fas fa-check-circle"></i> Total Potential Credits (including EMT): 20</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-card">
+                        <h4><i class="fas fa-clipboard-list"></i> How to Apply for CPL</h4>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h5>Gather Documentation</h5>
+                                    <p>Collect copies of your current certifications (NREMT card, state license).</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h5>Schedule Appointment</h5>
+                                    <p>Meet with an EMS Program advisor to discuss your eligibility.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h5>Submit Application</h5>
+                                    <p>Complete the CPL application and provide required documentation.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h5>Receive Credit</h5>
+                                    <p>Approved credits will be added to your transcript.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h4><i class="fas fa-link"></i> Quick Links</h4>
+                        <a href="https://www.pdc.edu/attend/paying-for-college/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-hand-holding-usd"></i> Financial Aid
+                        </a>
+                        <a href="https://www.pdc.edu/attend/advising-and-orientation/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-info-circle"></i> Admissions Info
+                        </a>
+                        <a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="sidebar-link" target="_blank">
+                            <i class="fas fa-calendar-alt"></i> Schedule Appointment
+                        </a>
+                    </div>
+
+                    <div class="sidebar-card" style="background: var(--gradient-green); color: white;">
+                        <h4 style="color: white;"><i class="fas fa-question-circle"></i> Questions?</h4>
+                        <p style="margin-bottom: 16px; opacity: 0.95;">Contact our EMS Program office to learn more about Credit for Prior Learning opportunities.</p>
+                        <a href="mailto:ems@pdc.edu" class="btn btn-secondary" style="width: 100%; justify-content: center; border-color: white; color: white;">
+                            <i class="fas fa-envelope"></i> ems@pdc.edu
+                        </a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Get Started?</h2>
+            <p>Take advantage of your existing certifications and accelerate your path to becoming a Paramedic.</p>
+            <div class="cta-buttons">
+                <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="btn btn-primary" target="_blank"><i class="fas fa-rocket"></i> Apply Now</a>
+                <a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="btn btn-secondary" target="_blank"><i class="fas fa-calendar"></i> Schedule Appointment</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>CAMP EMS Programs</h3>
+                    <p>Paul D. Camp Community College provides comprehensive Emergency Medical Services education for Hampton Roads and Southside Virginia.</p>
+                </div>
+                <div>
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://www.pdc.edu/attend/advising-and-orientation/" target="_blank">Admissions</a></li>
+                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">Financial Aid</a></li>
+                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">G3 Program</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:ems@pdc.edu">ems@pdc.edu</a></li>
+                        <li><a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" target="_blank">Contact Form</a></li>
+                        <li><a href="https://www.pdc.edu/locations/" target="_blank">Campus Locations</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Paul D. Camp Community College. All rights reserved. | <a href="https://www.pdc.edu" target="_blank">www.pdc.edu</a></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
