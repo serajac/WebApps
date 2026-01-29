@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folk City Family Practice - Medication Pricing Calculator</title>
+    <style>
+        :root {
+            --coral: #e55c4d;
+            --navy: #1a365d;
+            --yellow: #f0c14b;
+            --blue: #4a90d9;
+            --green: #4a9d4a;
+            --coral-light: #fef0ed;
+            --navy-light: #e8edf5;
+            --yellow-light: #fef9e7;
+            --blue-light: #e8f4fd;
+            --green-light: #e8f5e8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--coral-light) 0%, #fff 25%, var(--navy-light) 50%, #fff 75%, var(--yellow-light) 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .header { text-align: center; margin-bottom: 30px; animation: fadeIn 0.8s ease-out; }
+
+        /* Language Dropdown Selector */
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .lang-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-dropdown {
+            padding: 12px 45px 12px 20px;
+            border: 2px solid var(--navy);
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--navy);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            min-width: 200px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .lang-dropdown:hover, .lang-dropdown:focus {
+            border-color: var(--coral);
+            box-shadow: 0 0 0 3px rgba(229, 92, 77, 0.1);
+        }
+
+        .lang-dropdown-container::after {
+            content: '▼';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--navy);
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .sound-toggle { text-align: center; margin-bottom: 20px; }
+
+        .sound-btn {
+            background: linear-gradient(135deg, var(--blue), var(--navy));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(74, 144, 217, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .sound-btn.muted { background: #ccc; box-shadow: none; }
+        .sound-btn:hover { transform: scale(1.05); }
+
+        .calculator-card {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(26, 54, 93, 0.2);
+            overflow: hidden;
+            border: 3px solid var(--navy);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--coral) 0%, #d04a3c 100%);
+            padding: 25px;
+            color: white;
+            text-align: center;
+            border-bottom: 4px solid var(--yellow);
+        }
+
+        .card-header h2 { margin: 0; font-size: 24px; font-weight: 600; }
+        .card-header p { margin: 10px 0 0 0; opacity: 0.95; font-size: 14px; }
+
+        .card-body { padding: 30px; background: linear-gradient(180deg, var(--coral-light) 0%, white 100%); }
+
+        .form-group { margin-bottom: 25px; }
+        .form-group.hidden { display: none; }
+        .form-group.animate { animation: slideIn 0.4s ease-out; }
+
+        .form-label { display: block; margin-bottom: 8px; color: var(--navy); font-weight: 600; font-size: 14px; }
+
+        .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid var(--blue);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            color: var(--navy);
+        }
+
+        .form-select:hover, .form-select:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(229, 92, 77, 0.1); }
+
+        .results-container {
+            display: none;
+            background: linear-gradient(135deg, var(--navy-light) 0%, var(--blue-light) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid var(--blue);
+            animation: popIn 0.5s ease-out;
+        }
+
+        .results-container.visible { display: block; }
+        .results-title { color: var(--navy); margin: 0 0 20px 0; font-size: 20px; text-align: center; }
+
+        .medication-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.1);
+            border-left: 4px solid var(--coral);
+        }
+
+        .medication-info h4 { color: var(--navy); margin: 0 0 10px 0; }
+        .medication-info p { color: #555; margin: 5px 0; font-size: 14px; }
+
+        .research-btn-container { text-align: center; margin: 20px 0; }
+
+        .research-btn {
+            background: linear-gradient(135deg, var(--green), #2d7d2d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(74, 157, 74, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .research-btn:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(74, 157, 74, 0.5); }
+        .research-btn:disabled { background: #ccc; cursor: not-allowed; animation: none; }
+        .research-btn .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; }
+        .research-btn.loading .spinner { display: inline-block; }
+        .research-btn.loading .btn-text { display: none; }
+
+        .research-panel { display: none; margin-top: 20px; animation: slideIn 0.5s ease-out; }
+        .research-panel.visible { display: block; }
+
+        .research-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.1);
+        }
+
+        .research-section h5 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+            font-size: 16px;
+        }
+
+        .research-section.uses h5 { color: var(--green); border-color: var(--green); }
+        .research-section.contraindications h5 { color: #dc3545; border-color: #dc3545; }
+        .research-section.side-effects h5 { color: var(--coral); border-color: var(--coral); }
+        .research-section.interactions h5 { color: var(--navy); border-color: var(--navy); }
+
+        .research-section ul { list-style: none; padding: 0; margin: 0; }
+
+        .research-section li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.5;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .research-section li:last-child { border-bottom: none; }
+        .research-section li::before { content: ''; position: absolute; left: 0; top: 12px; width: 8px; height: 8px; border-radius: 50%; }
+        .research-section.uses li::before { background: var(--green); }
+        .research-section.contraindications li::before { background: #dc3545; }
+        .research-section.side-effects li::before { background: var(--coral); }
+        .research-section.interactions li::before { background: var(--navy); }
+
+        .research-disclaimer {
+            background: linear-gradient(135deg, #fff3cd, #ffeeba);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #856404;
+            text-align: center;
+        }
+
+        .research-disclaimer strong { display: block; margin-bottom: 5px; }
+
+        .pricing-box {
+            background: linear-gradient(135deg, var(--navy), #2d4a7c);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            border: 3px solid var(--yellow);
+        }
+
+        .price-label { font-size: 14px; opacity: 0.9; margin-bottom: 5px; }
+        .final-price { font-size: 48px; font-weight: 700; color: var(--yellow); text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+
+        .price-comparison {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .price-item { text-align: center; }
+        .price-item-label { font-size: 12px; opacity: 0.8; }
+        .price-item-value { font-size: 20px; font-weight: 600; }
+        .price-item-value.member { color: var(--green); }
+        .price-item-value.regular { color: var(--coral); text-decoration: line-through; opacity: 0.7; }
+        .savings-badge { background: var(--green); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; margin-top: 10px; display: inline-block; }
+
+        .membership-banner {
+            background: linear-gradient(135deg, var(--coral), #d04a3c);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+            color: white;
+            text-align: center;
+            border: 3px dashed var(--yellow);
+        }
+
+        .membership-banner h4 { margin: 0 0 10px 0; font-size: 20px; }
+        .membership-banner p { margin: 0 0 15px 0; font-size: 14px; opacity: 0.95; }
+        .membership-banner ul { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .membership-banner li { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; font-size: 13px; }
+
+        .membership-cta {
+            background: linear-gradient(135deg, var(--yellow), #d69e2e);
+            color: var(--navy);
+            border: none;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .membership-cta:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+        .contact-section { text-align: center; margin-top: 30px; }
+
+        .contact-btn {
+            background: linear-gradient(135deg, var(--navy), #2d4a7c);
+            color: white;
+            border: 3px solid var(--coral);
+            padding: 18px 40px;
+            border-radius: 35px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(26, 54, 93, 0.3);
+        }
+
+        .contact-btn:hover { transform: scale(1.05); background: linear-gradient(135deg, var(--coral), #d04a3c); border-color: var(--navy); }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(26, 54, 93, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: popIn 0.3s ease-out;
+            border: 3px solid var(--coral);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: var(--coral);
+            color: white;
+            border: none;
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover { background: var(--navy); transform: scale(1.1); }
+
+        .contact-form { padding: 30px; }
+        .contact-form.hidden { display: none; }
+        .modal-title { color: var(--navy); margin: 0 0 20px 0; text-align: center; font-size: 22px; }
+
+        .inquiry-type { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .inquiry-type label { display: flex; align-items: center; gap: 5px; padding: 10px 15px; background: var(--navy-light); border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-size: 14px; }
+        .inquiry-type label:hover { background: var(--coral-light); }
+        .inquiry-type input[type="radio"] { display: none; }
+        .inquiry-type input[type="radio"]:checked + span { color: var(--coral); font-weight: 600; }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid var(--blue);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-input:focus, .form-textarea:focus { border-color: var(--coral); box-shadow: 0 0 0 3px rgba(229, 92, 77, 0.1); }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--coral), #d04a3c);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(229, 92, 77, 0.4); }
+
+        .success-message { display: none; text-align: center; padding: 50px 30px; }
+        .success-message.visible { display: block; }
+        .success-icon { font-size: 60px; margin-bottom: 20px; }
+        .success-message h3 { color: var(--green); margin: 0 0 10px 0; }
+        .success-message p { color: #666; }
+
+        .footer { text-align: center; margin-top: 30px; color: var(--navy); font-size: 13px; }
+        .footer p { margin: 5px 0; }
+        .footer .spanish { color: var(--coral); font-weight: 600; }
+        .footer .disclaimer { margin-top: 10px; opacity: 0.7; }
+
+        .info-banner {
+            background: linear-gradient(135deg, var(--yellow-light), #fff);
+            border: 2px solid var(--yellow);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-banner-icon { font-size: 24px; flex-shrink: 0; }
+        .info-banner-text { color: var(--navy); font-size: 14px; line-height: 1.5; }
+        .info-banner-text strong { color: var(--coral); }
+
+        .color-bar { height: 6px; background: linear-gradient(90deg, var(--coral) 0%, var(--yellow) 33%, var(--blue) 66%, var(--navy) 100%); }
+
+        @media (max-width: 500px) {
+            .logo-image { max-width: 280px; }
+            .price-comparison { flex-direction: column; gap: 15px; }
+            .lang-dropdown { min-width: 180px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1 style="color: var(--navy); font-size: 28px; margin-bottom: 10px;">Folk City Family Practice</h1>
+        <p style="color: var(--coral); font-size: 16px; font-weight: 600;">& Functional Medicine</p>
+    </div>
+
+    <!-- Language Dropdown Selector -->
+    <div class="language-selector">
+        <div class="lang-dropdown-container">
+            <select id="langSelect" class="lang-dropdown">
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="it">🇮🇹 Italiano</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Sound Toggle -->
+    <div class="sound-toggle">
+        <button id="soundToggle" class="sound-btn"><span id="soundIcon">🔊</span> <span data-translate="soundOn">Sound On</span></button>
+    </div>
+
+    <!-- Main Calculator Card -->
+    <div class="calculator-card">
+        <div class="card-header">
+            <h2>💊 <span data-translate="title">Medication Pricing Calculator</span></h2>
+            <p data-translate="subtitle">Find out your medication costs and member savings</p>
+        </div>
+        <div class="color-bar"></div>
+
+        <div class="card-body">
+            <!-- Category Selector -->
+            <div class="form-group">
+                <label class="form-label">📁 <span data-translate="selectCategory">Select Category</span></label>
+                <select id="categorySelect" class="form-select">
+                    <option value="" data-translate="chooseCategory">-- Choose a category --</option>
+                </select>
+            </div>
+
+            <!-- Medication Selector -->
+            <div id="medicationGroup" class="form-group hidden">
+                <label class="form-label">💉 <span data-translate="selectMedication">Select Medication</span></label>
+                <select id="medicationSelect" class="form-select">
+                    <option value="" data-translate="chooseMedication">-- Choose a medication --</option>
+                </select>
+            </div>
+
+            <!-- Results Display -->
+            <div id="resultsContainer" class="results-container">
+                <h3 class="results-title">✨ <span data-translate="medicationDetails">Your Medication Details</span></h3>
+
+                <div class="medication-info">
+                    <h4 id="medName"></h4>
+                    <p><strong data-translate="strength">Strength:</strong> <span id="medStrength"></span></p>
+                    <p><strong data-translate="size">Size:</strong> <span id="medSize"></span></p>
+                </div>
+
+                <!-- Research Medication Button -->
+                <div class="research-btn-container">
+                    <button id="researchBtn" class="research-btn">
+                        <span class="btn-text">🔬 <span data-translate="researchBtn">Research This Medication</span></span>
+                        <span class="spinner"></span>
+                    </button>
+                </div>
+
+                <!-- Research Panel -->
+                <div id="researchPanel" class="research-panel">
+                    <div class="research-section uses">
+                        <h5>✅ <span data-translate="usesTitle">Uses & Health Benefits</span></h5>
+                        <ul id="usesList"></ul>
+                    </div>
+
+                    <div class="research-section contraindications">
+                        <h5>⛔ <span data-translate="contraindicationsTitle">Contraindications</span></h5>
+                        <ul id="contraindicationsList"></ul>
+                    </div>
+
+                    <div class="research-section side-effects">
+                        <h5>⚠️ <span data-translate="sideEffectsTitle">Common Side Effects</span></h5>
+                        <ul id="sideEffectsList"></ul>
+                    </div>
+
+                    <div class="research-section interactions">
+                        <h5>🔄 <span data-translate="interactionsTitle">Disease Process Interactions</span></h5>
+                        <ul id="interactionsList"></ul>
+                    </div>
+
+                    <div class="research-disclaimer">
+                        <strong>⚕️ <span data-translate="disclaimerTitle">Medical Disclaimer</span></strong>
+                        <span data-translate="disclaimerText">This information is for educational purposes only and should not replace professional medical advice. Always consult with your healthcare provider at Folk City Family Practice before starting, stopping, or changing any medication.</span>
+                    </div>
+                </div>
+
+                <div class="pricing-box">
+                    <div class="price-label" data-translate="price">Price</div>
+                    <div id="priceDisplay" class="final-price">$0.00</div>
+                </div>
+
+                <!-- Membership Banner -->
+                <div class="membership-banner">
+                    <h4>⭐ <span data-translate="becomeMember">Become a Member & Save!</span></h4>
+                    <p data-translate="joinFamily">Join the Folk City Family and enjoy exclusive benefits:</p>
+                    <ul>
+                        <li>💰 <span data-translate="benefit1">Medication Discounts</span></li>
+                        <li>📅 <span data-translate="benefit2">Priority Scheduling</span></li>
+                        <li>🎁 <span data-translate="benefit3">Special Promotions</span></li>
+                        <li>👨‍⚕️ <span data-translate="benefit4">Personalized Care</span></li>
+                    </ul>
+                    <button class="membership-cta">
+                        🌟 <span data-translate="askMembership">Ask About Membership</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Call Button -->
+            <div class="contact-section">
+                <a href="tel:7575821899" class="contact-btn" style="text-decoration: none; display: inline-block;">📞 <span data-translate="callUs">Call Us Today!</span> (757) 582-1899</a>
+            </div>
+        </div>
+        <div class="color-bar"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p><strong>Folk City Family Practice and Functional Medicine</strong></p>
+        <p>Caren Cajares, DNP, FNP-C, CRNA</p>
+        <p>(757) 912-1279 | Fax: (757) 819-4969</p>
+        <p class="spanish">Se Habla Español</p>
+        <p class="disclaimer" data-translate="priceDisclaimer">Prices subject to change. Contact us for current pricing and membership discounts.</p>
+    </div>
+
+    <script>
+
+    // ============ TRANSLATIONS ============
+    const translations = {
+        en: {
+            title: "Medication Pricing Calculator",
+            subtitle: "Find out your medication costs",
+            price: "Price",
+            soundOn: "Sound On",
+            soundOff: "Sound Off",
+            selectCategory: "Select Category",
+            chooseCategory: "-- Choose a category --",
+            selectMedication: "Select Medication",
+            chooseMedication: "-- Choose a medication --",
+            medicationDetails: "Your Medication Details",
+            strength: "Strength:",
+            size: "Size:",
+            researchBtn: "Research This Medication",
+            usesTitle: "Uses & Health Benefits",
+            contraindicationsTitle: "Contraindications",
+            sideEffectsTitle: "Common Side Effects",
+            interactionsTitle: "Disease Process Interactions",
+            disclaimerTitle: "Medical Disclaimer",
+            disclaimerText: "This information is for educational purposes only and should not replace professional medical advice. Always consult with your healthcare provider at Folk City Family Practice before starting, stopping, or changing any medication.",
+            memberPrice: "Member Price",
+            regularPrice: "Regular Price",
+            withMembership: "With Membership",
+            youSave: "You Save",
+            becomeMember: "Become a Member & Save!",
+            joinFamily: "Join the Folk City Family and enjoy exclusive benefits:",
+            benefit1: "Medication Discounts",
+            benefit2: "Priority Scheduling",
+            benefit3: "Special Promotions",
+            benefit4: "Personalized Care",
+            askMembership: "Ask About Membership",
+            contactUs: "Contact Us Today!",
+            callUs: "Call Us Today!",
+            thankYou: "Thank You!",
+            inTouch: "We'll be in touch with you shortly.",
+            getInTouch: "Get In Touch",
+            general: "General",
+            membership: "Membership",
+            medication: "Medication",
+            yourName: "Your Name",
+            emailAddress: "Email Address",
+            phoneNumber: "Phone Number",
+            howCanWeHelp: "How can we help you? Ask about our membership program for exclusive discounts!",
+            sendMessage: "Send Message",
+            priceDisclaimer: "Prices subject to change. Contact us for current pricing and membership discounts.",
+            memberBannerTitle: "Save More as a Member!",
+            memberBannerText: "Become a Folk City member to unlock exclusive discounts, priority scheduling, and special pricing on all medications."
+        },
+        es: {
+            title: "Calculadora de Precios de Medicamentos",
+            subtitle: "Descubra los costos de sus medicamentos",
+            price: "Precio",
+            soundOn: "Sonido Activado",
+            soundOff: "Sonido Desactivado",
+            selectCategory: "Seleccionar Categoría",
+            chooseCategory: "-- Elija una categoría --",
+            selectMedication: "Seleccionar Medicamento",
+            chooseMedication: "-- Elija un medicamento --",
+            medicationDetails: "Detalles de su Medicamento",
+            strength: "Concentración:",
+            size: "Tamaño:",
+            researchBtn: "Investigar Este Medicamento",
+            usesTitle: "Usos y Beneficios para la Salud",
+            contraindicationsTitle: "Contraindicaciones",
+            sideEffectsTitle: "Efectos Secundarios Comunes",
+            interactionsTitle: "Interacciones con Enfermedades",
+            disclaimerTitle: "Aviso Médico",
+            disclaimerText: "Esta información es solo para fines educativos y no debe reemplazar el consejo médico profesional. Siempre consulte con su proveedor de atención médica en Folk City Family Practice antes de comenzar, suspender o cambiar cualquier medicamento.",
+            memberPrice: "Precio de Miembro",
+            regularPrice: "Precio Regular",
+            withMembership: "Con Membresía",
+            youSave: "Usted Ahorra",
+            becomeMember: "¡Conviértase en Miembro y Ahorre!",
+            joinFamily: "Únase a la familia Folk City y disfrute de beneficios exclusivos:",
+            benefit1: "Descuentos en Medicamentos",
+            benefit2: "Programación Prioritaria",
+            benefit3: "Promociones Especiales",
+            benefit4: "Atención Personalizada",
+            askMembership: "Pregunte Sobre la Membresía",
+            contactUs: "¡Contáctenos Hoy!",
+            callUs: "¡Llámenos Hoy!",
+            thankYou: "¡Gracias!",
+            inTouch: "Nos pondremos en contacto con usted pronto.",
+            getInTouch: "Contáctenos",
+            general: "General",
+            membership: "Membresía",
+            medication: "Medicamento",
+            yourName: "Su Nombre",
+            emailAddress: "Correo Electrónico",
+            phoneNumber: "Número de Teléfono",
+            howCanWeHelp: "¿Cómo podemos ayudarle? ¡Pregunte sobre nuestro programa de membresía para descuentos exclusivos!",
+            sendMessage: "Enviar Mensaje",
+            priceDisclaimer: "Los precios están sujetos a cambios. Contáctenos para precios actuales y descuentos de membresía.",
+            memberBannerTitle: "¡Ahorre Más como Miembro!",
+            memberBannerText: "Conviértase en miembro de Folk City para desbloquear descuentos exclusivos, programación prioritaria y precios especiales en todos los medicamentos."
+        },
+        fr: {
+            title: "Calculateur de Prix des Médicaments",
+            subtitle: "Découvrez vos coûts de médicaments",
+            price: "Prix",
+            soundOn: "Son Activé",
+            soundOff: "Son Désactivé",
+            selectCategory: "Sélectionner une Catégorie",
+            chooseCategory: "-- Choisissez une catégorie --",
+            selectMedication: "Sélectionner un Médicament",
+            chooseMedication: "-- Choisissez un médicament --",
+            medicationDetails: "Détails de Votre Médicament",
+            strength: "Dosage:",
+            size: "Taille:",
+            researchBtn: "Rechercher Ce Médicament",
+            usesTitle: "Utilisations et Bienfaits pour la Santé",
+            contraindicationsTitle: "Contre-indications",
+            sideEffectsTitle: "Effets Secondaires Courants",
+            interactionsTitle: "Interactions avec les Maladies",
+            disclaimerTitle: "Avis Médical",
+            disclaimerText: "Ces informations sont uniquement à des fins éducatives et ne doivent pas remplacer les conseils médicaux professionnels. Consultez toujours votre prestataire de soins chez Folk City Family Practice avant de commencer, d'arrêter ou de modifier tout médicament.",
+            memberPrice: "Prix Membre",
+            regularPrice: "Prix Régulier",
+            withMembership: "Avec Adhésion",
+            youSave: "Vous Économisez",
+            becomeMember: "Devenez Membre et Économisez!",
+            joinFamily: "Rejoignez la famille Folk City et profitez d'avantages exclusifs:",
+            benefit1: "Réductions sur les Médicaments",
+            benefit2: "Planification Prioritaire",
+            benefit3: "Promotions Spéciales",
+            benefit4: "Soins Personnalisés",
+            askMembership: "Renseignez-vous sur l'Adhésion",
+            contactUs: "Contactez-nous Aujourd'hui!",
+            callUs: "Appelez-nous Aujourd'hui!",
+            thankYou: "Merci!",
+            inTouch: "Nous vous contacterons bientôt.",
+            getInTouch: "Contactez-nous",
+            general: "Général",
+            membership: "Adhésion",
+            medication: "Médicament",
+            yourName: "Votre Nom",
+            emailAddress: "Adresse E-mail",
+            phoneNumber: "Numéro de Téléphone",
+            howCanWeHelp: "Comment pouvons-nous vous aider? Renseignez-vous sur notre programme d'adhésion pour des réductions exclusives!",
+            sendMessage: "Envoyer le Message",
+            priceDisclaimer: "Prix sujets à modification. Contactez-nous pour les prix actuels et les réductions membres.",
+            memberBannerTitle: "Économisez Plus en tant que Membre!",
+            memberBannerText: "Devenez membre de Folk City pour débloquer des réductions exclusives, une planification prioritaire et des prix spéciaux sur tous les médicaments."
+        },
+        it: {
+            title: "Calcolatore Prezzi Medicinali",
+            subtitle: "Scopri i costi dei tuoi medicinali",
+            price: "Prezzo",
+            soundOn: "Audio Attivo",
+            soundOff: "Audio Disattivo",
+            selectCategory: "Seleziona Categoria",
+            chooseCategory: "-- Scegli una categoria --",
+            selectMedication: "Seleziona Medicinale",
+            chooseMedication: "-- Scegli un medicinale --",
+            medicationDetails: "Dettagli del Tuo Medicinale",
+            strength: "Dosaggio:",
+            size: "Quantità:",
+            researchBtn: "Ricerca Questo Medicinale",
+            usesTitle: "Usi e Benefici per la Salute",
+            contraindicationsTitle: "Controindicazioni",
+            sideEffectsTitle: "Effetti Collaterali Comuni",
+            interactionsTitle: "Interazioni con le Malattie",
+            disclaimerTitle: "Avviso Medico",
+            disclaimerText: "Queste informazioni sono solo a scopo educativo e non devono sostituire il parere medico professionale. Consulta sempre il tuo medico presso Folk City Family Practice prima di iniziare, interrompere o modificare qualsiasi medicinale.",
+            memberPrice: "Prezzo Membro",
+            regularPrice: "Prezzo Normale",
+            withMembership: "Con Abbonamento",
+            youSave: "Risparmi",
+            becomeMember: "Diventa Membro e Risparmia!",
+            joinFamily: "Unisciti alla famiglia Folk City e goditi vantaggi esclusivi:",
+            benefit1: "Sconti sui Medicinali",
+            benefit2: "Prenotazione Prioritaria",
+            benefit3: "Promozioni Speciali",
+            benefit4: "Assistenza Personalizzata",
+            askMembership: "Chiedi dell'Abbonamento",
+            contactUs: "Contattaci Oggi!",
+            callUs: "Chiamaci Oggi!",
+            thankYou: "Grazie!",
+            inTouch: "Ti contatteremo presto.",
+            getInTouch: "Contattaci",
+            general: "Generale",
+            membership: "Abbonamento",
+            medication: "Medicinale",
+            yourName: "Il Tuo Nome",
+            emailAddress: "Indirizzo Email",
+            phoneNumber: "Numero di Telefono",
+            howCanWeHelp: "Come possiamo aiutarti? Chiedi del nostro programma di abbonamento per sconti esclusivi!",
+            sendMessage: "Invia Messaggio",
+            priceDisclaimer: "Prezzi soggetti a variazioni. Contattaci per i prezzi attuali e gli sconti per i membri.",
+            memberBannerTitle: "Risparmia di Più come Membro!",
+            memberBannerText: "Diventa membro di Folk City per sbloccare sconti esclusivi, prenotazione prioritaria e prezzi speciali su tutti i medicinali."
+        }
+    };
+
+    let currentLang = 'en';
+
+    function applyTranslations(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+        
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (t[key]) el.textContent = t[key];
+        });
+
+        document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-translate-placeholder');
+            if (t[key]) el.placeholder = t[key];
+        });
+
+        const soundBtn = document.getElementById('soundToggle');
+        const soundText = soundBtn.querySelector('[data-translate]');
+        if (soundText) soundText.textContent = isMuted ? t.soundOff : t.soundOn;
+
+        const catSelect = document.getElementById('categorySelect');
+        if (catSelect.options[0]) catSelect.options[0].textContent = t.chooseCategory;
+
+        const medSelect = document.getElementById('medicationSelect');
+        if (medSelect.options[0]) medSelect.options[0].textContent = t.chooseMedication;
+
+        // Re-render research panel if visible
+        if (currentMedication && document.getElementById('researchPanel').classList.contains('visible')) {
+            displayResearchData(currentMedication.product);
+        }
+    }
+
+    // Language dropdown handler
+    document.getElementById('langSelect').addEventListener('change', function() {
+        applyTranslations(this.value);
+    });
+
+    // ============ MEDICATION DATA ============
+    const medicationData = [
+        { category: "Integrative Care - Oral", product: "DMSA Capsules", strength: "25mg, 50mg, 100mg, 250mg", size: "15 Capsules", patientPrice: 113.6, discountedPrice: 90.88 },
+        { category: "Integrative Care - Oral", product: "DMSA Capsules", strength: "25mg, 50mg, 100mg, 250mg", size: "100 Capsules", patientPrice: 400.0, discountedPrice: 320.0 },
+        { category: "Integrative Care - Oral", product: "DMSA Capsules", strength: "500mg", size: "15 Capsules", patientPrice: 113.6, discountedPrice: 90.88 },
+        { category: "Integrative Care - Oral", product: "Ivermectin Capsule", strength: "Custom Strength", size: "5 Capsules", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "Integrative Care - Oral", product: "Ivermectin Capsule", strength: "Custom Strength", size: "10 Capsules", patientPrice: 112.0, discountedPrice: 89.6 },
+        { category: "Integrative Care - Oral", product: "Ivermectin Capsule", strength: "Custom Strength", size: "14 Capsules", patientPrice: 128.0, discountedPrice: 102.4 },
+        { category: "Integrative Care - Oral", product: "Ivermectin Capsule", strength: "Custom Strength (20+ Capsules)", size: "Per Capsule", patientPrice: 8.0, discountedPrice: 6.4 },
+        { category: "Integrative Care - Oral", product: "Ketotifen Capsule", strength: "0.5mg, 1mg, 2mg", size: "90 Capsules", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "Integrative Care - Oral", product: "Methylene Blue", strength: "5mg", size: "Custom QTY (Min 45)", patientPrice: 2.24, discountedPrice: 1.792 },
+        { category: "Integrative Care - Oral", product: "Methylene Blue", strength: "10mg", size: "Per Capsule", patientPrice: 2.464, discountedPrice: 1.9712 },
+        { category: "Integrative Care - Oral", product: "Methylene Blue", strength: "15mg", size: "Per Capsule", patientPrice: 2.88, discountedPrice: 2.304 },
+        { category: "Integrative Care - Oral", product: "Methylene Blue", strength: "25mg", size: "Per Capsule", patientPrice: 4.56, discountedPrice: 3.648 },
+        { category: "Integrative Care - Oral", product: "Methylene Blue", strength: "50mg", size: "Per Capsule", patientPrice: 6.72, discountedPrice: 5.376 },
+        { category: "Integrative Care - Oral", product: "Naltrexone Titration Kit", strength: "Titrate from 1mg to 4mg", size: "12 weeks supply", patientPrice: 200.0, discountedPrice: 160.0 },
+        { category: "Integrative Care - Oral", product: "Naltrexone Capsules", strength: "0.5mg, 1mg, 1.5mg, 2mg, 4.5mg or Custom", size: "90 Capsules", patientPrice: 150.4, discountedPrice: 120.32 },
+        { category: "Integrative Care - Oral", product: "Nystatin Capsules", strength: "50,000 units per Capsule", size: "90 Capsules", patientPrice: 150.4, discountedPrice: 120.32 },
+        { category: "Integrative Care - Oral", product: "Sirolimus (Rapamycin) Capsules", strength: "5mg (Min 45 Capsules)", size: "Per Capsule", patientPrice: 15.2, discountedPrice: 12.16 },
+        { category: "Integrative Care - Oral", product: "Sirolimus (Rapamycin) Capsules", strength: "6mg (Min 45 Capsules)", size: "Per Capsule", patientPrice: 17.6, discountedPrice: 14.08 },
+        { category: "Integrative Care - Nasal", product: "BEG Nasal Spray", strength: "Mupirocin 0.2%/EDTA 0.1%/Gentamicin 0.25%", size: "30mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "Integrative Care - Nasal", product: "BEG-ALT Nasal Spray", strength: "Mupirocin 0.2%/EDTA 1%/Gentamicin 0.5%", size: "30mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "Integrative Care - Nasal", product: "BEA Nasal Spray", strength: "Mupirocin 0.2%/EDTA 0.1%/Amphotericin B 0.06%", size: "30mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "Integrative Care - Nasal", product: "BEG-I Nasal Spray", strength: "Mupirocin 0.2%/EDTA 0.1%/Gentamicin 0.25%/Itraconazole 0.2%", size: "30mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "Integrative Care - Nasal", product: "Glutathione Nasal Spray", strength: "200mg per mL", size: "15mL/30mL", patientPrice: 171.2, discountedPrice: 136.96 },
+        { category: "Integrative Care - Nasal", product: "Ketamine Nasal Spray", strength: "100mg per mL or 150mg per mL", size: "15mL/30mL", patientPrice: 171.2, discountedPrice: 136.96 },
+        { category: "Integrative Care - Nasal", product: "Ketamine Nasal Spray", strength: "100mg per mL or 150mg per mL", size: "35mL/60mL", patientPrice: 211.2, discountedPrice: 168.96 },
+        { category: "Integrative Care - Nasal", product: "Synapsin Nasal Spray", strength: "100mg per mL or 150mg per mL", size: "15mL", patientPrice: 307.2, discountedPrice: 245.76 },
+        { category: "Integrative Care - Nasal", product: "Methylcobalamin 2mg/mL in Synapsin Nasal Spray", strength: "2mg/mL", size: "30mL", patientPrice: 307.2, discountedPrice: 245.76 },
+        { category: "Integrative Care - Misc", product: "Glutathione Transdermal Gel", strength: "200mg/mL", size: "30 grams", patientPrice: 137.6, discountedPrice: 110.08 },
+        { category: "Integrative Care - Misc", product: "Ketamine Sublingual Troche", strength: "100mg", size: "30 Troches", patientPrice: 136.0, discountedPrice: 108.8 },
+        { category: "Integrative Care - Misc", product: "NAD+ Injection", strength: "50mg/mL", size: "20mL", patientPrice: 188.8, discountedPrice: 151.04 },
+        { category: "Integrative Care - Misc", product: "NAD+ Injection", strength: "200mg/mL", size: "10mL", patientPrice: 302.4, discountedPrice: 241.92 },
+        { category: "Men's Health - Sexual", product: "Alprostadil (PGE1) 40 mcg/mL Injection", strength: "40 mcg/ml", size: "6mL", patientPrice: 185.6, discountedPrice: 148.48 },
+        { category: "Men's Health - Sexual", product: "Alprostadil (PGE1) 40 mcg/mL Injection", strength: "40 mcg/ml", size: "10mL", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "10 mcg/30mg/1mg per mL", size: "6mL", patientPrice: 185.6, discountedPrice: 148.48 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "10 mcg/30mg/1mg per mL", size: "10mL", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "20 mcg/30mg/2mg per mL", size: "6mL", patientPrice: 185.6, discountedPrice: 148.48 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "20 mcg/30mg/2mg per mL", size: "10mL", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "50 mcg/30mg/2mg per mL", size: "6mL", patientPrice: 185.6, discountedPrice: 148.48 },
+        { category: "Men's Health - Sexual", product: "Trimix Injection", strength: "50 mcg/30mg/2mg per mL", size: "10mL", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Bimix Injection", strength: "Papaverine 30mg/Phentolamine 1mg per mL", size: "6mL", patientPrice: 185.6, discountedPrice: 148.48 },
+        { category: "Men's Health - Sexual", product: "Bimix Injection", strength: "Papaverine 30mg/Phentolamine 1mg per mL", size: "10mL", patientPrice: 212.8, discountedPrice: 170.24 },
+        { category: "Men's Health - Sexual", product: "Bremelanotide (PT-141) Injection", strength: "1.75mg per 0.1mL", size: "2mL", patientPrice: 232.0, discountedPrice: 185.6 },
+        { category: "Men's Health - Sexual", product: "Bremelanotide (PT-141) Nasal Spray", strength: "10mg per 0.1mL - Squirt whole syringe into nostril 45-60 mins before activity", size: "6 Syringes (0.2mL each)", patientPrice: 352.0, discountedPrice: 281.6 },
+        { category: "Men's Health - Sexual", product: "Oxytocin Sublingual Solution", strength: "200 IU per mL - Place 0.25ml under tongue 90 sec daily", size: "10mL", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Sexual", product: "Oxytocin Nasal Spray", strength: "40 IU per 0.1ml - 1 spray 30-60 mins before activity", size: "10mL", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "Men's Health - Sexual", product: "Sildenafil Tablet", strength: "20mg (Min 90 tablets)", size: "90 tabs", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "Men's Health - Sexual", product: "Sildenafil Tablet", strength: "50mg (Min 90 tablets)", size: "90 tabs", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Sildenafil Tablet", strength: "100mg (Min 90 tablets)", size: "90 tabs", patientPrice: 219.2, discountedPrice: 175.36 },
+        { category: "Men's Health - Sexual", product: "Tadalafil Tablet", strength: "5mg (Min 90 tablets)", size: "90 tabs", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "Men's Health - Sexual", product: "Tadalafil Tablet", strength: "10mg (Min 90 tablets)", size: "90 tabs", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "Men's Health - Sexual", product: "Tadalafil Tablet", strength: "20mg (Min 90 tablets)", size: "90 tabs", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "Men's Health - Hormonal", product: "Anastrozole Veggie Capsule", strength: "0.25mg or 0.5mg", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Hormonal", product: "Clomiphene Citrate (lactose-free) Capsule", strength: "27mg or 53mg", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Hormonal", product: "Clomiphene Citrate (lactose-free) Capsule", strength: "27mg or 53mg", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Hormonal", product: "DHEA Capsule Sustained Release", strength: "5mg, 10mg, 15mg, 20mg, 25mg, 50mg", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Hormonal", product: "DHEA Capsule Sustained Release", strength: "5mg, 10mg, 15mg, 20mg, 25mg, 50mg", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Hormonal", product: "DHEA/Pregnenolone Capsule", strength: "25mg/100mg", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Hormonal", product: "DHEA/Pregnenolone Capsule", strength: "25mg/100mg", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Hormonal", product: "Enclomiphene (lactose free) Capsule", strength: "12.5mg or 25mg", size: "30 caps", patientPrice: 134.64, discountedPrice: 107.712 },
+        { category: "Men's Health - Hormonal", product: "Enclomiphene (lactose free) Capsule", strength: "12.5mg or 25mg", size: "90 caps", patientPrice: 340.0, discountedPrice: 272.0 },
+        { category: "Men's Health - Hormonal", product: "HCG Injection (Commercial)", strength: "10,000 Units/10mL (Price subject to change)", size: "10mL", patientPrice: 430.4, discountedPrice: 344.32 },
+        { category: "Men's Health - Hormonal", product: "Nandrolone Decanoate Injection", strength: "200mg per mL", size: "5mL", patientPrice: 249.6, discountedPrice: 199.68 },
+        { category: "Men's Health - Hormonal", product: "Sermorelin Sublingual Solution", strength: "2mg per mL - Place 0.5ml under tongue 90 sec at bedtime", size: "15mL", patientPrice: 172.8, discountedPrice: 138.24 },
+        { category: "Men's Health - Hormonal", product: "Sermorelin Sublingual Solution", strength: "2mg per mL - Place 0.5ml under tongue 90 sec at bedtime", size: "30mL", patientPrice: 240.0, discountedPrice: 192.0 },
+        { category: "Men's Health - Hormonal", product: "Sermorelin Injection", strength: "1mg per mL - Inject 0.2-0.3ml subQ every night", size: "9mL", patientPrice: 196.8, discountedPrice: 157.44 },
+        { category: "Men's Health - Hormonal", product: "Testosterone Injection", strength: "200mg/mL", size: "10mL", patientPrice: 232.0, discountedPrice: 185.6 },
+        { category: "Men's Health - Hormonal", product: "Testosterone Transdermal Gel", strength: "40mg, 80mg, 100mg, 120mg, 200mg per gram", size: "30 grams", patientPrice: 119.68, discountedPrice: 95.744 },
+        { category: "Men's Health - Hormonal", product: "Testosterone Transdermal Gel", strength: "40mg, 80mg, 100mg, 120mg, 200mg per gram", size: "90 grams", patientPrice: 284.8, discountedPrice: 227.84 },
+        { category: "Men's Health - Thyroid", product: "Liothyronine (T3)", strength: "Custom Dose mg/capsule (SR or IR)", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Thyroid", product: "Liothyronine (T3)", strength: "Custom Dose mg/capsule (SR or IR)", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Thyroid", product: "Levothyroxine (T4)", strength: "Custom Dose mg/capsule (SR or IR)", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Thyroid", product: "Levothyroxine (T4)", strength: "Custom Dose mg/capsule (SR or IR)", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Thyroid", product: "Compounded Naturally Dessicated Thyroid", strength: "15mg, 30mg, 60mg, 90mg, 120mg, 180mg, 240mg, 300mg (SR or IR)", size: "30 caps", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Men's Health - Thyroid", product: "Compounded Naturally Dessicated Thyroid", strength: "15mg, 30mg, 60mg, 90mg, 120mg, 180mg, 240mg, 300mg (SR or IR)", size: "90 caps", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Men's Health - Hair", product: "Hair Restore 1 (Male)", strength: "Minoxidil 2.5mg/Biotin 5mg per capsule", size: "90 caps", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Men's Health - Hair", product: "Hair Restore 2 (Male)", strength: "Minoxidil 5mg/Biotin 5mg per capsule", size: "90 caps", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Men's Health - UTI", product: "UTI Support", strength: "Methenamine 118mg/Hyoscyamine 0.12mg/Sodium Phosphate 40.8mg/Phenyl Salicylate 36mg", size: "90 caps", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "Dermatology - Numbing", product: "BLT Ointment", strength: "Benzocaine 20%/Lidocaine 10%/Tetracaine 10%", size: "Custom QTY (Min 60g) per gram", patientPrice: 1.44, discountedPrice: 1.152 },
+        { category: "Dermatology - Numbing", product: "LET Ointment", strength: "Lidocaine 23%/Tetracaine 7%", size: "Custom QTY (Min 60g) per gram", patientPrice: 1.44, discountedPrice: 1.152 },
+        { category: "Dermatology - Numbing", product: "LET+P Ointment", strength: "Lidocaine 23%/Tetracaine 7%/Phenylephrine 2%", size: "Custom QTY (Min 60g) per gram", patientPrice: 1.6, discountedPrice: 1.28 },
+        { category: "Dermatology - Anti-Aging", product: "RejuvaFirm Cream", strength: "Estriol 0.3%/Lipoic Acid 3%/Sodium Hyaluronate 0.5%", size: "30 grams", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Dermatology - Anti-Aging", product: "GHK-Cu 0.5% in Biopeptide Cream", strength: "0.5%", size: "30 grams", patientPrice: 200.0, discountedPrice: 160.0 },
+        { category: "Dermatology - Anti-Aging", product: "Tretinoin/Niacinamide/Hyaluronate Cream", strength: "Tretinoin 0.05%/Niacinamide 5%/Sodium Hyaluronate 1% in Derm Silk", size: "30 grams", patientPrice: 136.0, discountedPrice: 108.8 },
+        { category: "Dermatology - Alopecia", product: "Dexamethasone/Finasteride/Minoxidil Serum", strength: "Dexamethasone 0.1%/Finasteride 0.1%/Minoxidil 5%", size: "60mL", patientPrice: 128.0, discountedPrice: 102.4 },
+        { category: "Dermatology - Alopecia", product: "Tofacitinib 2%", strength: "2%", size: "30 grams", patientPrice: 216.0, discountedPrice: 172.8 },
+        { category: "Dermatology - Actinic Keratosis", product: "Calcipotriene/5-FU Gel", strength: "Calcipotriene 0.005%/5-FU 5%", size: "30 grams", patientPrice: 136.0, discountedPrice: 108.8 },
+        { category: "Dermatology - Actinic Keratosis", product: "Imiquimod 4% Gel", strength: "4%", size: "30 grams", patientPrice: 131.2, discountedPrice: 104.96 },
+        { category: "Dermatology - Hair Growth", product: "Hair Restore-1 (Female) Capsule", strength: "Minoxidil 0.25mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Dermatology - Hair Growth", product: "Hair Restore-2 (Female) Capsule", strength: "Minoxidil 1.25mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Dermatology - Hair Growth", product: "Hair Restore 1 (Male)", strength: "Minoxidil 2.5mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Dermatology - Hair Growth", product: "Hair Restore 2 (Male)", strength: "Minoxidil 5mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Dermatology - Hyperpigmentation", product: "Melasma Care Plus Gel", strength: "Hydroquinone 6%/HC 0.5%/Kojic Acid 4%/Vita C 4%/Tretinoin 0.05%", size: "30 grams", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Dermatology - Psoriasis", product: "Calcipotriene/Clobetasol Ointment", strength: "Calcipotriene 0.005%/Clobetasol 0.05%", size: "30 grams", patientPrice: 136.0, discountedPrice: 108.8 },
+        { category: "Dermatology - Psoriasis", product: "Calcipotriene/Clobetasol Scalp Foam", strength: "Calcipotriene 0.005%/Clobetasol 0.05%", size: "60mL", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Dermatology - Rosacea", product: "Ivermectin/Metronidazole/Niacinamide/Azelaic Acid Cream", strength: "Ivermectin 1%/Metronidazole 1%/Niacinamide 4%/Azelaic Acid 5%", size: "30 grams", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Dermatology - Nail Fungus", product: "Fluconazole/Ibuprofen/Itraconazole/Terbinafine in DMSO", strength: "Fluconazole 3%/Ibuprofen 2%/Itraconazole 1%/Terbinafine 1%", size: "15mL", patientPrice: 128.0, discountedPrice: 102.4 },
+        { category: "Dermatology - Warts", product: "Cantharidin", strength: "0.70%", size: "15mL", patientPrice: 235.2, discountedPrice: 188.16 },
+        { category: "Dermatology - Warts", product: "Cantharidin", strength: "1%", size: "15mL", patientPrice: 316.8, discountedPrice: 253.44 },
+        { category: "Dermatology - Warts", product: "Wart Gel", strength: "5-FU 6%/Salicylic Acid 10%/Cimetidine 10%/Deoxy-D-Glucose 0.2%/Imiquimod 1%", size: "15 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Dermatology - Lipolysis", product: "PCDC Injection", strength: "Phosphatidylcholine 50mg/Sodium Deoxycholate 25mg per mL", size: "5mL", patientPrice: 187.2, discountedPrice: 149.76 },
+        { category: "Weight Loss - Capsules", product: "Phentermine/Chromium Capsule", strength: "37.5mg/0.2mg - Take 1 capsule po qam", size: "90 Capsules", patientPrice: 187.2, discountedPrice: 149.76 },
+        { category: "Weight Loss - Capsules", product: "Modafinil/Chromium Capsule", strength: "100mg/0.1mg - Take 1 capsule po qam", size: "30 Capsules", patientPrice: 126.4, discountedPrice: 101.12 },
+        { category: "Weight Loss - Sublingual", product: "Sermorelin Sublingual Solution", strength: "2mg/mL - Place 0.5mL under tongue 90 sec at bedtime", size: "15mL", patientPrice: 172.8, discountedPrice: 138.24 },
+        { category: "Weight Loss - Sublingual", product: "Sermorelin Sublingual Solution", strength: "2mg/mL - Place 0.5mL under tongue 90 sec at bedtime", size: "30mL", patientPrice: 259.2, discountedPrice: 207.36 },
+        { category: "Weight Loss - Sublingual", product: "Sermorelin/Naltrexone Sublingual Solution", strength: "2mg/4mg per mL - Place 0.5mL under tongue 90 sec at bedtime", size: "15mL", patientPrice: 172.8, discountedPrice: 138.24 },
+        { category: "Weight Loss - Sublingual", product: "Sermorelin/Naltrexone Sublingual Solution", strength: "2mg/4mg per mL - Place 0.5mL under tongue 90 sec at bedtime", size: "30mL", patientPrice: 259.2, discountedPrice: 207.36 },
+        { category: "Weight Loss - Sublingual", product: "Semaglutide Sublingual Solution", strength: "4mg/mL - Take empty stomach AM, hold 90 sec. Titration schedule provided", size: "42mL (90 day - months 1-3)", patientPrice: 288.0, discountedPrice: 230.4 },
+        { category: "Weight Loss - Sublingual", product: "Semaglutide Sublingual Solution", strength: "4mg/mL - Take empty stomach AM, hold 90 sec. Month 4+: 1.2ml daily", size: "108mL (90 day - month 4+)", patientPrice: 688.0, discountedPrice: 550.4 },
+        { category: "Weight Loss - Injectables", product: "Lipotropic PLUS Injection (Skinny Shot)", strength: "For IM use", size: "10mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "Weight Loss - Injectables", product: "Lipotropic PLUS Injection (Skinny Shot)", strength: "For IM use", size: "50mL", patientPrice: 230.4, discountedPrice: 184.32 },
+        { category: "Weight Loss - Injectables", product: "Semaglutide/Pyridoxine Injection", strength: "5mg/4mg per mL (Max 6 vials per patient)", size: "1mL", patientPrice: 112.0, discountedPrice: 89.6 },
+        { category: "Weight Loss - Injectables", product: "Tirzepatide/Pyridoxine Injection", strength: "25mg/4mg per mL (Max 9 vials per patient)", size: "0.8mL per vial", patientPrice: 208.0, discountedPrice: 166.4 },
+        { category: "Weight Loss - Injectables", product: "Tirzepatide/Pyridoxine Injection", strength: "25mg/4mg per mL (Max 3 vials per patient)", size: "2.4mL per vial", patientPrice: 352.0, discountedPrice: 281.6 },
+        { category: "Weight Loss - Injectables", product: "Liraglutide/Pyridoxine Injection", strength: "6mg/4mg per mL", size: "7mL", patientPrice: 142.4, discountedPrice: 113.92 },
+        { category: "Weight Loss - Injectables", product: "Sermorelin Injection", strength: "1mg/mL", size: "9mL", patientPrice: 158.4, discountedPrice: 126.72 },
+        { category: "Women's Health - Estrogen", product: "Biest (80/20) Gel or Cream", strength: "8mg/gram (E3 6.4mg/E2 1.6mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (80/20) Gel or Cream", strength: "5mg/gram (E3 4mg/E2 1mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (80/20) Gel or Cream", strength: "4mg/gram (E3 3.2mg/E2 0.8mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (80/20) Gel or Cream", strength: "2mg/gram (E3 1.6mg/E2 0.4mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (80/20) Gel or Cream", strength: "1mg/gram (E3 0.8mg/E2 0.2mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (50/50) Gel or Cream", strength: "1mg/gram (E3 0.5mg/E2 0.5mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (50/50) Gel or Cream", strength: "2mg/gram (E3 1mg/E2 1mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Biest (50/50) Gel or Cream", strength: "4mg/gram (E3 2mg/E2 2mg)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Estradiol Vaginal Gel", strength: "0.01% (0.1mg per gram)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Estradiol Vaginal Gel", strength: "0.1% (1mg per gram)", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Estrogen", product: "Bio-Identical Estrogen Capsules", strength: "All Strengths (SR or IR)", size: "30 Capsules", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Estrogen", product: "Bio-Identical Estrogen Capsules", strength: "All Strengths (SR or IR)", size: "90 Capsules", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Capsules", strength: "50mg, 75mg, 100mg, 150mg, 200mg (SR or IR)", size: "30 Capsules", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Capsules", strength: "50mg, 75mg, 100mg, 150mg, 200mg (SR or IR)", size: "90 Capsules", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Transdermal Gel", strength: "40mg/mL, 50mg/mL, 100mg/mL, 200mg/mL", size: "30 grams", patientPrice: 119.68, discountedPrice: 95.744 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Transdermal Gel", strength: "40mg/mL, 50mg/mL, 100mg/mL, 200mg/mL", size: "90 grams", patientPrice: 263.2, discountedPrice: 210.56 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Sublingual Troches", strength: "50mg, 100mg, 200mg", size: "30 Troches", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Sublingual Troches", strength: "50mg, 100mg, 200mg", size: "90 Troches", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Vaginal Suppository", strength: "200mg, 300mg", size: "30 Suppositories", patientPrice: 124.8, discountedPrice: 99.84 },
+        { category: "Women's Health - Progesterone", product: "Progesterone Vaginal Suppository", strength: "200mg, 300mg", size: "90 Suppositories", patientPrice: 260.8, discountedPrice: 208.64 },
+        { category: "Women's Health - Testosterone", product: "Testosterone Transdermal", strength: "4mg/gram or Custom Strength", size: "30 grams", patientPrice: 119.68, discountedPrice: 95.744 },
+        { category: "Women's Health - Testosterone", product: "Testosterone Transdermal", strength: "4mg/gram or Custom Strength", size: "90 grams", patientPrice: 262.48, discountedPrice: 209.984 },
+        { category: "Women's Health - Thyroid", product: "Compounded Thyroid (T3, T4, T3/T4)", strength: "Custom Strength (SR or IR)", size: "30 Capsules", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Thyroid", product: "Compounded Thyroid (T3, T4, T3/T4)", strength: "Custom Strength (SR or IR)", size: "90 Capsules", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Women's Health - Thyroid", product: "Compounded Naturally Dessicated Thyroid", strength: "15mg-300mg (SR or IR)", size: "30 Capsules", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Thyroid", product: "Compounded Naturally Dessicated Thyroid", strength: "15mg-300mg (SR or IR)", size: "90 Capsules", patientPrice: 198.4, discountedPrice: 158.72 },
+        { category: "Women's Health - Anti-Aging", product: "RejuvaFirm Cream", strength: "Estriol 0.3%/Lipoic Acid 3%/Sodium Hyaluronate 0.5%", size: "30 grams", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Women's Health - Hair", product: "Hair Restore-1 (Female) Capsule", strength: "Minoxidil 0.25mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Women's Health - Hair", product: "Hair Restore-2 (Female) Capsule", strength: "Minoxidil 1.25mg/Biotin 5mg", size: "90 Capsules", patientPrice: 152.0, discountedPrice: 121.6 },
+        { category: "Women's Health - Sexual", product: "Oxytocin Sublingual Solution", strength: "20 IU per 0.1mL", size: "10mL", patientPrice: 123.2, discountedPrice: 98.56 },
+        { category: "Women's Health - Sexual", product: "Oxytocin Nasal Spray", strength: "250 IU per mL", size: "10mL", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "Women's Health - Sexual", product: "Sermorelin Sublingual Solution", strength: "2mg per mL", size: "15mL", patientPrice: 172.8, discountedPrice: 138.24 },
+        { category: "Women's Health - Sexual", product: "Sermorelin Sublingual Solution", strength: "2mg per mL", size: "30mL", patientPrice: 240.0, discountedPrice: 192.0 },
+        { category: "Women's Health - Sexual", product: "Sermorelin Injection", strength: "1mg per mL", size: "9mL", patientPrice: 196.8, discountedPrice: 157.44 },
+        { category: "Women's Health - Sexual", product: "Bremelanotide (PT-141) Nasal Spray", strength: "10mg per 0.1mL", size: "6 syringes (0.2ml each)", patientPrice: 352.0, discountedPrice: 281.6 },
+        { category: "Women's Health - Sexual", product: "Bremelanotide (PT-141) Injection", strength: "1.75mg per 0.1mL", size: "2mL", patientPrice: 232.0, discountedPrice: 185.6 },
+        { category: "Women's Health - Pain Relief", product: "All Purpose Nipple Ointment (APNO)", strength: "Mupirocin 2%/Betamethasone 0.1%/Miconazole 2%", size: "15 grams", patientPrice: 105.6, discountedPrice: 84.48 },
+        { category: "Women's Health - Pain Relief", product: "All Purpose Nipple Ointment (APNO)", strength: "Mupirocin 2%/Betamethasone 0.1%/Miconazole 2%", size: "30 grams", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "Women's Health - Pain Relief", product: "Baclofen/Diazepam Suppository", strength: "10mg/10mg or 5mg/5mg", size: "30 Suppositories", patientPrice: 124.8, discountedPrice: 99.84 },
+        { category: "Women's Health - Pain Relief", product: "Baclofen/Diazepam Suppository", strength: "10mg/10mg or 5mg/5mg", size: "90 Suppositories", patientPrice: 252.8, discountedPrice: 202.24 },
+        { category: "Women's Health - Pain Relief", product: "Diazepam Suppository", strength: "5mg, 7.5mg, 10mg", size: "30 Suppositories", patientPrice: 124.8, discountedPrice: 99.84 },
+        { category: "Women's Health - Pain Relief", product: "Diazepam Suppository", strength: "5mg, 7.5mg, 10mg", size: "90 Suppositories", patientPrice: 252.8, discountedPrice: 202.24 },
+        { category: "Women's Health - Pain Relief", product: "Amitriptyline/Baclofen/Gabapentin Vaginal Gel", strength: "5%/5%/5%", size: "30 grams", patientPrice: 118.4, discountedPrice: 94.72 },
+        { category: "Women's Health - UTI Relief", product: "UTI Relief Capsule", strength: "Methenamine 118mg/Hyoscyamine 0.12mg/Sodium Phosphate 40.8mg/Phenyl Salicylate 36mg", size: "90 Capsules", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "IV Wellness - Single", product: "Alpha Lipoic Acid", strength: "10mg/mL - IV", size: "30mL", patientPrice: 104.0, discountedPrice: 83.2 },
+        { category: "IV Wellness - Single", product: "Alpha Lipoic Acid", strength: "25mg/mL - IV", size: "30mL", patientPrice: 136.0, discountedPrice: 108.8 },
+        { category: "IV Wellness - Single", product: "Biotin", strength: "0.5mg/mL - IV", size: "30mL", patientPrice: 116.8, discountedPrice: 93.44 },
+        { category: "IV Wellness - Single", product: "B12 Methylcobalamin", strength: "5mg/mL - IV/IM", size: "30mL", patientPrice: 102.4, discountedPrice: 81.92 },
+        { category: "IV Wellness - Single", product: "Vitamin D3", strength: "50,000 IU/mL - IM", size: "10mL", patientPrice: 82.8, discountedPrice: 66.24 },
+        { category: "IV Wellness - Single", product: "Dexpanthenol", strength: "250mg/mL - IV/IM", size: "30mL", patientPrice: 97.6, discountedPrice: 78.08 },
+        { category: "IV Wellness - Single", product: "Edetate Calcium Disodium (PF)", strength: "300mg/mL - IV", size: "10mL", patientPrice: 27.2, discountedPrice: 21.76 },
+        { category: "IV Wellness - Single", product: "L-Arginine", strength: "200mg/mL - IV/IM", size: "30mL", patientPrice: 100.8, discountedPrice: 80.64 },
+        { category: "IV Wellness - Single", product: "L-Carnitine", strength: "500mg/mL - IV/IM", size: "30mL", patientPrice: 99.12, discountedPrice: 79.296 },
+        { category: "IV Wellness - Single", product: "Folic Acid (commercial)", strength: "5mg/mL - IV", size: "10mL", patientPrice: 132.8, discountedPrice: 106.24 },
+        { category: "IV Wellness - Single", product: "Glutathione", strength: "200mg/mL - IV/IM", size: "30mL", patientPrice: 83.2, discountedPrice: 66.56 },
+        { category: "IV Wellness - Single", product: "Glutathione (PF)", strength: "200mg/mL - IV/IM", size: "10mL", patientPrice: 35.2, discountedPrice: 28.16 },
+        { category: "IV Wellness - Single", product: "Glycyrrhizic Acid (PF)", strength: "8mg/mL - IV", size: "40mL", patientPrice: 168.0, discountedPrice: 134.4 },
+        { category: "IV Wellness - Single", product: "Hydrogen Peroxide (PF)", strength: "3% - IV", size: "10mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "IV Wellness - Single", product: "L-Lysine", strength: "200mg/mL - IV", size: "30mL", patientPrice: 107.2, discountedPrice: 85.76 },
+        { category: "IV Wellness - Single", product: "Magnesium Chloride Hex (PF)", strength: "20% - IV", size: "5mL", patientPrice: 24.0, discountedPrice: 19.2 },
+        { category: "IV Wellness - Single", product: "Magnesium Chloride (commercial)", strength: "20% - IV", size: "50mL", patientPrice: 67.2, discountedPrice: 53.76 },
+        { category: "IV Wellness - Single", product: "Methylene Blue (PF)", strength: "2% - IV", size: "0.75mL", patientPrice: 88.0, discountedPrice: 70.4 },
+        { category: "IV Wellness - Single", product: "Manganese (commercial PF)", strength: "1mg/10mL - IV", size: "10mL", patientPrice: 120.0, discountedPrice: 96.0 },
+        { category: "IV Wellness - Single", product: "N-Acetylcysteine (PF)", strength: "100mg/mL - IV", size: "10mL", patientPrice: 27.2, discountedPrice: 21.76 },
+        { category: "IV Wellness - Single", product: "NAD+", strength: "50mg/mL - IV/IM", size: "20mL", patientPrice: 188.8, discountedPrice: 151.04 },
+        { category: "IV Wellness - Single", product: "NAD+", strength: "200mg/mL - IV/IM", size: "10mL", patientPrice: 302.4, discountedPrice: 241.92 },
+        { category: "IV Wellness - Single", product: "Procaine HCL (SDV)", strength: "20mg/mL - IV (Min 5 vials)", size: "5mL", patientPrice: 30.8, discountedPrice: 24.64 },
+        { category: "IV Wellness - Single", product: "Phosphatidylcholine", strength: "50mg/mL - IV", size: "10mL", patientPrice: 88.0, discountedPrice: 70.4 },
+        { category: "IV Wellness - Single", product: "Pyridoxine HCl", strength: "100mg/mL - IV (ASHP Shortage)", size: "30mL", patientPrice: 102.48, discountedPrice: 81.984 },
+        { category: "IV Wellness - Single", product: "Selenium", strength: "200mcg/mL - IV", size: "30mL", patientPrice: 120.96, discountedPrice: 96.768 },
+        { category: "IV Wellness - Single", product: "Sodium Ascorbate", strength: "562.5mg/mL non-GMO - IV (1-5 vials)", size: "50mL", patientPrice: 83.2, discountedPrice: 66.56 },
+        { category: "IV Wellness - Single", product: "Sodium Ascorbate", strength: "562.5mg/mL non-GMO - IV (6-10 vials)", size: "50mL", patientPrice: 72.0, discountedPrice: 57.6 },
+        { category: "IV Wellness - Single", product: "Sodium Ascorbate", strength: "562.5mg/mL non-GMO - IV (>11 vials)", size: "50mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Single", product: "L-Taurine", strength: "50mg/mL - IV/IM", size: "30mL", patientPrice: 97.6, discountedPrice: 78.08 },
+        { category: "IV Wellness - Single", product: "Thiamine HCl (commercial)", strength: "100mg/mL - IV/IM", size: "2mL", patientPrice: 27.2, discountedPrice: 21.76 },
+        { category: "IV Wellness - Single", product: "Zinc Sulfate", strength: "10mg/mL - IV", size: "10mL", patientPrice: 40.0, discountedPrice: 32.0 },
+        { category: "IV Wellness - Single", product: "Zinc Chloride (commercial SDV)", strength: "1mg/mL - IV", size: "10mL", patientPrice: 64.0, discountedPrice: 51.2 },
+        { category: "IV Wellness - Multi", product: "Lipotropic-PLUS (IM use)", strength: "B12/Niacinamide/Pyridoxine/Riboflavin/Methionine/Inositol/Choline/Thiamine/Lidocaine/L-Carnitine - 1-3ml IM 1-2x weekly", size: "10mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Multi", product: "Lipotropic-PLUS (IM use)", strength: "B12/Niacinamide/Pyridoxine/Riboflavin/Methionine/Inositol/Choline/Thiamine/Lidocaine/L-Carnitine - 1-3ml IM 1-2x weekly", size: "50mL", patientPrice: 230.4, discountedPrice: 184.32 },
+        { category: "IV Wellness - Multi", product: "Lipotropic-PLUS (No Lidocaine-IV use)", strength: "5-10ml per IV drip", size: "10mL", patientPrice: 32.0, discountedPrice: 25.6 },
+        { category: "IV Wellness - Multi", product: "B-Complex 100", strength: "Thiamine/Riboflavin/Niacinamide/Pyridoxine/Dexpanthenol - 1-3ml IM or IV weekly", size: "30mL", patientPrice: 99.2, discountedPrice: 79.36 },
+        { category: "IV Wellness - Multi", product: "Glycine/Proline/Taurine", strength: "25mg/50mg/50mg per mL - 1ml IM or 5ml IV drip", size: "30mL", patientPrice: 140.8, discountedPrice: 112.64 },
+        { category: "IV Wellness - Multi", product: "Lysine/Zinc", strength: "100mg/5mg per mL - 1ml IV drip", size: "1mL", patientPrice: 27.6, discountedPrice: 22.08 },
+        { category: "IV Wellness - Multi", product: "MIC", strength: "Methionine 15mg/Inositol 15mg/Choline 50mg per mL - 1-3ml IM or IV weekly", size: "30mL", patientPrice: 102.4, discountedPrice: 81.92 },
+        { category: "IV Wellness - Multi", product: "Multi-Trace & Mineral-6 (SDV)", strength: "Mg/Ca/Zn/Mn/Cu/Se per 5mL - 5ml IV drip only", size: "5mL", patientPrice: 33.6, discountedPrice: 26.88 },
+        { category: "IV Wellness - Multi", product: "Multi-Amino Acid-6", strength: "Glutamine/Arginine/Leucine/Ornithine/Glycine/Taurine per 5mL - 5ml IV drip only", size: "30mL", patientPrice: 112.0, discountedPrice: 89.6 },
+        { category: "IV Wellness - Multi", product: "Myers'-PLUS (SDV)", strength: "Vit C/B6/B2/B3/B1/B12/B5 per 20mL - 20ml IV drip only", size: "20mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Multi", product: "Myers'-Enhanced (SDV)", strength: "Mg/Vit C/B6/B5/B1/B2/B3 per 20mL - 20ml IV drip only", size: "20mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Multi", product: "Myers'-COMPLETE (SDV)", strength: "Mg/Vit C/B6/B5/B1/B2/B3/B12 per 20mL - 20ml IV drip only", size: "20mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Multi", product: "Myers' PUSH (SDV)", strength: "B6/B5/B1/B2/B3/B12/Mg per 20mL - IV push 1-2ml/min", size: "20mL", patientPrice: 68.8, discountedPrice: 55.04 },
+        { category: "IV Wellness - Multi", product: "Performance Enhancement Shot (SDV)", strength: "Methylcobalamin 2mg/Taurine 50mg/L-Arginine 100mg/mL - 1-2ml IM", size: "2mL", patientPrice: 40.0, discountedPrice: 32.0 },
+        { category: "IV Wellness - Kits", product: "Athletic Recovery & Performance Kit", strength: "Myers PLUS + Multi-Amino Acid-6 (6 treatments)", size: "Kit", patientPrice: 416.0, discountedPrice: 332.8 },
+        { category: "IV Wellness - Kits", product: "Detox Kit", strength: "Alpha Lipoic Acid + Glutathione (3 treatments)", size: "Kit", patientPrice: 184.0, discountedPrice: 147.2 },
+        { category: "IV Wellness - Kits", product: "Emergency Plan - Immunity Kit", strength: "Myers PLUS + Lysine/Zinc (6 treatments)", size: "Kit", patientPrice: 355.2, discountedPrice: 284.16 },
+        { category: "IV Wellness - Kits", product: "Refresh & Rehydrate Kit", strength: "Myers PLUS + Multi-Trace & Mineral-6 (6 treatments)", size: "Kit", patientPrice: 416.0, discountedPrice: 332.8 },
+        { category: "IV Wellness - Kits", product: "Youth & Vitality Kit", strength: "Myers PLUS + Glutathione (6 treatments)", size: "Kit", patientPrice: 416.0, discountedPrice: 332.8 },
+        { category: "IV Wellness - Kits", product: "Brain Health Kit", strength: "NAD+ + Glutathione (3 treatments)", size: "Kit", patientPrice: 240.0, discountedPrice: 192.0 },
+        { category: "IV Wellness - Kits", product: "Beauty Replenishing Kit", strength: "Myers PLUS + Biotin (6 treatments)", size: "Kit", patientPrice: 355.2, discountedPrice: 284.16 },
+        { category: "IV Wellness - Kits", product: "Mitochondrial Optimization Kit", strength: "Glutathione + Methylene Blue + NAD+ (4 treatments)", size: "Kit", patientPrice: 528.0, discountedPrice: 422.4 },
+    ];
+
+    // ============ MULTILINGUAL RESEARCH DATA ============
+    const medicationResearchData = {
+        en: {
+            "DMSA": {
+                uses: ["Heavy metal chelation therapy for lead, mercury, and arsenic poisoning", "Treatment of Wilson's disease (copper accumulation)", "Supportive therapy in autism spectrum disorder (investigational)", "Detoxification protocols for environmental toxin exposure", "May support cognitive function by removing neurotoxic metals"],
+                contraindications: ["Known allergy to DMSA (succimer)", "Concurrent use with other chelating agents", "Severe renal impairment or kidney failure", "Active gastrointestinal bleeding", "Pregnancy and breastfeeding (Category C)"],
+                sideEffects: ["Gastrointestinal upset (nausea, vomiting, diarrhea)", "Sulfurous odor in breath and urine", "Mild elevations in liver enzymes", "Rash or skin reactions", "Transient increase in urinary heavy metals"],
+                interactions: ["Kidney Disease: May worsen renal function; requires dose adjustment", "Liver Disease: Monitor liver enzymes closely; may cause hepatotoxicity", "Mineral Deficiencies: Can deplete essential minerals like zinc and copper", "Immunocompromised States: May affect white blood cell counts", "Diabetes: Monitor blood glucose as it may affect insulin sensitivity"]
+            },
+            "Ivermectin": {
+                uses: ["Treatment of parasitic infections (roundworms, threadworms)", "Onchocerciasis (river blindness) treatment", "Strongyloidiasis treatment", "Scabies and head lice treatment", "Rosacea (topical formulation)"],
+                contraindications: ["Hypersensitivity to ivermectin", "Loa loa co-infection (risk of encephalopathy)", "Children under 15kg body weight", "Pregnancy (Category C)", "Concurrent use with drugs that increase CNS penetration"],
+                sideEffects: ["Dizziness and lightheadedness", "Nausea and gastrointestinal discomfort", "Skin rash or itching", "Mazzotti reaction (in patients with onchocerciasis)", "Fatigue and muscle aches"],
+                interactions: ["Liver Disease: Metabolized by liver; may accumulate in hepatic impairment", "Seizure Disorders: May lower seizure threshold", "Immunodeficiency: May have altered drug response", "Blood-Brain Barrier Disorders: Increased risk of CNS effects", "Concurrent P-glycoprotein Inhibitors: May increase drug levels"]
+            },
+            "Testosterone": {
+                uses: ["Treatment of male hypogonadism", "Hormone replacement therapy (HRT) in men", "Improvement of energy, mood, and libido", "Maintenance of muscle mass and bone density", "Management of age-related testosterone decline"],
+                contraindications: ["Prostate cancer (known or suspected)", "Breast cancer in males", "Severe cardiac, hepatic, or renal disease", "Polycythemia (high red blood cell count)", "Pregnancy (teratogenic)"],
+                sideEffects: ["Acne and oily skin", "Fluid retention", "Increased red blood cell count (polycythemia)", "Sleep apnea worsening", "Testicular atrophy with prolonged use"],
+                interactions: ["Cardiovascular Disease: May increase risk; monitor closely", "Sleep Apnea: Can worsen symptoms significantly", "Diabetes: May improve insulin sensitivity but require med adjustments", "Blood Clotting Disorders: Increases polycythemia risk", "BPH: May worsen urinary symptoms initially"]
+            },
+            "Semaglutide": {
+                uses: ["Weight loss and obesity management", "Type 2 diabetes management (improves glycemic control)", "Reduction of cardiovascular risk in diabetic patients", "Appetite suppression through GLP-1 receptor agonism", "May improve metabolic markers (lipids, blood pressure)"],
+                contraindications: ["Personal or family history of medullary thyroid carcinoma", "Multiple Endocrine Neoplasia syndrome type 2", "History of pancreatitis", "Severe gastrointestinal disease", "Pregnancy and breastfeeding"],
+                sideEffects: ["Nausea and vomiting (common initially)", "Diarrhea or constipation", "Abdominal pain", "Decreased appetite", "Fatigue"],
+                interactions: ["Diabetes on Insulin/Sulfonylureas: Risk of hypoglycemia; dose adjustment needed", "Pancreatitis History: Avoid use; may trigger recurrence", "Thyroid Disorders: Monitor for thyroid changes; MTC risk", "Gastroparesis: May worsen delayed gastric emptying", "Gallbladder Disease: May increase risk of cholelithiasis"]
+            },
+            "Tirzepatide": {
+                uses: ["Weight management and obesity treatment", "Type 2 diabetes management", "Dual GIP/GLP-1 receptor agonism for enhanced metabolic effects", "Significant weight loss (up to 20%+ body weight)", "Improvement in cardiovascular risk factors"],
+                contraindications: ["Personal or family history of medullary thyroid carcinoma", "Multiple Endocrine Neoplasia syndrome type 2", "Severe gastrointestinal disease", "History of pancreatitis", "Pregnancy"],
+                sideEffects: ["Nausea (common, usually improves)", "Diarrhea", "Decreased appetite", "Vomiting", "Constipation"],
+                interactions: ["Diabetes on Insulin: Significant hypoglycemia risk; reduce insulin dose", "Pancreatitis History: Contraindicated", "Thyroid Cancer History: Avoid use", "Malabsorption Syndromes: May worsen nutrient absorption", "Eating Disorders: Use with caution; significant appetite suppression"]
+            },
+            "Progesterone": {
+                uses: ["Hormone replacement therapy in menopausal women", "Support of luteal phase in fertility treatments", "Prevention of endometrial hyperplasia", "Sleep improvement (calming/anxiolytic effects)", "Premenstrual syndrome (PMS) management"],
+                contraindications: ["Known or suspected breast cancer", "Undiagnosed vaginal bleeding", "Liver disease or tumors", "History of blood clots", "Allergy to progesterone or peanuts (some formulations)"],
+                sideEffects: ["Drowsiness and fatigue", "Mood changes", "Breast tenderness", "Headache", "Bloating"],
+                interactions: ["Depression: May worsen or improve mood; monitor closely", "Liver Disease: Metabolized hepatically; use with caution", "Breast Cancer History: Generally contraindicated", "Clotting Disorders: May affect coagulation", "Diabetes: May affect glucose tolerance"]
+            },
+            "Estrogen": {
+                uses: ["Relief of menopausal symptoms (hot flashes, night sweats)", "Prevention of osteoporosis", "Vaginal atrophy treatment", "Improvement of skin elasticity and collagen", "Cognitive and mood support"],
+                contraindications: ["Known or suspected breast cancer", "Active thromboembolic disease", "Undiagnosed vaginal bleeding", "Liver disease", "Pregnancy"],
+                sideEffects: ["Breast tenderness", "Nausea", "Headache", "Fluid retention", "Mood changes"],
+                interactions: ["Breast Cancer History: Contraindicated; increases recurrence risk", "Clotting Disorders/DVT History: Significantly increases clot risk", "Liver Disease: Impaired metabolism; consider transdermal route", "Hypertension: May worsen; monitor blood pressure", "Gallbladder Disease: Increases risk of gallstones"]
+            },
+            "default": {
+                uses: ["Please consult with your healthcare provider for specific uses", "Indications vary based on formulation and strength", "May be used as part of a comprehensive treatment plan", "Individual patient factors determine appropriateness", "Contact Folk City Family Practice for detailed information"],
+                contraindications: ["Known allergy to medication or its components", "Conditions that may be worsened by this medication", "Pregnancy/breastfeeding (varies by medication)", "Drug interactions with current medications", "Consult provider for complete contraindication list"],
+                sideEffects: ["Side effects vary by individual medication", "Common: nausea, headache, fatigue", "Allergic reactions are possible with any medication", "Report unusual symptoms to your provider", "Full side effect profile available upon request"],
+                interactions: ["Interactions depend on specific medication and patient conditions", "Always inform provider of all current medications", "Chronic disease states may affect drug response", "Liver and kidney function affect drug metabolism", "Regular monitoring may be required"]
+            }
+        },
+        es: {
+            "DMSA": {
+                uses: ["Terapia de quelación de metales pesados para intoxicación por plomo, mercurio y arsénico", "Tratamiento de la enfermedad de Wilson (acumulación de cobre)", "Terapia de apoyo en trastorno del espectro autista (investigación)", "Protocolos de desintoxicación por exposición a toxinas ambientales", "Puede apoyar la función cognitiva eliminando metales neurotóxicos"],
+                contraindications: ["Alergia conocida al DMSA (succimer)", "Uso concurrente con otros agentes quelantes", "Insuficiencia renal severa o fallo renal", "Sangrado gastrointestinal activo", "Embarazo y lactancia (Categoría C)"],
+                sideEffects: ["Malestar gastrointestinal (náuseas, vómitos, diarrea)", "Olor sulfuroso en aliento y orina", "Elevaciones leves de enzimas hepáticas", "Erupción o reacciones cutáneas", "Aumento transitorio de metales pesados en orina"],
+                interactions: ["Enfermedad Renal: Puede empeorar la función renal; requiere ajuste de dosis", "Enfermedad Hepática: Monitorear enzimas hepáticas; puede causar hepatotoxicidad", "Deficiencias Minerales: Puede agotar minerales esenciales como zinc y cobre", "Estados Inmunocomprometidos: Puede afectar el recuento de glóbulos blancos", "Diabetes: Monitorear glucosa ya que puede afectar la sensibilidad a la insulina"]
+            },
+            "Ivermectin": {
+                uses: ["Tratamiento de infecciones parasitarias (lombrices, oxiuros)", "Tratamiento de oncocercosis (ceguera de los ríos)", "Tratamiento de estrongiloidiasis", "Tratamiento de sarna y piojos", "Rosácea (formulación tópica)"],
+                contraindications: ["Hipersensibilidad a la ivermectina", "Coinfección por Loa loa (riesgo de encefalopatía)", "Niños menores de 15kg de peso", "Embarazo (Categoría C)", "Uso concurrente con fármacos que aumentan la penetración en el SNC"],
+                sideEffects: ["Mareo y aturdimiento", "Náuseas y malestar gastrointestinal", "Erupción cutánea o picazón", "Reacción de Mazzotti (en pacientes con oncocercosis)", "Fatiga y dolores musculares"],
+                interactions: ["Enfermedad Hepática: Metabolizado por el hígado; puede acumularse en insuficiencia hepática", "Trastornos Convulsivos: Puede reducir el umbral convulsivo", "Inmunodeficiencia: Puede tener respuesta alterada al fármaco", "Trastornos de la Barrera Hematoencefálica: Mayor riesgo de efectos en SNC", "Inhibidores de P-glicoproteína: Pueden aumentar los niveles del fármaco"]
+            },
+            "Testosterone": {
+                uses: ["Tratamiento del hipogonadismo masculino", "Terapia de reemplazo hormonal (TRH) en hombres", "Mejora de energía, estado de ánimo y libido", "Mantenimiento de masa muscular y densidad ósea", "Manejo del declive de testosterona relacionado con la edad"],
+                contraindications: ["Cáncer de próstata (conocido o sospechado)", "Cáncer de mama en hombres", "Enfermedad cardíaca, hepática o renal severa", "Policitemia (recuento alto de glóbulos rojos)", "Embarazo (teratogénico)"],
+                sideEffects: ["Acné y piel grasa", "Retención de líquidos", "Aumento del recuento de glóbulos rojos (policitemia)", "Empeoramiento de apnea del sueño", "Atrofia testicular con uso prolongado"],
+                interactions: ["Enfermedad Cardiovascular: Puede aumentar el riesgo; monitorear de cerca", "Apnea del Sueño: Puede empeorar significativamente los síntomas", "Diabetes: Puede mejorar la sensibilidad a la insulina pero requerir ajustes", "Trastornos de Coagulación: Aumenta el riesgo de policitemia", "HPB: Puede empeorar los síntomas urinarios inicialmente"]
+            },
+            "Semaglutide": {
+                uses: ["Pérdida de peso y manejo de obesidad", "Manejo de diabetes tipo 2 (mejora el control glucémico)", "Reducción del riesgo cardiovascular en pacientes diabéticos", "Supresión del apetito a través del agonismo del receptor GLP-1", "Puede mejorar marcadores metabólicos (lípidos, presión arterial)"],
+                contraindications: ["Historia personal o familiar de carcinoma medular de tiroides", "Síndrome de Neoplasia Endocrina Múltiple tipo 2", "Historia de pancreatitis", "Enfermedad gastrointestinal severa", "Embarazo y lactancia"],
+                sideEffects: ["Náuseas y vómitos (común inicialmente)", "Diarrea o estreñimiento", "Dolor abdominal", "Disminución del apetito", "Fatiga"],
+                interactions: ["Diabetes con Insulina/Sulfonilureas: Riesgo de hipoglucemia; ajuste de dosis necesario", "Historia de Pancreatitis: Evitar uso; puede desencadenar recurrencia", "Trastornos Tiroideos: Monitorear cambios tiroideos; riesgo de CMT", "Gastroparesia: Puede empeorar el vaciado gástrico retardado", "Enfermedad de Vesícula: Puede aumentar el riesgo de colelitiasis"]
+            },
+            "Tirzepatide": {
+                uses: ["Manejo de peso y tratamiento de obesidad", "Manejo de diabetes tipo 2", "Doble agonismo GIP/GLP-1 para efectos metabólicos mejorados", "Pérdida de peso significativa (hasta 20%+ del peso corporal)", "Mejora en factores de riesgo cardiovascular"],
+                contraindications: ["Historia personal o familiar de carcinoma medular de tiroides", "Síndrome de Neoplasia Endocrina Múltiple tipo 2", "Enfermedad gastrointestinal severa", "Historia de pancreatitis", "Embarazo"],
+                sideEffects: ["Náuseas (común, generalmente mejora)", "Diarrea", "Disminución del apetito", "Vómitos", "Estreñimiento"],
+                interactions: ["Diabetes con Insulina: Riesgo significativo de hipoglucemia; reducir dosis de insulina", "Historia de Pancreatitis: Contraindicado", "Historia de Cáncer de Tiroides: Evitar uso", "Síndromes de Malabsorción: Puede empeorar la absorción de nutrientes", "Trastornos Alimentarios: Usar con precaución; supresión significativa del apetito"]
+            },
+            "Progesterone": {
+                uses: ["Terapia de reemplazo hormonal en mujeres menopáusicas", "Apoyo de la fase lútea en tratamientos de fertilidad", "Prevención de hiperplasia endometrial", "Mejora del sueño (efectos calmantes/ansiolíticos)", "Manejo del síndrome premenstrual (SPM)"],
+                contraindications: ["Cáncer de mama conocido o sospechado", "Sangrado vaginal no diagnosticado", "Enfermedad o tumores hepáticos", "Historia de coágulos sanguíneos", "Alergia a la progesterona o cacahuetes (algunas formulaciones)"],
+                sideEffects: ["Somnolencia y fatiga", "Cambios de humor", "Sensibilidad mamaria", "Dolor de cabeza", "Hinchazón"],
+                interactions: ["Depresión: Puede empeorar o mejorar el estado de ánimo; monitorear de cerca", "Enfermedad Hepática: Metabolizado hepáticamente; usar con precaución", "Historia de Cáncer de Mama: Generalmente contraindicado", "Trastornos de Coagulación: Puede afectar la coagulación", "Diabetes: Puede afectar la tolerancia a la glucosa"]
+            },
+            "Estrogen": {
+                uses: ["Alivio de síntomas menopáusicos (sofocos, sudores nocturnos)", "Prevención de osteoporosis", "Tratamiento de atrofia vaginal", "Mejora de elasticidad de la piel y colágeno", "Apoyo cognitivo y del estado de ánimo"],
+                contraindications: ["Cáncer de mama conocido o sospechado", "Enfermedad tromboembólica activa", "Sangrado vaginal no diagnosticado", "Enfermedad hepática", "Embarazo"],
+                sideEffects: ["Sensibilidad mamaria", "Náuseas", "Dolor de cabeza", "Retención de líquidos", "Cambios de humor"],
+                interactions: ["Historia de Cáncer de Mama: Contraindicado; aumenta el riesgo de recurrencia", "Trastornos de Coagulación/Historia de TVP: Aumenta significativamente el riesgo de coágulos", "Enfermedad Hepática: Metabolismo deteriorado; considerar ruta transdérmica", "Hipertensión: Puede empeorar; monitorear presión arterial", "Enfermedad de Vesícula: Aumenta el riesgo de cálculos biliares"]
+            },
+            "default": {
+                uses: ["Consulte con su proveedor de atención médica para usos específicos", "Las indicaciones varían según la formulación y concentración", "Puede usarse como parte de un plan de tratamiento integral", "Los factores individuales del paciente determinan la idoneidad", "Contacte a Folk City Family Practice para información detallada"],
+                contraindications: ["Alergia conocida al medicamento o sus componentes", "Condiciones que pueden empeorar con este medicamento", "Embarazo/lactancia (varía según el medicamento)", "Interacciones con medicamentos actuales", "Consulte al proveedor para lista completa de contraindicaciones"],
+                sideEffects: ["Los efectos secundarios varían según el medicamento", "Comunes: náuseas, dolor de cabeza, fatiga", "Las reacciones alérgicas son posibles con cualquier medicamento", "Informe síntomas inusuales a su proveedor", "Perfil completo de efectos secundarios disponible bajo solicitud"],
+                interactions: ["Las interacciones dependen del medicamento específico y condiciones del paciente", "Siempre informe al proveedor de todos los medicamentos actuales", "Los estados de enfermedad crónica pueden afectar la respuesta al fármaco", "La función hepática y renal afectan el metabolismo del fármaco", "Puede requerirse monitoreo regular"]
+            }
+        },
+        fr: {
+            "DMSA": {
+                uses: ["Thérapie de chélation des métaux lourds pour l'empoisonnement au plomb, mercure et arsenic", "Traitement de la maladie de Wilson (accumulation de cuivre)", "Thérapie de soutien dans les troubles du spectre autistique (recherche)", "Protocoles de détoxification pour l'exposition aux toxines environnementales", "Peut soutenir la fonction cognitive en éliminant les métaux neurotoxiques"],
+                contraindications: ["Allergie connue au DMSA (succimer)", "Utilisation concomitante avec d'autres agents chélateurs", "Insuffisance rénale sévère ou insuffisance rénale", "Saignement gastro-intestinal actif", "Grossesse et allaitement (Catégorie C)"],
+                sideEffects: ["Troubles gastro-intestinaux (nausées, vomissements, diarrhée)", "Odeur de soufre dans l'haleine et l'urine", "Élévations légères des enzymes hépatiques", "Éruption cutanée ou réactions cutanées", "Augmentation transitoire des métaux lourds urinaires"],
+                interactions: ["Maladie Rénale: Peut aggraver la fonction rénale; ajustement de dose requis", "Maladie Hépatique: Surveiller les enzymes hépatiques; peut causer une hépatotoxicité", "Carences Minérales: Peut épuiser les minéraux essentiels comme le zinc et le cuivre", "États Immunodéprimés: Peut affecter le nombre de globules blancs", "Diabète: Surveiller la glycémie car peut affecter la sensibilité à l'insuline"]
+            },
+            "Ivermectin": {
+                uses: ["Traitement des infections parasitaires (ascaris, oxyures)", "Traitement de l'onchocercose (cécité des rivières)", "Traitement de la strongyloïdose", "Traitement de la gale et des poux", "Rosacée (formulation topique)"],
+                contraindications: ["Hypersensibilité à l'ivermectine", "Co-infection par Loa loa (risque d'encéphalopathie)", "Enfants de moins de 15kg", "Grossesse (Catégorie C)", "Utilisation concomitante avec des médicaments augmentant la pénétration du SNC"],
+                sideEffects: ["Étourdissements et vertiges", "Nausées et inconfort gastro-intestinal", "Éruption cutanée ou démangeaisons", "Réaction de Mazzotti (chez les patients atteints d'onchocercose)", "Fatigue et douleurs musculaires"],
+                interactions: ["Maladie Hépatique: Métabolisé par le foie; peut s'accumuler en cas d'insuffisance hépatique", "Troubles Convulsifs: Peut abaisser le seuil convulsif", "Immunodéficience: Peut avoir une réponse médicamenteuse altérée", "Troubles de la Barrière Hémato-Encéphalique: Risque accru d'effets sur le SNC", "Inhibiteurs de P-glycoprotéine: Peuvent augmenter les niveaux du médicament"]
+            },
+            "Testosterone": {
+                uses: ["Traitement de l'hypogonadisme masculin", "Thérapie de remplacement hormonal (TRH) chez les hommes", "Amélioration de l'énergie, de l'humeur et de la libido", "Maintien de la masse musculaire et de la densité osseuse", "Gestion du déclin de la testostérone lié à l'âge"],
+                contraindications: ["Cancer de la prostate (connu ou suspecté)", "Cancer du sein chez les hommes", "Maladie cardiaque, hépatique ou rénale sévère", "Polycythémie (nombre élevé de globules rouges)", "Grossesse (tératogène)"],
+                sideEffects: ["Acné et peau grasse", "Rétention d'eau", "Augmentation du nombre de globules rouges (polycythémie)", "Aggravation de l'apnée du sommeil", "Atrophie testiculaire avec utilisation prolongée"],
+                interactions: ["Maladie Cardiovasculaire: Peut augmenter le risque; surveiller étroitement", "Apnée du Sommeil: Peut aggraver significativement les symptômes", "Diabète: Peut améliorer la sensibilité à l'insuline mais nécessiter des ajustements", "Troubles de la Coagulation: Augmente le risque de polycythémie", "HBP: Peut aggraver les symptômes urinaires initialement"]
+            },
+            "Semaglutide": {
+                uses: ["Perte de poids et gestion de l'obésité", "Gestion du diabète de type 2 (améliore le contrôle glycémique)", "Réduction du risque cardiovasculaire chez les patients diabétiques", "Suppression de l'appétit par agonisme du récepteur GLP-1", "Peut améliorer les marqueurs métaboliques (lipides, tension artérielle)"],
+                contraindications: ["Antécédents personnels ou familiaux de carcinome médullaire de la thyroïde", "Syndrome de néoplasie endocrinienne multiple de type 2", "Antécédents de pancréatite", "Maladie gastro-intestinale sévère", "Grossesse et allaitement"],
+                sideEffects: ["Nausées et vomissements (courants initialement)", "Diarrhée ou constipation", "Douleur abdominale", "Diminution de l'appétit", "Fatigue"],
+                interactions: ["Diabète sous Insuline/Sulfonylurées: Risque d'hypoglycémie; ajustement de dose nécessaire", "Antécédents de Pancréatite: Éviter l'utilisation; peut déclencher une récidive", "Troubles Thyroïdiens: Surveiller les changements thyroïdiens; risque de CMT", "Gastroparésie: Peut aggraver la vidange gastrique retardée", "Maladie de la Vésicule: Peut augmenter le risque de cholélithiase"]
+            },
+            "Tirzepatide": {
+                uses: ["Gestion du poids et traitement de l'obésité", "Gestion du diabète de type 2", "Double agonisme GIP/GLP-1 pour des effets métaboliques améliorés", "Perte de poids significative (jusqu'à 20%+ du poids corporel)", "Amélioration des facteurs de risque cardiovasculaire"],
+                contraindications: ["Antécédents personnels ou familiaux de carcinome médullaire de la thyroïde", "Syndrome de néoplasie endocrinienne multiple de type 2", "Maladie gastro-intestinale sévère", "Antécédents de pancréatite", "Grossesse"],
+                sideEffects: ["Nausées (courantes, s'améliorent généralement)", "Diarrhée", "Diminution de l'appétit", "Vomissements", "Constipation"],
+                interactions: ["Diabète sous Insuline: Risque significatif d'hypoglycémie; réduire la dose d'insuline", "Antécédents de Pancréatite: Contre-indiqué", "Antécédents de Cancer de la Thyroïde: Éviter l'utilisation", "Syndromes de Malabsorption: Peut aggraver l'absorption des nutriments", "Troubles Alimentaires: Utiliser avec prudence; suppression significative de l'appétit"]
+            },
+            "Progesterone": {
+                uses: ["Thérapie de remplacement hormonal chez les femmes ménopausées", "Soutien de la phase lutéale dans les traitements de fertilité", "Prévention de l'hyperplasie endométriale", "Amélioration du sommeil (effets calmants/anxiolytiques)", "Gestion du syndrome prémenstruel (SPM)"],
+                contraindications: ["Cancer du sein connu ou suspecté", "Saignement vaginal non diagnostiqué", "Maladie ou tumeurs hépatiques", "Antécédents de caillots sanguins", "Allergie à la progestérone ou aux arachides (certaines formulations)"],
+                sideEffects: ["Somnolence et fatigue", "Changements d'humeur", "Sensibilité mammaire", "Maux de tête", "Ballonnements"],
+                interactions: ["Dépression: Peut aggraver ou améliorer l'humeur; surveiller étroitement", "Maladie Hépatique: Métabolisé par le foie; utiliser avec prudence", "Antécédents de Cancer du Sein: Généralement contre-indiqué", "Troubles de la Coagulation: Peut affecter la coagulation", "Diabète: Peut affecter la tolérance au glucose"]
+            },
+            "Estrogen": {
+                uses: ["Soulagement des symptômes de la ménopause (bouffées de chaleur, sueurs nocturnes)", "Prévention de l'ostéoporose", "Traitement de l'atrophie vaginale", "Amélioration de l'élasticité de la peau et du collagène", "Soutien cognitif et de l'humeur"],
+                contraindications: ["Cancer du sein connu ou suspecté", "Maladie thromboembolique active", "Saignement vaginal non diagnostiqué", "Maladie hépatique", "Grossesse"],
+                sideEffects: ["Sensibilité mammaire", "Nausées", "Maux de tête", "Rétention d'eau", "Changements d'humeur"],
+                interactions: ["Antécédents de Cancer du Sein: Contre-indiqué; augmente le risque de récidive", "Troubles de la Coagulation/Antécédents de TVP: Augmente significativement le risque de caillots", "Maladie Hépatique: Métabolisme altéré; considérer la voie transdermique", "Hypertension: Peut aggraver; surveiller la tension artérielle", "Maladie de la Vésicule: Augmente le risque de calculs biliaires"]
+            },
+            "default": {
+                uses: ["Veuillez consulter votre prestataire de soins pour les utilisations spécifiques", "Les indications varient selon la formulation et le dosage", "Peut être utilisé dans le cadre d'un plan de traitement complet", "Les facteurs individuels du patient déterminent l'adéquation", "Contactez Folk City Family Practice pour des informations détaillées"],
+                contraindications: ["Allergie connue au médicament ou à ses composants", "Conditions pouvant être aggravées par ce médicament", "Grossesse/allaitement (varie selon le médicament)", "Interactions avec les médicaments actuels", "Consultez le prestataire pour la liste complète des contre-indications"],
+                sideEffects: ["Les effets secondaires varient selon le médicament", "Courants: nausées, maux de tête, fatigue", "Des réactions allergiques sont possibles avec tout médicament", "Signalez les symptômes inhabituels à votre prestataire", "Profil complet des effets secondaires disponible sur demande"],
+                interactions: ["Les interactions dépendent du médicament spécifique et des conditions du patient", "Informez toujours le prestataire de tous les médicaments actuels", "Les états de maladie chronique peuvent affecter la réponse au médicament", "La fonction hépatique et rénale affecte le métabolisme du médicament", "Une surveillance régulière peut être nécessaire"]
+            }
+        },
+        it: {
+            "DMSA": {
+                uses: ["Terapia chelante dei metalli pesanti per avvelenamento da piombo, mercurio e arsenico", "Trattamento della malattia di Wilson (accumulo di rame)", "Terapia di supporto nel disturbo dello spettro autistico (ricerca)", "Protocolli di disintossicazione per esposizione a tossine ambientali", "Può supportare la funzione cognitiva rimuovendo metalli neurotossici"],
+                contraindications: ["Allergia nota al DMSA (succimer)", "Uso concomitante con altri agenti chelanti", "Grave insufficienza renale o insufficienza renale", "Sanguinamento gastrointestinale attivo", "Gravidanza e allattamento (Categoria C)"],
+                sideEffects: ["Disturbi gastrointestinali (nausea, vomito, diarrea)", "Odore di zolfo nell'alito e nelle urine", "Lievi elevazioni degli enzimi epatici", "Eruzione cutanea o reazioni cutanee", "Aumento transitorio dei metalli pesanti urinari"],
+                interactions: ["Malattia Renale: Può peggiorare la funzione renale; richiede aggiustamento della dose", "Malattia Epatica: Monitorare gli enzimi epatici; può causare epatotossicità", "Carenze Minerali: Può esaurire minerali essenziali come zinco e rame", "Stati Immunocompromessi: Può influenzare la conta dei globuli bianchi", "Diabete: Monitorare la glicemia poiché può influenzare la sensibilità all'insulina"]
+            },
+            "Ivermectin": {
+                uses: ["Trattamento delle infezioni parassitarie (ascaridi, ossiuri)", "Trattamento dell'oncocercosi (cecità dei fiumi)", "Trattamento della strongiloidiasi", "Trattamento di scabbia e pidocchi", "Rosacea (formulazione topica)"],
+                contraindications: ["Ipersensibilità all'ivermectina", "Co-infezione da Loa loa (rischio di encefalopatia)", "Bambini sotto i 15kg di peso", "Gravidanza (Categoria C)", "Uso concomitante con farmaci che aumentano la penetrazione nel SNC"],
+                sideEffects: ["Vertigini e stordimento", "Nausea e disagio gastrointestinale", "Eruzione cutanea o prurito", "Reazione di Mazzotti (nei pazienti con oncocercosi)", "Affaticamento e dolori muscolari"],
+                interactions: ["Malattia Epatica: Metabolizzato dal fegato; può accumularsi in caso di insufficienza epatica", "Disturbi Convulsivi: Può abbassare la soglia convulsiva", "Immunodeficienza: Può avere risposta farmacologica alterata", "Disturbi della Barriera Emato-Encefalica: Rischio aumentato di effetti sul SNC", "Inibitori della P-glicoproteina: Possono aumentare i livelli del farmaco"]
+            },
+            "Testosterone": {
+                uses: ["Trattamento dell'ipogonadismo maschile", "Terapia ormonale sostitutiva (TOS) negli uomini", "Miglioramento di energia, umore e libido", "Mantenimento della massa muscolare e della densità ossea", "Gestione del declino del testosterone legato all'età"],
+                contraindications: ["Cancro alla prostata (noto o sospetto)", "Cancro al seno nei maschi", "Grave malattia cardiaca, epatica o renale", "Policitemia (alto numero di globuli rossi)", "Gravidanza (teratogeno)"],
+                sideEffects: ["Acne e pelle grassa", "Ritenzione idrica", "Aumento della conta dei globuli rossi (policitemia)", "Peggioramento dell'apnea notturna", "Atrofia testicolare con uso prolungato"],
+                interactions: ["Malattia Cardiovascolare: Può aumentare il rischio; monitorare attentamente", "Apnea Notturna: Può peggiorare significativamente i sintomi", "Diabete: Può migliorare la sensibilità all'insulina ma richiedere aggiustamenti", "Disturbi della Coagulazione: Aumenta il rischio di policitemia", "IPB: Può peggiorare i sintomi urinari inizialmente"]
+            },
+            "Semaglutide": {
+                uses: ["Perdita di peso e gestione dell'obesità", "Gestione del diabete di tipo 2 (migliora il controllo glicemico)", "Riduzione del rischio cardiovascolare nei pazienti diabetici", "Soppressione dell'appetito attraverso l'agonismo del recettore GLP-1", "Può migliorare i marcatori metabolici (lipidi, pressione sanguigna)"],
+                contraindications: ["Storia personale o familiare di carcinoma midollare della tiroide", "Sindrome da neoplasia endocrina multipla di tipo 2", "Storia di pancreatite", "Grave malattia gastrointestinale", "Gravidanza e allattamento"],
+                sideEffects: ["Nausea e vomito (comuni inizialmente)", "Diarrea o stitichezza", "Dolore addominale", "Diminuzione dell'appetito", "Affaticamento"],
+                interactions: ["Diabete con Insulina/Sulfaniluree: Rischio di ipoglicemia; aggiustamento della dose necessario", "Storia di Pancreatite: Evitare l'uso; può scatenare recidiva", "Disturbi Tiroidei: Monitorare i cambiamenti tiroidei; rischio di CMT", "Gastroparesi: Può peggiorare lo svuotamento gastrico ritardato", "Malattia della Cistifellea: Può aumentare il rischio di colelitiasi"]
+            },
+            "Tirzepatide": {
+                uses: ["Gestione del peso e trattamento dell'obesità", "Gestione del diabete di tipo 2", "Doppio agonismo GIP/GLP-1 per effetti metabolici potenziati", "Perdita di peso significativa (fino al 20%+ del peso corporeo)", "Miglioramento dei fattori di rischio cardiovascolare"],
+                contraindications: ["Storia personale o familiare di carcinoma midollare della tiroide", "Sindrome da neoplasia endocrina multipla di tipo 2", "Grave malattia gastrointestinale", "Storia di pancreatite", "Gravidanza"],
+                sideEffects: ["Nausea (comune, generalmente migliora)", "Diarrea", "Diminuzione dell'appetito", "Vomito", "Stitichezza"],
+                interactions: ["Diabete con Insulina: Rischio significativo di ipoglicemia; ridurre la dose di insulina", "Storia di Pancreatite: Controindicato", "Storia di Cancro alla Tiroide: Evitare l'uso", "Sindromi da Malassorbimento: Può peggiorare l'assorbimento dei nutrienti", "Disturbi Alimentari: Usare con cautela; soppressione significativa dell'appetito"]
+            },
+            "Progesterone": {
+                uses: ["Terapia ormonale sostitutiva nelle donne in menopausa", "Supporto della fase luteale nei trattamenti di fertilità", "Prevenzione dell'iperplasia endometriale", "Miglioramento del sonno (effetti calmanti/ansiolitici)", "Gestione della sindrome premestruale (SPM)"],
+                contraindications: ["Cancro al seno noto o sospetto", "Sanguinamento vaginale non diagnosticato", "Malattia o tumori epatici", "Storia di coaguli di sangue", "Allergia al progesterone o alle arachidi (alcune formulazioni)"],
+                sideEffects: ["Sonnolenza e affaticamento", "Cambiamenti di umore", "Sensibilità mammaria", "Mal di testa", "Gonfiore"],
+                interactions: ["Depressione: Può peggiorare o migliorare l'umore; monitorare attentamente", "Malattia Epatica: Metabolizzato epaticamente; usare con cautela", "Storia di Cancro al Seno: Generalmente controindicato", "Disturbi della Coagulazione: Può influenzare la coagulazione", "Diabete: Può influenzare la tolleranza al glucosio"]
+            },
+            "Estrogen": {
+                uses: ["Sollievo dei sintomi della menopausa (vampate di calore, sudorazioni notturne)", "Prevenzione dell'osteoporosi", "Trattamento dell'atrofia vaginale", "Miglioramento dell'elasticità della pelle e del collagene", "Supporto cognitivo e dell'umore"],
+                contraindications: ["Cancro al seno noto o sospetto", "Malattia tromboembolica attiva", "Sanguinamento vaginale non diagnosticato", "Malattia epatica", "Gravidanza"],
+                sideEffects: ["Sensibilità mammaria", "Nausea", "Mal di testa", "Ritenzione idrica", "Cambiamenti di umore"],
+                interactions: ["Storia di Cancro al Seno: Controindicato; aumenta il rischio di recidiva", "Disturbi della Coagulazione/Storia di TVP: Aumenta significativamente il rischio di coaguli", "Malattia Epatica: Metabolismo compromesso; considerare la via transdermica", "Ipertensione: Può peggiorare; monitorare la pressione sanguigna", "Malattia della Cistifellea: Aumenta il rischio di calcoli biliari"]
+            },
+            "default": {
+                uses: ["Si prega di consultare il proprio medico per usi specifici", "Le indicazioni variano in base alla formulazione e al dosaggio", "Può essere utilizzato come parte di un piano di trattamento completo", "I fattori individuali del paziente determinano l'idoneità", "Contattare Folk City Family Practice per informazioni dettagliate"],
+                contraindications: ["Allergia nota al farmaco o ai suoi componenti", "Condizioni che possono essere peggiorate da questo farmaco", "Gravidanza/allattamento (varia in base al farmaco)", "Interazioni con i farmaci attuali", "Consultare il medico per l'elenco completo delle controindicazioni"],
+                sideEffects: ["Gli effetti collaterali variano in base al singolo farmaco", "Comuni: nausea, mal di testa, affaticamento", "Reazioni allergiche sono possibili con qualsiasi farmaco", "Segnalare sintomi insoliti al proprio medico", "Profilo completo degli effetti collaterali disponibile su richiesta"],
+                interactions: ["Le interazioni dipendono dal farmaco specifico e dalle condizioni del paziente", "Informare sempre il medico di tutti i farmaci attuali", "Gli stati di malattia cronica possono influenzare la risposta al farmaco", "La funzione epatica e renale influenza il metabolismo del farmaco", "Può essere necessario un monitoraggio regolare"]
+            }
+        }
+    };
+
+    function getMedicationResearch(productName, lang) {
+        const lowerName = productName.toLowerCase();
+        const langData = medicationResearchData[lang] || medicationResearchData['en'];
+        
+        for (const [key, data] of Object.entries(langData)) {
+            if (lowerName.includes(key.toLowerCase())) return data;
+        }
+        
+        if (lowerName.includes('thyroid') || lowerName.includes('t3') || lowerName.includes('t4') || lowerName.includes('liothyronine') || lowerName.includes('levothyroxine') || lowerName.includes('dessicated')) return langData['default'];
+        if (lowerName.includes('estrogen') || lowerName.includes('biest') || lowerName.includes('estradiol') || lowerName.includes('estriol')) return langData['Estrogen'] || langData['default'];
+        if (lowerName.includes('progesterone')) return langData['Progesterone'] || langData['default'];
+        if (lowerName.includes('testosterone')) return langData['Testosterone'] || langData['default'];
+        if (lowerName.includes('semaglutide')) return langData['Semaglutide'] || langData['default'];
+        if (lowerName.includes('tirzepatide')) return langData['Tirzepatide'] || langData['default'];
+        
+        return langData['default'];
+    }
+
+    function displayResearchData(productName) {
+        const research = getMedicationResearch(productName, currentLang);
+        document.getElementById('usesList').innerHTML = research.uses.map(u => `<li>${u}</li>`).join('');
+        document.getElementById('contraindicationsList').innerHTML = research.contraindications.map(c => `<li>${c}</li>`).join('');
+        document.getElementById('sideEffectsList').innerHTML = research.sideEffects.map(s => `<li>${s}</li>`).join('');
+        document.getElementById('interactionsList').innerHTML = research.interactions.map(i => `<li>${i}</li>`).join('');
+    }
+
+    // ============ AUDIO ============
+    let audioContext = null;
+    let isMuted = false;
+
+    function initAudio() {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playSelectSound() {
+        if (isMuted || !audioContext) return;
+        try {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.frequency.value = 523.25;
+            osc.type = 'sine';
+            gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.15);
+        } catch (e) {}
+    }
+
+    function playCalculateSound() {
+        if (isMuted || !audioContext) return;
+        try {
+            const now = audioContext.currentTime;
+            [392.00, 493.88, 587.33].forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = freq;
+                osc.type = 'triangle';
+                gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.2);
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.2);
+            });
+        } catch (e) {}
+    }
+
+    function playResearchSound() {
+        if (isMuted || !audioContext) return;
+        try {
+            const now = audioContext.currentTime;
+            [329.63, 392.00, 493.88, 659.25].forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.15, now + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3);
+                osc.start(now + i * 0.1);
+                osc.stop(now + i * 0.1 + 0.3);
+            });
+        } catch (e) {}
+    }
+
+    // ============ MAIN LOGIC ============
+    const categories = [...new Set(medicationData.map(m => m.category))].sort();
+    const categorySelect = document.getElementById('categorySelect');
+    const medicationSelect = document.getElementById('medicationSelect');
+    const medicationGroup = document.getElementById('medicationGroup');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const soundToggle = document.getElementById('soundToggle');
+    const researchBtn = document.getElementById('researchBtn');
+    const researchPanel = document.getElementById('researchPanel');
+
+    let currentMedication = null;
+
+    // Populate categories
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+    });
+
+    // Category change
+    categorySelect.addEventListener('change', function() {
+        initAudio();
+        const selectedCategory = this.value;
+        medicationSelect.innerHTML = `<option value="">${translations[currentLang].chooseMedication}</option>`;
+        
+        if (selectedCategory) {
+            playSelectSound();
+            const filteredMeds = medicationData.filter(m => m.category === selectedCategory);
+            filteredMeds.forEach((med, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${med.product} - ${med.strength} (${med.size})`;
+                medicationSelect.appendChild(option);
+            });
+            medicationGroup.classList.remove('hidden');
+            medicationGroup.classList.add('animate');
+            resultsContainer.classList.remove('visible');
+            researchPanel.classList.remove('visible');
+        } else {
+            medicationGroup.classList.add('hidden');
+            resultsContainer.classList.remove('visible');
+            researchPanel.classList.remove('visible');
+        }
+    });
+
+    // Medication change
+    medicationSelect.addEventListener('change', function() {
+        const selectedCategory = categorySelect.value;
+        const selectedIndex = this.value;
+        
+        if (selectedCategory && selectedIndex !== '') {
+            playCalculateSound();
+            const filteredMeds = medicationData.filter(m => m.category === selectedCategory);
+            const med = filteredMeds[parseInt(selectedIndex)];
+            currentMedication = med;
+            
+            const patientPrice = med.patientPrice;
+
+            document.getElementById('medName').textContent = med.product;
+            document.getElementById('medStrength').textContent = med.strength;
+            document.getElementById('medSize').textContent = med.size;
+            document.getElementById('priceDisplay').textContent = '$' + patientPrice.toFixed(2);
+
+            resultsContainer.classList.add('visible');
+            researchPanel.classList.remove('visible');
+        } else {
+            resultsContainer.classList.remove('visible');
+            researchPanel.classList.remove('visible');
+            currentMedication = null;
+        }
+    });
+
+    // Research button
+    researchBtn.addEventListener('click', function() {
+        if (!currentMedication) return;
+        
+        researchBtn.classList.add('loading');
+        researchBtn.disabled = true;
+        
+        setTimeout(() => {
+            playResearchSound();
+            displayResearchData(currentMedication.product);
+            researchPanel.classList.add('visible');
+            researchBtn.classList.remove('loading');
+            researchBtn.disabled = false;
+            researchPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 800);
+    });
+
+    // Sound toggle
+    soundToggle.addEventListener('click', function() {
+        initAudio();
+        isMuted = !isMuted;
+        document.getElementById('soundIcon').textContent = isMuted ? '🔇' : '🔊';
+        this.querySelector('[data-translate]').textContent = translations[currentLang][isMuted ? 'soundOff' : 'soundOn'];
+        this.classList.toggle('muted', isMuted);
+    });
+
+    </script>
+</body>
+</html>
