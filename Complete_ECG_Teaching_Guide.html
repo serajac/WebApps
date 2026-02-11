@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete ECG Rhythm Teaching Guide - PDCCC EMS Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1a5276;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #1a5276;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .header h2 {
+            color: #2874a6;
+            font-size: 22px;
+            font-weight: normal;
+        }
+        .header p {
+            color: #666;
+            margin-top: 10px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #1a5276 0%, #2874a6 100%);
+            color: white;
+            padding: 15px 25px;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 40px 0 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .rhythm-section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .rhythm-title {
+            background: #1a5276;
+            color: white;
+            padding: 12px 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .rhythm-title.junctional { background: #6c3483; }
+        .rhythm-title.ventricular { background: #c0392b; }
+        .rhythm-title.block { background: #d35400; }
+        .rhythm-title.arrest { background: #1c2833; }
+        .rhythm-title.ectopy { background: #117a65; }
+        
+        .rhythm-subtitle {
+            background: #2874a6;
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+        .rhythm-subtitle.junctional { background: #8e44ad; }
+        .rhythm-subtitle.ventricular { background: #e74c3c; }
+        .rhythm-subtitle.block { background: #e67e22; }
+        .rhythm-subtitle.arrest { background: #2c3e50; }
+        .rhythm-subtitle.ectopy { background: #1abc9c; }
+        
+        .ecg-container {
+            background: #fff5f5;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .ecg-strip {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            border-radius: 4px;
+        }
+        .characteristics {
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        .characteristics h4 {
+            color: #1a5276;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .char-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #2874a6;
+        }
+        .char-item.junctional { border-left-color: #8e44ad; }
+        .char-item.ventricular { border-left-color: #e74c3c; }
+        .char-item.block { border-left-color: #e67e22; }
+        .char-item.arrest { border-left-color: #2c3e50; }
+        .char-item.ectopy { border-left-color: #1abc9c; }
+        
+        .char-item strong {
+            color: #1a5276;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .clinical-notes {
+            background: #e8f4f8;
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+        }
+        .clinical-notes h4 {
+            color: #1a5276;
+            margin-bottom: 8px;
+        }
+        .etiology-list {
+            columns: 2;
+            column-gap: 30px;
+            list-style-position: inside;
+        }
+        .etiology-list li {
+            margin-bottom: 4px;
+        }
+        .management {
+            background: #e8f8e8;
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+        }
+        .management h4 {
+            color: #196f3d;
+            margin-bottom: 8px;
+        }
+        .management.urgent {
+            background: #fdecea;
+        }
+        .management.urgent h4 {
+            color: #c0392b;
+        }
+        .key-point {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .danger-point {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 10px 15px;
+            margin: 10px 0;
+            color: #721c24;
+        }
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .toc h3 {
+            color: #1a5276;
+            margin-bottom: 15px;
+        }
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .toc-section {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-top: 3px solid #1a5276;
+        }
+        .toc-section.junctional { border-top-color: #8e44ad; }
+        .toc-section.ventricular { border-top-color: #e74c3c; }
+        .toc-section.block { border-top-color: #e67e22; }
+        .toc-section.arrest { border-top-color: #1c2833; }
+        .toc-section.ectopy { border-top-color: #1abc9c; }
+        
+        .toc-section h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .toc-section ul {
+            list-style: none;
+            font-size: 13px;
+        }
+        .toc-section li {
+            padding: 3px 0;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+        @media print {
+            body { padding: 0; }
+            .rhythm-section { page-break-inside: avoid; }
+            .section-header { page-break-before: always; }
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .summary-table th {
+            background: #1a5276;
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .summary-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        .summary-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Paul D. Camp Community College</h1>
+        <h2>EMS Program - Complete ECG Rhythm Teaching Guide</h2>
+        <p>Comprehensive Reference for Paramedic Students</p>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <div class="toc-grid">
+            <div class="toc-section">
+                <h4>🔵 Sinus Rhythms</h4>
+                <ul>
+                    <li>Normal Sinus Rhythm</li>
+                    <li>Sinus Bradycardia</li>
+                    <li>Sinus Tachycardia</li>
+                    <li>Sinus Arrhythmia</li>
+                </ul>
+            </div>
+            <div class="toc-section" style="border-top-color: #2874a6;">
+                <h4>🔵 Atrial Rhythms</h4>
+                <ul>
+                    <li>Atrial Flutter</li>
+                    <li>Atrial Fibrillation</li>
+                    <li>Wandering Atrial Pacemaker</li>
+                    <li>Multifocal Atrial Tachycardia</li>
+                </ul>
+            </div>
+            <div class="toc-section junctional">
+                <h4>🟣 Junctional Rhythms</h4>
+                <ul>
+                    <li>Junctional Escape Rhythm</li>
+                    <li>Accelerated Junctional</li>
+                    <li>Junctional Tachycardia</li>
+                </ul>
+            </div>
+            <div class="toc-section ventricular">
+                <h4>🔴 Ventricular Rhythms</h4>
+                <ul>
+                    <li>Idioventricular Rhythm</li>
+                    <li>Accelerated Idioventricular</li>
+                    <li>Ventricular Tachycardia</li>
+                    <li>Ventricular Fibrillation</li>
+                    <li>Torsades de Pointes</li>
+                </ul>
+            </div>
+            <div class="toc-section block">
+                <h4>🟠 AV Blocks</h4>
+                <ul>
+                    <li>First-Degree AV Block</li>
+                    <li>Second-Degree Type I</li>
+                    <li>Second-Degree Type II</li>
+                    <li>Third-Degree (Complete)</li>
+                </ul>
+            </div>
+            <div class="toc-section ectopy">
+                <h4>🟢 Ectopic Beats</h4>
+                <ul>
+                    <li>PAC (Premature Atrial)</li>
+                    <li>PJC (Premature Junctional)</li>
+                    <li>PVC (Premature Ventricular)</li>
+                </ul>
+            </div>
+            <div class="toc-section arrest">
+                <h4>⚫ Arrest Rhythms</h4>
+                <ul>
+                    <li>Asystole</li>
+                    <li>PEA</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SINUS RHYTHMS ==================== -->
+    <div class="section-header">SINUS RHYTHMS - Origin: SA Node</div>
+
+    <!-- Normal Sinus Rhythm -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Normal Sinus Rhythm (NSR)</div>
+        <div class="rhythm-subtitle">Origin: Sinoatrial (SA) Node | Rate: 60-100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <defs>
+                    <pattern id="grid1" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ffcccc" stroke-width="0.5"/>
+                    </pattern>
+                    <pattern id="grid1-major" width="100" height="100" patternUnits="userSpaceOnUse">
+                        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ff9999" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 155,75 L 158,75 L 160,40 L 162,110 L 164,70 L 168,75 Q 175,75 180,70 Q 190,65 200,75
+                         L 230,75 Q 235,75 240,65 Q 245,55 250,75 L 255,75 L 258,75 L 260,40 L 262,110 L 264,70 L 268,75 Q 275,75 280,70 Q 290,65 300,75
+                         L 330,75 Q 335,75 340,65 Q 345,55 350,75 L 355,75 L 358,75 L 360,40 L 362,110 L 364,70 L 368,75 Q 375,75 380,70 Q 390,65 400,75
+                         L 430,75 Q 435,75 440,65 Q 445,55 450,75 L 455,75 L 458,75 L 460,40 L 462,110 L 464,70 L 468,75 Q 475,75 480,70 Q 490,65 500,75
+                         L 530,75 Q 535,75 540,65 Q 545,55 550,75 L 555,75 L 558,75 L 560,40 L 562,110 L 564,70 L 568,75 Q 575,75 580,70 Q 590,65 600,75
+                         L 630,75 Q 635,75 640,65 Q 645,55 650,75 L 655,75 L 658,75 L 660,40 L 662,110 L 664,70 L 668,75 Q 675,75 680,70 Q 690,65 700,75
+                         L 730,75 Q 735,75 740,65 Q 745,55 750,75 L 755,75 L 758,75 L 760,40 L 762,110 L 764,70 L 768,75 Q 775,75 780,70 Q 790,65 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="45" y="45" font-size="10" fill="#c0392b">P</text>
+                <text x="60" y="30" font-size="10" fill="#c0392b">QRS</text>
+                <text x="82" y="58" font-size="10" fill="#c0392b">T</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> 60-100 beats/min</div>
+                <div class="char-item"><strong>Rhythm:</strong> Regular (R-R intervals consistent)</div>
+                <div class="char-item"><strong>P Waves:</strong> Upright in Lead II, uniform, one before each QRS</div>
+                <div class="char-item"><strong>PR Interval:</strong> 0.12-0.20 seconds (3-5 small boxes)</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow, &lt;0.12 seconds</div>
+                <div class="char-item"><strong>P:QRS Ratio:</strong> 1:1</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Key Teaching Points</h4>
+            <p>For a rhythm to be classified as SINUS, TWO criteria must be met: (1) A 1:1 relationship between P waves and QRS complexes, and (2) P wave morphology indicating SA node origin (upright in Lead II, inverted in aVR).</p>
+        </div>
+    </div>
+
+    <!-- Sinus Bradycardia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Sinus Bradycardia</div>
+        <div class="rhythm-subtitle">Origin: SA Node | Rate: &lt;60 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 50,75 Q 55,75 60,65 Q 65,55 70,75 L 75,75 L 78,75 L 80,40 L 82,110 L 84,70 L 88,75 Q 95,75 100,70 Q 110,65 120,75
+                         L 180,75 Q 185,75 190,65 Q 195,55 200,75 L 205,75 L 208,75 L 210,40 L 212,110 L 214,70 L 218,75 Q 225,75 230,70 Q 240,65 250,75
+                         L 310,75 Q 315,75 320,65 Q 325,55 330,75 L 335,75 L 338,75 L 340,40 L 342,110 L 344,70 L 348,75 Q 355,75 360,70 Q 370,65 380,75
+                         L 440,75 Q 445,75 450,65 Q 455,55 460,75 L 465,75 L 468,75 L 470,40 L 472,110 L 474,70 L 478,75 Q 485,75 490,70 Q 500,65 510,75
+                         L 570,75 Q 575,75 580,65 Q 585,55 590,75 L 595,75 L 598,75 L 600,40 L 602,110 L 604,70 L 608,75 Q 615,75 620,70 Q 630,65 640,75
+                         L 700,75 Q 705,75 710,65 Q 715,55 720,75 L 725,75 L 728,75 L 730,40 L 732,110 L 734,70 L 738,75 Q 745,75 750,70 Q 760,65 770,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Rate: &lt;60 bpm - Note wider spacing between complexes</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> &lt;60 beats/min</div>
+                <div class="char-item"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item"><strong>P Waves:</strong> Upright, uniform, precede each QRS</div>
+                <div class="char-item"><strong>PR Interval:</strong> 0.12-0.20 seconds (normal)</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow, &lt;0.12 seconds</div>
+                <div class="char-item"><strong>P:QRS Ratio:</strong> 1:1</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Etiology</h4>
+            <ul class="etiology-list">
+                <li>Increased vagal tone</li>
+                <li>Intrinsic SA node disease</li>
+                <li>Hypothermia</li>
+                <li>Hypoxia</li>
+                <li>Hypothyroidism</li>
+                <li>Beta blockers, Ca channel blockers, digitalis</li>
+                <li>Inferior wall MI</li>
+                <li>Athletic conditioning (normal)</li>
+            </ul>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Asymptomatic:</strong> Observation only<br>
+            <strong>Symptomatic</strong> (hypotension, AMS, chest pain, CHF): Atropine 1mg IV q3-5min (max 3mg) → TCP → Dopamine/Epinephrine drip</p>
+        </div>
+    </div>
+
+    <!-- Sinus Tachycardia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Sinus Tachycardia</div>
+        <div class="rhythm-subtitle">Origin: SA Node | Rate: &gt;100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 15,75 Q 18,75 22,65 Q 26,55 30,75 L 33,75 L 35,75 L 37,40 L 39,110 L 41,70 L 44,75 Q 50,75 54,70 Q 60,65 66,75
+                         L 81,75 Q 84,75 88,65 Q 92,55 96,75 L 99,75 L 101,75 L 103,40 L 105,110 L 107,70 L 110,75 Q 116,75 120,70 Q 126,65 132,75
+                         L 147,75 Q 150,75 154,65 Q 158,55 162,75 L 165,75 L 167,75 L 169,40 L 171,110 L 173,70 L 176,75 Q 182,75 186,70 Q 192,65 198,75
+                         L 213,75 Q 216,75 220,65 Q 224,55 228,75 L 231,75 L 233,75 L 235,40 L 237,110 L 239,70 L 242,75 Q 248,75 252,70 Q 258,65 264,75
+                         L 279,75 Q 282,75 286,65 Q 290,55 294,75 L 297,75 L 299,75 L 301,40 L 303,110 L 305,70 L 308,75 Q 314,75 318,70 Q 324,65 330,75
+                         L 345,75 Q 348,75 352,65 Q 356,55 360,75 L 363,75 L 365,75 L 367,40 L 369,110 L 371,70 L 374,75 Q 380,75 384,70 Q 390,65 396,75
+                         L 411,75 Q 414,75 418,65 Q 422,55 426,75 L 429,75 L 431,75 L 433,40 L 435,110 L 437,70 L 440,75 Q 446,75 450,70 Q 456,65 462,75
+                         L 477,75 Q 480,75 484,65 Q 488,55 492,75 L 495,75 L 497,75 L 499,40 L 501,110 L 503,70 L 506,75 Q 512,75 516,70 Q 522,65 528,75
+                         L 543,75 Q 546,75 550,65 Q 554,55 558,75 L 561,75 L 563,75 L 565,40 L 567,110 L 569,70 L 572,75 Q 578,75 582,70 Q 588,65 594,75
+                         L 609,75 Q 612,75 616,65 Q 620,55 624,75 L 627,75 L 629,75 L 631,40 L 633,110 L 635,70 L 638,75 Q 644,75 648,70 Q 654,65 660,75
+                         L 675,75 Q 678,75 682,65 Q 686,55 690,75 L 693,75 L 695,75 L 697,40 L 699,110 L 701,70 L 704,75 Q 710,75 714,70 Q 720,65 726,75
+                         L 741,75 Q 744,75 748,65 Q 752,55 756,75 L 759,75 L 761,75 L 763,40 L 765,110 L 767,70 L 770,75 Q 776,75 780,70 Q 786,65 792,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Rate: &gt;100 bpm - Note closer spacing between complexes</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> &gt;100 bpm (usually 100-160)</div>
+                <div class="char-item"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item"><strong>P Waves:</strong> Upright, uniform, 1:1 (may merge with T at high rates)</div>
+                <div class="char-item"><strong>PR Interval:</strong> 0.12-0.20 seconds</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item"><strong>P:QRS Ratio:</strong> 1:1</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Etiology</h4>
+            <ul class="etiology-list">
+                <li>Exercise</li>
+                <li>Fever / Infection / Sepsis</li>
+                <li>Pain / Anxiety</li>
+                <li>Hypovolemia</li>
+                <li>Hyperthyroidism</li>
+                <li>Anemia</li>
+                <li>Heart failure</li>
+                <li>Pulmonary embolism</li>
+                <li>Sympathomimetic drugs</li>
+                <li>Caffeine / Alcohol</li>
+            </ul>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Critical Management Point</h4>
+            <div class="danger-point">Sinus tachycardia is usually a COMPENSATORY response. <strong>TREAT THE UNDERLYING CAUSE, NOT THE RATE!</strong><br>
+            Treating the rate without addressing the cause can lead to cardiovascular collapse!</div>
+        </div>
+    </div>
+
+    <!-- Sinus Arrhythmia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Sinus Arrhythmia</div>
+        <div class="rhythm-subtitle">Origin: SA Node | Rate varies with respiration</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 25,75 Q 28,75 32,65 Q 36,55 40,75 L 43,75 L 45,75 L 47,40 L 49,110 L 51,70 L 54,75 Q 60,75 64,70 Q 70,65 76,75
+                         L 96,75 Q 99,75 103,65 Q 107,55 111,75 L 114,75 L 116,75 L 118,40 L 120,110 L 122,70 L 125,75 Q 131,75 135,70 Q 141,65 147,75
+                         L 177,75 Q 180,75 184,65 Q 188,55 192,75 L 195,75 L 197,75 L 199,40 L 201,110 L 203,70 L 206,75 Q 212,75 216,70 Q 222,65 228,75
+                         L 268,75 Q 271,75 275,65 Q 279,55 283,75 L 286,75 L 288,75 L 290,40 L 292,110 L 294,70 L 297,75 Q 303,75 307,70 Q 313,65 319,75
+                         L 349,75 Q 352,75 356,65 Q 360,55 364,75 L 367,75 L 369,75 L 371,40 L 373,110 L 375,70 L 378,75 Q 384,75 388,70 Q 394,65 400,75
+                         L 420,75 Q 423,75 427,65 Q 431,55 435,75 L 438,75 L 440,75 L 442,40 L 444,110 L 446,70 L 449,75 Q 455,75 459,70 Q 465,65 471,75
+                         L 491,75 Q 494,75 498,65 Q 502,55 506,75 L 509,75 L 511,75 L 513,40 L 515,110 L 517,70 L 520,75 Q 526,75 530,70 Q 536,65 542,75
+                         L 572,75 Q 575,75 579,65 Q 583,55 587,75 L 590,75 L 592,75 L 594,40 L 596,110 L 598,70 L 601,75 Q 607,75 611,70 Q 617,65 623,75
+                         L 663,75 Q 666,75 670,65 Q 674,55 678,75 L 681,75 L 683,75 L 685,40 L 687,110 L 689,70 L 692,75 Q 698,75 702,70 Q 708,65 714,75
+                         L 744,75 Q 747,75 751,65 Q 755,55 759,75 L 762,75 L 764,75 L 766,40 L 768,110 L 770,70 L 773,75 Q 779,75 783,70 Q 789,65 795,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="80" y="25" font-size="10" fill="#2874a6">Inspiration (faster)</text>
+                <text x="250" y="25" font-size="10" fill="#2874a6">Expiration (slower)</text>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Note: Variable P-P intervals that change with breathing</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> Usually 60-100 bpm (varies)</div>
+                <div class="char-item"><strong>Rhythm:</strong> Irregular - P-P varies &gt;0.16 sec</div>
+                <div class="char-item"><strong>P Waves:</strong> Upright, uniform morphology</div>
+                <div class="char-item"><strong>PR Interval:</strong> Constant</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item"><strong>Pattern:</strong> Rate ↑ inspiration, ↓ expiration</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>No treatment required.</strong> This is a benign, normal variant - especially common in young, healthy patients.</p>
+        </div>
+    </div>
+
+    <!-- ==================== ATRIAL RHYTHMS ==================== -->
+    <div class="section-header">ATRIAL RHYTHMS - Origin: Atrial Tissue</div>
+
+    <!-- Atrial Flutter -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Atrial Flutter</div>
+        <div class="rhythm-subtitle">Origin: Rapid Atrial Reentry Circuit | Atrial Rate: 250-350/min</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 10,75 L 20,55 L 30,85 L 40,55 L 50,75 L 52,40 L 54,110 L 56,70 L 60,75
+                         L 70,55 L 80,85 L 90,55 L 100,85 L 110,55 L 120,75 L 122,40 L 124,110 L 126,70 L 130,75
+                         L 140,55 L 150,85 L 160,55 L 170,85 L 180,55 L 190,75 L 192,40 L 194,110 L 196,70 L 200,75
+                         L 210,55 L 220,85 L 230,55 L 240,85 L 250,55 L 260,75 L 262,40 L 264,110 L 266,70 L 270,75
+                         L 280,55 L 290,85 L 300,55 L 310,85 L 320,55 L 330,75 L 332,40 L 334,110 L 336,70 L 340,75
+                         L 350,55 L 360,85 L 370,55 L 380,85 L 390,55 L 400,75 L 402,40 L 404,110 L 406,70 L 410,75
+                         L 420,55 L 430,85 L 440,55 L 450,85 L 460,55 L 470,75 L 472,40 L 474,110 L 476,70 L 480,75
+                         L 490,55 L 500,85 L 510,55 L 520,85 L 530,55 L 540,75 L 542,40 L 544,110 L 546,70 L 550,75
+                         L 560,55 L 570,85 L 580,55 L 590,85 L 600,55 L 610,75 L 612,40 L 614,110 L 616,70 L 620,75
+                         L 630,55 L 640,85 L 650,55 L 660,85 L 670,55 L 680,75 L 682,40 L 684,110 L 686,70 L 690,75
+                         L 700,55 L 710,85 L 720,55 L 730,85 L 740,55 L 750,75 L 752,40 L 754,110 L 756,70 L 760,75
+                         L 770,55 L 780,85 L 790,55 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="100" y="25" font-size="10" fill="#c0392b">Sawtooth flutter waves (F waves)</text>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">2:1 conduction shown = Ventricular rate ~150 bpm</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Atrial Rate:</strong> 250-350/min (~300 typical)</div>
+                <div class="char-item"><strong>Ventricular Rate:</strong> Depends on block (2:1=150, 4:1=75)</div>
+                <div class="char-item"><strong>Rhythm:</strong> Usually regular if fixed block ratio</div>
+                <div class="char-item"><strong>P Waves:</strong> Absent - SAWTOOTH flutter waves (F waves)</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Usually narrow</div>
+                <div class="char-item"><strong>Key Feature:</strong> Classic sawtooth baseline</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Stable:</strong> Rate control with diltiazem or beta blockers<br>
+            <strong>Unstable:</strong> Synchronized cardioversion<br>
+            <strong>CAUTION:</strong> Avoid cardioversion in new-onset without anticoagulation (stroke risk)</p>
+        </div>
+    </div>
+
+    <!-- Atrial Fibrillation -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Atrial Fibrillation (A-Fib)</div>
+        <div class="rhythm-subtitle">Origin: Multiple Atrial Foci | Atrial Rate: 350-600/min</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 5,73 L 8,77 L 12,74 L 15,76 L 18,73 L 22,78 L 25,74 L 28,76 L 32,73 L 35,77 L 38,74
+                         L 42,76 L 45,40 L 47,110 L 49,70 L 53,75 L 56,73 L 60,77 L 63,74 L 66,76 L 70,73 L 73,78 L 76,74
+                         L 80,76 L 83,73 L 86,77 L 90,74 L 93,76 L 96,73 L 100,78 L 103,74 L 106,76
+                         L 110,40 L 112,110 L 114,70 L 118,75 L 121,73 L 125,77 L 128,74 L 131,76 L 135,73 L 138,78
+                         L 142,74 L 145,76 L 148,73 L 152,77 L 155,74 L 158,76 L 162,73 L 165,78 L 168,74 L 172,76
+                         L 175,73 L 178,77 L 182,74 L 185,40 L 187,110 L 189,70 L 193,75 L 196,73 L 200,77 L 203,74
+                         L 206,76 L 210,73 L 213,78 L 216,74 L 220,76 L 223,73 L 226,77 L 230,74 L 233,76 L 236,73
+                         L 240,78 L 243,74 L 246,76 L 250,73 L 253,77 L 256,40 L 258,110 L 260,70 L 264,75 L 267,73
+                         L 270,77 L 274,74 L 277,76 L 280,73 L 284,78 L 287,74 L 290,76 L 294,73 L 297,77 L 300,74
+                         L 304,76 L 307,73 L 310,78 L 314,74 L 317,76 L 320,73 L 324,77 L 327,74 L 330,76 L 334,40
+                         L 336,110 L 338,70 L 342,75 L 345,73 L 348,77 L 352,74 L 355,76 L 358,73 L 362,78 L 365,74
+                         L 368,76 L 372,73 L 375,77 L 378,74 L 382,76 L 385,73 L 388,78 L 392,74 L 395,76 L 398,73
+                         L 402,77 L 405,40 L 407,110 L 409,70 L 413,75 L 416,73 L 420,77 L 423,74 L 426,76 L 430,73
+                         L 433,78 L 436,74 L 440,76 L 443,73 L 446,77 L 450,74 L 453,76 L 456,73 L 460,78 L 463,74
+                         L 466,76 L 470,73 L 473,77 L 476,74 L 480,40 L 482,110 L 484,70 L 488,75 L 491,73 L 494,77
+                         L 498,74 L 501,76 L 504,73 L 508,78 L 511,74 L 514,76 L 518,73 L 521,77 L 524,74 L 528,76
+                         L 531,73 L 534,78 L 538,74 L 541,76 L 544,73 L 548,77 L 551,74 L 554,76 L 558,40 L 560,110
+                         L 562,70 L 566,75 L 569,73 L 572,77 L 576,74 L 579,76 L 582,73 L 586,78 L 589,74 L 592,76
+                         L 596,73 L 599,77 L 602,74 L 606,76 L 609,73 L 612,78 L 616,74 L 619,76 L 622,73 L 626,77
+                         L 629,40 L 631,110 L 633,70 L 637,75 L 640,73 L 643,77 L 647,74 L 650,76 L 653,73 L 657,78
+                         L 660,74 L 663,76 L 667,73 L 670,77 L 673,74 L 677,76 L 680,73 L 683,78 L 687,74 L 690,76
+                         L 693,73 L 697,77 L 700,74 L 703,76 L 707,40 L 709,110 L 711,70 L 715,75 L 718,73 L 721,77
+                         L 725,74 L 728,76 L 731,73 L 735,78 L 738,74 L 741,76 L 745,73 L 748,77 L 751,74 L 755,76
+                         L 758,73 L 761,78 L 765,74 L 768,76 L 771,73 L 775,77 L 778,74 L 781,40 L 783,110 L 785,70
+                         L 789,75 L 792,73 L 795,77 L 798,74 L 800,76"
+                      stroke="#000" stroke-width="1.5" fill="none"/>
+                <text x="50" y="25" font-size="10" fill="#c0392b">No P waves - chaotic fibrillatory baseline</text>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">IRREGULARLY IRREGULAR - Hallmark finding!</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Atrial Rate:</strong> 350-600/min (fibrillatory)</div>
+                <div class="char-item"><strong>Ventricular Rate:</strong> Variable (RVR &gt;100, controlled 60-100)</div>
+                <div class="char-item"><strong>Rhythm:</strong> IRREGULARLY IRREGULAR</div>
+                <div class="char-item"><strong>P Waves:</strong> Absent - chaotic f waves</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Usually narrow</div>
+                <div class="char-item"><strong>Baseline:</strong> Chaotic, undulating</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Clinical Significance</h4>
+            <p><strong>Loss of atrial kick reduces cardiac output by ~15%</strong>. "Holiday heart" = paroxysmal A-fib after heavy alcohol.</p>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Stable:</strong> Rate control with diltiazem or beta blockers<br>
+            <strong>Unstable:</strong> Synchronized cardioversion<br>
+            <strong>Long-term:</strong> Anticoagulation for stroke prevention</p>
+        </div>
+    </div>
+
+    <!-- Wandering Atrial Pacemaker -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Wandering Atrial Pacemaker (WAP)</div>
+        <div class="rhythm-subtitle">Origin: Multiple Atrial Sites | Rate: Usually 60-100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Varying P wave morphologies -->
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 133,75 137,68 Q 141,61 145,75 L 150,75 L 153,75 L 155,40 L 157,110 L 159,70 L 163,75 Q 170,75 175,70 Q 185,65 195,75
+                         L 225,75 Q 230,80 235,85 Q 240,90 245,75 L 250,75 L 253,75 L 255,40 L 257,110 L 259,70 L 263,75 Q 270,75 275,70 Q 285,65 295,75
+                         L 325,75 Q 328,75 332,70 Q 336,65 340,75 L 345,75 L 348,75 L 350,40 L 352,110 L 354,70 L 358,75 Q 365,75 370,70 Q 380,65 390,75
+                         L 420,75 Q 425,80 430,85 Q 435,90 440,75 L 445,75 L 448,75 L 450,40 L 452,110 L 454,70 L 458,75 Q 465,75 470,70 Q 480,65 490,75
+                         L 520,75 Q 523,75 527,68 Q 531,61 535,75 L 540,75 L 543,75 L 545,40 L 547,110 L 549,70 L 553,75 Q 560,75 565,70 Q 575,65 585,75
+                         L 615,75 Q 620,75 625,65 Q 630,55 635,75 L 640,75 L 643,75 L 645,40 L 647,110 L 649,70 L 653,75 Q 660,75 665,70 Q 675,65 685,75
+                         L 715,75 Q 720,80 725,85 Q 730,90 735,75 L 740,75 L 743,75 L 745,40 L 747,110 L 749,70 L 753,75 Q 760,75 765,70 Q 775,65 785,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="40" y="48" font-size="9" fill="#2874a6">P1</text>
+                <text x="137" y="55" font-size="9" fill="#e74c3c">P2</text>
+                <text x="235" y="95" font-size="9" fill="#27ae60">P3</text>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Note: At least 3 different P wave morphologies</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> Usually 60-100 bpm</div>
+                <div class="char-item"><strong>Rhythm:</strong> Slightly irregular</div>
+                <div class="char-item"><strong>P Waves:</strong> At least 3 DIFFERENT morphologies</div>
+                <div class="char-item"><strong>PR Interval:</strong> Variable (changes with pacemaker site)</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item"><strong>Key Feature:</strong> Changing P wave shapes</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Usually benign - no treatment required.</strong> Often seen in healthy individuals, especially athletes and elderly.</p>
+        </div>
+    </div>
+
+    <!-- Multifocal Atrial Tachycardia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title">Multifocal Atrial Tachycardia (MAT)</div>
+        <div class="rhythm-subtitle">Origin: Multiple Atrial Sites | Rate: &gt;100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 20,75 Q 23,75 27,67 Q 31,59 35,75 L 38,75 L 40,75 L 42,42 L 44,108 L 46,72 L 49,75 Q 54,75 58,71 Q 64,67 70,75
+                         L 85,75 Q 90,78 95,82 Q 100,86 105,75 L 108,75 L 110,75 L 112,43 L 114,107 L 116,73 L 119,75 Q 124,75 128,71 Q 134,67 140,75
+                         L 158,75 Q 161,75 165,68 Q 169,61 173,75 L 176,75 L 178,75 L 180,44 L 182,106 L 184,74 L 187,75 Q 192,75 196,71 Q 202,67 208,75
+                         L 223,75 Q 228,75 233,65 Q 238,55 243,75 L 246,75 L 248,75 L 250,45 L 252,105 L 254,75 L 257,75 Q 262,75 266,71 Q 272,67 278,75
+                         L 298,75 Q 303,78 308,82 Q 313,86 318,75 L 321,75 L 323,75 L 325,46 L 327,104 L 329,76 L 332,75 Q 337,75 341,71 Q 347,67 353,75
+                         L 368,75 Q 371,75 375,68 Q 379,61 383,75 L 386,75 L 388,75 L 390,47 L 392,103 L 394,77 L 397,75 Q 402,75 406,71 Q 412,67 418,75
+                         L 438,75 Q 443,75 448,65 Q 453,55 458,75 L 461,75 L 463,75 L 465,48 L 467,102 L 469,78 L 472,75 Q 477,75 481,71 Q 487,67 493,75
+                         L 508,75 Q 513,78 518,82 Q 523,86 528,75 L 531,75 L 533,75 L 535,49 L 537,101 L 539,79 L 542,75 Q 547,75 551,71 Q 557,67 563,75
+                         L 583,75 Q 586,75 590,68 Q 594,61 598,75 L 601,75 L 603,75 L 605,50 L 607,100 L 609,80 L 612,75 Q 617,75 621,71 Q 627,67 633,75
+                         L 648,75 Q 653,75 658,65 Q 663,55 668,75 L 671,75 L 673,75 L 675,51 L 677,99 L 679,81 L 682,75 Q 687,75 691,71 Q 697,67 703,75
+                         L 723,75 Q 728,78 733,82 Q 738,86 743,75 L 746,75 L 748,75 L 750,52 L 752,98 L 754,82 L 757,75 Q 762,75 766,71 Q 772,67 778,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Rate &gt;100 + at least 3 different P wave morphologies = MAT (not WAP)</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item"><strong>Rate:</strong> &gt;100 bpm (often 100-180)</div>
+                <div class="char-item"><strong>Rhythm:</strong> Irregularly irregular</div>
+                <div class="char-item"><strong>P Waves:</strong> At least 3 different morphologies</div>
+                <div class="char-item"><strong>PR Interval:</strong> Variable</div>
+                <div class="char-item"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item"><strong>vs WAP:</strong> Same appearance but rate &gt;100</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Etiology</h4>
+            <p><strong>Commonly associated with COPD</strong> and respiratory failure. Also seen with: CHF, hypokalemia, hypomagnesemia, theophylline toxicity.</p>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p>Treat underlying cause (usually pulmonary disease). Magnesium sulfate may help. <strong>DO NOT cardiovert</strong> - will not work.</p>
+        </div>
+    </div>
+
+    <!-- ==================== JUNCTIONAL RHYTHMS ==================== -->
+    <div class="section-header" style="background: linear-gradient(135deg, #6c3483 0%, #8e44ad 100%);">JUNCTIONAL RHYTHMS - Origin: AV Junction</div>
+
+    <!-- Junctional Escape Rhythm -->
+    <div class="rhythm-section">
+        <div class="rhythm-title junctional">Junctional Escape Rhythm</div>
+        <div class="rhythm-subtitle junctional">Origin: AV Junction | Intrinsic Rate: 40-60 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Junctional - inverted P waves after QRS or absent -->
+                <path d="M 0,75 L 70,75 L 73,75 L 75,40 L 77,110 L 79,70 L 83,75 Q 88,80 93,85 Q 98,80 103,75 L 170,75
+                         L 173,75 L 175,40 L 177,110 L 179,70 L 183,75 Q 188,80 193,85 Q 198,80 203,75 L 270,75
+                         L 273,75 L 275,40 L 277,110 L 279,70 L 283,75 Q 288,80 293,85 Q 298,80 303,75 L 370,75
+                         L 373,75 L 375,40 L 377,110 L 379,70 L 383,75 Q 388,80 393,85 Q 398,80 403,75 L 470,75
+                         L 473,75 L 475,40 L 477,110 L 479,70 L 483,75 Q 488,80 493,85 Q 498,80 503,75 L 570,75
+                         L 573,75 L 575,40 L 577,110 L 579,70 L 583,75 Q 588,80 593,85 Q 598,80 603,75 L 670,75
+                         L 673,75 L 675,40 L 677,110 L 679,70 L 683,75 Q 688,80 693,85 Q 698,80 703,75 L 770,75
+                         L 773,75 L 775,40 L 777,110 L 779,70 L 783,75 Q 788,80 793,85 Q 798,80 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="88" y="100" font-size="9" fill="#8e44ad">Inverted P (retrograde)</text>
+                <text x="400" y="140" font-size="12" fill="#8e44ad" text-anchor="middle">P waves absent, inverted AFTER QRS, or hidden in QRS | Rate 40-60 bpm</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item junctional"><strong>Rate:</strong> 40-60 bpm (intrinsic junctional rate)</div>
+                <div class="char-item junctional"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item junctional"><strong>P Waves:</strong> Absent, inverted after QRS, or hidden in QRS</div>
+                <div class="char-item junctional"><strong>PR Interval:</strong> Short (&lt;0.12 sec) if P before QRS</div>
+                <div class="char-item junctional"><strong>QRS Complex:</strong> Narrow (&lt;0.12 sec)</div>
+                <div class="char-item junctional"><strong>Key Feature:</strong> AV junction takes over as pacemaker</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>Etiology</h4>
+            <ul class="etiology-list">
+                <li>SA node failure</li>
+                <li>Increased vagal tone</li>
+                <li>Digitalis toxicity</li>
+                <li>Beta blocker/Ca channel blocker</li>
+                <li>Inferior wall MI</li>
+                <li>Hypoxia</li>
+                <li>Post cardiac surgery</li>
+            </ul>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Asymptomatic:</strong> Monitor<br>
+            <strong>Symptomatic:</strong> Atropine 0.5-1mg IV → TCP → Dopamine/Epinephrine drip</p>
+        </div>
+    </div>
+
+    <!-- Accelerated Junctional Rhythm -->
+    <div class="rhythm-section">
+        <div class="rhythm-title junctional">Accelerated Junctional Rhythm</div>
+        <div class="rhythm-subtitle junctional">Origin: AV Junction | Rate: 60-100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 50,75 L 53,75 L 55,40 L 57,110 L 59,70 L 63,75 Q 68,80 73,85 Q 78,80 83,75 L 133,75
+                         L 136,75 L 138,40 L 140,110 L 142,70 L 146,75 Q 151,80 156,85 Q 161,80 166,75 L 216,75
+                         L 219,75 L 221,40 L 223,110 L 225,70 L 229,75 Q 234,80 239,85 Q 244,80 249,75 L 299,75
+                         L 302,75 L 304,40 L 306,110 L 308,70 L 312,75 Q 317,80 322,85 Q 327,80 332,75 L 382,75
+                         L 385,75 L 387,40 L 389,110 L 391,70 L 395,75 Q 400,80 405,85 Q 410,80 415,75 L 465,75
+                         L 468,75 L 470,40 L 472,110 L 474,70 L 478,75 Q 483,80 488,85 Q 493,80 498,75 L 548,75
+                         L 551,75 L 553,40 L 555,110 L 557,70 L 561,75 Q 566,80 571,85 Q 576,80 581,75 L 631,75
+                         L 634,75 L 636,40 L 638,110 L 640,70 L 644,75 Q 649,80 654,85 Q 659,80 664,75 L 714,75
+                         L 717,75 L 719,40 L 721,110 L 723,70 L 727,75 Q 732,80 737,85 Q 742,80 747,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#8e44ad" text-anchor="middle">Rate 60-100 bpm - Junctional appearance but faster than intrinsic rate</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item junctional"><strong>Rate:</strong> 60-100 bpm</div>
+                <div class="char-item junctional"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item junctional"><strong>P Waves:</strong> Absent, inverted, or retrograde</div>
+                <div class="char-item junctional"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item junctional"><strong>Key Feature:</strong> Junctional but enhanced automaticity</div>
+                <div class="char-item junctional"><strong>Common Cause:</strong> Digitalis toxicity</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Usually well-tolerated</strong> - treat underlying cause. If digitalis toxicity suspected, hold digoxin and check levels.</p>
+        </div>
+    </div>
+
+    <!-- Junctional Tachycardia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title junctional">Junctional Tachycardia</div>
+        <div class="rhythm-subtitle junctional">Origin: AV Junction | Rate: &gt;100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 30,75 L 33,75 L 35,40 L 37,110 L 39,70 L 43,75 Q 48,80 53,85 Q 58,80 63,75 L 93,75
+                         L 96,75 L 98,40 L 100,110 L 102,70 L 106,75 Q 111,80 116,85 Q 121,80 126,75 L 156,75
+                         L 159,75 L 161,40 L 163,110 L 165,70 L 169,75 Q 174,80 179,85 Q 184,80 189,75 L 219,75
+                         L 222,75 L 224,40 L 226,110 L 228,70 L 232,75 Q 237,80 242,85 Q 247,80 252,75 L 282,75
+                         L 285,75 L 287,40 L 289,110 L 291,70 L 295,75 Q 300,80 305,85 Q 310,80 315,75 L 345,75
+                         L 348,75 L 350,40 L 352,110 L 354,70 L 358,75 Q 363,80 368,85 Q 373,80 378,75 L 408,75
+                         L 411,75 L 413,40 L 415,110 L 417,70 L 421,75 Q 426,80 431,85 Q 436,80 441,75 L 471,75
+                         L 474,75 L 476,40 L 478,110 L 480,70 L 484,75 Q 489,80 494,85 Q 499,80 504,75 L 534,75
+                         L 537,75 L 539,40 L 541,110 L 543,70 L 547,75 Q 552,80 557,85 Q 562,80 567,75 L 597,75
+                         L 600,75 L 602,40 L 604,110 L 606,70 L 610,75 Q 615,80 620,85 Q 625,80 630,75 L 660,75
+                         L 663,75 L 665,40 L 667,110 L 669,70 L 673,75 Q 678,80 683,85 Q 688,80 693,75 L 723,75
+                         L 726,75 L 728,40 L 730,110 L 732,70 L 736,75 Q 741,80 746,85 Q 751,80 756,75 L 786,75
+                         L 789,75 L 791,40 L 793,110 L 795,70 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#8e44ad" text-anchor="middle">Rate &gt;100 bpm - Often 100-180 bpm</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item junctional"><strong>Rate:</strong> &gt;100 bpm (often 100-180)</div>
+                <div class="char-item junctional"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item junctional"><strong>P Waves:</strong> Absent, inverted, or retrograde</div>
+                <div class="char-item junctional"><strong>QRS Complex:</strong> Narrow</div>
+                <div class="char-item junctional"><strong>vs SVT:</strong> May be indistinguishable</div>
+                <div class="char-item junctional"><strong>Common Cause:</strong> Digitalis toxicity, MI</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Stable:</strong> Vagal maneuvers, adenosine (may help diagnose)<br>
+            <strong>Unstable:</strong> Synchronized cardioversion<br>
+            <strong>Note:</strong> Often treated same as SVT if origin unclear</p>
+        </div>
+    </div>
+
+    <!-- ==================== ECTOPIC BEATS ==================== -->
+    <div class="section-header" style="background: linear-gradient(135deg, #117a65 0%, #1abc9c 100%);">ECTOPIC BEATS - Premature Complexes</div>
+
+    <!-- PAC -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ectopy">Premature Atrial Complex (PAC)</div>
+        <div class="rhythm-subtitle ectopy">Origin: Ectopic Atrial Focus</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 155,75 L 158,75 L 160,40 L 162,110 L 164,70 L 168,75 Q 175,75 180,70 Q 190,65 200,75 L 215,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- PAC -->
+                <path d="M 215,75 Q 218,75 222,68 Q 226,61 230,75 L 233,75 L 235,75 L 237,42 L 239,108 L 241,72 L 244,75 Q 250,75 254,70 Q 260,65 266,75"
+                      stroke="#1abc9c" stroke-width="2.5" fill="none"/>
+                <!-- Resume normal -->
+                <path d="M 266,75 L 330,75 Q 335,75 340,65 Q 345,55 350,75 L 355,75 L 358,75 L 360,40 L 362,110 L 364,70 L 368,75 Q 375,75 380,70 Q 390,65 400,75
+                         L 430,75 Q 435,75 440,65 Q 445,55 450,75 L 455,75 L 458,75 L 460,40 L 462,110 L 464,70 L 468,75 Q 475,75 480,70 Q 490,65 500,75
+                         L 530,75 Q 535,75 540,65 Q 545,55 550,75 L 555,75 L 558,75 L 560,40 L 562,110 L 564,70 L 568,75 Q 575,75 580,70 Q 590,65 600,75 L 615,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Another PAC -->
+                <path d="M 615,75 Q 618,75 621,69 Q 624,63 628,75 L 631,75 L 633,75 L 635,43 L 637,107 L 639,73 L 642,75 Q 648,75 652,70 Q 658,65 664,75"
+                      stroke="#1abc9c" stroke-width="2.5" fill="none"/>
+                <path d="M 664,75 L 720,75 Q 725,75 730,65 Q 735,55 740,75 L 745,75 L 748,75 L 750,40 L 752,110 L 754,70 L 758,75 Q 765,75 770,70 Q 780,65 790,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="225" y="130" font-size="11" fill="#1abc9c" font-weight="bold">PAC</text>
+                <text x="622" y="130" font-size="11" fill="#1abc9c" font-weight="bold">PAC</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ectopy"><strong>Timing:</strong> Occurs EARLY (before expected beat)</div>
+                <div class="char-item ectopy"><strong>P Wave:</strong> Different morphology from sinus P waves</div>
+                <div class="char-item ectopy"><strong>QRS Complex:</strong> Usually narrow (same as sinus)</div>
+                <div class="char-item ectopy"><strong>Pause:</strong> Incomplete compensatory pause</div>
+                <div class="char-item ectopy"><strong>PR Interval:</strong> May be normal, short, or prolonged</div>
+                <div class="char-item ectopy"><strong>Significance:</strong> Usually benign if isolated</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Isolated PACs:</strong> Observation only - usually benign<br>
+            <strong>Frequent PACs:</strong> May trigger A-fib, A-flutter, or SVT - monitor closely</p>
+        </div>
+    </div>
+
+    <!-- PJC -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ectopy">Premature Junctional Complex (PJC)</div>
+        <div class="rhythm-subtitle ectopy">Origin: AV Junction</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 155,75 L 158,75 L 160,40 L 162,110 L 164,70 L 168,75 Q 175,75 180,70 Q 190,65 200,75 L 220,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- PJC - no P wave before, inverted P after -->
+                <path d="M 220,75 L 223,75 L 225,42 L 227,108 L 229,72 L 233,75 Q 238,80 243,85 Q 248,80 253,75"
+                      stroke="#1abc9c" stroke-width="2.5" fill="none"/>
+                <path d="M 253,75 L 330,75 Q 335,75 340,65 Q 345,55 350,75 L 355,75 L 358,75 L 360,40 L 362,110 L 364,70 L 368,75 Q 375,75 380,70 Q 390,65 400,75
+                         L 430,75 Q 435,75 440,65 Q 445,55 450,75 L 455,75 L 458,75 L 460,40 L 462,110 L 464,70 L 468,75 Q 475,75 480,70 Q 490,65 500,75
+                         L 530,75 Q 535,75 540,65 Q 545,55 550,75 L 555,75 L 558,75 L 560,40 L 562,110 L 564,70 L 568,75 Q 575,75 580,70 Q 590,65 600,75 L 620,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Another PJC -->
+                <path d="M 620,75 L 623,75 L 625,43 L 627,107 L 629,73 L 633,75 Q 638,80 643,85 Q 648,80 653,75"
+                      stroke="#1abc9c" stroke-width="2.5" fill="none"/>
+                <path d="M 653,75 L 720,75 Q 725,75 730,65 Q 735,55 740,75 L 745,75 L 748,75 L 750,40 L 752,110 L 754,70 L 758,75 Q 765,75 770,70 Q 780,65 790,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="225" y="130" font-size="11" fill="#1abc9c" font-weight="bold">PJC</text>
+                <text x="238" y="100" font-size="9" fill="#1abc9c">Retrograde P</text>
+                <text x="625" y="130" font-size="11" fill="#1abc9c" font-weight="bold">PJC</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ectopy"><strong>Timing:</strong> Occurs EARLY</div>
+                <div class="char-item ectopy"><strong>P Wave:</strong> Absent, inverted after QRS, or hidden</div>
+                <div class="char-item ectopy"><strong>QRS Complex:</strong> Narrow (same as sinus)</div>
+                <div class="char-item ectopy"><strong>PR Interval:</strong> Short (&lt;0.12 sec) if P before QRS</div>
+                <div class="char-item ectopy"><strong>Pause:</strong> May have compensatory pause</div>
+                <div class="char-item ectopy"><strong>Key Feature:</strong> Junctional appearance but premature</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Occasional PJCs:</strong> Usually not significant - observe<br>
+            <strong>Frequent PJCs:</strong> May indicate digitalis toxicity, hypoxia, or heart disease</p>
+        </div>
+    </div>
+
+    <!-- PVC -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ectopy">Premature Ventricular Complex (PVC)</div>
+        <div class="rhythm-subtitle ectopy">Origin: Ventricular Ectopic Focus</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 155,75 L 158,75 L 160,40 L 162,110 L 164,70 L 168,75 Q 175,75 180,70 Q 190,65 200,75 L 210,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- PVC - wide, bizarre QRS -->
+                <path d="M 210,75 L 215,75 L 220,25 L 240,130 L 260,45 L 275,75"
+                      stroke="#e74c3c" stroke-width="3" fill="none"/>
+                <!-- Compensatory pause then resume -->
+                <path d="M 275,75 L 370,75 Q 375,75 380,65 Q 385,55 390,75 L 395,75 L 398,75 L 400,40 L 402,110 L 404,70 L 408,75 Q 415,75 420,70 Q 430,65 440,75
+                         L 470,75 Q 475,75 480,65 Q 485,55 490,75 L 495,75 L 498,75 L 500,40 L 502,110 L 504,70 L 508,75 Q 515,75 520,70 Q 530,65 540,75 L 560,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Another PVC -->
+                <path d="M 560,75 L 565,75 L 570,130 L 590,25 L 610,110 L 625,75"
+                      stroke="#e74c3c" stroke-width="3" fill="none"/>
+                <path d="M 625,75 L 720,75 Q 725,75 730,65 Q 735,55 740,75 L 745,75 L 748,75 L 750,40 L 752,110 L 754,70 L 758,75 Q 765,75 770,70 Q 780,65 790,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="230" y="140" font-size="11" fill="#e74c3c" font-weight="bold">PVC</text>
+                <text x="580" y="140" font-size="11" fill="#e74c3c" font-weight="bold">PVC</text>
+                <text x="310" y="65" font-size="9" fill="#e74c3c">Full compensatory pause</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ectopy"><strong>Timing:</strong> Occurs EARLY</div>
+                <div class="char-item ectopy"><strong>P Wave:</strong> Usually absent (may see retrograde)</div>
+                <div class="char-item ectopy"><strong>QRS Complex:</strong> WIDE (&gt;0.12 sec), bizarre morphology</div>
+                <div class="char-item ectopy"><strong>T Wave:</strong> Opposite direction from QRS</div>
+                <div class="char-item ectopy"><strong>Pause:</strong> FULL compensatory pause</div>
+                <div class="char-item ectopy"><strong>Patterns:</strong> Unifocal, multifocal, couplets, bigeminy, trigeminy</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>PVC Patterns</h4>
+            <p><strong>Unifocal:</strong> Same shape (same focus) | <strong>Multifocal:</strong> Different shapes (different foci - more concerning)<br>
+            <strong>Bigeminy:</strong> Every other beat is PVC | <strong>Trigeminy:</strong> Every 3rd beat is PVC<br>
+            <strong>Couplet:</strong> 2 PVCs in a row | <strong>R-on-T:</strong> PVC falls on T wave (dangerous!)</p>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Isolated/unifocal:</strong> Usually benign - observe, treat underlying cause<br>
+            <strong>Frequent/multifocal/R-on-T:</strong> Oxygen, consider Amiodarone or Lidocaine<br>
+            <strong>With hemodynamic instability:</strong> Treat as per ACLS algorithms</p>
+        </div>
+    </div>
+
+    <!-- ==================== VENTRICULAR RHYTHMS ==================== -->
+    <div class="section-header" style="background: linear-gradient(135deg, #922b21 0%, #c0392b 100%);">VENTRICULAR RHYTHMS - Origin: Ventricles</div>
+
+    <!-- Idioventricular Rhythm -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ventricular">Idioventricular (Ventricular Escape) Rhythm</div>
+        <div class="rhythm-subtitle ventricular">Origin: Ventricles | Intrinsic Rate: 20-40 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Wide QRS, slow rate, no P waves -->
+                <path d="M 0,75 L 80,75 L 85,25 L 105,130 L 125,45 L 140,75 L 280,75 L 285,25 L 305,130 L 325,45 L 340,75
+                         L 480,75 L 485,25 L 505,130 L 525,45 L 540,75 L 680,75 L 685,25 L 705,130 L 725,45 L 740,75 L 800,75"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Rate 20-40 bpm | Wide QRS | No P waves | Last resort pacemaker</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ventricular"><strong>Rate:</strong> 20-40 bpm (intrinsic ventricular rate)</div>
+                <div class="char-item ventricular"><strong>Rhythm:</strong> Usually regular</div>
+                <div class="char-item ventricular"><strong>P Waves:</strong> Absent (or dissociated)</div>
+                <div class="char-item ventricular"><strong>QRS Complex:</strong> WIDE (&gt;0.12 sec)</div>
+                <div class="char-item ventricular"><strong>Significance:</strong> "Escape" rhythm - ventricles take over</div>
+                <div class="char-item ventricular"><strong>Prognosis:</strong> Often a dying heart rhythm</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management</h4>
+            <div class="danger-point">This is a "last resort" pacemaker. <strong>DO NOT suppress with antiarrhythmics</strong> - you'll cause asystole!<br>
+            Treatment: Atropine (limited effect), TCP, Dopamine/Epinephrine, treat underlying cause</div>
+        </div>
+    </div>
+
+    <!-- Accelerated Idioventricular Rhythm -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ventricular">Accelerated Idioventricular Rhythm (AIVR)</div>
+        <div class="rhythm-subtitle ventricular">Origin: Ventricles | Rate: 40-100 bpm</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <path d="M 0,75 L 50,75 L 55,25 L 75,130 L 95,45 L 110,75 L 180,75 L 185,25 L 205,130 L 225,45 L 240,75
+                         L 310,75 L 315,25 L 335,130 L 355,45 L 370,75 L 440,75 L 445,25 L 465,130 L 485,45 L 500,75
+                         L 570,75 L 575,25 L 595,130 L 615,45 L 630,75 L 700,75 L 705,25 L 725,130 L 745,45 L 760,75 L 800,75"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Rate 40-100 bpm | Wide QRS | Often seen with reperfusion (good sign!)</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ventricular"><strong>Rate:</strong> 40-100 bpm</div>
+                <div class="char-item ventricular"><strong>Rhythm:</strong> Usually regular</div>
+                <div class="char-item ventricular"><strong>P Waves:</strong> Absent or dissociated</div>
+                <div class="char-item ventricular"><strong>QRS Complex:</strong> Wide (&gt;0.12 sec)</div>
+                <div class="char-item ventricular"><strong>Common Cause:</strong> Reperfusion after MI (good sign!)</div>
+                <div class="char-item ventricular"><strong>Also seen with:</strong> Digitalis toxicity, electrolyte imbalance</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Usually benign and self-limiting.</strong> Often a sign of successful reperfusion after thrombolytics or PCI.<br>
+            <strong>DO NOT treat with antiarrhythmics</strong> unless hemodynamically unstable. Observe and monitor.</p>
+        </div>
+    </div>
+
+    <!-- Ventricular Tachycardia -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ventricular">Ventricular Tachycardia (V-Tach)</div>
+        <div class="rhythm-subtitle ventricular">Origin: Ventricles | Rate: &gt;100 bpm (usually 150-250)</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Monomorphic V-Tach -->
+                <path d="M 0,75 L 10,75 L 15,30 L 30,120 L 45,35 L 55,75 L 65,30 L 80,120 L 95,35 L 105,75
+                         L 115,30 L 130,120 L 145,35 L 155,75 L 165,30 L 180,120 L 195,35 L 205,75
+                         L 215,30 L 230,120 L 245,35 L 255,75 L 265,30 L 280,120 L 295,35 L 305,75
+                         L 315,30 L 330,120 L 345,35 L 355,75 L 365,30 L 380,120 L 395,35 L 405,75
+                         L 415,30 L 430,120 L 445,35 L 455,75 L 465,30 L 480,120 L 495,35 L 505,75
+                         L 515,30 L 530,120 L 545,35 L 555,75 L 565,30 L 580,120 L 595,35 L 605,75
+                         L 615,30 L 630,120 L 645,35 L 655,75 L 665,30 L 680,120 L 695,35 L 705,75
+                         L 715,30 L 730,120 L 745,35 L 755,75 L 765,30 L 780,120 L 795,35 L 800,75"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Monomorphic V-Tach: Wide, regular, uniform QRS complexes | Rate &gt;100 bpm</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ventricular"><strong>Rate:</strong> &gt;100 bpm (usually 150-250)</div>
+                <div class="char-item ventricular"><strong>Rhythm:</strong> Usually regular</div>
+                <div class="char-item ventricular"><strong>P Waves:</strong> Usually absent (or AV dissociation)</div>
+                <div class="char-item ventricular"><strong>QRS Complex:</strong> WIDE (&gt;0.12 sec), bizarre</div>
+                <div class="char-item ventricular"><strong>Types:</strong> Monomorphic (same shape) or Polymorphic</div>
+                <div class="char-item ventricular"><strong>3+ PVCs in a row:</strong> = V-Tach by definition</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management - LIFE THREATENING</h4>
+            <p><strong>WITH PULSE - Stable:</strong> Amiodarone 150mg IV over 10 min, may repeat; or Lidocaine<br>
+            <strong>WITH PULSE - Unstable:</strong> Synchronized cardioversion 100J → 200J → 300J → 360J<br>
+            <strong>PULSELESS:</strong> Defibrillate immediately! CPR + ACLS cardiac arrest algorithm</p>
+        </div>
+    </div>
+
+    <!-- Ventricular Fibrillation -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ventricular">Ventricular Fibrillation (V-Fib)</div>
+        <div class="rhythm-subtitle ventricular">Origin: Multiple Ventricular Foci | PULSELESS ARREST RHYTHM</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Coarse V-Fib -->
+                <path d="M 0,75 L 10,45 L 20,105 L 30,35 L 40,115 L 50,50 L 60,100 L 70,40 L 80,110 L 90,55 L 100,95
+                         L 110,45 L 120,105 L 130,50 L 140,100 L 150,35 L 160,115 L 170,55 L 180,95 L 190,40 L 200,110
+                         L 210,50 L 220,100 L 230,45 L 240,105 L 250,35 L 260,115 L 270,55 L 280,95 L 290,40 L 300,110
+                         L 310,50 L 320,100 L 330,45 L 340,105 L 350,50 L 360,100 L 370,35 L 380,115 L 390,55 L 400,95
+                         L 410,40 L 420,110 L 430,50 L 440,100 L 450,45 L 460,105 L 470,35 L 480,115 L 490,55 L 500,95
+                         L 510,45 L 520,105 L 530,50 L 540,100 L 550,35 L 560,115 L 570,55 L 580,95 L 590,40 L 600,110
+                         L 610,50 L 620,100 L 630,45 L 640,105 L 650,35 L 660,115 L 670,55 L 680,95 L 690,40 L 700,110
+                         L 710,50 L 720,100 L 730,45 L 740,105 L 750,50 L 760,100 L 770,35 L 780,115 L 790,55 L 800,95"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="400" y="140" font-size="14" fill="#c0392b" text-anchor="middle" font-weight="bold">COARSE V-FIB - Chaotic, no organized QRS - SHOCKABLE RHYTHM</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ventricular"><strong>Rate:</strong> Cannot be determined</div>
+                <div class="char-item ventricular"><strong>Rhythm:</strong> Chaotic, disorganized</div>
+                <div class="char-item ventricular"><strong>P Waves:</strong> None</div>
+                <div class="char-item ventricular"><strong>QRS Complex:</strong> None - chaotic fibrillatory waves</div>
+                <div class="char-item ventricular"><strong>Types:</strong> Coarse (large waves) vs Fine (small waves)</div>
+                <div class="char-item ventricular"><strong>Pulse:</strong> NONE - Cardiac arrest!</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ IMMEDIATE TREATMENT REQUIRED</h4>
+            <div class="danger-point">
+                <strong>1. Confirm pulseless</strong><br>
+                <strong>2. Begin CPR immediately</strong><br>
+                <strong>3. DEFIBRILLATE as soon as possible</strong> - 200J biphasic (or 360J monophasic)<br>
+                <strong>4. Resume CPR for 2 minutes</strong><br>
+                <strong>5. Epinephrine 1mg IV/IO q3-5min</strong><br>
+                <strong>6. Consider Amiodarone 300mg IV/IO (then 150mg)</strong><br>
+                <strong>7. Treat reversible causes (H's and T's)</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Torsades de Pointes -->
+    <div class="rhythm-section">
+        <div class="rhythm-title ventricular">Torsades de Pointes</div>
+        <div class="rhythm-subtitle ventricular">Polymorphic V-Tach with QT prolongation | "Twisting of the points"</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Torsades - twisting pattern -->
+                <path d="M 0,75 L 20,50 L 35,100 L 50,45 L 65,105 L 80,40 L 95,110 L 110,35 L 125,115 L 140,40 
+                         L 155,100 L 170,55 L 185,95 L 200,60 L 215,90 L 230,65 L 245,85 L 260,70 L 275,80 L 290,75
+                         L 305,80 L 320,70 L 335,85 L 350,65 L 365,90 L 380,60 L 395,95 L 410,55 L 425,100 L 440,50
+                         L 455,105 L 470,45 L 485,110 L 500,40 L 515,115 L 530,35 L 545,115 L 560,40 L 575,105 L 590,50
+                         L 605,95 L 620,60 L 635,90 L 650,65 L 665,85 L 680,70 L 695,80 L 710,75 L 725,80 L 740,70
+                         L 755,85 L 770,65 L 785,90 L 800,75"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">"Twisting" of QRS complexes around baseline | Associated with prolonged QT</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item ventricular"><strong>Rate:</strong> 150-250 bpm</div>
+                <div class="char-item ventricular"><strong>Rhythm:</strong> Irregular</div>
+                <div class="char-item ventricular"><strong>QRS:</strong> Wide, changes amplitude - "twists" around baseline</div>
+                <div class="char-item ventricular"><strong>Associated with:</strong> Prolonged QT interval</div>
+                <div class="char-item ventricular"><strong>Causes:</strong> Drugs, hypokalemia, hypomagnesemia</div>
+                <div class="char-item ventricular"><strong>Danger:</strong> Can degenerate to V-Fib</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management</h4>
+            <p><strong>PULSELESS:</strong> Defibrillation + CPR<br>
+            <strong>WITH PULSE:</strong> <span style="color: #c0392b; font-weight: bold;">MAGNESIUM SULFATE 1-2g IV</span> (first-line!)<br>
+            Correct electrolytes (K+, Mg++), stop offending drugs, consider overdrive pacing</p>
+        </div>
+    </div>
+
+    <!-- ==================== AV BLOCKS ==================== -->
+    <div class="section-header" style="background: linear-gradient(135deg, #b9770e 0%, #d35400 100%);">AV BLOCKS - Conduction Disturbances</div>
+
+    <!-- First Degree AV Block -->
+    <div class="rhythm-section">
+        <div class="rhythm-title block">First-Degree AV Block</div>
+        <div class="rhythm-subtitle block">Delayed conduction through AV node | PR &gt;0.20 sec</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Prolonged PR interval -->
+                <path d="M 0,75 L 20,75 Q 25,75 30,65 Q 35,55 40,75 L 65,75 L 68,75 L 70,40 L 72,110 L 74,70 L 78,75 Q 85,75 90,70 Q 100,65 110,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 175,75 L 178,75 L 180,40 L 182,110 L 184,70 L 188,75 Q 195,75 200,70 Q 210,65 220,75
+                         L 240,75 Q 245,75 250,65 Q 255,55 260,75 L 285,75 L 288,75 L 290,40 L 292,110 L 294,70 L 298,75 Q 305,75 310,70 Q 320,65 330,75
+                         L 350,75 Q 355,75 360,65 Q 365,55 370,75 L 395,75 L 398,75 L 400,40 L 402,110 L 404,70 L 408,75 Q 415,75 420,70 Q 430,65 440,75
+                         L 460,75 Q 465,75 470,65 Q 475,55 480,75 L 505,75 L 508,75 L 510,40 L 512,110 L 514,70 L 518,75 Q 525,75 530,70 Q 540,65 550,75
+                         L 570,75 Q 575,75 580,65 Q 585,55 590,75 L 615,75 L 618,75 L 620,40 L 622,110 L 624,70 L 628,75 Q 635,75 640,70 Q 650,65 660,75
+                         L 680,75 Q 685,75 690,65 Q 695,55 700,75 L 725,75 L 728,75 L 730,40 L 732,110 L 734,70 L 738,75 Q 745,75 750,70 Q 760,65 770,75 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- PR interval markers -->
+                <line x1="30" y1="60" x2="68" y2="60" stroke="#d35400" stroke-width="2"/>
+                <text x="49" y="55" font-size="10" fill="#d35400" text-anchor="middle">PR &gt;0.20s</text>
+                <text x="400" y="140" font-size="12" fill="#d35400" text-anchor="middle">Every P wave conducts, but PR interval is prolonged (&gt;0.20 sec or &gt;5 small boxes)</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item block"><strong>Rate:</strong> Usually normal (depends on underlying rhythm)</div>
+                <div class="char-item block"><strong>Rhythm:</strong> Regular</div>
+                <div class="char-item block"><strong>P Waves:</strong> Normal, upright, 1:1 with QRS</div>
+                <div class="char-item block"><strong>PR Interval:</strong> PROLONGED &gt;0.20 sec (constant)</div>
+                <div class="char-item block"><strong>QRS Complex:</strong> Usually narrow</div>
+                <div class="char-item block"><strong>Key Point:</strong> Every P wave conducts - just delayed</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Usually benign - no treatment required.</strong> Monitor for progression to higher-degree blocks.<br>
+            Common causes: Increased vagal tone, AV nodal blocking drugs, inferior MI, aging</p>
+        </div>
+    </div>
+
+    <!-- Second Degree Type I -->
+    <div class="rhythm-section">
+        <div class="rhythm-title block">Second-Degree AV Block Type I (Wenckebach/Mobitz I)</div>
+        <div class="rhythm-subtitle block">Progressive PR prolongation until dropped beat</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Wenckebach - progressively longer PR then dropped beat -->
+                <path d="M 0,75 L 15,75 Q 20,75 25,65 Q 30,55 35,75 L 45,75 L 48,75 L 50,40 L 52,110 L 54,70 L 58,75 Q 65,75 70,70 Q 80,65 90,75
+                         L 105,75 Q 110,75 115,65 Q 120,55 125,75 L 145,75 L 148,75 L 150,40 L 152,110 L 154,70 L 158,75 Q 165,75 170,70 Q 180,65 190,75
+                         L 205,75 Q 210,75 215,65 Q 220,55 225,75 L 255,75 L 258,75 L 260,40 L 262,110 L 264,70 L 268,75 Q 275,75 280,70 Q 290,65 300,75
+                         L 315,75 Q 320,75 325,65 Q 330,55 335,75 L 370,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Dropped beat - P wave with no QRS -->
+                <path d="M 370,75 Q 375,75 380,65 Q 385,55 390,75 L 420,75"
+                      stroke="#d35400" stroke-width="2" fill="none"/>
+                <!-- Resume pattern -->
+                <path d="M 420,75 Q 425,75 430,65 Q 435,55 440,75 L 450,75 L 453,75 L 455,40 L 457,110 L 459,70 L 463,75 Q 470,75 475,70 Q 485,65 495,75
+                         L 510,75 Q 515,75 520,65 Q 525,55 530,75 L 550,75 L 553,75 L 555,40 L 557,110 L 559,70 L 563,75 Q 570,75 575,70 Q 585,65 595,75
+                         L 610,75 Q 615,75 620,65 Q 625,55 630,75 L 660,75 L 663,75 L 665,40 L 667,110 L 669,70 L 673,75 Q 680,75 685,70 Q 695,65 705,75
+                         L 720,75 Q 725,75 730,65 Q 735,55 740,75 L 775,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Another dropped beat -->
+                <path d="M 775,75 Q 780,75 785,65 Q 790,55 795,75 L 800,75"
+                      stroke="#d35400" stroke-width="2" fill="none"/>
+                <text x="380" y="130" font-size="10" fill="#d35400" font-weight="bold">Dropped beat!</text>
+                <text x="790" y="130" font-size="10" fill="#d35400" font-weight="bold">Dropped!</text>
+                <text x="200" y="25" font-size="10" fill="#d35400">PR gets longer... longer... longer... then drops</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item block"><strong>Rate:</strong> Atrial regular, ventricular irregular</div>
+                <div class="char-item block"><strong>Rhythm:</strong> Irregular (grouped beating)</div>
+                <div class="char-item block"><strong>P Waves:</strong> More P waves than QRS complexes</div>
+                <div class="char-item block"><strong>PR Interval:</strong> PROGRESSIVELY LENGTHENS until beat dropped</div>
+                <div class="char-item block"><strong>QRS Complex:</strong> Usually narrow</div>
+                <div class="char-item block"><strong>Pattern:</strong> "Longer, longer, longer, drop!"</div>
+            </div>
+        </div>
+        <div class="management">
+            <h4>Management</h4>
+            <p><strong>Usually benign</strong> - often transient and asymptomatic. Monitor closely.<br>
+            <strong>If symptomatic:</strong> Atropine may help (block is usually at AV node level)<br>
+            Common causes: Inferior MI, increased vagal tone, AV nodal blocking drugs</p>
+        </div>
+    </div>
+
+    <!-- Second Degree Type II -->
+    <div class="rhythm-section">
+        <div class="rhythm-title block">Second-Degree AV Block Type II (Mobitz II)</div>
+        <div class="rhythm-subtitle block">Sudden dropped beats WITHOUT PR prolongation</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Type II - constant PR, sudden drop -->
+                <path d="M 0,75 L 15,75 Q 20,75 25,65 Q 30,55 35,75 L 50,75 L 53,75 L 55,40 L 57,110 L 59,70 L 63,75 Q 70,75 75,70 Q 85,65 95,75
+                         L 110,75 Q 115,75 120,65 Q 125,55 130,75 L 145,75 L 148,75 L 150,40 L 152,110 L 154,70 L 158,75 Q 165,75 170,70 Q 180,65 190,75
+                         L 205,75 Q 210,75 215,65 Q 220,55 225,75 L 240,75 L 243,75 L 245,40 L 247,110 L 249,70 L 253,75 Q 260,75 265,70 Q 275,65 285,75
+                         L 300,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Dropped beat - P wave, no QRS, same PR would have been -->
+                <path d="M 300,75 Q 305,75 310,65 Q 315,55 320,75 L 385,75"
+                      stroke="#d35400" stroke-width="2" fill="none"/>
+                <!-- Resume with same PR -->
+                <path d="M 385,75 Q 390,75 395,65 Q 400,55 405,75 L 420,75 L 423,75 L 425,40 L 427,110 L 429,70 L 433,75 Q 440,75 445,70 Q 455,65 465,75
+                         L 480,75 Q 485,75 490,65 Q 495,55 500,75 L 515,75 L 518,75 L 520,40 L 522,110 L 524,70 L 528,75 Q 535,75 540,70 Q 550,65 560,75
+                         L 575,75 Q 580,75 585,65 Q 590,55 595,75 L 610,75 L 613,75 L 615,40 L 617,110 L 619,70 L 623,75 Q 630,75 635,70 Q 645,65 655,75
+                         L 670,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Another dropped beat -->
+                <path d="M 670,75 Q 675,75 680,65 Q 685,55 690,75 L 755,75"
+                      stroke="#d35400" stroke-width="2" fill="none"/>
+                <path d="M 755,75 Q 760,75 765,65 Q 770,55 775,75 L 790,75 L 793,75 L 795,40 L 797,110 L 799,70 L 800,75"
+                      stroke="#000" stroke-width="2" fill="none"/>
+                <text x="310" y="130" font-size="10" fill="#d35400" font-weight="bold">Sudden drop!</text>
+                <text x="680" y="130" font-size="10" fill="#d35400" font-weight="bold">Sudden drop!</text>
+                <text x="400" y="25" font-size="10" fill="#d35400">PR interval stays CONSTANT - beats just suddenly don't conduct</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item block"><strong>Rate:</strong> Atrial regular, ventricular may be irregular</div>
+                <div class="char-item block"><strong>Rhythm:</strong> Irregular when beats drop</div>
+                <div class="char-item block"><strong>P Waves:</strong> More P waves than QRS</div>
+                <div class="char-item block"><strong>PR Interval:</strong> CONSTANT (doesn't lengthen before drop)</div>
+                <div class="char-item block"><strong>QRS Complex:</strong> Often WIDE (infranodal block)</div>
+                <div class="char-item block"><strong>vs Type I:</strong> No warning - sudden drop</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management - MORE SERIOUS than Type I</h4>
+            <div class="danger-point">Can progress suddenly to complete heart block!<br>
+            <strong>Atropine often INEFFECTIVE</strong> (block below AV node)<br>
+            <strong>TCP should be readily available</strong><br>
+            Prepare for possible permanent pacemaker</div>
+        </div>
+    </div>
+
+    <!-- Third Degree AV Block -->
+    <div class="rhythm-section">
+        <div class="rhythm-title block">Third-Degree (Complete) AV Block</div>
+        <div class="rhythm-subtitle block">Complete AV dissociation - NO conduction from atria to ventricles</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Atrial activity (P waves) at one rate -->
+                <path d="M 10,60 Q 15,50 20,60 M 80,60 Q 85,50 90,60 M 150,60 Q 155,50 160,60 M 220,60 Q 225,50 230,60 M 290,60 Q 295,50 300,60 M 360,60 Q 365,50 370,60 M 430,60 Q 435,50 440,60 M 500,60 Q 505,50 510,60 M 570,60 Q 575,50 580,60 M 640,60 Q 645,50 650,60 M 710,60 Q 715,50 720,60 M 780,60 Q 785,50 790,60"
+                      stroke="#2874a6" stroke-width="2" fill="none"/>
+                <!-- Ventricular activity (wide QRS) at different, slower rate -->
+                <path d="M 0,85 L 40,85 L 45,45 L 60,125 L 75,55 L 85,85 L 185,85 L 190,45 L 205,125 L 220,55 L 230,85 L 330,85 L 335,45 L 350,125 L 365,55 L 375,85 L 475,85 L 480,45 L 495,125 L 510,55 L 520,85 L 620,85 L 625,45 L 640,125 L 655,55 L 665,85 L 765,85 L 770,45 L 785,125 L 800,55"
+                      stroke="#c0392b" stroke-width="2.5" fill="none"/>
+                <text x="100" y="30" font-size="10" fill="#2874a6">P waves (atrial) - regular at their own rate</text>
+                <text x="400" y="140" font-size="12" fill="#c0392b" text-anchor="middle">Ventricles beat independently - NO relationship between P waves and QRS</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item block"><strong>Atrial Rate:</strong> Usually 60-100 (sinus)</div>
+                <div class="char-item block"><strong>Ventricular Rate:</strong> 20-60 (escape rhythm)</div>
+                <div class="char-item block"><strong>P Waves:</strong> Present, regular, but NO relationship to QRS</div>
+                <div class="char-item block"><strong>PR Interval:</strong> Completely VARIABLE (no pattern)</div>
+                <div class="char-item block"><strong>QRS Complex:</strong> Narrow if junctional escape, WIDE if ventricular</div>
+                <div class="char-item block"><strong>Key Finding:</strong> AV DISSOCIATION - P's march through QRS's</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management - SERIOUS EMERGENCY</h4>
+            <div class="danger-point">
+                <strong>Prepare TCP immediately!</strong><br>
+                Atropine may be tried but often ineffective (especially with wide QRS)<br>
+                Dopamine/Epinephrine infusion as bridge<br>
+                Patient will need permanent pacemaker<br>
+                <strong>DO NOT give AV nodal blockers!</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ARREST RHYTHMS ==================== -->
+    <div class="section-header" style="background: linear-gradient(135deg, #1c2833 0%, #2c3e50 100%);">ARREST RHYTHMS - Cardiac Arrest</div>
+
+    <!-- Asystole -->
+    <div class="rhythm-section">
+        <div class="rhythm-title arrest">Asystole</div>
+        <div class="rhythm-subtitle arrest">NO electrical activity | "Flatline" | NON-SHOCKABLE</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Flat line with minor artifact -->
+                <path d="M 0,75 L 50,75 L 52,74 L 54,76 L 100,75 L 150,75 L 152,76 L 154,74 L 200,75 L 250,75 L 300,75 L 302,74 L 304,76 L 350,75 L 400,75 L 450,75 L 452,76 L 454,74 L 500,75 L 550,75 L 600,75 L 602,74 L 604,76 L 650,75 L 700,75 L 750,75 L 752,76 L 754,74 L 800,75"
+                      stroke="#1c2833" stroke-width="2" fill="none"/>
+                <text x="400" y="50" font-size="16" fill="#c0392b" text-anchor="middle" font-weight="bold">CONFIRM IN 2 LEADS!</text>
+                <text x="400" y="140" font-size="14" fill="#1c2833" text-anchor="middle">No P waves, No QRS, No pulse | Check leads, gain, and confirm in 2nd lead</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item arrest"><strong>Rate:</strong> None (0)</div>
+                <div class="char-item arrest"><strong>Rhythm:</strong> None</div>
+                <div class="char-item arrest"><strong>P Waves:</strong> Absent</div>
+                <div class="char-item arrest"><strong>QRS Complex:</strong> Absent</div>
+                <div class="char-item arrest"><strong>Must Rule Out:</strong> Loose lead, fine V-fib, lead in wrong position</div>
+                <div class="char-item arrest"><strong>Prognosis:</strong> Very poor survival rate</div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management - NON-SHOCKABLE RHYTHM</h4>
+            <div class="danger-point">
+                <strong>1. Confirm asystole in 2 leads</strong><br>
+                <strong>2. High-quality CPR - minimize interruptions</strong><br>
+                <strong>3. Epinephrine 1mg IV/IO q3-5min</strong><br>
+                <strong>4. Consider reversible causes (H's and T's)</strong><br>
+                <strong>5. DO NOT DEFIBRILLATE</strong> - no shockable rhythm<br>
+                <strong>Consider termination criteria</strong> if prolonged resuscitation unsuccessful
+            </div>
+        </div>
+    </div>
+
+    <!-- PEA -->
+    <div class="rhythm-section">
+        <div class="rhythm-title arrest">Pulseless Electrical Activity (PEA)</div>
+        <div class="rhythm-subtitle arrest">Organized electrical activity WITHOUT detectable pulse | NON-SHOCKABLE</div>
+        <div class="ecg-container">
+            <svg class="ecg-strip" viewBox="0 0 800 150" width="100%" height="150">
+                <rect width="800" height="150" fill="url(#grid1)"/>
+                <rect width="800" height="150" fill="url(#grid1-major)"/>
+                <!-- Can look like ANY organized rhythm - showing sinus-like pattern -->
+                <path d="M 0,75 L 30,75 Q 35,75 40,65 Q 45,55 50,75 L 55,75 L 58,75 L 60,40 L 62,110 L 64,70 L 68,75 Q 75,75 80,70 Q 90,65 100,75
+                         L 130,75 Q 135,75 140,65 Q 145,55 150,75 L 155,75 L 158,75 L 160,40 L 162,110 L 164,70 L 168,75 Q 175,75 180,70 Q 190,65 200,75
+                         L 230,75 Q 235,75 240,65 Q 245,55 250,75 L 255,75 L 258,75 L 260,40 L 262,110 L 264,70 L 268,75 Q 275,75 280,70 Q 290,65 300,75
+                         L 330,75 Q 335,75 340,65 Q 345,55 350,75 L 355,75 L 358,75 L 360,40 L 362,110 L 364,70 L 368,75 Q 375,75 380,70 Q 390,65 400,75
+                         L 430,75 Q 435,75 440,65 Q 445,55 450,75 L 455,75 L 458,75 L 460,40 L 462,110 L 464,70 L 468,75 Q 475,75 480,70 Q 490,65 500,75
+                         L 530,75 Q 535,75 540,65 Q 545,55 550,75 L 555,75 L 558,75 L 560,40 L 562,110 L 564,70 L 568,75 Q 575,75 580,70 Q 590,65 600,75
+                         L 630,75 Q 635,75 640,65 Q 645,55 650,75 L 655,75 L 658,75 L 660,40 L 662,110 L 664,70 L 668,75 Q 675,75 680,70 Q 690,65 700,75
+                         L 730,75 Q 735,75 740,65 Q 745,55 750,75 L 755,75 L 758,75 L 760,40 L 762,110 L 764,70 L 768,75 Q 775,75 780,70 Q 790,65 800,75"
+                      stroke="#1c2833" stroke-width="2" fill="none"/>
+                <text x="400" y="30" font-size="14" fill="#c0392b" text-anchor="middle" font-weight="bold">LOOKS ORGANIZED but NO PULSE!</text>
+                <text x="400" y="140" font-size="12" fill="#1c2833" text-anchor="middle">Can mimic ANY rhythm - sinus, junctional, even V-tach - but patient has NO pulse</text>
+            </svg>
+        </div>
+        <div class="characteristics">
+            <h4>ECG Characteristics</h4>
+            <div class="char-grid">
+                <div class="char-item arrest"><strong>ECG Appearance:</strong> Can look like ANY organized rhythm</div>
+                <div class="char-item arrest"><strong>Pulse:</strong> ABSENT - this defines PEA</div>
+                <div class="char-item arrest"><strong>Common Causes:</strong> H's and T's (see below)</div>
+                <div class="char-item arrest"><strong>Key Point:</strong> Electromechanical dissociation</div>
+                <div class="char-item arrest"><strong>Prognosis:</strong> Better than asystole if cause found</div>
+                <div class="char-item arrest"><strong>Critical:</strong> Must identify and treat cause!</div>
+            </div>
+        </div>
+        <div class="clinical-notes">
+            <h4>H's and T's - Reversible Causes</h4>
+            <div class="char-grid">
+                <div class="char-item arrest">
+                    <strong>H's:</strong><br>
+                    • Hypovolemia<br>
+                    • Hypoxia<br>
+                    • Hydrogen ion (acidosis)<br>
+                    • Hypo/Hyperkalemia<br>
+                    • Hypothermia<br>
+                    • Hypoglycemia
+                </div>
+                <div class="char-item arrest">
+                    <strong>T's:</strong><br>
+                    • Tension pneumothorax<br>
+                    • Tamponade (cardiac)<br>
+                    • Toxins (overdose)<br>
+                    • Thrombosis (MI)<br>
+                    • Thrombosis (PE)
+                </div>
+            </div>
+        </div>
+        <div class="management urgent">
+            <h4>⚠️ Management - NON-SHOCKABLE RHYTHM</h4>
+            <div class="danger-point">
+                <strong>1. High-quality CPR</strong><br>
+                <strong>2. Epinephrine 1mg IV/IO q3-5min</strong><br>
+                <strong>3. AGGRESSIVELY search for and treat reversible causes (H's and T's)</strong><br>
+                <strong>4. DO NOT DEFIBRILLATE</strong> - organized rhythm, just no mechanical output<br>
+                <strong>Consider:</strong> IV fluids, needle decompression, FAST exam if available
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Reference Summary Tables -->
+    <div class="section-header" style="background: linear-gradient(135deg, #196f3d 0%, #27ae60 100%);">QUICK REFERENCE SUMMARY TABLES</div>
+
+    <h3 style="color: #1a5276; margin: 20px 0 10px 0;">Rhythm Identification Quick Reference</h3>
+    <table class="summary-table">
+        <tr>
+            <th>Rhythm</th>
+            <th>Rate</th>
+            <th>Regularity</th>
+            <th>P Waves</th>
+            <th>PR Interval</th>
+            <th>QRS</th>
+            <th>Key Feature</th>
+        </tr>
+        <tr>
+            <td><strong>NSR</strong></td>
+            <td>60-100</td>
+            <td>Regular</td>
+            <td>Upright, uniform</td>
+            <td>0.12-0.20</td>
+            <td>Narrow</td>
+            <td>Normal baseline</td>
+        </tr>
+        <tr>
+            <td><strong>Sinus Brady</strong></td>
+            <td>&lt;60</td>
+            <td>Regular</td>
+            <td>Upright, uniform</td>
+            <td>0.12-0.20</td>
+            <td>Narrow</td>
+            <td>Slow but normal</td>
+        </tr>
+        <tr>
+            <td><strong>Sinus Tachy</strong></td>
+            <td>&gt;100</td>
+            <td>Regular</td>
+            <td>Upright, uniform</td>
+            <td>0.12-0.20</td>
+            <td>Narrow</td>
+            <td>Fast, treat cause NOT rate</td>
+        </tr>
+        <tr>
+            <td><strong>A-Flutter</strong></td>
+            <td>A:250-350</td>
+            <td>Usually regular</td>
+            <td>Sawtooth F waves</td>
+            <td>N/A</td>
+            <td>Narrow</td>
+            <td>Sawtooth baseline</td>
+        </tr>
+        <tr>
+            <td><strong>A-Fib</strong></td>
+            <td>Variable</td>
+            <td>Irregularly irregular</td>
+            <td>None (f waves)</td>
+            <td>N/A</td>
+            <td>Narrow</td>
+            <td>Chaotic baseline, totally irregular</td>
+        </tr>
+        <tr>
+            <td><strong>Junctional</strong></td>
+            <td>40-60</td>
+            <td>Regular</td>
+            <td>Absent/inverted/after</td>
+            <td>Short or N/A</td>
+            <td>Narrow</td>
+            <td>Absent or retrograde P</td>
+        </tr>
+        <tr>
+            <td><strong>V-Tach</strong></td>
+            <td>&gt;100</td>
+            <td>Usually regular</td>
+            <td>Usually absent</td>
+            <td>N/A</td>
+            <td>WIDE</td>
+            <td>Wide, fast, regular</td>
+        </tr>
+        <tr>
+            <td><strong>V-Fib</strong></td>
+            <td>N/A</td>
+            <td>Chaotic</td>
+            <td>None</td>
+            <td>N/A</td>
+            <td>None</td>
+            <td>Chaotic, no organized activity</td>
+        </tr>
+        <tr>
+            <td><strong>Asystole</strong></td>
+            <td>0</td>
+            <td>None</td>
+            <td>None</td>
+            <td>N/A</td>
+            <td>None</td>
+            <td>Flatline - confirm 2 leads</td>
+        </tr>
+        <tr>
+            <td><strong>1st ° Block</strong></td>
+            <td>Normal</td>
+            <td>Regular</td>
+            <td>Present, 1:1</td>
+            <td>&gt;0.20 (constant)</td>
+            <td>Narrow</td>
+            <td>Long PR, all conduct</td>
+        </tr>
+        <tr>
+            <td><strong>2nd ° Type I</strong></td>
+            <td>Variable</td>
+            <td>Irregular</td>
+            <td>More P than QRS</td>
+            <td>Progressive ↑</td>
+            <td>Narrow</td>
+            <td>Longer, longer, drop</td>
+        </tr>
+        <tr>
+            <td><strong>2nd ° Type II</strong></td>
+            <td>Variable</td>
+            <td>Irregular</td>
+            <td>More P than QRS</td>
+            <td>Constant</td>
+            <td>Often wide</td>
+            <td>Sudden drops</td>
+        </tr>
+        <tr>
+            <td><strong>3rd ° Block</strong></td>
+            <td>A:60-100 V:20-60</td>
+            <td>Regular (both)</td>
+            <td>Present, no relation</td>
+            <td>Variable</td>
+            <td>Often wide</td>
+            <td>Complete AV dissociation</td>
+        </tr>
+    </table>
+
+    <h3 style="color: #c0392b; margin: 30px 0 10px 0;">Arrest Rhythm Management Quick Reference</h3>
+    <table class="summary-table">
+        <tr>
+            <th>Rhythm</th>
+            <th>Shockable?</th>
+            <th>First Action</th>
+            <th>Medications</th>
+            <th>Key Points</th>
+        </tr>
+        <tr>
+            <td><strong>V-Fib</strong></td>
+            <td style="color: green; font-weight: bold;">YES</td>
+            <td>Defibrillate 200J</td>
+            <td>Epi 1mg q3-5min, Amio 300mg</td>
+            <td>Shock early, CPR between</td>
+        </tr>
+        <tr>
+            <td><strong>Pulseless V-Tach</strong></td>
+            <td style="color: green; font-weight: bold;">YES</td>
+            <td>Defibrillate 200J</td>
+            <td>Epi 1mg q3-5min, Amio 300mg</td>
+            <td>Same as V-Fib</td>
+        </tr>
+        <tr>
+            <td><strong>Asystole</strong></td>
+            <td style="color: red; font-weight: bold;">NO</td>
+            <td>CPR</td>
+            <td>Epi 1mg q3-5min</td>
+            <td>Confirm 2 leads, poor prognosis</td>
+        </tr>
+        <tr>
+            <td><strong>PEA</strong></td>
+            <td style="color: red; font-weight: bold;">NO</td>
+            <td>CPR + Find cause</td>
+            <td>Epi 1mg q3-5min</td>
+            <td>H's and T's - treat cause!</td>
+        </tr>
+        <tr>
+            <td><strong>Torsades</strong></td>
+            <td style="color: green; font-weight: bold;">YES (if pulseless)</td>
+            <td>Defib if pulseless</td>
+            <td><strong>Magnesium 1-2g IV</strong></td>
+            <td>Mg is first-line if with pulse</td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+        <p style="font-size: 14px; color: #666;">
+            <strong>Paul D. Camp Community College - EMS Program</strong><br>
+            Complete ECG Rhythm Teaching Guide<br>
+            For educational purposes only - Always follow local protocols
+        </p>
+    </div>
+
+</body>
+</html>
