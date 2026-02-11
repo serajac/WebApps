@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECG Rhythm Guide — PDCCC EMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a14;--bg2:#0a1022;--card:#0c1528;--surface:#101c34;
+  --t1:#e2e8f4;--t2:#8494b2;--t3:#4c5f80;--t4:#273350;
+  --brd:#162040;--brd2:#1e2d50;
+  --sinus:#4a8fe7;--atrial:#00c9a7;--junct:#a97de8;
+  --vent:#ff5252;--block:#ffa726;--ectopy:#34d399;--arrest:#ff4081;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--t1);line-height:1.7;-webkit-font-smoothing:antialiased}
+::selection{background:#4a8fe740}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px}
+
+.hero{position:relative;padding:90px 32px 70px;text-align:center;border-bottom:1px solid var(--brd);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 350px at 50% 10%,#1a2d5525,transparent),radial-gradient(ellipse 500px 250px at 25% 80%,#4a8fe708,transparent),radial-gradient(ellipse 500px 250px at 75% 80%,#a97de808,transparent);pointer-events:none}
+.hero-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(var(--t3) 1px,transparent 1px),linear-gradient(90deg,var(--t3) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:9px;padding:7px 18px;margin-bottom:24px;background:var(--surface);border:1px solid var(--brd2);border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t2)}
+.badge-dot{width:7px;height:7px;background:#34d399;border-radius:50%;animation:bpulse 2.5s ease infinite}
+@keyframes bpulse{0%,100%{box-shadow:0 0 0 0 #34d39960}50%{box-shadow:0 0 0 7px #34d39900}}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(32px,5.5vw,62px);font-weight:300;line-height:1.08;margin-bottom:14px;letter-spacing:-.02em;background:linear-gradient(160deg,#e2e8f4 30%,#8494b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1 em{font-weight:700;font-style:italic;background:linear-gradient(135deg,#34d399,#4a8fe7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:15px;color:var(--t2);max-width:480px;margin:0 auto;font-weight:400;line-height:1.8}
+
+.nav{position:sticky;top:0;z-index:100;background:rgba(6,10,20,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);padding:0 20px}
+.nav-wrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:4px;padding:10px 0;overflow-x:auto;scrollbar-width:none}
+.nav-wrap::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:6px 14px;background:0;border:1px solid transparent;border-radius:100px;color:var(--t3);font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:.2s;white-space:nowrap}
+.pill:hover{color:var(--t2);background:var(--surface)}
+.pill.on{color:var(--t1);background:var(--surface);border-color:var(--brd2)}
+.pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+.toolbar{max-width:1100px;margin:14px auto 0;padding:0 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sbox{position:relative;flex:1;min-width:180px;max-width:380px}
+.sbox input{width:100%;padding:8px 12px 8px 34px;background:var(--card);border:1px solid var(--brd);border-radius:10px;color:var(--t1);font-family:'Manrope',sans-serif;font-size:13px;outline:0;transition:.2s}
+.sbox input::placeholder{color:var(--t3)}
+.sbox input:focus{border-color:var(--brd2);box-shadow:0 0 0 3px #4a8fe710}
+.sbox svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
+.stats{font-size:12px;color:var(--t3)}.stats b{color:var(--t2);font-family:'IBM Plex Mono',monospace}
+.tbtn{padding:6px 13px;background:var(--card);border:1px solid var(--brd);border-radius:9px;color:var(--t2);font-family:'Manrope',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.tbtn:hover{background:var(--surface);color:var(--t1);border-color:var(--brd2)}
+.gap{flex:1}
+
+.main{max-width:1100px;margin:0 auto 100px;padding:0 20px}
+
+.sec-hdr{display:flex;align-items:center;gap:14px;padding:56px 0 18px}
+.sec-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sec-txt .sec-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.sec-txt .sec-sub{font-size:12px;color:var(--t3);font-weight:400;margin-top:1px}
+.sec-line{flex:1;height:1px;background:var(--brd)}
+
+.rcard{width:100%;background:var(--card);border:1px solid var(--brd);border-radius:16px;overflow:hidden;margin-bottom:40px;transition:.3s;border-left:4px solid var(--brd);box-shadow:0 2px 20px rgba(0,0,0,.15)}
+.rcard:hover{border-color:var(--brd2);box-shadow:0 6px 40px rgba(0,0,0,.3)}
+
+.rc-top{display:flex;align-items:flex-start;justify-content:space-between;padding:24px 28px 16px;gap:16px;flex-wrap:wrap}
+.rc-info{flex:1;min-width:200px}
+.rc-cat{display:inline-flex;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.rc-name{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1.2;letter-spacing:-.01em}
+.rc-sub{font-size:12px;color:var(--t3);font-family:'IBM Plex Mono',monospace;margin-top:3px}
+.rc-data{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end}
+.rc-datum{display:flex;flex-direction:column;text-align:center}
+.rc-datum-label{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.rc-datum-val{font-size:14px;font-weight:600;font-family:'IBM Plex Mono',monospace;margin-top:2px}
+.rc-btns{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.rc-btn{padding:6px 14px;background:var(--surface);border:1px solid var(--brd);border-radius:8px;color:var(--t2);font-family:'Manrope',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:5px}
+.rc-btn:hover{background:var(--bg2);color:var(--t1);border-color:var(--brd2)}
+.rc-btn.playing{background:#34d39912;border-color:#34d39935;color:#34d399}
+
+.ecg-wrap{position:relative;width:100%;height:200px;overflow:hidden;border-top:1px solid var(--brd);border-bottom:1px solid var(--brd)}
+.ecg-wrap canvas{display:block;width:100%;height:100%}
+.ecg-tag{position:absolute;bottom:8px;left:12px;font-size:10px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#b71c1c;background:rgba(253,245,230,.88);padding:3px 10px;border-radius:5px}
+.ecg-cal{position:absolute;bottom:8px;right:12px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:#8d6e36;background:rgba(253,245,230,.88);padding:3px 10px;border-radius:5px}
+
+.teach{padding:24px 28px 28px}
+.teach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:16px}
+.teach-prop{padding:12px 14px;background:var(--surface);border-radius:10px;border-left:3px solid var(--brd2)}
+.teach-k{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);font-weight:600}
+.teach-v{font-size:13px;margin-top:3px;color:var(--t1);line-height:1.5}
+.teach-divider{font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin:20px 0 8px;display:flex;align-items:center;gap:10px;color:var(--t3)}
+.teach-divider::after{content:'';flex:1;height:1px;background:var(--brd)}
+.teach-tags{display:flex;flex-wrap:wrap;gap:5px}
+.teach-tag{padding:4px 10px;background:var(--surface);border:1px solid var(--brd);border-radius:100px;font-size:10px;color:var(--t2)}
+.callout{padding:12px 16px;border-radius:10px;font-size:12px;font-weight:500;margin-top:12px;line-height:1.6}
+.callout.info{background:#4a8fe70a;border:1px solid #4a8fe720;color:#6fb1fc}
+.callout.warn{background:#ffa7260a;border:1px solid #ffa72620;color:#ffca28}
+.callout.danger{background:#ff52520a;border:1px solid #ff525220;color:#ff8a80}
+.mgmt-box{padding:14px 16px;background:var(--surface);border-radius:10px;font-size:13px;line-height:1.8;color:var(--t2);margin-top:8px}
+.mgmt-box strong{color:var(--t1)}
+.mgmt-box.urg{border:1px solid #ff525220;background:#ff52520a}
+
+.fabs{position:fixed;bottom:20px;right:20px;z-index:150;display:flex;flex-direction:column;gap:6px}
+.fab{width:40px;height:40px;border-radius:12px;border:1px solid var(--brd2);background:var(--card);color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;box-shadow:0 4px 16px rgba(0,0,0,.4);font-size:14px}
+.fab:hover{background:var(--surface);color:var(--t1);transform:translateY(-2px)}
+
+@media(max-width:768px){
+  .hero{padding:60px 16px 50px}
+  .rc-top{padding:18px 18px 12px}
+  .rc-name{font-size:20px}
+  .rc-data{gap:12px}
+  .ecg-wrap{height:160px}
+  .teach{padding:18px 18px 22px}
+  .teach-grid{grid-template-columns:1fr 1fr}
+  .toolbar,.main{padding:0 12px}
+  .rcard{margin-bottom:28px;border-radius:12px}
+  .sec-hdr{padding:40px 0 14px}
+}
+@media(max-width:480px){
+  .hero h1{font-size:28px}
+  .rc-data{gap:8px}
+  .rc-datum-val{font-size:12px}
+  .ecg-wrap{height:130px}
+  .teach-grid{grid-template-columns:1fr}
+  .pill{font-size:11px;padding:5px 10px}
+  .rc-btns{flex-wrap:wrap}
+  .rcard{margin-bottom:22px}
+}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="badge"><span class="badge-dot"></span>PDCCC EMS Program</div>
+  <h1>Complete <em>ECG Rhythm</em> Guide</h1>
+  <p class="hero-sub">Interactive teaching reference with animated ECG traces. Each rhythm card includes characteristics, etiology, and management for paramedic students.</p>
+</div>
+<div class="nav"><div class="nav-wrap" id="navW"></div></div>
+<div class="toolbar">
+  <div class="sbox">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="searchIn" placeholder="Search rhythms...">
+  </div>
+  <div class="stats">Showing <b id="cnt">24</b> of <b>24</b></div>
+  <div class="gap"></div>
+  <button class="tbtn" onclick="toggleAllAnims()" id="gToggle">⏸ Pause All</button>
+</div>
+<div class="main" id="main"></div>
+<div class="fabs">
+  <div class="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Top">↑</div>
+</div>
+<script>
+const CATS=[
+  {id:'all',label:'All Rhythms',color:'#666'},
+  {id:'sinus',label:'Sinus',color:'var(--sinus)'},
+  {id:'atrial',label:'Atrial',color:'var(--atrial)'},
+  {id:'junctional',label:'Junctional',color:'var(--junct)'},
+  {id:'ectopy',label:'Ectopic Beats',color:'var(--ectopy)'},
+  {id:'ventricular',label:'Ventricular',color:'var(--vent)'},
+  {id:'block',label:'AV Blocks',color:'var(--block)'},
+  {id:'arrest',label:'Arrest',color:'var(--arrest)'}
+];
+const SECS=[
+  {cat:'sinus',icon:'\u2661',label:'Sinus Rhythms',sub:'Origin: SA Node'},
+  {cat:'atrial',icon:'\u26a1',label:'Atrial Rhythms',sub:'Origin: Atrial Tissue'},
+  {cat:'junctional',icon:'\u25c8',label:'Junctional Rhythms',sub:'Origin: AV Junction'},
+  {cat:'ectopy',icon:'\u2727',label:'Ectopic Beats',sub:'Premature Complexes'},
+  {cat:'ventricular',icon:'\u2b25',label:'Ventricular Rhythms',sub:'Origin: Ventricles'},
+  {cat:'block',icon:'\u25c9',label:'AV Blocks',sub:'Conduction Delays'},
+  {cat:'arrest',icon:'\u2715',label:'Arrest Rhythms',sub:'Cardiac Arrest'}
+];
+const COL={sinus:'#4a8fe7',atrial:'#00c9a7',junctional:'#a97de8',ectopy:'#34d399',ventricular:'#ff5252',block:'#ffa726',arrest:'#ff4081'};
+const GLOW={sinus:'#4a8fe714',atrial:'#00c9a714',junctional:'#a97de814',ectopy:'#34d39914',ventricular:'#ff525214',block:'#ffa72614',arrest:'#ff408114'};
+const LBL={sinus:'Sinus',atrial:'Atrial',junctional:'Junctional',ectopy:'Ectopy',ventricular:'Ventricular',block:'AV Block',arrest:'Arrest'};
+
+// Waveform generators - cycleW controls visual rate (higher=slower)
+function pqrst(bl){bl=bl||.5;return[[0,bl],[.18,bl],[.24,bl-.06],[.30,bl-.14],[.36,bl],[.40,bl],[.42,bl],[.44,bl+.04],[.46,bl-.30],[.48,bl+.28],[.50,bl-.03],[.54,bl],[.60,bl],[.66,bl-.08],[.74,bl-.12],[.82,bl],[1.0,bl]]}
+function wideQRS(bl){bl=bl||.5;return[[0,bl],[.12,bl],[.16,bl+.04],[.20,bl-.08],[.26,bl-.30],[.34,bl+.34],[.42,bl-.22],[.48,bl+.06],[.54,bl],[.60,bl],[.66,bl+.06],[.74,bl+.10],[.82,bl+.04],[.90,bl],[1.0,bl]]}
+function mw(o){return{cycle:o.cycle,bpm:o.bpm||75,color:o.color||'#1a8c3a',jitter:o.jitter||false}}
+
+function nsr(){return mw({cycle:pqrst(),bpm:75,color:'#1a8c3a'})}
+function sinusBrady(){return mw({cycle:pqrst(),bpm:48,color:'#1a8c3a'})}
+function sinusTachy(){return mw({cycle:pqrst(),bpm:130,color:'#1a8c3a'})}
+function sinusArr(){return mw({cycle:pqrst(),bpm:75,color:'#1a8c3a',jitter:true})}
+
+function aFlutter(){var c=[[0,.50],[.06,.36],[.12,.60],[.18,.36],[.24,.60],[.30,.50],[.32,.50],[.34,.20],[.36,.80],[.38,.46],[.42,.50],[.48,.36],[.54,.60],[.60,.36],[.66,.60],[.72,.50],[.78,.50],[.84,.36],[.90,.60],[.96,.50],[1.0,.50]];return mw({cycle:c,bpm:75,color:'#00897b'})}
+function aFib(){var c=[[0,.52],[.02,.48],[.04,.53],[.06,.47],[.08,.51],[.10,.49],[.12,.52],[.14,.48],[.16,.50],[.18,.22],[.20,.78],[.22,.47],[.26,.51],[.28,.49],[.30,.52],[.32,.48],[.34,.53],[.36,.47],[.38,.51],[.40,.49],[.42,.52],[.46,.50],[.48,.23],[.50,.77],[.52,.48],[.54,.51],[.56,.49],[.58,.52],[.60,.48],[.62,.53],[.64,.47],[.66,.51],[.68,.49],[.70,.52],[.72,.48],[.76,.50],[.78,.24],[.80,.76],[.82,.48],[.86,.51],[.88,.49],[.90,.52],[.92,.48],[.94,.51],[.96,.49],[1.0,.50]];return mw({cycle:c,bpm:90,color:'#00897b',jitter:true})}
+function wap(){var c=[[0,.50],[.08,.50],[.12,.38],[.16,.32],[.20,.50],[.22,.50],[.24,.20],[.26,.80],[.28,.46],[.32,.50],[.38,.44],[.42,.40],[.48,.50],[.50,.50],[.58,.50],[.62,.46],[.64,.44],[.66,.50],[.68,.50],[.70,.22],[.72,.78],[.74,.47],[.78,.50],[.84,.44],[.88,.40],[.94,.50],[1.0,.50]];return mw({cycle:c,bpm:80,color:'#00897b'})}
+function mat(){return mw({cycle:wap().cycle,bpm:120,color:'#00897b',jitter:true})}
+
+function juncEsc(){var c=[[0,.50],[.30,.50],[.32,.50],[.34,.50],[.36,.50],[.38,.20],[.40,.80],[.42,.46],[.46,.50],[.52,.50],[.58,.44],[.64,.42],[.72,.46],[.80,.50],[1.0,.50]];return mw({cycle:c,bpm:50,color:'#7e57c2'})}
+function juncAcc(){return mw({cycle:juncEsc().cycle,bpm:75,color:'#7e57c2'})}
+function juncTachy(){return mw({cycle:juncEsc().cycle,bpm:130,color:'#7e57c2'})}
+
+function pac(){return mw({cycle:pqrst(),bpm:75,color:'#2e7d32'})}
+function pjc(){return mw({cycle:juncEsc().cycle,bpm:75,color:'#2e7d32'})}
+function pvc(){var c=[[0,.50],[.06,.50],[.10,.44],[.14,.38],[.18,.50],[.20,.50],[.22,.22],[.24,.78],[.26,.47],[.30,.50],[.36,.44],[.40,.42],[.46,.50],[.48,.50],[.50,.50],[.52,.74],[.58,.18],[.64,.82],[.70,.50],[.74,.50],[.78,.56],[.84,.58],[.90,.54],[1.0,.50]];return mw({cycle:c,bpm:75,color:'#c62828'})}
+
+function ivr(){return mw({cycle:wideQRS(),bpm:32,color:'#c62828'})}
+function aivr(){return mw({cycle:wideQRS(),bpm:65,color:'#c62828'})}
+function vt(){var c=[[0,.50],[.05,.50],[.10,.52],[.18,.78],[.28,.18],[.38,.84],[.48,.22],[.58,.72],[.66,.38],[.72,.50],[.78,.54],[.84,.56],[.92,.52],[1.0,.50]];return mw({cycle:c,bpm:180,color:'#c62828'})}
+function vf(){var c=[];var n=80;for(var i=0;i<n;i++){var t=i/(n-1);var amp=.28+Math.random()*.20;c.push([t,.50+(Math.random()>.5?1:-1)*amp*(.5+Math.random())])}return mw({cycle:c,bpm:10,color:'#c62828'})}
+function tdp(){var c=[];var beats=20;var n=beats*4;for(var i=0;i<=n;i++){var t=i/n;var spindle=Math.sin(t*Math.PI*2)*.36;var osc=Math.sin(t*Math.PI*2*beats);c.push([t,.50+osc*(.06+Math.abs(spindle))])}return mw({cycle:c,bpm:10,color:'#7e57c2'})}
+
+function avb1(){var c=[[0,.50],[.12,.50],[.16,.44],[.20,.38],[.24,.50],[.28,.50],[.34,.50],[.38,.50],[.40,.22],[.42,.78],[.44,.47],[.48,.50],[.54,.50],[.60,.44],[.66,.42],[.74,.50],[1.0,.50]];return mw({cycle:c,bpm:75,color:'#e65100'})}
+function avb2t1(){var c=[[0,.50],[.04,.44],[.06,.38],[.08,.50],[.10,.50],[.12,.22],[.14,.78],[.16,.47],[.20,.50],[.24,.44],[.28,.42],[.32,.50],[.34,.50],[.36,.44],[.38,.38],[.40,.50],[.44,.50],[.46,.22],[.48,.78],[.50,.47],[.54,.50],[.58,.44],[.62,.42],[.66,.50],[.68,.50],[.70,.44],[.72,.38],[.74,.50],[.82,.50],[.84,.44],[.86,.38],[.88,.50],[.90,.50],[.92,.22],[.94,.78],[.96,.47],[1.0,.50]];return mw({cycle:c,bpm:55,color:'#e65100'})}
+function avb2t2(){var c=[[0,.50],[.04,.44],[.06,.38],[.08,.50],[.10,.50],[.12,.22],[.14,.78],[.16,.47],[.20,.50],[.24,.44],[.28,.42],[.32,.50],[.34,.50],[.38,.44],[.40,.38],[.42,.50],[.44,.50],[.46,.22],[.48,.78],[.50,.47],[.54,.50],[.58,.44],[.62,.42],[.66,.50],[.68,.50],[.72,.44],[.74,.38],[.76,.50],[.84,.50],[.86,.44],[.88,.38],[.90,.50],[.92,.50],[.94,.22],[.96,.78],[.98,.47],[1.0,.50]];return mw({cycle:c,bpm:55,color:'#e65100'})}
+function avb3(){var c=[[0,.52],[.04,.52],[.06,.44],[.08,.38],[.10,.52],[.14,.52],[.16,.18],[.22,.82],[.28,.20],[.34,.52],[.38,.52],[.40,.44],[.42,.38],[.44,.52],[.52,.52],[.54,.44],[.56,.38],[.58,.52],[.62,.52],[.64,.18],[.70,.82],[.76,.20],[.82,.52],[.84,.52],[.86,.44],[.88,.38],[.90,.52],[.96,.52],[1.0,.52]];return mw({cycle:c,bpm:38,color:'#e65100'})}
+
+function asystole(){var c=[];for(var i=0;i<30;i++)c.push([i/30,.50+(Math.random()-.5)*.02]);return mw({cycle:c,bpm:60,color:'#c62828'})}
+function pea(){return mw({cycle:pqrst(),bpm:70,color:'#c62828'})}
+var R=[
+  {cat:'sinus',name:'Normal Sinus Rhythm',sub:'SA Node \u2192 60\u2013100 bpm',wave:nsr(),
+   stats:[{l:'Rate',v:'60\u2013100'},{l:'Rhythm',v:'Regular'},{l:'QRS',v:'Narrow'},{l:'P:QRS',v:'1:1'}],
+   chars:[{k:'Rate',v:'60\u2013100 bpm'},{k:'Rhythm',v:'Regular (R-R consistent)'},{k:'P Waves',v:'Upright in Lead II, uniform, 1 per QRS'},{k:'PR Interval',v:'0.12\u20130.20 sec'},{k:'QRS',v:'Narrow, <0.12 sec'},{k:'P:QRS Ratio',v:'1:1'}],
+   callout:{t:'info',s:'\u2726 SINUS: Must have 1:1 P-QRS + P wave upright in Lead II, inverted in aVR'},ecgLabel:'Regular \u2022 P-QRS-T normal'},
+
+  {cat:'sinus',name:'Sinus Bradycardia',sub:'SA Node \u2192 <60 bpm',wave:sinusBrady(),
+   stats:[{l:'Rate',v:'<60'},{l:'Rhythm',v:'Regular'},{l:'QRS',v:'Narrow'},{l:'P:QRS',v:'1:1'}],
+   chars:[{k:'Rate',v:'<60 bpm'},{k:'Rhythm',v:'Regular'},{k:'P Waves',v:'Upright, uniform, precede each QRS'},{k:'PR Interval',v:'0.12\u20130.20 sec'}],
+   etio:['\u2191 Vagal tone','SA node disease','Hypothermia','Beta blockers','Ca blockers','Inferior MI','Athletic hearts'],
+   mgmt:'<strong>Asymptomatic:</strong> Observe<br><strong>Symptomatic:</strong> Atropine 1mg IV q3-5min (max 3mg) \u2192 TCP \u2192 Dopamine/Epi drip',ecgLabel:'Slow rate \u2022 Wide spacing'},
+
+  {cat:'sinus',name:'Sinus Tachycardia',sub:'SA Node \u2192 >100 bpm',wave:sinusTachy(),
+   stats:[{l:'Rate',v:'>100'},{l:'Rhythm',v:'Regular'},{l:'QRS',v:'Narrow'},{l:'P:QRS',v:'1:1'}],
+   chars:[{k:'Rate',v:'>100 bpm (usually 100\u2013160)'},{k:'P Waves',v:'May merge with T at high rates'},{k:'Rhythm',v:'Regular'},{k:'QRS',v:'Narrow'}],
+   etio:['Exercise','Fever/Sepsis','Pain/Anxiety','Hypovolemia','PE','Anemia','Heart failure','Sympathomimetics'],
+   callout:{t:'danger',s:'\u26a0 CRITICAL: Sinus tach is COMPENSATORY. TREAT THE CAUSE, NOT THE RATE!'},ecgLabel:'Fast rate \u2022 Tight spacing'},
+
+  {cat:'sinus',name:'Sinus Arrhythmia',sub:'SA Node \u2192 Varies with respiration',wave:sinusArr(),
+   stats:[{l:'Rate',v:'60\u2013100'},{l:'Rhythm',v:'Irregular'},{l:'QRS',v:'Narrow'},{l:'Pattern',v:'\u2191insp \u2193exp'}],
+   chars:[{k:'Rate',v:'Usually 60\u2013100 bpm (varies)'},{k:'Rhythm',v:'Irregular \u2014 P-P varies >0.16 sec'},{k:'Pattern',v:'Rate \u2191 inspiration, \u2193 expiration'},{k:'P Waves',v:'Upright, uniform morphology'}],
+   callout:{t:'info',s:'\u2726 Benign normal variant \u2014 no treatment. Common in young, healthy & athletes.'},ecgLabel:'P-P varies with breathing'},
+
+  {cat:'atrial',name:'Atrial Flutter',sub:'Reentry Circuit \u2192 A:250\u2013350/min',wave:aFlutter(),
+   stats:[{l:'Atrial',v:'250\u2013350'},{l:'Vent',v:'~150'},{l:'Key',v:'Sawtooth'}],
+   chars:[{k:'Atrial Rate',v:'250\u2013350/min (~300 typical)'},{k:'Ventricular Rate',v:'Depends on block (2:1\u2248150, 4:1\u224875)'},{k:'P Waves',v:'Absent \u2014 sawtooth F waves'},{k:'QRS',v:'Usually narrow'},{k:'Rhythm',v:'Usually regular if fixed block ratio'}],
+   mgmt:'<strong>Stable:</strong> Rate control \u2014 diltiazem / beta blockers<br><strong>Unstable:</strong> Sync cardioversion',ecgLabel:'Sawtooth F waves \u2022 2:1 conduction'},
+
+  {cat:'atrial',name:'Atrial Fibrillation',sub:'Multiple Foci \u2192 A:350\u2013600/min',wave:aFib(),
+   stats:[{l:'Rate',v:'Variable'},{l:'Rhythm',v:'Irreg-Irreg'},{l:'P Waves',v:'None'}],
+   chars:[{k:'Atrial Rate',v:'350\u2013600/min (fibrillatory)'},{k:'Ventricular Rate',v:'Variable (RVR >100, controlled 60-100)'},{k:'Rhythm',v:'IRREGULARLY IRREGULAR'},{k:'P Waves',v:'Absent \u2014 chaotic f waves'},{k:'Baseline',v:'Chaotic, undulating'}],
+   callout:{t:'warn',s:'\u2726 Loss of atrial kick reduces CO ~15-25%. "Holiday heart" = paroxysmal A-fib after heavy alcohol.'},
+   mgmt:'<strong>Stable:</strong> Rate control \u2014 diltiazem / beta blockers<br><strong>Unstable:</strong> Sync cardioversion<br><strong>Long-term:</strong> Anticoagulation',ecgLabel:'IRREGULARLY IRREGULAR \u2022 No P waves'},
+
+  {cat:'atrial',name:'Wandering Atrial Pacemaker',sub:'Multiple Sites \u2192 60\u2013100 bpm',wave:wap(),
+   stats:[{l:'Rate',v:'60\u2013100'},{l:'Rhythm',v:'Sl. Irreg'},{l:'Key',v:'3+ P shapes'}],
+   chars:[{k:'P Waves',v:'At least 3 DIFFERENT morphologies'},{k:'PR Interval',v:'Variable (changes w/ pacemaker site)'},{k:'QRS',v:'Narrow'},{k:'Rate',v:'Usually 60\u2013100 bpm'}],
+   callout:{t:'info',s:'\u2726 Usually benign \u2014 no treatment. Common in healthy people & elderly.'},ecgLabel:'\u22653 different P wave morphologies'},
+
+  {cat:'atrial',name:'Multifocal Atrial Tachycardia',sub:'Multiple Sites \u2192 >100 bpm',wave:mat(),
+   stats:[{l:'Rate',v:'>100'},{l:'Rhythm',v:'Irreg-Irreg'},{l:'Assoc',v:'COPD'}],
+   chars:[{k:'Rate',v:'>100 (often 100\u2013180)'},{k:'P Waves',v:'At least 3 different morphologies'},{k:'vs WAP',v:'Same but rate >100'},{k:'Etiology',v:'COPD, CHF, hypoK, hypoMg'}],
+   callout:{t:'danger',s:'\u26a0 DO NOT cardiovert \u2014 will not work. Treat cause. Mg sulfate may help.'},ecgLabel:'3+ P morphologies \u2022 Rate >100'},
+
+  {cat:'junctional',name:'Junctional Escape',sub:'AV Junction \u2192 40\u201360 bpm',wave:juncEsc(),
+   stats:[{l:'Rate',v:'40\u201360'},{l:'Rhythm',v:'Regular'},{l:'P',v:'Absent/Inv'},{l:'QRS',v:'Narrow'}],
+   chars:[{k:'Rate',v:'40\u201360 bpm'},{k:'P Waves',v:'Absent, inverted, or hidden in QRS'},{k:'QRS',v:'Narrow (<0.12 sec)'},{k:'PR Interval',v:'Short (<0.12) or absent'}],
+   callout:{t:'warn',s:'\u2726 RESCUE rhythm \u2014 junction takes over when SA node fails. Do NOT suppress!'},
+   mgmt:'<strong>Symptomatic:</strong> Atropine 0.5mg IV \u2192 TCP \u2192 Dopamine/Epi<br><strong>Asymptomatic:</strong> Monitor',ecgLabel:'No P waves \u2022 Retrograde P possible'},
+
+  {cat:'junctional',name:'Accelerated Junctional',sub:'AV Junction \u2192 60\u2013100 bpm',wave:juncAcc(),
+   stats:[{l:'Rate',v:'60\u2013100'},{l:'Rhythm',v:'Regular'},{l:'Cause',v:'Dig toxicity'}],
+   chars:[{k:'Rate',v:'60\u2013100 bpm'},{k:'Key',v:'Junction firing faster than normal but <100'},{k:'P Waves',v:'Absent or retrograde'},{k:'QRS',v:'Narrow'}],
+   etio:['Digitalis toxicity','Post cardiac surgery','Inferior MI','Myocarditis'],
+   mgmt:'Usually well-tolerated. Treat underlying cause (check digoxin level).',ecgLabel:'Normal rate range \u2022 Junctional origin'},
+
+  {cat:'junctional',name:'Junctional Tachycardia',sub:'AV Junction \u2192 >100 bpm',wave:juncTachy(),
+   stats:[{l:'Rate',v:'>100'},{l:'Rhythm',v:'Regular'},{l:'vs SVT',v:'~Same tx'}],
+   chars:[{k:'Rate',v:'>100 (often 100\u2013180)'},{k:'P Waves',v:'Absent, inverted, or retrograde'},{k:'Cause',v:'Digitalis toxicity, MI'},{k:'QRS',v:'Narrow'}],
+   mgmt:'<strong>Stable:</strong> Vagal maneuvers \u2192 Adenosine<br><strong>Unstable:</strong> Sync cardioversion',ecgLabel:'Fast \u2022 Often 100\u2013180 bpm'},
+
+  {cat:'ectopy',name:'PAC',sub:'Premature Atrial Complex',wave:pac(),
+   stats:[{l:'Timing',v:'Early'},{l:'QRS',v:'Narrow'},{l:'Significance',v:'Usually benign'}],
+   chars:[{k:'Timing',v:'Occurs EARLY (before expected beat)'},{k:'P Wave',v:'Different morphology from sinus'},{k:'QRS',v:'Usually narrow'},{k:'Pause',v:'Incomplete compensatory pause'}],
+   mgmt:'<strong>Isolated:</strong> Observe \u2014 usually benign<br><strong>Frequent:</strong> May trigger A-fib, A-flutter, SVT',ecgLabel:'Early beats \u2022 Narrow QRS'},
+
+  {cat:'ectopy',name:'PJC',sub:'Premature Junctional Complex',wave:pjc(),
+   stats:[{l:'Timing',v:'Early'},{l:'P Wave',v:'None/Inv'},{l:'QRS',v:'Narrow'}],
+   chars:[{k:'P Waves',v:'Absent or inverted (retrograde)'},{k:'QRS',v:'Narrow, similar to sinus beats'},{k:'Timing',v:'Premature \u2014 occurs early'}],
+   mgmt:'Usually benign. Consider: digitalis toxicity, caffeine, stress.',ecgLabel:'Narrow early beat \u2022 No/inverted P'},
+
+  {cat:'ectopy',name:'PVC',sub:'Premature Ventricular Complex',wave:pvc(),
+   stats:[{l:'QRS',v:'WIDE'},{l:'Pause',v:'Full Comp'},{l:'Concern',v:'R on T'}],
+   chars:[{k:'QRS',v:'WIDE (>0.12 sec), bizarre'},{k:'T Wave',v:'Opposite deflection to QRS'},{k:'Pause',v:'Full compensatory pause'},{k:'Patterns',v:'Bigeminy, Trigeminy, Couplets, R-on-T'}],
+   callout:{t:'danger',s:'\u26a0 R-on-T \u2192 V-Fib! Multi-focal PVCs, runs of 3+ = V-Tach.'},ecgLabel:'WIDE bizarre QRS \u2022 Full comp. pause'},
+
+  {cat:'ventricular',name:'Idioventricular Rhythm',sub:'Ventricular \u2192 20\u201340 bpm',wave:ivr(),
+   stats:[{l:'Rate',v:'20\u201340'},{l:'QRS',v:'WIDE'},{l:'Type',v:'Escape'}],
+   chars:[{k:'Rate',v:'20\u201340 bpm (intrinsic ventricular rate)'},{k:'QRS',v:'Wide >0.12, bizarre'},{k:'P Waves',v:'Absent (or dissociated)'},{k:'Significance',v:'Escape rhythm \u2014 ventricles take over as last resort'}],
+   callout:{t:'danger',s:'\u26a0 Do NOT suppress! Rescue rhythm. You will cause asystole!'},urg:true,
+   mgmt:'Atropine (limited effect) \u2192 TCP \u2192 Dopamine/Epi \u2192 Treat underlying cause',ecgLabel:'Very slow \u2022 Wide QRS \u2022 Last resort'},
+
+  {cat:'ventricular',name:'AIVR',sub:'Accelerated \u2192 40\u2013100 bpm',wave:aivr(),
+   stats:[{l:'Rate',v:'40\u2013100'},{l:'QRS',v:'WIDE'},{l:'Context',v:'Post-MI'}],
+   chars:[{k:'Rate',v:'40\u2013100 bpm'},{k:'QRS',v:'Wide (>0.12 sec)'},{k:'Significance',v:'Often = reperfusion rhythm post-MI (good sign!)'},{k:'Also seen',v:'Digitalis toxicity, electrolyte imbalance'}],
+   callout:{t:'info',s:'\u2726 Usually self-limiting. Common after thrombolytics/PCI. DO NOT treat unless unstable.'},ecgLabel:'Reperfusion sign \u2022 Usually benign'},
+
+  {cat:'ventricular',name:'Ventricular Tachycardia',sub:'Ventricles \u2192 >100 bpm (150\u2013250)',wave:vt(),
+   stats:[{l:'Rate',v:'>100'},{l:'QRS',v:'WIDE'},{l:'Danger',v:'LETHAL'}],
+   chars:[{k:'Rate',v:'>100 (often 150\u2013250)'},{k:'QRS',v:'WIDE >0.12 sec'},{k:'P Waves',v:'Usually absent or dissociated'},{k:'Rule',v:'Wide + Fast + Regular = VT until proven otherwise'}],
+   urg:true,mgmt:'<strong>WITH Pulse + Stable:</strong> Amiodarone 150mg IV/10min<br><strong>WITH Pulse + Unstable:</strong> Sync cardioversion<br><strong>PULSELESS:</strong> DEFIB! CPR + Epi 1mg + Amio 300mg',ecgLabel:'WIDE \u2022 FAST \u2022 REGULAR \u2014 Lethal!'},
+
+  {cat:'ventricular',name:'Ventricular Fibrillation',sub:'Chaotic \u2192 No cardiac output',wave:vf(),
+   stats:[{l:'Rate',v:'N/A'},{l:'Output',v:'NONE'},{l:'Action',v:'DEFIB!'}],
+   chars:[{k:'Pattern',v:'Chaotic, disorganized \u2014 no P, QRS, or T'},{k:'Types',v:'Coarse (recent onset) vs Fine (prolonged)'}],
+   urg:true,mgmt:'<strong>1.</strong> DEFIB 200J biphasic<br><strong>2.</strong> CPR 2 min \u2192 Recheck<br><strong>3.</strong> Epi 1mg IV q3-5min<br><strong>4.</strong> Amio 300mg IV (then 150mg)<br><strong>5.</strong> Shock \u2192 CPR \u2192 Meds cycle',ecgLabel:'CHAOTIC \u2014 DEFIB NOW!'},
+
+  {cat:'ventricular',name:'Torsades de Pointes',sub:'"Twisting of the Points"',wave:tdp(),
+   stats:[{l:'Pattern',v:'Spindle'},{l:'Cause',v:'Long QT'},{l:'1st Line',v:'Mg\u00b2\u207a'}],
+   chars:[{k:'Pattern',v:'Waxing-waning "spindle" \u2014 amplitude cycles'},{k:'Cause',v:'Prolonged QT interval'},{k:'Triggers',v:'Drugs (Class IA/III), hypoK, hypoMg'},{k:'vs VT',v:'Axis shifts \u2014 key differentiator'}],
+   urg:true,mgmt:'<strong>First-line: Magnesium 1\u20132g IV</strong><br><strong>Pulseless:</strong> Defibrillate<br><strong>With pulse:</strong> Mg + overdrive pacing<br>DO NOT give Amiodarone (worsens QT!)',ecgLabel:'Waxing-waning "spindle" pattern'},
+
+  {cat:'block',name:'1\u00b0 AV Block',sub:'PR >0.20 \u2022 All conduct',wave:avb1(),
+   stats:[{l:'PR',v:'>0.20'},{l:'Pattern',v:'Constant'},{l:'P:QRS',v:'1:1'}],
+   chars:[{k:'PR Interval',v:'>0.20 sec (constant)'},{k:'Conduction',v:'All P waves conduct \u2014 just delayed'},{k:'QRS',v:'Usually narrow'},{k:'Rhythm',v:'Regular'}],
+   callout:{t:'info',s:'\u2726 Not truly a "block" \u2014 conduction DELAY. Usually benign. No tx unless symptomatic.'},ecgLabel:'Long PR \u2022 All P waves conduct'},
+
+  {cat:'block',name:'2\u00b0 Type I (Wenckebach)',sub:'Longer, longer, drop!',wave:avb2t1(),
+   stats:[{l:'PR',v:'\u2191 \u2191 \u2191 Drop'},{l:'Pattern',v:'Grouped'},{l:'Level',v:'AV Node'}],
+   chars:[{k:'PR Interval',v:'Progressive prolongation \u2192 dropped QRS'},{k:'Mnemonic',v:'"Longer, longer, longer, DROP!"'},{k:'QRS',v:'Usually narrow'},{k:'Location',v:'At AV node level'}],
+   mgmt:'Usually benign. Atropine if symptomatic. Rarely needs pacing.',ecgLabel:'Progressive PR \u2192 dropped QRS'},
+
+  {cat:'block',name:'2\u00b0 Type II (Mobitz)',sub:'Constant PR \u2192 Sudden drops',wave:avb2t2(),
+   stats:[{l:'PR',v:'Constant'},{l:'Drops',v:'Sudden'},{l:'Danger',v:'HIGH'}],
+   chars:[{k:'PR Interval',v:'CONSTANT when present'},{k:'QRS',v:'Often WIDE (infranodal)'},{k:'Drops',v:'Sudden, unpredictable'},{k:'Location',v:'Below AV node (His-Purkinje)'}],
+   callout:{t:'danger',s:'\u26a0 DANGEROUS \u2014 can progress to complete heart block! Prepare TCP.'},ecgLabel:'Constant PR \u2022 Sudden dropped beats'},
+
+  {cat:'block',name:'3\u00b0 Complete Heart Block',sub:'Complete AV dissociation',wave:avb3(),
+   stats:[{l:'P:QRS',v:'None'},{l:'Atrial',v:'60\u2013100'},{l:'Vent',v:'20\u201360'},{l:'Danger',v:'HIGH'}],
+   chars:[{k:'Hallmark',v:'Complete AV dissociation \u2014 NO relationship'},{k:'Atrial Rate',v:'60\u2013100 bpm (regular)'},{k:'Ventricular Rate',v:'20\u201360 bpm (escape, regular)'},{k:'QRS',v:'Often wide (ventricular escape)'}],
+   urg:true,mgmt:'<strong>TCP immediately</strong> \u2014 do not delay<br>Atropine may help if narrow QRS escape<br>Definitive: Transvenous \u2192 Permanent pacemaker',ecgLabel:'P waves march independently of QRS'},
+
+  {cat:'arrest',name:'Asystole',sub:'No electrical activity',wave:asystole(),
+   stats:[{l:'Rate',v:'0'},{l:'Shock',v:'NO'},{l:'Prognosis',v:'Grave'}],
+   chars:[{k:'Appearance',v:'Flatline \u2014 near-complete absence of activity'},{k:'Confirm',v:'MUST verify in 2 leads (r/o fine V-Fib)'},{k:'Prognosis',v:'Worst of all arrest rhythms'}],
+   urg:true,mgmt:'<strong>1.</strong> High-quality CPR<br><strong>2.</strong> Epi 1mg IV/IO q3-5min<br><strong>3.</strong> Search H\'s & T\'s<br><strong>DO NOT DEFIBRILLATE</strong>',ecgLabel:'FLATLINE \u2014 Confirm in 2 leads!'},
+
+  {cat:'arrest',name:'PEA',sub:'Pulseless Electrical Activity',wave:pea(),
+   stats:[{l:'ECG',v:'Organized'},{l:'Pulse',v:'ABSENT'},{l:'Shock',v:'NO'}],
+   chars:[{k:'Appearance',v:'Can look like ANY organized rhythm'},{k:'Pulse',v:'ABSENT \u2014 this defines PEA'},{k:'Causes',v:'H\'s and T\'s (reversible)'},{k:'Prognosis',v:'Better than asystole if cause found'}],
+   etio:['Hypovolemia','Hypoxia','H+ (acidosis)','Hypo/Hyperkalemia','Hypothermia','Tension pneumo','Tamponade','Toxins','Thrombosis (MI)','Thrombosis (PE)'],
+   urg:true,mgmt:'<strong>1.</strong> High-quality CPR<br><strong>2.</strong> Epi 1mg IV/IO q3-5min<br><strong>3.</strong> AGGRESSIVELY search H\'s & T\'s<br><strong>DO NOT DEFIB</strong>',ecgLabel:'Organized rhythm BUT NO PULSE!'}
+];
+// Canvas renderer
+var activeCanvases=[];
+var globalPaused=false;
+
+function drawPaper(ctx,w,h){
+  ctx.fillStyle='#fdf5e6';ctx.fillRect(0,0,w,h);
+  var minor=w>500?10:7;
+  ctx.strokeStyle='#efd8b8';ctx.lineWidth=.35;ctx.beginPath();
+  for(var x=0;x<=w;x+=minor){ctx.moveTo(x,0);ctx.lineTo(x,h)}
+  for(var y=0;y<=h;y+=minor){ctx.moveTo(0,y);ctx.lineTo(w,y)}
+  ctx.stroke();
+  var major=minor*5;
+  ctx.strokeStyle='#c89060';ctx.lineWidth=.7;ctx.beginPath();
+  for(var x=0;x<=w;x+=major){ctx.moveTo(x,0);ctx.lineTo(x,h)}
+  for(var y=0;y<=h;y+=major){ctx.moveTo(0,y);ctx.lineTo(w,y)}
+  ctx.stroke();
+}
+
+function createECG(canvas,wd){
+  var ctx=canvas.getContext('2d');
+  var dpr=window.devicePixelRatio||1;
+  var w,h,offset=0,paused=false,raf;
+  var cycle=wd.cycle,bpm=wd.bpm||75,tc=wd.color||'#1a8c3a',jit=wd.jitter;
+
+  function resize(){
+    var r=canvas.getBoundingClientRect();
+    w=r.width;h=r.height;
+    canvas.width=w*dpr;canvas.height=h*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function getY(t){
+    t=((t%1)+1)%1;
+    for(var i=0;i<cycle.length-1;i++){
+      if(t>=cycle[i][0]&&t<=cycle[i+1][0]){
+        var f=(t-cycle[i][0])/(cycle[i+1][0]-cycle[i][0]);
+        var y=cycle[i][1]+(cycle[i+1][1]-cycle[i][1])*f;
+        if(jit)y+=Math.sin(t*97+offset*2)*.012;
+        return y;
+      }
+    }
+    return .5;
+  }
+  function draw(){
+    drawPaper(ctx,w,h);
+    var pad=h*.1,dH=h-pad*2;
+    var cPx=w*10/bpm;
+    ctx.strokeStyle=tc;ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.shadowColor=tc;ctx.shadowBlur=3;
+    ctx.beginPath();
+    var first=true;
+    for(var px=0;px<w;px++){
+      var t=(px+offset)/cPx;
+      var y=getY(t);
+      var sy=pad+y*dH;
+      if(first){ctx.moveTo(px,sy);first=false}else ctx.lineTo(px,sy);
+    }
+    ctx.stroke();ctx.shadowBlur=0;
+  }
+  function loop(){
+    if(!paused&&!globalPaused)offset+=w/300;
+    draw();raf=requestAnimationFrame(loop);
+  }
+  resize();loop();
+  var obj={toggle:function(){paused=!paused;return paused},isPaused:function(){return paused},destroy:function(){cancelAnimationFrame(raf)},resize:resize};
+  activeCanvases.push(obj);
+  return obj;
+}
+
+// Build UI
+var navW=document.getElementById('navW');
+CATS.forEach(function(c){
+  var b=document.createElement('button');
+  b.className='pill'+(c.id==='all'?' on':'');
+  b.dataset.f=c.id;
+  b.innerHTML='<span class="pill-dot" style="background:'+c.color+'"></span>'+c.label;
+  b.onclick=function(){filterCards(c.id)};
+  navW.appendChild(b);
+});
+
+function renderAll(filter,search){
+  filter=filter||'all';search=search||'';
+  activeCanvases.forEach(function(a){a.destroy()});
+  activeCanvases=[];
+  var main=document.getElementById('main');
+  main.innerHTML='';
+  var count=0;
+  var s=search.toLowerCase();
+
+  SECS.forEach(function(sec){
+    if(filter!=='all'&&filter!==sec.cat)return;
+    var items=R.filter(function(r){return r.cat===sec.cat&&(!s||(r.name+' '+r.sub+' '+(r.ecgLabel||'')).toLowerCase().indexOf(s)>=0)});
+    if(!items.length)return;
+
+    var col=COL[sec.cat],glow=GLOW[sec.cat];
+    main.insertAdjacentHTML('beforeend','<div class="sec-hdr"><div class="sec-icon" style="background:'+glow+';color:'+col+'">'+sec.icon+'</div><div class="sec-txt"><div class="sec-label" style="color:'+col+'">'+sec.label+'</div><div class="sec-sub">'+sec.sub+'</div></div><div class="sec-line"></div></div>');
+
+    items.forEach(function(r){
+      var c=COL[r.cat],g=GLOW[r.cat],l=LBL[r.cat];
+      var cid='ecg_'+count;
+      var statsH=r.stats.map(function(st){return '<div class="rc-datum"><span class="rc-datum-label">'+st.l+'</span><span class="rc-datum-val" style="color:'+c+'">'+st.v+'</span></div>'}).join('');
+      var charsH=r.chars.map(function(ch){return '<div class="teach-prop" style="border-color:'+c+'"><div class="teach-k">'+ch.k+'</div><div class="teach-v">'+ch.v+'</div></div>'}).join('');
+      var etioH=r.etio?'<div class="teach-divider">Etiology / Causes</div><div class="teach-tags">'+r.etio.map(function(e){return '<span class="teach-tag">'+e+'</span>'}).join('')+'</div>':'';
+      var callH=r.callout?'<div class="callout '+r.callout.t+'">'+r.callout.s+'</div>':'';
+      var mgmtH=r.mgmt?'<div class="teach-divider" style="color:'+(r.urg?'var(--vent)':'var(--ectopy)')+'">Management</div><div class="mgmt-box'+(r.urg?' urg':'')+'">'+r.mgmt+'</div>':'';
+
+      var html='<div class="rcard" style="border-left-color:'+c+'" id="card_'+count+'">'+
+        '<div class="rc-top">'+
+          '<div class="rc-info">'+
+            '<div class="rc-cat" style="background:'+g+';color:'+c+'">'+l+'</div>'+
+            '<div class="rc-name">'+r.name+'</div>'+
+            '<div class="rc-sub">'+r.sub+'</div>'+
+          '</div>'+
+          '<div class="rc-data">'+statsH+'</div>'+
+          '<div class="rc-btns">'+
+            '<button class="rc-btn playing" id="pp_'+count+'" onclick="toggleAnim('+count+')">⏸ Pause</button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="ecg-wrap">'+
+          '<canvas id="'+cid+'"></canvas>'+
+          '<div class="ecg-tag">'+(r.ecgLabel||'')+'</div>'+
+          '<div class="ecg-cal">25 mm/s • 10 mm/mV</div>'+
+        '</div>'+
+        '<div class="teach">'+
+          '<div class="teach-grid">'+charsH+'</div>'+
+          etioH+callH+mgmtH+
+        '</div>'+
+      '</div>';
+      main.insertAdjacentHTML('beforeend',html);
+      count++;
+    });
+  });
+
+  document.getElementById('cnt').textContent=count;
+
+  requestAnimationFrame(function(){
+    var idx=0;
+    SECS.forEach(function(sec){
+      if(filter!=='all'&&filter!==sec.cat)return;
+      var items=R.filter(function(r){return r.cat===sec.cat&&(!s||(r.name+' '+r.sub+' '+(r.ecgLabel||'')).toLowerCase().indexOf(s)>=0)});
+      items.forEach(function(r){
+        var cv=document.getElementById('ecg_'+idx);
+        if(cv)createECG(cv,r.wave);
+        idx++;
+      });
+    });
+  });
+}
+
+function filterCards(f){
+  document.querySelectorAll('.pill').forEach(function(b){b.classList.toggle('on',b.dataset.f===f)});
+  renderAll(f,document.getElementById('searchIn').value);
+}
+
+document.getElementById('searchIn').addEventListener('input',function(e){
+  var f=(document.querySelector('.pill.on')||{}).dataset;
+  renderAll(f?f.f:'all',e.target.value);
+});
+
+window.toggleAnim=function(i){
+  if(activeCanvases[i]){
+    var p=activeCanvases[i].toggle();
+    var b=document.getElementById('pp_'+i);
+    if(b){b.textContent=p?'▶ Play':'⏸ Pause';b.classList.toggle('playing',!p)}
+  }
+};
+
+window.toggleAllAnims=function(){
+  globalPaused=!globalPaused;
+  document.getElementById('gToggle').textContent=globalPaused?'▶ Play All':'⏸ Pause All';
+  activeCanvases.forEach(function(a,i){
+    var b=document.getElementById('pp_'+i);
+    if(b&&!a.isPaused()){b.textContent=globalPaused?'▶ Play':'⏸ Pause';b.classList.toggle('playing',!globalPaused)}
+  });
+};
+
+var rt;
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){activeCanvases.forEach(function(a){a.resize()})},150)});
+
+renderAll();
+</script>
+</body>
+</html>
