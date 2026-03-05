@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>12-Lead ECG Mastery — CAMP EMS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+:root,[data-theme="dark"]{
+  --bg:#050a0e;--bg2:#0a1520;--bg3:#0d1e30;--card:#0f2035;--border:#1a3a5c;
+  --text:#c8e6ff;--muted:#6a8fad;--white:#f0f8ff;
+  --green:#00ff88;--green2:#00cc66;--cyan:#00e5ff;--amber:#ffb300;
+  --red:#ff3366;--orange:#ff6b35;--purple:#9b59b6;
+  --grid:rgba(0,255,136,0.04);--ecg-bg:#040e04;
+  --eg1:rgba(255,80,80,0.12);--eg2:rgba(255,80,80,0.05);
+  --nav-bg:rgba(5,10,14,0.96);--sh:rgba(0,0,0,0.5);
+}
+[data-theme="light"]{
+  --bg:#eef2f7;--bg2:#dde6f0;--bg3:#ccd9ea;--card:#ffffff;--border:#8aaece;
+  --text:#0d1d2e;--muted:#2a4a6a;--white:#060e18;
+  --green:#005c30;--green2:#007a40;--cyan:#004f80;--amber:#7a5000;
+  --red:#a80030;--orange:#a03000;--purple:#4a2a90;
+  --grid:rgba(0,80,160,0.05);--ecg-bg:#f0faf2;
+  --eg1:rgba(160,50,50,0.18);--eg2:rgba(160,50,50,0.08);
+  --nav-bg:rgba(238,242,247,0.98);--sh:rgba(0,20,60,0.18);
+}
+/* Light mode pill / badge overrides for contrast */
+[data-theme="light"] .pg{background:rgba(0,92,48,.12);color:#005c30;border-color:rgba(0,92,48,.35)}
+[data-theme="light"] .pa{background:rgba(122,80,0,.12);color:#7a5000;border-color:rgba(122,80,0,.35)}
+[data-theme="light"] .pc{background:rgba(0,79,128,.12);color:#004f80;border-color:rgba(0,79,128,.35)}
+[data-theme="light"] .pr{background:rgba(168,0,48,.12);color:#a80030;border-color:rgba(168,0,48,.35)}
+[data-theme="light"] .po{background:rgba(160,48,0,.12);color:#a03000;border-color:rgba(160,48,0,.35)}
+[data-theme="light"] .bi{background:rgba(122,80,0,.14);color:#7a5000}
+[data-theme="light"] .ba{background:rgba(160,48,0,.14);color:#a03000}
+[data-theme="light"] .bl{background:rgba(0,79,128,.14);color:#004f80}
+[data-theme="light"] .bs{background:rgba(74,42,144,.14);color:#4a2a90}
+[data-theme="light"] .bp{background:rgba(0,92,48,.14);color:#005c30}
+[data-theme="light"] .br{background:rgba(168,0,48,.14);color:#a80030}
+[data-theme="light"] .anal{background:rgba(0,79,128,.09);border-left-color:#004f80}
+[data-theme="light"] .albl{color:#004f80}
+[data-theme="light"] .anal p{color:#0d1d2e}
+[data-theme="light"] .kp{background:rgba(0,92,48,.09);border-color:rgba(0,92,48,.35)}
+[data-theme="light"] .kp-l{color:#005c30}
+[data-theme="light"] .warn{background:rgba(168,0,48,.08);border-color:rgba(168,0,48,.4);color:#6a0020}
+[data-theme="light"] .warn-l{color:#a80030}
+[data-theme="light"] .stnum{background:#005c30;color:#fff}
+[data-theme="light"] .stco{background:linear-gradient(180deg,#005c30,#8aaece)}
+[data-theme="light"] .nav-logo{color:#005c30}
+[data-theme="light"] .nav-btn:hover,[data-theme="light"] .nav-btn.active{border-color:#005c30;color:#005c30;background:rgba(0,92,48,.08)}
+[data-theme="light"] .sbtn{background:#005c30;color:#fff}
+[data-theme="light"] .sbtn:hover{background:#007a40}
+[data-theme="light"] .ldot{background:#005c30}
+[data-theme="light"] .elbl{background:rgba(255,255,255,.85);color:#005c30}
+[data-theme="light"] .bbb-l.bbb-r{background:rgba(122,80,0,.14);color:#7a5000}
+[data-theme="light"] .bbb-l.bbb-lb{background:rgba(0,79,128,.14);color:#004f80}
+[data-theme="light"] .slbl{color:#2a4a6a}
+[data-theme="light"] .kg{border-color:#6a9ec0}
+[data-theme="light"] .kg-av{background:linear-gradient(135deg,#c8dff0,#aacce0)}
+[data-theme="light"] .kg-nm{color:#004f80}
+[data-theme="light"] .kg-lnk{background:rgba(0,79,128,.1);border-color:rgba(0,79,128,.35);color:#004f80}
+[data-theme="light"] .kg-lnk:hover{background:rgba(0,79,128,.2)}
+[data-theme="light"] .qbox{border-color:#7a5000}
+[data-theme="light"] .qico{background:rgba(122,80,0,.12)}
+[data-theme="light"] .qht{color:#7a5000}
+[data-theme="light"] .qtxt{color:#0d1d2e}
+[data-theme="light"] .qopt{background:#fff;color:#0d1d2e;border-color:#8aaece}
+[data-theme="light"] .qopt:hover{border-color:#7a5000;color:#7a5000}
+[data-theme="light"] .qopt.ok{border-color:#005c30;background:rgba(0,92,48,.1);color:#005c30}
+[data-theme="light"] .qopt.no{border-color:#a80030;background:rgba(168,0,48,.08);color:#a80030}
+[data-theme="light"] .qfb.show-ok{background:rgba(0,92,48,.1);border-color:#005c30;color:#005c30}
+[data-theme="light"] .qfb.show-no{background:rgba(168,0,48,.08);border-color:#a80030;color:#7a0020}
+[data-theme="light"] .qnxt{background:#7a5000;color:#fff}
+[data-theme="light"] .rbtn{border-color:#005c30;color:#005c30}
+[data-theme="light"] .rbtn:hover{background:rgba(0,92,48,.1)}
+[data-theme="light"] .cans{background:rgba(0,92,48,.07);border-color:rgba(0,92,48,.3)}
+[data-theme="light"] .cans h4{color:#005c30}
+[data-theme="light"] .hnum{color:#004f80}
+[data-theme="light"] .lcell:hover,[data-theme="light"] .lcell.sel{border-color:#005c30;box-shadow:0 0 10px rgba(0,92,48,.2)}
+[data-theme="light"] .ctab:hover,[data-theme="light"] .ctab.act{border-color:#004f80;color:#004f80;background:rgba(0,79,128,.1)}
+[data-theme="light"] .ai-t{color:#005c30}
+[data-theme="light"] #axis-info{background:#dde6f0;border-color:#8aaece}
+[data-theme="light"] .theme-btn:hover{border-color:#7a5000;color:#7a5000}
+[data-theme="light"] .progress-fill{background:linear-gradient(90deg,#005c30,#004f80)}
+[data-theme="light"] .mi-tbl th{color:#004f80}
+[data-theme="light"] .case-t{color:#0d1d2e}
+[data-theme="light"] .vv{color:#004f80}
+[data-theme="light"] .stag{color:#005c30}
+[data-theme="light"] h2.sh span{color:#005c30}
+[data-theme="light"] .hh span{color:#005c30}
+[data-theme="light"] .htag{color:#005c30}
+[data-theme="light"] .scr-fi{background:#005c30}
+[data-theme="light"] .ai-beats .ai-bm{background:#f0faf2}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;background:var(--nav-bg);border-bottom:1px solid var(--border);backdrop-filter:blur(14px);z-index:1000;padding:0 16px;transition:background .3s}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:6px;height:54px;overflow-x:auto;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-logo{font-family:'Share Tech Mono',monospace;color:var(--green);font-size:13px;white-space:nowrap;margin-right:10px;flex-shrink:0;cursor:pointer;letter-spacing:2px}
+.nav-btn{padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:4px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.nav-btn:hover,.nav-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,136,.07)}
+.theme-btn{margin-left:auto;padding:5px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:4px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;white-space:nowrap;transition:all .2s;flex-shrink:0;letter-spacing:1px}
+.theme-btn:hover{border-color:var(--amber);color:var(--amber)}
+.progress-bar{position:fixed;top:54px;left:0;right:0;height:3px;background:var(--border);z-index:999}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .3s;width:0%}
+.section{max-width:1200px;margin:0 auto;padding:70px 20px;position:relative;z-index:1}
+.sdiv{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.stag{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;display:block}
+h2.sh{font-family:'Exo 2',sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:900;color:var(--white);line-height:1.2}
+h2.sh span{color:var(--green)}
+.sdesc{color:var(--muted);margin-top:10px;font-size:.95rem;max-width:700px}
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px 40px;position:relative;overflow:hidden}
+.htag{font-family:'Share Tech Mono',monospace;color:var(--green);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;animation:fadeD .8s both}
+h1.hh{font-family:'Exo 2',sans-serif;font-size:clamp(2rem,6vw,4.2rem);font-weight:900;line-height:1.1;margin-bottom:18px;animation:fadeD .8s .1s both}
+h1.hh span{color:var(--green)}
+.hsub{font-size:clamp(.9rem,2vw,1.1rem);color:var(--muted);max-width:580px;margin-bottom:36px;animation:fadeD .8s .2s both}
+.hstats{display:flex;gap:28px;margin-bottom:36px;animation:fadeU .8s .3s both;flex-wrap:wrap;justify-content:center}
+.hnum{font-family:'Share Tech Mono',monospace;font-size:1.9rem;color:var(--cyan);display:block}
+.hlbl{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.sbtn{padding:15px 44px;background:var(--green);color:#000;border:none;border-radius:4px;font-family:'Exo 2',sans-serif;font-weight:800;font-size:15px;letter-spacing:1px;cursor:pointer;animation:fadeU .8s .4s both;transition:all .2s;text-transform:uppercase}
+.sbtn:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,255,136,.3)}
+#heroC{position:absolute;bottom:0;left:0;right:0;height:100px;opacity:.4;pointer-events:none}
+.ldot{width:7px;height:7px;background:var(--green);border-radius:50%;display:inline-block;margin-right:5px;animation:pulse 1.5s infinite}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:rgba(0,229,255,.3);box-shadow:0 4px 20px var(--sh)}
+.ct{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ci{width:30px;height:30px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ig{background:rgba(0,255,136,.15);color:var(--green)}.ic{background:rgba(0,229,255,.15);color:var(--cyan)}
+.ia{background:rgba(255,179,0,.15);color:var(--amber)}.ir{background:rgba(255,51,102,.15);color:var(--red)}
+.io{background:rgba(255,107,53,.15);color:var(--orange)}
+.ew{background:var(--ecg-bg);border:1px solid var(--border);border-radius:8px;padding:10px;margin:14px 0;position:relative;overflow:hidden}
+.ew::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--eg1) 1px,transparent 1px),linear-gradient(90deg,var(--eg1) 1px,transparent 1px),linear-gradient(var(--eg2) 1px,transparent 1px),linear-gradient(90deg,var(--eg2) 1px,transparent 1px);background-size:100px 100px,100px 100px,20px 20px,20px 20px;pointer-events:none}
+canvas.ecv{display:block;width:100%}
+.elbl{position:absolute;top:6px;left:10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);background:rgba(0,0,0,.5);padding:1px 7px;border-radius:3px;z-index:1}
+.anal{background:rgba(0,229,255,.06);border-left:4px solid var(--cyan);border-radius:0 8px 8px 0;padding:16px 20px;margin:18px 0}
+.albl{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.albl::before{content:'💡';font-size:13px}
+.anal p{color:var(--text);font-size:.92rem}
+.kp{background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);border-radius:8px;padding:14px 18px;margin:14px 0;font-size:.9rem}
+.kp-l{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:3px;margin-bottom:6px;display:block}
+.warn{background:rgba(255,51,102,.07);border:1px solid rgba(255,51,102,.3);border-radius:8px;padding:14px 18px;margin:14px 0;color:#ffaabb;font-size:.9rem}
+.warn-l{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:3px;margin-bottom:6px;display:block}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.qbox{background:var(--bg3);border:2px solid var(--amber);border-radius:12px;padding:26px;margin:36px 0}
+.qhdr{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.qico{width:42px;height:42px;background:rgba(255,179,0,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.qht{font-family:'Exo 2',sans-serif;font-weight:700;color:var(--amber);font-size:1rem}
+.qhs{font-size:.83rem;color:var(--muted)}
+.qtxt{font-size:.97rem;color:var(--white);margin-bottom:14px;font-weight:600;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.qopt{padding:11px 16px;border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all .2s;font-size:.9rem;color:var(--text);background:var(--card);text-align:left;width:100%}
+.qopt:hover{border-color:var(--amber);color:var(--amber)}
+.qopt.ok{border-color:var(--green);background:rgba(0,255,136,.1);color:var(--green)}
+.qopt.no{border-color:var(--red);background:rgba(255,51,102,.1);color:var(--red)}
+.qopt:disabled{cursor:default}
+.qfb{padding:11px 16px;border-radius:7px;font-size:.88rem;display:none;margin-top:8px}
+.qfb.show-ok{display:block;background:rgba(0,255,136,.1);border:1px solid var(--green);color:var(--green)}
+.qfb.show-no{display:block;background:rgba(255,51,102,.1);border:1px solid var(--red);color:#ffaabb}
+.qnxt{margin-top:12px;padding:9px 22px;background:var(--amber);color:#000;border:none;border-radius:6px;font-weight:700;cursor:pointer;display:none;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.qnxt.vis{display:inline-block}
+.scr-row{display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted)}
+.scr-tr{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.scr-fi{height:100%;background:var(--green);border-radius:3px;transition:width .5s}
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600;margin:2px;font-family:'Share Tech Mono',monospace}
+.pg{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3)}
+.pa{background:rgba(255,179,0,.15);color:var(--amber);border:1px solid rgba(255,179,0,.3)}
+.pc{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+.pr{background:rgba(255,51,102,.15);color:var(--red);border:1px solid rgba(255,51,102,.3)}
+.po{background:rgba(255,107,53,.15);color:var(--orange);border:1px solid rgba(255,107,53,.3)}
+ul.ul{padding-left:18px}
+ul.ul li{margin-bottom:5px;color:var(--muted)}
+ul.ul li strong{color:var(--text)}
+.lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+@media(max-width:700px){.lgrid{grid-template-columns:repeat(3,1fr)}}
+.lcell{background:var(--ecg-bg);border:1px solid var(--border);border-radius:6px;padding:8px;cursor:pointer;transition:all .2s}
+.lcell:hover,.lcell.sel{border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,.2)}
+.lnm{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);margin-bottom:3px}
+.lmini{display:block;width:100%;height:48px}
+#ldtl{display:none;margin-top:14px;padding:18px;background:var(--bg3);border-radius:8px;border:1px solid var(--border)}
+.ctabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ctab{padding:5px 12px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:12px;font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--muted);transition:all .2s}
+.ctab:hover,.ctab.act{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.mi-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.mi-tbl th{background:var(--bg3);padding:11px 14px;text-align:left;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--cyan);border-bottom:2px solid var(--border)}
+.mi-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+.mi-tbl tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bi{background:rgba(255,179,0,.15);color:var(--amber)}
+.ba{background:rgba(255,107,53,.15);color:var(--orange)}
+.bl{background:rgba(0,229,255,.15);color:var(--cyan)}
+.bs{background:rgba(155,89,182,.15);color:var(--purple)}
+.bp{background:rgba(0,255,136,.15);color:var(--green)}
+.br{background:rgba(255,51,102,.15);color:var(--red)}
+.case-bx{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:28px 0}
+.case-hd{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.case-n{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:3px}
+.case-t{font-family:'Exo 2',sans-serif;font-size:1.2rem;font-weight:700;color:var(--white)}
+.vits{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:16px}
+.vit{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px;text-align:center}
+.vv{font-family:'Share Tech Mono',monospace;font-size:1.1rem;color:var(--cyan);display:block}
+.vl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.rbtn{padding:10px 24px;background:transparent;border:1px solid var(--green);color:var(--green);border-radius:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;margin-top:14px}
+.rbtn:hover{background:rgba(0,255,136,.1)}
+.cans{display:none;margin-top:18px;padding:18px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);border-radius:8px}
+.cans.vis{display:block}
+.cans h4{font-family:'Rajdhani',sans-serif;color:var(--green);font-size:1.05rem;margin-bottom:10px}
+.bbb-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.bbb-s{background:var(--ecg-bg);border:1px solid var(--border);border-radius:8px;padding:12px}
+.bbb-l{font-family:'Share Tech Mono',monospace;font-size:11px;text-align:center;padding:4px;border-radius:4px;margin-bottom:8px}
+.bbb-r{background:rgba(255,179,0,.15);color:var(--amber)}
+.bbb-lb{background:rgba(0,229,255,.15);color:var(--cyan)}
+.slbl{font-family:'Share Tech Mono',monospace;font-size:9px;text-align:center;color:var(--muted);margin:6px 0 3px}
+.stf{display:flex;flex-direction:column;gap:0;margin:18px 0}
+.sti{display:flex;gap:14px;align-items:flex-start}
+.stln{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.stnum{width:34px;height:34px;background:var(--green);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-weight:800;font-size:13px;flex-shrink:0}
+.stco{width:2px;flex:1;min-height:20px;background:linear-gradient(180deg,var(--green),var(--border));margin:3px 0}
+.stct{padding-bottom:20px;flex:1}
+.stct h4{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:4px}
+.stct p{font-size:.9rem;color:var(--muted)}
+.kg{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid #1e4a7a;border-radius:10px;padding:18px 22px;margin:22px 0;display:flex;gap:14px;align-items:flex-start}
+.kg-av{width:48px;height:48px;background:linear-gradient(135deg,#1a3a6a,#2a5a9a);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.kg-nm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;color:#5bbfff;margin-bottom:3px}
+.kg-d{font-size:.85rem;color:var(--muted);margin-bottom:8px}
+.kg-lnk{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;background:rgba(91,191,255,.1);border:1px solid rgba(91,191,255,.3);border-radius:4px;color:#5bbfff;text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:11px;transition:all .2s;margin-right:6px;margin-bottom:5px}
+.kg-lnk:hover{background:rgba(91,191,255,.2)}
+#axis-wrap{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin:20px 0}
+#axis-info{flex:1;min-width:220px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:18px;min-height:220px}
+.ai-t{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:8px;color:var(--green)}
+.ai-r{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:8px}
+.ai-beats{display:flex;gap:10px;margin-top:12px}
+.ai-bm{flex:1;background:var(--ecg-bg);border:1px solid var(--border);border-radius:6px;padding:6px;min-width:0}
+.ai-bl{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);margin-bottom:3px;text-align:center}
+canvas.ai-cv{display:block;width:100%;height:50px}
+.mt2{margin-top:8px}.mt4{margin-top:16px}.mt8{margin-top:32px}.mb2{margin-bottom:8px}.mb4{margin-bottom:16px}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:36px 20px;text-align:center;color:var(--muted);font-size:.83rem;position:relative;z-index:1}
+footer .flogo{font-family:'Share Tech Mono',monospace;color:var(--green);font-size:1rem;margin-bottom:10px;display:block}
+footer a{color:var(--green);text-decoration:none}
+@keyframes fadeD{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+@keyframes fadeU{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="gProg"></div></div>
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo" onclick="goTo('hero')">⚡ 12-LEAD ECG</span>
+    <button class="nav-btn" onclick="goTo('hero')">Home</button>
+    <button class="nav-btn" onclick="goTo('fundamentals')">Waveforms</button>
+    <button class="nav-btn" onclick="goTo('leads')">Leads</button>
+    <button class="nav-btn" onclick="goTo('bbb')">BBB</button>
+    <button class="nav-btn" onclick="goTo('stemi')">Ischemia/STEMI</button>
+    <button class="nav-btn" onclick="goTo('localization')">MI Location</button>
+    <button class="nav-btn" onclick="goTo('axis')">Axis</button>
+    <button class="nav-btn" onclick="goTo('lvh')">LVH</button>
+    <button class="nav-btn" onclick="goTo('cases')">Cases</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀ DAY</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="heroC"></canvas>
+  <div style="position:relative;z-index:2">
+    <div class="htag">▶ CAMP EMS | PDCCC Paramedic Program</div>
+    <h1 class="hh">Master the<br><span>12-Lead ECG</span></h1>
+    <p class="hsub">Animated, interactive, case-based ECG interpretation — waveforms, lead systems, bundle branch blocks, STEMI localization, axis, LVH &amp; self-checks.</p>
+    <div class="hstats">
+      <div><span class="hnum">12</span><span class="hlbl">Unique Leads</span></div>
+      <div><span class="hnum">9</span><span class="hlbl">Core Modules</span></div>
+      <div><span class="hnum">5</span><span class="hlbl">Clinical Cases</span></div>
+      <div><span class="hnum">20+</span><span class="hlbl">Self-Checks</span></div>
+    </div>
+    <button class="sbtn" onclick="goTo('fundamentals')">▶ BEGIN LEARNING</button>
+  </div>
+  <div style="position:absolute;bottom:18px;left:0;right:0;text-align:center;color:var(--muted);font-size:11px;font-family:'Share Tech Mono',monospace;animation:fadeU 1s 1s both">
+    <span class="ldot"></span>LIVE ECG SIMULATION ACTIVE
+  </div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 1: FUNDAMENTALS -->
+<section class="section" id="fundamentals">
+  <span class="stag">◈ Module 01</span>
+  <h2 class="sh">ECG <span>Waveforms</span> &amp; Fundamentals</h2>
+  <p class="sdesc">Every bump, wave, and segment tells a specific physiological story. Master each component first.</p>
+  <div class="ew mt8" style="height:180px"><span class="elbl">Annotated Normal Beat — Lead II</span><canvas id="annC" class="ecv" style="height:180px"></canvas></div>
+  <div class="anal"><div class="albl">THE DOMINO EFFECT</div><p>SA node tips the first domino (P wave) → AV node tollbooth pauses it (PR) → roars down both bundle branches (QRS = coordinated contraction) → T wave resets the dominoes. One beat, one complete cycle.</p></div>
+  <div class="g3 mt8">
+    <div class="card">
+      <div class="ct"><div class="ci ig">P</div>P Wave</div>
+      <div class="ew"><span class="elbl">Lead II</span><canvas class="ecv" id="cv-pw" style="height:80px"></canvas></div>
+      <ul class="ul mt2"><li><strong>Represents:</strong> Atrial depolarization</li><li><strong>Normal:</strong> &lt;2.5mm, &lt;0.12 sec</li><li><strong>Upright in II</strong> = sinus rhythm confirmed</li><li><strong>Negative in aVR</strong> always</li></ul>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci ic">QRS</div>QRS Complex</div>
+      <div class="ew"><span class="elbl">Lead II</span><canvas class="ecv" id="cv-qrs" style="height:80px"></canvas></div>
+      <ul class="ul mt2"><li><strong>Represents:</strong> Ventricular depolarization</li><li><strong>Normal:</strong> &lt;0.11 sec (narrow)</li><li><strong>Wide (&gt;0.11):</strong> BBB or aberrant conduction</li><li><strong>Q wave:</strong> First negative deflection</li></ul>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci ia">ST/T</div>ST Segment &amp; T Wave</div>
+      <div class="ew"><span class="elbl">Lead II</span><canvas class="ecv" id="cv-st" style="height:80px"></canvas></div>
+      <ul class="ul mt2"><li><strong>ST segment:</strong> Normally isoelectric (flat)</li><li><strong>T wave:</strong> Ventricular repolarization</li><li><strong>T direction:</strong> Same as dominant QRS</li><li><strong>J point:</strong> Junction of QRS and ST</li></ul>
+    </div>
+  </div>
+  <div class="card mt8">
+    <div class="ct"><div class="ci io">PR</div>PR Interval — The AV Node Tollbooth</div>
+    <div class="g2">
+      <div>
+        <div class="ew"><span class="elbl">PR Interval Highlighted</span><canvas class="ecv" id="cv-pr" style="height:90px"></canvas></div>
+        <div class="anal mt2"><div class="albl">HIGHWAY TOLLBOOTH</div><p>Normal PR (0.12–0.20s) = smooth traffic. PR &gt;0.20s = 1st degree block (backed-up). PR &lt;0.12s = WPW bypass tract (jumped the toll lane).</p></div>
+      </div>
+      <div>
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem">
+          <tr><th style="padding:9px;text-align:left;border-bottom:1px solid var(--border);color:var(--cyan);font-family:'Rajdhani',sans-serif">Duration</th><th style="padding:9px;text-align:left;border-bottom:1px solid var(--border);color:var(--cyan);font-family:'Rajdhani',sans-serif">Meaning</th></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid var(--border);color:var(--red)">&lt;0.12 sec</td><td style="padding:9px;border-bottom:1px solid var(--border)">WPW or junctional — pre-excitation</td></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid var(--border);color:var(--green)">0.12–0.20</td><td style="padding:9px;border-bottom:1px solid var(--border)">Normal ✓</td></tr>
+          <tr><td style="padding:9px;color:var(--amber)">&gt;0.20 sec</td><td style="padding:9px">1st Degree AV Block</td></tr>
+        </table>
+        <div class="kp mt4"><span class="kp-l">QT INTERVAL</span>Normal = &lt;½ of R-R interval. Prolonged QT → Torsades risk (R-on-T phenomenon). Drugs: quinidine, TCAs, phenothiazines. Electrolytes: hypokalemia, hypocalcemia.</div>
+      </div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 1 — Fundamentals</div><div class="qhs">ECG waveform interpretation</div></div></div>
+  <div id="qb1a">
+    <p class="qtxt">PR interval measures 0.24 seconds. This indicates:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb1a','qb1a','qb1b')">A. WPW — bypass tract active</button><button class="qopt" onclick="qa(this,false,'qfb1a','qb1a','qb1b')">B. Normal PR interval</button><button class="qopt" onclick="qa(this,true,'qfb1a','qb1a','qb1b')">C. 1st Degree AV Block — delayed AV conduction</button><button class="qopt" onclick="qa(this,false,'qfb1a','qb1a','qb1b')">D. Bundle branch block</button></div>
+    <div class="qfb" id="qfb1a"></div>
+  </div>
+  <div id="qb1b" style="display:none">
+    <p class="qtxt">Prolonged QT interval increases risk of which life-threatening dysrhythmia?</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb1b','qb1b',null)">A. Atrial fibrillation</button><button class="qopt" onclick="qa(this,true,'qfb1b','qb1b',null)">B. Torsades de Pointes (R-on-T)</button><button class="qopt" onclick="qa(this,false,'qfb1b','qb1b',null)">C. Sinus bradycardia</button><button class="qopt" onclick="qa(this,false,'qfb1b','qb1b',null)">D. Junctional escape rhythm</button></div>
+    <div class="qfb" id="qfb1b"></div><button class="qnxt" id="qnxt1" onclick="goTo('leads')">Next Module →</button>
+  </div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf1" style="width:0%"></div></div><span id="st1">0/2</span></div></div>
+  <div class="kg"><div class="kg-av">👨‍⚕️</div><div><div class="kg-nm">Dr. Ken Grauer, MD — ECG Fundamentals</div><p class="kg-d">Professor Emeritus, University of Florida. 15+ ECG books, 3M+ blog views. Systematic "Ps, Qs &amp; 3Rs" approach — gold standard for paramedic ECG education.</p><a href="https://ecg-interpretation.blogspot.com" target="_blank" class="kg-lnk">📖 ECG Blog</a><a href="https://ecg-interpretation.blogspot.com/p/index-of-all-of-my-ecg-blogs.html" target="_blank" class="kg-lnk">📋 Blog Index</a><a href="https://www.youtube.com/results?search_query=Ken+Grauer+ECG+interpretation" target="_blank" class="kg-lnk">▶ YouTube</a></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 2: LEADS -->
+<section class="section" id="leads">
+  <span class="stag">◈ Module 02</span>
+  <h2 class="sh">The <span>12-Lead</span> System</h2>
+  <p class="sdesc">12 unique camera angles on the same electrical event. Together they provide complete 3D spatial coverage of the heart.</p>
+  <div class="anal"><div class="albl">12 PHOTOGRAPHERS, ONE SUBJECT</div><p>Imagine 12 photographers surrounding a building (the heart) from different positions. No single photo tells the whole story — together they give a complete picture. Each lead is a unique camera angle on cardiac electrical activity.</p></div>
+  <div class="g3 mt8">
+    <div class="card"><div class="ct"><div class="ci ig">I–III</div>Standard Limb Leads</div><p style="color:var(--muted);font-size:.88rem;margin-bottom:12px">Bipolar, frontal plane. Measure electrical difference between two limb electrodes.</p><ul class="ul"><li><strong>Lead I:</strong> RA(−)→LA(+) — lateral left</li><li><strong>Lead II:</strong> RA(−)→LL(+) — inferior, best P-wave lead</li><li><strong>Lead III:</strong> LA(−)→LL(+) — inferior, right-leaning</li></ul><div class="kp mt4"><span class="kp-l">LEAD REVERSAL CHECK</span>aVR must ALWAYS be globally negative. If positive → suspect RA/LA lead reversal!</div></div>
+    <div class="card"><div class="ct"><div class="ci ic">aVR/L/F</div>Augmented Limb Leads</div><p style="color:var(--muted);font-size:.88rem;margin-bottom:12px">Unipolar, frontal plane. Machine amplifies ("augments") weak signal ~50%.</p><ul class="ul"><li><strong>aVR:</strong> Right shoulder — cavity lead, globally negative</li><li><strong>aVL:</strong> Left shoulder — lateral/superior view</li><li><strong>aVF:</strong> Left foot — inferior view toward diaphragm</li></ul></div>
+    <div class="card"><div class="ct"><div class="ci ia">V1–V6</div>Precordial Chest Leads</div><p style="color:var(--muted);font-size:.88rem;margin-bottom:12px">Six unipolar leads, horizontal plane. Wrap chest left-to-right across the transverse axis.</p><ul class="ul"><li><strong>V1:</strong> Right sternal border, 4th ICS</li><li><strong>V2:</strong> Left sternal border, 4th ICS</li><li><strong>V3–V4:</strong> Anterior wall territory (LAD)</li><li><strong>V5–V6:</strong> Lateral wall territory (circumflex)</li></ul></div>
+  </div>
+  <div class="card mt8">
+    <div class="ct">🖥️ Interactive Lead Explorer — Click any lead</div>
+    <div class="lgrid" id="lgrid"></div>
+    <div id="ldtl">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        <div><div style="font-family:'Share Tech Mono',monospace;color:var(--green);font-size:1.1rem" id="ld-nm">---</div><div style="color:var(--text);margin-top:4px;font-size:.9rem" id="ld-area"></div><div style="color:var(--muted);font-size:.82rem;margin-top:4px" id="ld-note"></div></div>
+      </div>
+      <div class="ctabs" id="ctabs"></div>
+      <div class="ew" style="height:100px"><span class="elbl" id="ld-clbl">Normal</span><canvas class="ecv" id="ld-cv" style="height:100px"></canvas></div>
+      <div style="margin-top:10px;padding:10px 14px;background:var(--bg2);border-radius:6px;font-size:.88rem;color:var(--muted)" id="ld-cdesc"></div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 2 — Lead Systems</div><div class="qhs">Territory identification</div></div></div>
+  <p class="qtxt">Which three leads confirm inferior wall ST changes?</p>
+  <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb2','qb2',null)">A. V1, V2, V3</button><button class="qopt" onclick="qa(this,false,'qfb2','qb2',null)">B. I, aVL, V5–V6</button><button class="qopt" onclick="qa(this,true,'qfb2','qb2',null)">C. II, III, aVF</button><button class="qopt" onclick="qa(this,false,'qfb2','qb2',null)">D. V3, V4, V5</button></div>
+  <div id="qb2"><div class="qfb" id="qfb2"></div><button class="qnxt" id="qnxt2" onclick="goTo('bbb')">Next Module →</button></div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf2" style="width:0%"></div></div><span id="st2">0/1</span></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 3+4: BBB -->
+<section class="section" id="bbb">
+  <span class="stag">◈ Module 03 + 04</span>
+  <h2 class="sh">Bundle Branch <span>Blocks</span></h2>
+  <p class="sdesc">When the QRS widens beyond 0.11 sec, the electrical highway has a roadblock. Master the 3-lead method in seconds.</p>
+  <div class="anal"><div class="albl">THE ELECTRICAL HIGHWAY</div><p>Bundle branches are major interstates delivering signals to both ventricles simultaneously. When a highway closes, traffic takes back-roads through muscle — slower, causing wide slurred QRS. The RIGHT bundle is a long winding road, prone to disruption. The LEFT bundle has two exits (fascicles): anterior and posterior.</p></div>
+  <div class="stf mt8">
+    <div class="sti"><div class="stln"><div class="stnum">1</div><div class="stco"></div></div><div class="stct"><h4>Find the Widest QRS Across All 12 Leads</h4><p>Clearly &gt;0.11s (more than half a large box at standard speed) = abnormal conduction present.</p></div></div>
+    <div class="sti"><div class="stln"><div class="stnum">2</div><div class="stco"></div></div><div class="stct"><h4>Examine Dr. Grauer's 3 KEY Leads: I, V1, V6</h4><p>These three leads ALONE differentiate RBBB from LBBB from IVCD. No other leads needed for classification.</p></div></div>
+    <div class="sti"><div class="stln"><div class="stnum">3</div></div><div class="stct"><h4>Apply the Pattern</h4><p>RBBB: rSR' in V1 + wide S in I and V6. LBBB: QS in V1 + broad notched R in I and V6. Neither = IVCD.</p></div></div>
+  </div>
+  <div class="bbb-grid">
+    <div class="bbb-s">
+      <div class="bbb-l bbb-r">RIGHT Bundle Branch Block (RBBB) — "Turn Signal Right →"</div>
+      <div class="slbl">Lead V1 — rSR' "Rabbit Ears" (R' taller than r)</div>
+      <div class="ew"><canvas class="ecv" id="cv-rbbb-v1" style="height:90px"></canvas></div>
+      <div class="slbl">Lead V6 — Wide Slurred Terminal S Wave</div>
+      <div class="ew"><canvas class="ecv" id="cv-rbbb-v6" style="height:90px"></canvas></div>
+      <div class="slbl">Lead I — Wide Slurred Terminal S Wave</div>
+      <div class="ew"><canvas class="ecv" id="cv-rbbb-i" style="height:90px"></canvas></div>
+    </div>
+    <div class="bbb-s">
+      <div class="bbb-l bbb-lb">LEFT Bundle Branch Block (LBBB) — "Turn Signal Left ←"</div>
+      <div class="slbl">Lead V1 — QS Pattern (No initial r, broad negative)</div>
+      <div class="ew"><canvas class="ecv" id="cv-lbbb-v1" style="height:90px"></canvas></div>
+      <div class="slbl">Lead V6 — Broad Notched R, Inverted T</div>
+      <div class="ew"><canvas class="ecv" id="cv-lbbb-v6" style="height:90px"></canvas></div>
+      <div class="slbl">Lead I — Broad Monophasic R, Inverted T</div>
+      <div class="ew"><canvas class="ecv" id="cv-lbbb-i" style="height:90px"></canvas></div>
+    </div>
+  </div>
+  <div class="g2 mt8">
+    <div class="card">
+      <div class="ct"><div class="ci ia">R</div>RBBB — Physiology Explained</div>
+      <div class="anal mt2"><div class="albl">WHY rSR' IN V1?</div><p>① LV depolarizes first → small r in V1. ② LV forces go LEFT (away from V1) → S dip. ③ RV depolarizes LATE through myocardium going RIGHT → taller R' in V1. The second ear (R') is ALWAYS taller than first (r).</p></div>
+      <ul class="ul"><li><strong>QRS ≥0.12 sec</strong> (complete RBBB)</li><li><strong>V1:</strong> rSR' — "rabbit ears" / M-shaped</li><li><strong>I, V6:</strong> Wide terminal S wave (slurred)</li><li><strong>ST-T:</strong> Opposite direction to terminal QRS</li></ul>
+      <div class="kp mt4"><span class="kp-l">CLINICAL SIGNIFICANCE</span>RBBB alone often benign. Critical when: new RBBB + AMI, bifascicular block (RBBB + hemiblock), or high-degree AV block → prepare TCP.</div>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci ic">L</div>LBBB — Physiology Explained</div>
+      <div class="anal mt2"><div class="albl">WHY QS IN V1?</div><p>Normally septum depolarizes left-to-right giving small r in V1. In LBBB the right bundle fires first, REVERSING septal depolarization right-to-left → tiny r disappears → V1 sees only forces going AWAY = deep QS pattern.</p></div>
+      <ul class="ul"><li><strong>QRS ≥0.12 sec</strong></li><li><strong>V1–V2:</strong> QS or rS pattern (absent or minimal r)</li><li><strong>I, V5, V6:</strong> Broad monophasic R, often notched</li><li><strong>I, V6:</strong> NO Q waves (septal Q absent)</li></ul>
+      <div class="warn mt4"><span class="warn-l">⚠ CRITICAL</span>LBBB ALWAYS indicates underlying heart disease. New LBBB + chest pain = STEMI equivalent (activate cath lab). Cannot diagnose LVH or Q-wave MI in presence of LBBB.</div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 3 — Bundle Branch Blocks</div><div class="qhs">Pattern recognition in 3 key leads</div></div></div>
+  <div id="qb3a">
+    <p class="qtxt">In RBBB, Lead V1 shows:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb3a','qb3a','qb3b')">A. Broad monophasic R (no notching)</button><button class="qopt" onclick="qa(this,false,'qfb3a','qb3a','qb3b')">B. Deep wide QS pattern</button><button class="qopt" onclick="qa(this,true,'qfb3a','qb3a','qb3b')">C. rSR' pattern — M-shaped with R' taller than r</button><button class="qopt" onclick="qa(this,false,'qfb3a','qb3a','qb3b')">D. ST elevation ≥2mm</button></div>
+    <div class="qfb" id="qfb3a"></div>
+  </div>
+  <div id="qb3b" style="display:none">
+    <p class="qtxt">New LBBB + crushing chest pain + diaphoresis. Primary action:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb3b','qb3b',null)">A. Monitor — LBBB is usually benign</button><button class="qopt" onclick="qa(this,true,'qfb3b','qb3b',null)">B. Activate cath lab — treat as STEMI equivalent</button><button class="qopt" onclick="qa(this,false,'qfb3b','qb3b',null)">C. Adenosine to break the block</button><button class="qopt" onclick="qa(this,false,'qfb3b','qb3b',null)">D. Obtain right-sided leads only</button></div>
+    <div class="qfb" id="qfb3b"></div><button class="qnxt" id="qnxt3" onclick="goTo('stemi')">Next Module →</button>
+  </div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf3" style="width:0%"></div></div><span id="st3">0/2</span></div></div>
+  <div class="kg"><div class="kg-av">👨‍⚕️</div><div><div class="kg-nm">Dr. Ken Grauer — BBB in 5 Seconds</div><p class="kg-d">ECG Blog #282 covers diagnosing bundle branch blocks using only 3 leads (I, V1, V6). Video series simplifies RBBB vs LBBB vs IVCD — among his most viewed educational content.</p><a href="https://ecg-interpretation.blogspot.com" target="_blank" class="kg-lnk">📖 Blog #282</a><a href="https://www.youtube.com/results?search_query=Ken+Grauer+bundle+branch+block" target="_blank" class="kg-lnk">▶ BBB Video</a></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 5: STEMI -->
+<section class="section" id="stemi">
+  <span class="stag">◈ Module 05</span>
+  <h2 class="sh">Ischemia, Injury &amp; <span>Infarction</span></h2>
+  <p class="sdesc">Three stages of myocardial oxygen deprivation — each with distinct ECG signatures. Time-to-recognition directly saves muscle.</p>
+  <div class="anal"><div class="albl">THE CAMPFIRE DANGER ZONES</div><p><strong>Ischemia</strong> = You feel the heat but step back — reversible (T wave changes, ST depression). <strong>Injury/STEMI</strong> = You're getting burned but not yet scarred — still reversible with RAPID intervention (ST elevation). <strong>Infarction</strong> = Deep permanent burn — irreversible (Q waves). Act at the INJURY stage — every minute = 1.9 million cardiomyocytes lost.</p></div>
+  <div class="g3 mt8">
+    <div class="card">
+      <div class="ct"><div class="ci ia">≈</div>ISCHEMIA</div>
+      <div class="ew"><span class="elbl">ST Depression + T Inversion</span><canvas class="ecv" id="cv-isch" style="height:95px"></canvas></div>
+      <ul class="ul mt4"><li>Horizontal or downsloping ST depression ≥0.5mm</li><li>Symmetrical T wave inversion</li><li>Normal QRS width (narrow complex)</li><li>Reversible if perfusion restored</li></ul>
+      <div class="kp mt2"><span class="kp-l">KEY SIGN</span>Downsloping ST depression is more specific for ischemia than horizontal. Deeper depression = more severe ischemia.</div>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci io">↑</div>INJURY (STEMI)</div>
+      <div class="ew"><span class="elbl">Convex ST Elevation — "Tombstone"</span><canvas class="ecv" id="cv-stemi" style="height:95px"></canvas></div>
+      <ul class="ul mt4"><li>Convex (domed/coved) ST elevation upward</li><li>≥1mm in ≥2 contiguous limb leads</li><li>≥2mm in ≥2 contiguous precordial leads</li><li>J point elevation — measure 0.04–0.08s out</li></ul>
+      <div class="warn mt2"><span class="warn-l">⚠ STEMI = ACT NOW</span>Reversible — activate cath lab immediately. Door-to-balloon &lt;90 min goal.</div>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci ir">Q</div>INFARCTION</div>
+      <div class="ew"><span class="elbl">Pathological Q Wave (Deep, Wide)</span><canvas class="ecv" id="cv-infr" style="height:95px"></canvas></div>
+      <ul class="ul mt4"><li>Q wave &gt;0.04 sec (1 small box) wide</li><li>Q wave &gt;25% of R wave amplitude</li><li>Reduced or absent R wave progression</li><li>Irreversible — necrosis (permanent)</li></ul>
+      <div class="kp mt2"><span class="kp-l">WINDOW THEORY</span>Dead tissue is electrically silent. Lead looks "through a window" at opposite wall forces going AWAY → pathological Q.</div>
+    </div>
+  </div>
+  <div class="card mt8">
+    <div class="ct"><div class="ci ic">↑↓</div>Reciprocal Changes — The Mirror Effect</div>
+    <div class="g2">
+      <div>
+        <p style="color:var(--muted);margin-bottom:14px;font-size:.9rem">When one wall is injured (ST elevation), the lead viewing the <em>opposite</em> wall shows mirror-image ST depression. Reciprocal changes confirm true STEMI and indicate large culprit territory.</p>
+        <div class="anal"><div class="albl">THE MIRROR</div><p>Hold a mirror up to a mountain (ST elevation) and you see a valley (ST depression). Reciprocal changes are the same electrical event viewed from opposite directions — greatly increases diagnostic confidence.</p></div>
+      </div>
+      <div>
+        <div class="ew"><span class="elbl">Inferior lead (II/III/aVF) — ST Elevation</span><canvas class="ecv" id="cv-st2" style="height:90px"></canvas></div>
+        <div class="ew" style="margin-top:4px"><span class="elbl">Lateral lead (I/aVL) — Reciprocal ST Depression</span><canvas class="ecv" id="cv-recip" style="height:90px"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt4">
+    <div class="ct"><div class="ci io">⚡</div>Hyperacute T Waves — The EARLIEST Occlusion Sign</div>
+    <div class="g2">
+      <div>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:10px">Before ST elevation develops, hyperacute T waves appear — tall, peaked, broad-based, symmetric. This may be the <em>only</em> ECG sign in the first minutes of coronary occlusion.</p>
+        <div class="warn"><span class="warn-l">⚠ GRAUER PEARL</span>Hyperacute T waves + chest pain = possible occlusion MI even WITHOUT STEMI criteria. Repeat ECG every 5–10 min. Do NOT wait for ST elevation to activate cath lab!</div>
+      </div>
+      <div><div class="ew"><span class="elbl">Hyperacute T — Early Occlusion Sign</span><canvas class="ecv" id="cv-hyper" style="height:95px"></canvas></div></div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 4 — STEMI Recognition</div><div class="qhs">Critical life-saving skills</div></div></div>
+  <div id="qb4a">
+    <p class="qtxt">ST elevation in V3–V4, reciprocal depression in II, III, aVF. Chest pain 35 min. Action:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb4a','qb4a','qb4b')">A. Nitro × 3, reassess</button><button class="qopt" onclick="qa(this,true,'qfb4a','qb4a','qb4b')">B. Anterior STEMI — activate cath lab, aspirin, O₂, IV access</button><button class="qopt" onclick="qa(this,false,'qfb4a','qb4a','qb4b')">C. LBBB — obtain right-sided leads</button><button class="qopt" onclick="qa(this,false,'qfb4a','qb4a','qb4b')">D. Monitor — probable ischemia only</button></div>
+    <div class="qfb" id="qfb4a"></div>
+  </div>
+  <div id="qb4b" style="display:none">
+    <p class="qtxt">Which finding represents IRREVERSIBLE myocardial damage?</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb4b','qb4b',null)">A. Convex ST elevation in 2 contiguous leads</button><button class="qopt" onclick="qa(this,false,'qfb4b','qb4b',null)">B. T wave inversion with downsloping ST depression</button><button class="qopt" onclick="qa(this,true,'qfb4b','qb4b',null)">C. Q wave &gt;0.04 sec wide AND &gt;25% of R amplitude</button><button class="qopt" onclick="qa(this,false,'qfb4b','qb4b',null)">D. Prolonged QT interval</button></div>
+    <div class="qfb" id="qfb4b"></div><button class="qnxt" id="qnxt4" onclick="goTo('localization')">Next Module →</button>
+  </div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf4" style="width:0%"></div></div><span id="st4">0/2</span></div></div>
+</section>
+<div class="sdiv"></div>
+<!-- MODULE 6: LOCALIZATION -->
+<section class="section" id="localization">
+  <span class="stag">◈ Module 06</span>
+  <h2 class="sh">MI <span>Localization</span></h2>
+  <p class="sdesc">Different coronary arteries supply different walls. Which leads are affected tells you exactly which artery is blocked.</p>
+  <div class="anal"><div class="albl">NEIGHBORHOOD POWER OUTAGE</div><p>Coronary arteries are power lines for neighborhoods (heart walls). RCA goes down → south-facing houses (II, III, aVF) lose power → inferior STEMI. The ECG tells you WHICH power line is down by showing which neighborhood is dark.</p></div>
+  <div style="overflow-x:auto;margin:28px 0">
+    <table class="mi-tbl">
+      <thead><tr><th>MI Location</th><th>Indicative Leads (ST↑)</th><th>Reciprocal (ST↓)</th><th>Culprit Artery</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge bi">Inferior</span></td><td><span class="pill pa">II</span><span class="pill pa">III</span><span class="pill pa">aVF</span></td><td><span class="pill pc">I</span><span class="pill pc">aVL</span></td><td>RCA — posterior descending branch</td></tr>
+        <tr><td><span class="badge ba">Anterior</span></td><td><span class="pill po">V3</span><span class="pill po">V4</span></td><td><span class="pill pg">II</span><span class="pill pg">III</span><span class="pill pg">aVF</span></td><td>LAD — diagonal branch</td></tr>
+        <tr><td><span class="badge bl">Lateral</span></td><td><span class="pill pc">I</span><span class="pill pc">aVL</span><span class="pill pc">V5</span><span class="pill pc">V6</span></td><td><span class="pill pa">V1–V3</span></td><td>LCA — circumflex branch</td></tr>
+        <tr><td><span class="badge bs">Septal</span></td><td><span class="pill pg">V1</span><span class="pill pg">V2</span></td><td>None typically</td><td>LAD — septal branch</td></tr>
+        <tr><td><span class="badge bp">Posterior</span></td><td>Not seen directly</td><td><span class="pill pg">V1–V4</span> tall R + ST↓</td><td>RCA or circumflex</td></tr>
+        <tr><td><span class="badge br">Right Ventricle</span></td><td><span class="pill pr">V4R</span> right-sided leads</td><td>—</td><td>RCA — proximal branches</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ct"><div class="ci ir">RV</div>RV Infarction — Critical Management</div>
+      <ul class="ul"><li>Occurs with proximal RCA occlusion (inferior MI)</li><li>Diagnose: right-sided leads — ST elevation in V4R ≥1mm</li><li>Classic triad: hypotension + JVD + clear lung sounds</li><li><strong>AVOID nitroglycerin</strong> — RV is preload-dependent</li><li>Give IV fluid 250–500 mL NS bolus to maintain preload</li></ul>
+      <div class="warn mt4"><span class="warn-l">⚠ LIFE-THREATENING MISTAKE</span>Nitrates in RV MI → profound hypotension → cardiac arrest. ALWAYS obtain right-sided leads with EVERY inferior STEMI. V4R elevation confirms RV involvement.</div>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci io">☠</div>The "Widow Maker" — Left Main / Proximal LAD</div>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px">Left main coronary artery occlusion affects all left-sided territory simultaneously — highest mortality of all STEMIs.</p>
+      <div class="kp"><span class="kp-l">ECG PATTERN</span>ST elevation in I, aVL, V1–V6 (extensive anterior) + ST depression in II, III, aVF. Cardiogenic shock common (&gt;40% LV territory). High-degree AV block risk.</div>
+      <ul class="ul mt4"><li>Emergent PCI — do NOT delay for any reason</li><li>RBBB + hemiblock may precede complete AV block</li><li>Consider IABP or Impella for hemodynamic support</li></ul>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 5 — MI Localization</div><div class="qhs">Territory and management</div></div></div>
+  <div id="qb5a">
+    <p class="qtxt">ST elevation in II, III, aVF. Hypotensive. JVD present. Clear lungs. V4R shows 2mm ST elevation. Management priority:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb5a','qb5a','qb5b')">A. Nitrates × 3 for inferior STEMI</button><button class="qopt" onclick="qa(this,true,'qfb5a','qb5a','qb5b')">B. Inferior + RV infarction — IV fluid bolus, AVOID nitrates, cath lab activation</button><button class="qopt" onclick="qa(this,false,'qfb5a','qb5a','qb5b')">C. Furosemide for suspected pulmonary edema</button><button class="qopt" onclick="qa(this,false,'qfb5a','qb5a','qb5b')">D. Anterior STEMI — check V3–V4</button></div>
+    <div class="qfb" id="qfb5a"></div>
+  </div>
+  <div id="qb5b" style="display:none">
+    <p class="qtxt">Posterior MI reciprocal clue in V1–V3:</p>
+    <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb5b','qb5b',null)">A. Deep Q waves in V1–V3</button><button class="qopt" onclick="qa(this,true,'qfb5b','qb5b',null)">B. Tall broad R wave + horizontal ST depression + upright T (mirror image)</button><button class="qopt" onclick="qa(this,false,'qfb5b','qb5b',null)">C. RBBB pattern in V1</button><button class="qopt" onclick="qa(this,false,'qfb5b','qb5b',null)">D. ST elevation in V1 only</button></div>
+    <div class="qfb" id="qfb5b"></div><button class="qnxt" id="qnxt5" onclick="goTo('axis')">Next Module →</button>
+  </div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf5" style="width:0%"></div></div><span id="st5">0/2</span></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 7: AXIS -->
+<section class="section" id="axis">
+  <span class="stag">◈ Module 07</span>
+  <h2 class="sh">Axis <span>Determination</span></h2>
+  <p class="sdesc">The average direction of ventricular depolarization. Deviations are clinical clues pointing to hidden pathology.</p>
+  <div class="anal"><div class="albl">WEATHER VANE ON YOUR HEART</div><p>The cardiac axis is a weather vane showing which direction the electrical "wind" blows. Normally it points down-left (heart's natural lean). Obesity, hypertrophy, infarction, or fascicular blocks shift the vane — and that deviation is your clinical clue.</p></div>
+  <div id="axis-wrap">
+    <div id="axis-canvas-container" style="flex-shrink:0">
+      <canvas id="axisC" width="280" height="280" style="cursor:crosshair;display:block"></canvas>
+      <p style="text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px">Click a quadrant to explore</p>
+    </div>
+    <div id="axis-info">
+      <div class="ai-t" id="ai-t">Click a quadrant to explore axis</div>
+      <div class="ai-r" id="ai-r"></div>
+      <div id="ai-causes" style="font-size:.88rem;color:var(--text)"></div>
+      <div class="ai-beats" id="ai-beats" style="display:none">
+        <div class="ai-bm"><div class="ai-bl">Lead I</div><canvas class="ai-cv" id="ai-I"></canvas></div>
+        <div class="ai-bm"><div class="ai-bl">aVF</div><canvas class="ai-cv" id="ai-aVF"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div class="g2 mt8">
+    <div class="card">
+      <div class="ct">🧭 Quick Quadrant Method</div>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:14px">Only Leads I and aVF needed — perpendicular to each other, dividing frontal plane into 4 quadrants.</p>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+        <tr><th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);color:var(--cyan);font-family:'Rajdhani',sans-serif">Lead I</th><th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);color:var(--cyan);font-family:'Rajdhani',sans-serif">Lead aVF</th><th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);color:var(--cyan);font-family:'Rajdhani',sans-serif">Axis</th></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--green)">↑ Positive</td><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--green)">↑ Positive</td><td style="padding:8px;border-bottom:1px solid var(--border)"><span class="pill pg">Normal (0° to +90°)</span></td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--green)">↑ Positive</td><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--red)">↓ Negative</td><td style="padding:8px;border-bottom:1px solid var(--border)"><span class="pill pa">Left Axis Deviation</span></td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--red)">↓ Negative</td><td style="padding:8px;border-bottom:1px solid var(--border);color:var(--green)">↑ Positive</td><td style="padding:8px;border-bottom:1px solid var(--border)"><span class="pill po">Right Axis Deviation</span></td></tr>
+        <tr><td style="padding:8px;color:var(--red)">↓ Negative</td><td style="padding:8px;color:var(--red)">↓ Negative</td><td style="padding:8px"><span class="pill pr">Extreme Axis</span></td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card mb4"><div class="ct"><div class="ci ia">←</div>Left Axis Deviation (LAD)</div><ul class="ul"><li>Pathologic if more negative than −30°</li><li>Check Lead II: if QRS more negative than Lead I → pathologic LAD</li><li><strong>Causes:</strong> LAHB (most common), inferior MI, LBBB, LVH, obesity</li></ul></div>
+      <div class="card"><div class="ct"><div class="ci io">→</div>Right Axis Deviation (RAD)</div><ul class="ul"><li>Axis &gt;+120°</li><li><strong>Causes:</strong> RBBB, RVH, pulmonary embolism, lateral wall MI, COPD</li><li>New RAD + sudden dyspnea + tachycardia → think PE!</li></ul></div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 6 — Axis</div><div class="qhs">Quadrant method practice</div></div></div>
+  <p class="qtxt">Lead I: positive (upright) QRS. Lead aVF: negative (inverted) QRS. What axis?</p>
+  <div id="qb6"><div class="qopts"><button class="qopt" onclick="qa(this,false,'qfb6','qb6',null)">A. Normal axis</button><button class="qopt" onclick="qa(this,true,'qfb6','qb6',null)">B. Left Axis Deviation</button><button class="qopt" onclick="qa(this,false,'qfb6','qb6',null)">C. Right Axis Deviation</button><button class="qopt" onclick="qa(this,false,'qfb6','qb6',null)">D. Extreme axis</button></div>
+  <div class="qfb" id="qfb6"></div><button class="qnxt" id="qnxt6" onclick="goTo('lvh')">Next Module →</button></div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf6" style="width:0%"></div></div><span id="st6">0/1</span></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 8: LVH -->
+<section class="section" id="lvh">
+  <span class="stag">◈ Module 08</span>
+  <h2 class="sh">Chamber Enlargement &amp; <span>LVH</span></h2>
+  <p class="sdesc">More muscle mass generates more voltage. Hypertrophy leaves its signature in amplitude measurements.</p>
+  <div class="anal"><div class="albl">SPEAKER VOLUME</div><p>Think of the heart as a speaker. A bigger woofer (more muscle) produces louder sound (greater voltage). LVH = massive subwoofer generating enormous QRS deflections — deep S in V1/V2 (signal going away) and tall R in V5/V6 (signal coming toward you).</p></div>
+  <div class="g2 mt8">
+    <div class="card">
+      <div class="ct"><div class="ci io">LVH</div>Left Ventricular Hypertrophy Criteria</div>
+      <div class="kp"><span class="kp-l">THE "35 AND 12" RULE (SOKOLOW-LYON)</span>S depth in V1 or V2 + R height in V5 or V6 &gt;35mm (if patient &gt;35 years old)<br><strong>OR</strong> R wave in aVL &gt;12mm</div>
+      <ul class="ul mt4"><li>Left axis deviation common</li><li>QRS at upper limits of normal (NOT wide)</li><li>Associated with Left Atrial Abnormality (P-Mitrale)</li><li>One criterion = sensitive; multiple = more specific</li><li>Age &lt;35: threshold is &gt;53mm total</li></ul>
+      <div class="warn mt4"><span class="warn-l">⚠ CANNOT diagnose LVH if LBBB present!</span>LBBB independently increases voltage, mimicking LVH. Also: LVH increases MI risk, sudden death risk, and ventricular dysrhythmia risk.</div>
+    </div>
+    <div class="card">
+      <div class="ct"><div class="ci ic">P</div>Atrial Abnormalities</div>
+      <div style="border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px">
+        <div style="color:var(--amber);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:8px">P-Pulmonale — Right Atrial Abnormality</div>
+        <ul class="ul"><li>Peaked P waves &gt;2.5mm in II, III, aVF ("peaked tent")</li><li>May see in V1–V2 as well</li><li>Causes: COPD, pulmonary HTN, RV failure, pulmonary stenosis</li></ul>
+      </div>
+      <div>
+        <div style="color:var(--cyan);font-family:'Rajdhani',sans-serif;font-weight:700;margin-bottom:8px">P-Mitrale — Left Atrial Abnormality</div>
+        <ul class="ul"><li>M-shaped (bifid) P waves in I, II, aVL</li><li>Duration &gt;0.12 sec; deep negative terminal in V1</li><li>Causes: mitral stenosis, LHF, LAE</li><li>High atrial fibrillation risk!</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="qbox"><div class="qhdr"><div class="qico">🧠</div><div><div class="qht">Self-Check 7 — LVH</div><div class="qhs">Voltage criteria application</div></div></div>
+  <p class="qtxt">52-year-old. S wave in V2 = 19mm. R wave in V5 = 18mm. Does this meet LVH criteria?</p>
+  <div id="qb7"><div class="qopts"><button class="qopt" onclick="qa(this,true,'qfb7','qb7',null)">A. Yes — 19+18=37mm exceeds the 35mm Sokolow-Lyon threshold</button><button class="qopt" onclick="qa(this,false,'qfb7','qb7',null)">B. No — only aVL criterion counts</button><button class="qopt" onclick="qa(this,false,'qfb7','qb7',null)">C. Cannot determine without LBBB status</button><button class="qopt" onclick="qa(this,false,'qfb7','qb7',null)">D. No — needs &gt;53mm at this age</button></div>
+  <div class="qfb" id="qfb7"></div><button class="qnxt" id="qnxt7" onclick="goTo('cases')">Proceed to Clinical Cases →</button></div>
+  <div class="scr-row"><span>Score:</span><div class="scr-tr"><div class="scr-fi" id="sf7" style="width:0%"></div></div><span id="st7">0/1</span></div></div>
+</section>
+<div class="sdiv"></div>
+
+<!-- MODULE 9: CASES -->
+<section class="section" id="cases">
+  <span class="stag">◈ Module 09</span>
+  <h2 class="sh">Clinical <span>Case Studies</span></h2>
+  <p class="sdesc">Five EMS scenarios. Apply the systematic approach: Rate → Rhythm → Axis → Intervals → QRST changes → Clinical correlation.</p>
+
+  <div class="case-bx">
+    <div class="case-hd"><div><div class="case-n">CASE 01/05</div><div class="case-t">Chest Pain — 62-Year-Old Male</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">👤 62M</span><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">⚠ Chest Pain</span></div></div>
+    <div style="padding:24px">
+      <div class="vits"><div class="vit"><span class="vv">88/60</span><span class="vl">BP</span></div><div class="vit"><span class="vv">52</span><span class="vl">HR</span></div><div class="vit"><span class="vv">92%</span><span class="vl">SpO₂</span></div><div class="vit"><span class="vv">JVD ✓</span><span class="vl">Exam</span></div><div class="vit"><span class="vv">Clear</span><span class="vl">Lungs</span></div></div>
+      <p>Crushing chest pain → jaw, nausea, diaphoresis × 45 min. HTN, T2DM. JVD present, clear lungs.</p>
+      <div class="ew mt4"><span class="elbl">ECG — Inferior STEMI + Reciprocal Changes in I/aVL</span><canvas class="ecv" id="cv-c1" style="height:110px"></canvas></div>
+      <button class="rbtn" onclick="toggleCase('ca1',this)">▶ Reveal Interpretation &amp; Management</button>
+      <div class="cans" id="ca1"><h4>🩺 Inferior STEMI + RV Infarction</h4><p>ST elevation II, III, aVF. Reciprocal depression I, aVL. Sinus bradycardia. <strong>Culprit: RCA.</strong></p><div class="warn mt4"><span class="warn-l">⚠ RV MI PROTOCOL</span>Hypotension + JVD + clear lungs = RV infarction. AVOID nitrates — give IV fluid 250–500mL NS bolus. Aspirin 324mg. Activate cath lab. RCA supplies SA/AV nodes → monitor for bradycardia and complete AV block (TCP ready).</div></div>
+    </div>
+  </div>
+
+  <div class="case-bx">
+    <div class="case-hd"><div><div class="case-n">CASE 02/05</div><div class="case-t">Dyspnea — 54F Atypical Presentation</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">👤 54F</span><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">⚠ Dyspnea</span></div></div>
+    <div style="padding:24px">
+      <div class="vits"><div class="vit"><span class="vv">148/92</span><span class="vl">BP</span></div><div class="vit"><span class="vv">110</span><span class="vl">HR</span></div><div class="vit"><span class="vv">94%</span><span class="vl">SpO₂</span></div><div class="vit"><span class="vv">Crackles</span><span class="vl">Lungs</span></div></div>
+      <p>54F. <strong>No chest pain</strong> — fatigue, jaw aching, nausea × 2h. Diaphoresis. Bilateral basal crackles. HTN, hyperlipidemia.</p>
+      <div class="ew mt4"><span class="elbl">ECG — Anterior STEMI + Hyperacute T Waves</span><canvas class="ecv" id="cv-c2" style="height:110px"></canvas></div>
+      <button class="rbtn" onclick="toggleCase('ca2',this)">▶ Reveal Interpretation</button>
+      <div class="cans" id="ca2"><h4>🩺 Anterior STEMI — LAD Territory</h4><p>Sinus tachycardia 110. ST elevation ≥2mm V2–V4. Hyperacute T waves. Reciprocal depression II, III, aVF.</p><div class="kp mt4"><span class="kp-l">ATYPICAL PRESENTATION</span>Women, diabetics, elderly often present WITHOUT classic chest pain. Jaw pain, nausea, fatigue = cardiac equivalents. Always obtain 12-lead for all potential cardiac symptoms. Anterior STEMI + &gt;40% LV territory → high cardiogenic shock risk.</div></div>
+    </div>
+  </div>
+
+  <div class="case-bx">
+    <div class="case-hd"><div><div class="case-n">CASE 03/05</div><div class="case-t">Syncope — 71M Wide QRS + Bradycardia</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">👤 71M</span><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">⚠ Syncope</span></div></div>
+    <div style="padding:24px">
+      <div class="vits"><div class="vit"><span class="vv">96/70</span><span class="vl">BP</span></div><div class="vit"><span class="vv">52</span><span class="vl">HR</span></div><div class="vit"><span class="vv">97%</span><span class="vl">SpO₂</span></div></div>
+      <p>Collapsed while mowing lawn. Alert. Dizziness × 2 wks. PMH: COPD. Wide QRS ≥0.14s, rSR' in V1, wide S in I and V6.</p>
+      <div class="ew mt4"><span class="elbl">ECG — RBBB + Sinus Bradycardia 52 bpm</span><canvas class="ecv" id="cv-c3" style="height:110px"></canvas></div>
+      <button class="rbtn" onclick="toggleCase('ca3',this)">▶ Reveal Interpretation</button>
+      <div class="cans" id="ca3"><h4>🩺 Complete RBBB + Symptomatic Bradycardia</h4><p>Sinus bradycardia 52. Wide QRS ≥0.12s. rSR' V1. Wide S in I and V6. COPD is a known cause of RBBB.</p><div class="warn mt4"><span class="warn-l">⚠ TCP CONSIDERATION</span>Syncope + bradycardia + new RBBB → assess for AV block. RBBB + hemiblock = bifascicular block → may precede complete heart block. Apply TCP pads, atropine 0.5mg IV if symptomatic, cardiology consult for pacemaker.</div></div>
+    </div>
+  </div>
+
+  <div class="case-bx">
+    <div class="case-hd"><div><div class="case-n">CASE 04/05</div><div class="case-t">Palpitations — 38F Athlete (WPW)</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">👤 38F</span><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">🏃 Athlete</span></div></div>
+    <div style="padding:24px">
+      <div class="vits"><div class="vit"><span class="vv">118/74</span><span class="vl">BP</span></div><div class="vit"><span class="vv">96</span><span class="vl">HR</span></div><div class="vit"><span class="vv">99%</span><span class="vl">SpO₂</span></div></div>
+      <p>Marathon runner. Palpitations + brief dizziness during race, now resolved. ECG: PR 0.10s, QRS 0.14s with slurred delta wave on upstroke.</p>
+      <div class="ew mt4"><span class="elbl">ECG — Short PR + Delta Wave (WPW Pattern)</span><canvas class="ecv" id="cv-c4" style="height:110px"></canvas></div>
+      <button class="rbtn" onclick="toggleCase('ca4',this)">▶ Reveal Interpretation</button>
+      <div class="cans" id="ca4"><h4>🩺 Wolff-Parkinson-White Syndrome</h4><p>Short PR (&lt;0.12s). Wide QRS with delta wave (slurred initial upstroke). Secondary ST-T changes.</p><div class="anal mt4"><div class="albl">SECRET UNDERGROUND TUNNEL</div><p>WPW = accessory pathway bypassing AV tollbooth. Signal arrives early via tunnel (short PR), spreads slowly through muscle (delta wave + wide QRS). Creates dangerous tachycardias.</p></div><div class="warn mt4"><span class="warn-l">⚠ CRITICAL WPW RULE</span>NEVER use AV nodal blockers (adenosine, beta-blockers, CCBs, digoxin) if WPW + atrial fibrillation — can cause V-Fib. Use PROCAINAMIDE or synchronized cardioversion instead.</div></div>
+    </div>
+  </div>
+
+  <div class="case-bx">
+    <div class="case-hd"><div><div class="case-n">CASE 05/05</div><div class="case-t">Post-ROSC — 68M Extensive STEMI</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="background:rgba(255,51,102,.15);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--red)">🔴 Post-ROSC</span><span style="background:rgba(255,255,255,.07);padding:5px 12px;border-radius:20px;font-size:12px;color:var(--text)">👤 68M</span></div></div>
+    <div style="padding:24px">
+      <div class="vits"><div class="vit"><span class="vv">72/40</span><span class="vl">BP</span></div><div class="vit"><span class="vv">124</span><span class="vl">HR</span></div><div class="vit"><span class="vv">88%</span><span class="vl">SpO₂</span></div><div class="vit"><span class="vv">Intubated</span><span class="vl">Airway</span></div></div>
+      <p>Witnessed arrest, bystander CPR, ROSC after 3 rounds + 2 shocks. Intubated, unresponsive. Extensive ST elevation across anterior and lateral leads.</p>
+      <div class="ew mt4"><span class="elbl">ECG — Extensive Anterior-Lateral STEMI (Post-ROSC)</span><canvas class="ecv" id="cv-c5" style="height:110px"></canvas></div>
+      <button class="rbtn" onclick="toggleCase('ca5',this)">▶ Reveal Post-ROSC Protocol</button>
+      <div class="cans" id="ca5"><h4>🩺 Extensive Anterior-Lateral STEMI — Cath Lab Activation</h4><p>ST elevation V1–V6 (anterior) + I, aVL (lateral). Q waves forming V1–V2. Possible left main or proximal LAD occlusion.</p><div class="warn mt4"><span class="warn-l">⚠ POST-ROSC STEMI = IMMEDIATE CATH LAB</span>Emergent PCI regardless of neurological status. Do NOT delay for CT unless hemorrhagic stroke strongly suspected. TTM + cath run simultaneously.</div><ul class="ul mt4"><li>Activate cath lab DURING transport</li><li>Maintain MAP ≥65 (vasopressors prn)</li><li>Aspirin 324mg via NG/OG tube</li><li>Repeat 12-lead every 5 min en route</li></ul></div>
+    </div>
+  </div>
+
+  <!-- FINAL MASTERY -->
+  <div class="qbox" style="border-color:var(--green)">
+    <div class="qhdr"><div class="qico" style="background:rgba(0,255,136,.15)">🏆</div><div><div class="qht" style="color:var(--green)">FINAL MASTERY CHECK</div><div class="qhs">Comprehensive 12-lead competency assessment</div></div></div>
+    <div id="qbfa">
+      <p class="qtxt">Dr. Grauer's 3 key leads for differentiating RBBB vs LBBB in seconds:</p>
+      <div class="qopts"><button class="qopt" onclick="qa(this,true,'qfbfa','qbfa','qbfb')">A. Leads I, V1, and V6</button><button class="qopt" onclick="qa(this,false,'qfbfa','qbfa','qbfb')">B. Leads II, III, and aVF</button><button class="qopt" onclick="qa(this,false,'qfbfa','qbfa','qbfb')">C. V1 through V4</button><button class="qopt" onclick="qa(this,false,'qfbfa','qbfa','qbfb')">D. aVR, aVL, and aVF</button></div>
+      <div class="qfb" id="qfbfa"></div>
+    </div>
+    <div id="qbfb" style="display:none">
+      <p class="qtxt">ST elevation V3–V4 with reciprocal depression II, III, aVF. Culprit artery:</p>
+      <div class="qopts"><button class="qopt" onclick="qa(this,false,'qfbfb','qbfb','qbfc')">A. RCA posterior descending</button><button class="qopt" onclick="qa(this,false,'qfbfb','qbfb','qbfc')">B. Left circumflex</button><button class="qopt" onclick="qa(this,true,'qfbfb','qbfb','qbfc')">C. LAD diagonal branch (anterior STEMI)</button><button class="qopt" onclick="qa(this,false,'qfbfb','qbfb','qbfc')">D. Left main → expect V1–V6 involvement</button></div>
+      <div class="qfb" id="qfbfb"></div>
+    </div>
+    <div id="qbfc" style="display:none">
+      <p class="qtxt">In LBBB, which interpretations are UNRELIABLE?</p>
+      <div class="qopts"><button class="qopt" onclick="qa(this,true,'qfbfc','qbfc',null)">A. Both LVH diagnosis AND Q-wave MI diagnosis are unreliable</button><button class="qopt" onclick="qa(this,false,'qfbfc','qbfc',null)">B. Only LVH is unreliable — Q waves still diagnose MI</button><button class="qopt" onclick="qa(this,false,'qfbfc','qbfc',null)">C. LBBB does not affect other interpretations</button><button class="qopt" onclick="qa(this,false,'qfbfc','qbfc',null)">D. Only axis determination is affected</button></div>
+      <div class="qfb" id="qfbfc"></div><button class="qnxt" id="qnxtF" onclick="showFinalScore()">Complete Assessment ✓</button>
+    </div>
+    <div class="scr-row"><span>Final Score:</span><div class="scr-tr"><div class="scr-fi" id="sfF" style="width:0%"></div></div><span id="stF">0/3</span></div>
+    <div id="finalMsg" style="display:none;margin-top:16px;padding:16px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:8px;text-align:center">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:1.3rem;color:var(--green)" id="finalTxt"></div>
+      <div style="color:var(--muted);font-size:.85rem;margin-top:6px">Complete all 9 modules to reinforce your mastery.</div>
+    </div>
+  </div>
+
+  <div class="kg"><div class="kg-av">👨‍⚕️</div><div><div class="kg-nm">Dr. Ken Grauer, MD — Complete ECG Library</div><p class="kg-d">500+ case-based blog posts covering basic rhythm through Wellens syndrome, DeWinter T waves, Brugada, posterior MI, and post-ROSC STEMI. All free, all case-based.</p><a href="https://ecg-interpretation.blogspot.com" target="_blank" class="kg-lnk">📖 ECG Blog (3M+ Views)</a><a href="https://ecg-interpretation.blogspot.com/p/index-of-all-of-my-ecg-blogs.html" target="_blank" class="kg-lnk">📋 Full Index</a><a href="https://hqmeded-ecg.blogspot.com" target="_blank" class="kg-lnk">🏥 Dr. Smith's ECG Blog</a><a href="https://www.youtube.com/results?search_query=Ken+Grauer+12+lead+ECG+interpretation" target="_blank" class="kg-lnk">▶ YouTube Series</a></div></div>
+</section>
+
+<footer>
+  <span class="flogo">⚡ 12-LEAD ECG MASTERY</span>
+  <p>CAMP EMS — Paul D. Camp Community College | Paramedic Program</p>
+  <p style="margin-top:6px">Based on Sanders' Paramedic Textbook Ch.21 | Reference: 12 Lead EKG-XPM 2019</p>
+  <p style="margin-top:6px">Dr. Ken Grauer, MD: <a href="https://ecg-interpretation.blogspot.com" target="_blank">ecg-interpretation.blogspot.com</a></p>
+  <p style="margin-top:14px;font-size:10px;color:var(--muted)">Clinical decisions require complete patient assessment. ECG is one diagnostic tool among many.</p>
+</footer>
+<script>
+// ============ THEME ============
+let isDark = true;
+function toggleTheme(){
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isDark ? '☀ DAY' : '🌙 NIGHT';
+  setTimeout(renderAll, 80);
+}
+
+// ============ NAV ============
+function goTo(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+window.addEventListener('scroll', ()=>{
+  const d = document.documentElement;
+  const pct = (window.scrollY / (d.scrollHeight - window.innerHeight)) * 100;
+  const pf = document.getElementById('gProg');
+  if(pf) pf.style.width = Math.min(pct,100) + '%';
+});
+
+// ============ COLOR HELPER ============
+function C(){
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  return {
+    green: dark ? '#00ff88' : '#007744',
+    cyan:  dark ? '#00e5ff' : '#006699',
+    amber: dark ? '#ffb300' : '#aa7700',
+    red:   dark ? '#ff3366' : '#cc1144',
+    orange:dark ? '#ff6b35' : '#cc4400',
+    muted: dark ? '#6a8fad' : '#4a6a8a',
+  };
+}
+
+// ============ SMOOTH CURVE ============
+function smoothPath(ctx, pts){
+  if(!pts.length) return;
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i = 0; i < pts.length - 1; i++){
+    const p0 = pts[Math.max(0, i-1)];
+    const p1 = pts[i];
+    const p2 = pts[i+1];
+    const p3 = pts[Math.min(pts.length-1, i+2)];
+    const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2[0], p2[1]);
+  }
+}
+
+// ============ ECG GRID ============
+function drawGrid(ctx, W, H){
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const g1 = dark ? 'rgba(255,80,80,0.13)' : 'rgba(180,60,60,0.15)';
+  const g2 = dark ? 'rgba(255,80,80,0.05)' : 'rgba(180,60,60,0.07)';
+  const sm = 5;
+  for(let x = 0; x <= W; x += sm){
+    ctx.strokeStyle = (x % (sm*5) === 0) ? g1 : g2;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let y = 0; y <= H; y += sm){
+    ctx.strokeStyle = (y % (sm*5) === 0) ? g1 : g2;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+}
+
+// ============ BEAT POINT GENERATOR ============
+// Returns array of [x,y] for a single ECG beat in a given canvas
+// x0=start x, bw=beat width, bl=baseline y, H=canvas height
+function beatPts(type, x0, bw, bl, H){
+  const s = H * 0.052; // ~mm scale
+  function p(fx, mm){ return [x0 + bw*fx, bl - mm*s]; }
+
+  const shapes = {
+    // ---- NORMALS ----
+    normal_II: ()=>[
+      p(0,0),p(.06,0),p(.09,0),p(.12,.5),p(.15,1.4),p(.17,1.3),p(.20,.5),p(.22,0),
+      p(.235,0),p(.245,-.5),p(.265,13),p(.27,13.5),p(.275,12),p(.285,-.8),p(.295,-1.0),p(.305,0),
+      p(.39,0),p(.44,1.2),p(.49,3.8),p(.53,1.2),p(.57,0),p(1,0)
+    ],
+    normal_I: ()=>[
+      p(0,0),p(.06,0),p(.10,0),p(.13,.4),p(.16,1.0),p(.19,.4),p(.22,0),
+      p(.235,0),p(.245,-.3),p(.263,9.0),p(.268,9.5),p(.273,8.5),p(.283,-.5),p(.293,-.6),p(.303,0),
+      p(.38,0),p(.43,1.0),p(.48,2.8),p(.52,1.0),p(.56,0),p(1,0)
+    ],
+    normal_V1: ()=>[
+      p(0,0),p(.07,0),
+      p(.09,0),p(.11,.5),p(.13,.9),p(.155,.9),p(.17,.5),p(.185,0),
+      p(.19,0),p(.20,-.5),p(.21,-.9),p(.22,-.9),p(.23,-.5),p(.24,0),
+      p(.25,0),p(.26,.5),p(.265,1.8),p(.27,.5),p(.275,0),
+      p(.28,0),p(.29,-8.5),p(.305,-9.5),p(.33,-8.0),p(.36,0),
+      p(.40,.5),p(.44,-2.0),p(.48,-2.8),p(.51,-2.0),p(.55,-.5),p(.58,0),p(1,0)
+    ],
+    normal_V6: ()=>[
+      p(0,0),p(.07,0),p(.10,0),p(.13,.5),p(.16,1.1),p(.19,.5),p(.21,0),
+      p(.235,0),p(.245,-.5),p(.255,-.8),
+      p(.267,9.0),p(.272,9.5),p(.277,8.5),
+      p(.287,-.7),p(.297,-.9),p(.31,0),
+      p(.40,0),p(.44,1.0),p(.49,2.8),p(.53,1.0),p(.57,0),p(1,0)
+    ],
+
+    // ---- RBBB ----
+    // V1: rSR' — small r, S below baseline, taller R'
+    rbbb_V1: ()=>[
+      p(0,0),p(.06,0),p(.09,0),p(.12,.4),p(.15,.8),p(.18,.4),p(.20,0),p(.23,0),
+      p(.24,0),p(.255,2.2),p(.265,2.8),p(.275,2.2),   // small r
+      p(.285,0),p(.30,-3.8),p(.315,-4.5),p(.33,-3.8), // S dip
+      p(.345,0),p(.36,5.5),p(.38,7.5),p(.40,5.5),     // R' — taller than r
+      p(.415,0),
+      p(.45,-.3),p(.47,-2.0),p(.50,-2.8),p(.53,-2.0),p(.56,-.3),p(.59,0),p(1,0)
+    ],
+    // V6: qRS with WIDE terminal S
+    rbbb_V6: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.4),p(.15,.9),p(.18,.4),p(.20,0),
+      p(.22,0),p(.232,-.6),p(.242,-.9),
+      p(.258,9.0),p(.268,10.0),p(.278,9.0),  // R peak
+      p(.29,3.5),p(.305,.5),p(.32,-2.5),p(.345,-4.0),p(.375,-4.5), // wide S
+      p(.40,-4.0),p(.43,-2.0),p(.45,0),
+      p(.49,.7),p(.53,2.3),p(.565,.7),p(.59,0),p(1,0)
+    ],
+    // I: qRS with wide terminal S (same as V6)
+    rbbb_I: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.3),p(.15,.8),p(.18,.3),p(.20,0),
+      p(.22,0),p(.232,-.4),
+      p(.248,8.5),p(.258,9.5),p(.268,8.5),
+      p(.28,2.5),p(.295,.3),p(.315,-2.2),p(.34,-4.0),p(.37,-4.5),
+      p(.40,-3.8),p(.425,-1.5),p(.44,0),
+      p(.48,.6),p(.52,2.0),p(.555,.6),p(.58,0),p(1,0)
+    ],
+
+    // ---- LBBB ----
+    // V1: QS — broad negative, no r wave
+    lbbb_V1: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.3),p(.15,.6),p(.18,.3),p(.20,0),p(.225,0),
+      p(.235,0),p(.25,-2.0),p(.27,-7.5),p(.295,-10.0), // QS descent
+      p(.33,-10.0),p(.36,-8.5),p(.39,-4.5),p(.41,-1.5),p(.43,0),
+      p(.47,.3),p(.50,2.0),p(.535,3.0),p(.565,2.0),p(.595,.3),p(.62,0),p(1,0)
+    ],
+    // V6: broad notched R, no Q, inverted T
+    lbbb_V6: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.4),p(.15,.9),p(.18,.4),p(.20,0),p(.225,0),
+      p(.235,0),p(.25,3.0),p(.27,6.5), // ascending R
+      p(.30,9.0),p(.32,8.0),p(.34,10.5), // notch valley then peak
+      p(.36,7.5),p(.38,3.5),p(.40,0),
+      p(.42,-1.0),p(.44,-1.5),
+      p(.47,-1.8),p(.50,-4.0),p(.53,-4.5),p(.56,-4.0),p(.59,-1.5),p(.62,0),p(1,0)
+    ],
+    // I: broad monophasic R, inverted T
+    lbbb_I: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.3),p(.15,.8),p(.18,.3),p(.20,0),p(.225,0),
+      p(.235,0),p(.25,3.5),p(.275,7.5),
+      p(.305,10.0),p(.325,8.5),p(.345,11.0),
+      p(.365,8.0),p(.385,3.5),p(.405,0),
+      p(.425,-1.3),p(.445,-1.6),
+      p(.47,-2.0),p(.505,-3.5),p(.535,-3.8),p(.565,-3.5),p(.60,-1.0),p(.63,0),p(1,0)
+    ],
+
+    // ---- STEMI STAGES ----
+    ischemia: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.5),p(.15,1.3),p(.18,.5),p(.21,0),p(.235,0),
+      p(.245,-.4),p(.265,11),p(.27,11.5),p(.275,10.5),p(.285,-.6),p(.295,-.8),p(.305,0),
+      p(.31,-2.0),p(.38,-2.0),p(.41,-2.0),   // flat ST depression
+      p(.44,-2.5),p(.48,-5.2),p(.51,-5.5),p(.54,-5.2),p(.58,-2.0),p(.62,-.5),p(.65,0),p(1,0)
+    ],
+    stemi: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.5),p(.15,1.3),p(.18,.5),p(.21,0),p(.235,0),
+      p(.245,-.3),p(.265,12),p(.27,12.5),p(.275,11),p(.285,-.3),p(.295,0),
+      p(.305,3.0),p(.34,3.5),p(.375,3.8),p(.41,3.5),  // convex ST elevation
+      p(.44,3.0),p(.47,4.5),p(.50,6.5),p(.53,4.5),     // hyperacute T
+      p(.57,1.5),p(.61,.3),p(.64,0),p(1,0)
+    ],
+    infarction: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.5),p(.15,1.3),p(.18,.5),p(.21,0),p(.235,0),
+      p(.245,-.5),p(.26,-6.0),p(.28,-6.5),p(.295,-5.5),  // deep wide Q
+      p(.31,-.5),p(.325,4.5),p(.335,5.0),p(.345,4.0),    // small R
+      p(.36,0),
+      p(.37,2.0),p(.40,2.5),p(.43,2.0),  // some ST still elevated
+      p(.46,1.5),p(.49,-.5),p(.52,-3.0),p(.54,-.5), // evolving T
+      p(.57,.3),p(.60,0),p(1,0)
+    ],
+    reciprocal: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.4),p(.15,1.0),p(.18,.4),p(.21,0),p(.235,0),
+      p(.245,-.3),p(.263,9.0),p(.268,9.5),p(.273,8.5),p(.283,-.5),p(.293,-.6),p(.303,0),
+      p(.31,-2.5),p(.345,-3.2),p(.38,-3.4),p(.41,-2.8),  // reciprocal ST depression
+      p(.44,-1.5),p(.46,0),
+      p(.49,.3),p(.52,1.6),p(.55,1.9),p(.57,1.6),p(.60,.3),p(.62,0),p(1,0)
+    ],
+    hyperacute: ()=>[
+      p(0,0),p(.07,0),p(.09,0),p(.12,.5),p(.15,1.3),p(.18,.5),p(.21,0),p(.235,0),
+      p(.245,-.3),p(.263,11),p(.268,11.5),p(.273,10),p(.283,-.3),p(.293,0),
+      p(.31,1.0),p(.34,1.5),  // slight ST rise
+      p(.37,2.0),p(.40,5.0),p(.44,8.5),p(.47,9.5), // hyperacute tall peaked T
+      p(.50,8.5),p(.53,5.0),p(.56,2.0),
+      p(.59,.5),p(.62,0),p(1,0)
+    ],
+
+    // ---- WPW ----
+    wpw: ()=>[
+      p(0,0),p(.07,0),p(.08,0),p(.11,.4),p(.14,.9),p(.17,.4),p(.19,0),
+      p(.20,0),  // very short PR
+      p(.205,0),p(.22,2.0),p(.24,5.0),p(.255,8.0),  // delta wave — slurred upstroke
+      p(.265,10.0),p(.275,9.0),  // R peak
+      p(.285,0),p(.292,-1.5),p(.302,0),
+      p(.38,0),p(.42,.8),p(.47,2.5),p(.51,.8),p(.55,0),p(1,0)
+    ],
+  };
+
+  const fn = shapes[type];
+  return fn ? fn() : shapes.normal_II();
+}
+
+// ============ DRAW ECG CANVAS ============
+function drawECG(id, type, color, nBeats){
+  const cv = document.getElementById(id);
+  if(!cv) return;
+  cv.width = cv.offsetWidth || 300;
+  const W = cv.width, H = cv.height || 80;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  drawGrid(ctx, W, H);
+  const bl = H * 0.58;
+  const bw = W / (nBeats || 2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(1.6, W/200);
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = color;
+  ctx.beginPath();
+  for(let b = 0; b < (nBeats || 2); b++){
+    const pts = beatPts(type, b*bw, bw, bl, H);
+    if(b === 0) smoothPath(ctx, pts);
+    else {
+      const prev = pts[0];
+      ctx.lineTo(prev[0], prev[1]);
+      smoothPath(ctx, pts.slice(1));
+    }
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+
+// ============ ANNOTATED WAVEFORM ============
+function drawAnnotated(){
+  const cv = document.getElementById('annC');
+  if(!cv) return;
+  cv.width = cv.offsetWidth || 600;
+  const W = cv.width, H = 180;
+  const ctx = cv.getContext('2d');
+  const c = C();
+  ctx.clearRect(0,0,W,H);
+  drawGrid(ctx, W, H);
+  const bl = H * 0.52;
+  const bw = W * 0.82;
+  const x0 = W * 0.09;
+  const s = H * 0.045;
+  function pt(fx,mm){ return [x0+bw*fx, bl-mm*s]; }
+  const pts = [
+    pt(0,0),pt(.04,0),
+    pt(.07,0),pt(.10,.5),pt(.13,1.5),pt(.155,1.5),pt(.18,.5),pt(.20,0),
+    pt(.225,0),
+    pt(.235,-.4),pt(.255,13.5),pt(.262,14),pt(.269,13),
+    pt(.279,-.8),pt(.289,-1.0),pt(.299,0),
+    pt(.38,0),
+    pt(.43,1.3),pt(.48,4.2),pt(.52,1.3),
+    pt(.56,0),pt(.63,0),
+    pt(.64,-.3),pt(.65,-.6),pt(.66,-.3),pt(.67,0),
+    pt(1,0)
+  ];
+  ctx.strokeStyle = c.green;
+  ctx.lineWidth = 2.2;
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = c.green;
+  ctx.beginPath();
+  smoothPath(ctx, pts);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  // Baseline
+  ctx.strokeStyle = 'rgba(150,180,220,.18)';
+  ctx.setLineDash([4,4]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0,bl); ctx.lineTo(W,bl); ctx.stroke();
+  ctx.setLineDash([]);
+  // Annotations
+  const fs = Math.max(10, Math.round(W/55));
+  ctx.font = `bold ${fs}px Share Tech Mono`;
+  ctx.textAlign = 'center';
+  const ann = [
+    [.14,-28,c.green,'P Wave'],[.26,-75,c.cyan,'R'],[.24,18,c.amber,'Q'],
+    [.30,18,c.amber,'S'],[.345,14,c.orange,'J'],[.45,-22,c.orange,'ST Seg'],
+    [.49,-48,c.amber,'T Wave'],[.655,-14,c.muted,'U'],
+    [.15,36,c.cyan,'←── PR Interval ──→'],
+    [.265,32,c.green,'←QRS→'],
+    [.49,36,c.muted,'←────── QT Interval ────────→'],
+  ];
+  ann.forEach(([fx,dy,col,txt])=>{
+    ctx.fillStyle = col;
+    ctx.fillText(txt, x0+bw*fx, bl+dy);
+  });
+}
+
+// ============ HERO ANIMATION ============
+let heroOff = 0, heroAnim;
+function animHero(){
+  const cv = document.getElementById('heroC');
+  if(!cv) return;
+  cv.width = window.innerWidth;
+  cv.height = 100;
+  const W = cv.width, H = cv.height;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const c = C();
+  ctx.strokeStyle = c.green;
+  ctx.lineWidth = 1.8;
+  ctx.shadowBlur = 14;
+  ctx.shadowColor = c.green;
+  ctx.beginPath();
+  const cw = 200;
+  for(let x = 0; x <= W; x++){
+    const cx = ((x + heroOff) % cw + cw) % cw;
+    const n = cx / cw;
+    let y = H/2;
+    if(n > .08 && n < .18){ y = H/2 - Math.sin(Math.PI*(n-.08)/.1)*12; }
+    if(n > .23 && n < .285){ y = H/2 - Math.sin(Math.PI*(n-.23)/.055)*52; }
+    if(n > .29 && n < .32){ y = H/2 + Math.sin(Math.PI*(n-.29)/.03)*14; }
+    if(n > .35 && n < .58){ y = H/2 - Math.sin(Math.PI*(n-.35)/.23)*28; }
+    if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  heroOff += 1.8;
+  heroAnim = requestAnimationFrame(animHero);
+}
+// ============ LEADS DATA ============
+const LEADS = [
+  {nm:'Lead I',  area:'Lateral wall — left side of heart',  note:'RA(−)→LA(+). Normally upright P, dominant R, upright T. Lateral MI and RBBB/LBBB key lead.', waves:{Normal:'normal_I',Ischemia:'ischemia',STEMI:'stemi',RBBB:'rbbb_I',LBBB:'lbbb_I'}},
+  {nm:'Lead II', area:'Inferior wall — best P-wave lead',   note:'RA(−)→LL(+). Upright P = sinus rhythm confirmed. Tallest R of limb leads. Best for rhythm strips.', waves:{Normal:'normal_II',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'Lead III',area:'Inferior wall — right-leaning view', note:'LA(−)→LL(+). Q waves may be NORMAL here. Part of inferior triad with II and aVF.', waves:{Normal:'normal_II',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'aVR',     area:'Cavity lead — right shoulder',       note:'Always globally negative in normal sinus rhythm. Upright aVR → suspect lead reversal or dextrocardia!', waves:{Normal:'normal_V1'}},
+  {nm:'aVL',     area:'Lateral/superior wall',              note:'Left shoulder view. Reciprocal changes (ST depression) with inferior STEMI. Lateral MI marker.', waves:{Normal:'normal_I',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'aVF',     area:'Inferior wall — diaphragmatic view', note:'Most inferior lead. Core of inferior MI triad with II and III. RCA territory.', waves:{Normal:'normal_II',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'V1',      area:'Septal/RV — right sternal border 4th ICS', note:'rS normally. KEY lead: RBBB = rSR\' "rabbit ears". LBBB = QS pattern. Biphasic P is normal.', waves:{Normal:'normal_V1',Ischemia:'ischemia',STEMI:'stemi',RBBB:'rbbb_V1',LBBB:'lbbb_V1'}},
+  {nm:'V2',      area:'Septal — left sternal 4th ICS',      note:'Septal MI territory. Posterior MI: tall R + ST depression. T waves can be tall normally.', waves:{Normal:'normal_V1',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'V3',      area:'Anterior — midway V2–V4',            note:'Transitional lead. R wave grows V1→V6 (R progression). Anterior STEMI territory (LAD).', waves:{Normal:'normal_II',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'V4',      area:'Anterior — midclavicular line 5th ICS', note:'Anterior STEMI territory with V3. LAD diagonal branch. Dominant R wave normally.', waves:{Normal:'normal_II',Ischemia:'ischemia',STEMI:'stemi'}},
+  {nm:'V5',      area:'Lateral — anterior axillary line',   note:'Lateral territory. qRs normally. LVH: tall R here (Sokolow-Lyon criterion).', waves:{Normal:'normal_V6',Ischemia:'ischemia',STEMI:'stemi',RBBB:'rbbb_V6',LBBB:'lbbb_V6'}},
+  {nm:'V6',      area:'Lateral — mid-axillary line',        note:'Lateral territory. qRs normally. KEY lead: RBBB = wide S. LBBB = broad notched R.', waves:{Normal:'normal_V6',Ischemia:'ischemia',STEMI:'stemi',RBBB:'rbbb_V6',LBBB:'lbbb_V6'}},
+];
+const CDESC = {
+  Normal:'Normal waveform morphology for this lead. Note expected P-wave direction, QRS axis, and T-wave polarity.',
+  Ischemia:'Subendocardial ischemia: horizontal or downsloping ST depression ≥0.5mm with symmetrical T-wave inversion. QRS width is normal.',
+  STEMI:'Transmural injury current: convex (domed) ST elevation measured from J point. Hyperacute T waves may precede frank elevation — do not wait for "classic" STEMI pattern!',
+  RBBB:'RBBB in this lead: V1 shows rSR\' "rabbit ears" (R\' > r). Left-sided leads (I, V6) show wide terminal S waves. QRS ≥0.12s.',
+  LBBB:'LBBB in this lead: V1 shows QS pattern (no initial r, broad negative). Left-sided leads show broad notched R with secondary T inversion. QRS ≥0.12s. ALWAYS indicates heart disease.',
+};
+let selLead = -1, selCond = 'Normal';
+
+function buildLeadGrid(){
+  const g = document.getElementById('lgrid');
+  if(!g) return;
+  g.innerHTML = '';
+  LEADS.forEach((ld,i)=>{
+    const cell = document.createElement('div');
+    cell.className = 'lcell';
+    cell.innerHTML = `<div class="lnm">${ld.nm}</div><canvas class="lmini" id="lm${i}"></canvas>`;
+    cell.onclick = ()=> selectLead(i);
+    g.appendChild(cell);
+  });
+  setTimeout(()=>{
+    LEADS.forEach((ld,i)=>{
+      const cv = document.getElementById(`lm${i}`);
+      if(cv){ cv.width = cv.offsetWidth || 80; drawECG(`lm${i}`, ld.waves.Normal, C().green, 2); }
+    });
+  }, 200);
+}
+
+function selectLead(i){
+  document.querySelectorAll('.lcell').forEach((c,j)=>c.classList.toggle('sel', j===i));
+  selLead = i; selCond = 'Normal';
+  const ld = LEADS[i];
+  document.getElementById('ld-nm').textContent = ld.nm;
+  document.getElementById('ld-area').textContent = '📍 ' + ld.area;
+  document.getElementById('ld-note').textContent = ld.note;
+  const dtl = document.getElementById('ldtl');
+  dtl.style.display = 'block';
+  const tabs = document.getElementById('ctabs');
+  tabs.innerHTML = '';
+  Object.keys(ld.waves).forEach(cond=>{
+    const b = document.createElement('button');
+    b.className = 'ctab' + (cond==='Normal' ? ' act' : '');
+    b.textContent = cond;
+    b.onclick = ()=> setLeadCond(cond);
+    tabs.appendChild(b);
+  });
+  renderLeadDetail();
+}
+
+function setLeadCond(cond){
+  selCond = cond;
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.toggle('act', b.textContent===cond));
+  renderLeadDetail();
+}
+
+function renderLeadDetail(){
+  if(selLead < 0) return;
+  const ld = LEADS[selLead];
+  const wtype = ld.waves[selCond] || ld.waves.Normal;
+  document.getElementById('ld-clbl').textContent = selCond;
+  document.getElementById('ld-cdesc').textContent = CDESC[selCond] || CDESC.Normal;
+  const cv = document.getElementById('ld-cv');
+  if(cv){ cv.width = cv.offsetWidth || 300; }
+  const col = selCond==='Ischemia' ? C().amber : selCond==='STEMI' ? C().orange : selCond==='RBBB' ? C().amber : selCond==='LBBB' ? C().cyan : C().green;
+  drawECG('ld-cv', wtype, col, 2);
+}
+
+// ============ AXIS DIAGRAM ============
+const AXIS_DATA = {
+  normal: { title:'Normal Axis (0° to +90°)', range:'I: Positive ↑  |  aVF: Positive ↑', color:'#00ff88', causes:'Healthy finding. Impulse travels normally toward left and inferior — the heart\'s natural lean. No intervention needed.', I:'normal_I', aVF:'normal_II' },
+  left:   { title:'Left Axis Deviation (−30° to −90°)', range:'I: Positive ↑  |  aVF: Negative ↓', color:'#ffb300', causes:'Pathologic if beyond −30°. Causes: Left Anterior Hemiblock (LAHB) — most common, Inferior MI, LBBB, LVH, obesity, elevated diaphragm.', I:'normal_I', aVF:'reciprocal' },
+  right:  { title:'Right Axis Deviation (+90° to +180°)', range:'I: Negative ↓  |  aVF: Positive ↑', color:'#ff6b35', causes:'Causes: RBBB, RVH, pulmonary embolism (acute), COPD, lateral wall MI, dextrocardia. New RAD + sudden dyspnea → think PE!', I:'reciprocal', aVF:'normal_II' },
+  extreme:{ title:'Extreme / Northwest Axis (−90° to ±180°)', range:'I: Negative ↓  |  aVF: Negative ↓', color:'#ff3366', causes:'Rare. Causes: ventricular tachycardia, severe RVH, emphysema, artificial pacing, lead reversal. Always clinically significant.', I:'reciprocal', aVF:'reciprocal' },
+};
+
+function drawAxisDiagram(selKey){
+  const cv = document.getElementById('axisC');
+  if(!cv) return;
+  const W = cv.width, H = cv.height;
+  const cx = W/2, cy = H/2, r = W*0.38;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+  const bgC = dark ? '#0a1520' : '#e8f0fa';
+  ctx.fillStyle = bgC;
+  ctx.beginPath(); ctx.arc(cx,cy,r+16,0,Math.PI*2); ctx.fill();
+
+  const quadrants = [
+    {key:'normal',  s: -Math.PI,   e: -Math.PI/2, col:'#00ff88', label:'Normal\n0° to +90°', lx:cx+r*.45, ly:cy+r*.45},
+    {key:'left',    s: -Math.PI*1.5, e:-Math.PI,   col:'#ffb300', label:'LAD\n0° to −90°', lx:cx-r*.55, ly:cy+r*.45},
+    {key:'right',   s: -Math.PI/2, e:0,            col:'#ff6b35', label:'RAD\n+90° to ±180°', lx:cx+r*.45, ly:cy-r*.4},
+    {key:'extreme', s:0,           e: Math.PI/2,   col:'#ff3366', label:'Extreme\n−90° to ±180°', lx:cx-r*.55, ly:cy-r*.4},
+  ];
+  quadrants.forEach(q=>{
+    const alpha = q.key === selKey ? 0.28 : 0.08;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r, q.s, q.e);
+    ctx.closePath();
+    ctx.fillStyle = q.col + Math.round(alpha*255).toString(16).padStart(2,'0');
+    ctx.fill();
+    if(q.key === selKey){
+      ctx.strokeStyle = q.col;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+  });
+
+  // Circle
+  ctx.strokeStyle = dark ? '#1a3a5c' : '#b0c8e0';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+
+  // Axes lines
+  ctx.strokeStyle = dark ? '#2a5a8a' : '#88aacc';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(cx-r-12,cy); ctx.lineTo(cx+r+12,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy-r-12); ctx.lineTo(cx,cy+r+12); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels
+  ctx.font = `bold 11px Share Tech Mono`;
+  ctx.fillStyle = dark ? '#6a8fad' : '#4a6a8a';
+  ctx.textAlign = 'center';
+  ctx.fillText('+180°/−180°', cx-r-18, cy+4);
+  ctx.fillText('0°', cx+r+14, cy+4);
+  ctx.fillText('+90°', cx, cy+r+16);
+  ctx.fillText('−90°', cx, cy-r-8);
+
+  // Quadrant labels
+  ctx.font = `bold 10px Share Tech Mono`;
+  quadrants.forEach(q=>{
+    ctx.fillStyle = q.col;
+    ctx.textAlign = 'center';
+    const lines = q.label.split('\n');
+    lines.forEach((l,i)=> ctx.fillText(l, q.lx, q.ly + i*14));
+  });
+
+  // Arrow for selected axis
+  if(selKey){
+    const angles = {normal: 45, left: 135, right: -45, extreme: -135};
+    const deg = angles[selKey] || 45;
+    const rad = deg * Math.PI / 180;
+    const ax = cx + r*.7 * Math.cos(rad);
+    const ay = cy + r*.7 * Math.sin(rad);
+    const aCol = AXIS_DATA[selKey].color;
+    ctx.strokeStyle = aCol;
+    ctx.fillStyle = aCol;
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 10; ctx.shadowColor = aCol;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ax,ay); ctx.stroke();
+    ctx.shadowBlur = 0;
+    // Arrow head
+    const ang = Math.atan2(ay-cy, ax-cx);
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(ax - 10*Math.cos(ang-0.4), ay - 10*Math.sin(ang-0.4));
+    ctx.lineTo(ax - 10*Math.cos(ang+0.4), ay - 10*Math.sin(ang+0.4));
+    ctx.closePath(); ctx.fill();
+  }
+}
+
+function selectAxis(key){
+  const data = AXIS_DATA[key];
+  document.getElementById('ai-t').textContent = data.title;
+  document.getElementById('ai-t').style.color = data.color;
+  document.getElementById('ai-r').textContent = data.range;
+  document.getElementById('ai-causes').textContent = data.causes;
+  const beats = document.getElementById('ai-beats');
+  beats.style.display = 'flex';
+  const cvI = document.getElementById('ai-I');
+  const cvAVF = document.getElementById('ai-aVF');
+  if(cvI){ cvI.width = cvI.offsetWidth || 100; drawECG('ai-I', data.I, data.color, 1); }
+  if(cvAVF){ cvAVF.width = cvAVF.offsetWidth || 100; drawECG('ai-aVF', data.aVF, data.color, 1); }
+  drawAxisDiagram(key);
+}
+
+function initAxis(){
+  const cv = document.getElementById('axisC');
+  if(!cv) return;
+  drawAxisDiagram(null);
+  cv.addEventListener('click', function(e){
+    const rect = cv.getBoundingClientRect();
+    const mx = e.clientX - rect.left - cv.width/2;
+    const my = e.clientY - rect.top - cv.height/2;
+    let key;
+    if(mx >= 0 && my >= 0) key = 'right';
+    else if(mx < 0 && my >= 0) key = 'extreme';
+    else if(mx >= 0 && my < 0) key = 'normal';
+    else key = 'left';
+    selectAxis(key);
+  });
+}
+// ============ QUIZ ENGINE ============
+const scores = {};
+function qa(btn, correct, fbId, blockId, nextId){
+  const block = document.getElementById(blockId);
+  if(!block) return;
+  block.querySelectorAll('.qopt').forEach(b=>{ b.disabled = true; });
+  const fb = document.getElementById(fbId);
+  if(correct){
+    btn.classList.add('ok');
+    if(fb){ fb.className='qfb show-ok'; fb.textContent='✓ Correct! ' + getExplanation(fbId, true); }
+  } else {
+    btn.classList.add('no');
+    if(fb){ fb.className='qfb show-no'; fb.textContent='✗ Incorrect. ' + getExplanation(fbId, false); }
+    block.querySelectorAll('.qopt').forEach(b=>{
+      if(b.classList.contains('ok') || (!b.disabled && b !== btn)){
+        // highlight was handled above
+      }
+    });
+  }
+  // Track score
+  if(!scores[blockId]) scores[blockId] = {c:0,t:0};
+  scores[blockId].t++;
+  if(correct) scores[blockId].c++;
+  updateScore(blockId);
+
+  if(nextId){
+    setTimeout(()=>{
+      block.style.display='none';
+      const nb = document.getElementById(nextId);
+      if(nb){ nb.style.display='block'; }
+    }, 1600);
+  } else {
+    // show next button
+    const nbtns = document.querySelectorAll('.qnxt');
+    nbtns.forEach(nb=>{
+      if(nb.closest('.qbox') === btn.closest('.qbox')){
+        nb.classList.add('vis');
+      }
+    });
+  }
+}
+
+function getExplanation(fbId, correct){
+  const expl = {
+    qfb1a: correct ? 'PR >0.20s = delayed AV conduction = 1st degree AV block.' : 'WPW = SHORT PR (<0.12s). Normal PR = 0.12–0.20s. >0.20s = 1st degree block.',
+    qfb1b: correct ? 'Prolonged QT → R-on-T phenomenon → Torsades de Pointes (polymorphic VT).' : 'Prolonged QT allows an early beat to land on T wave → R-on-T → Torsades de Pointes!',
+    qfb2:  correct ? 'II, III, aVF are the inferior leads — all three must show changes to confirm inferior territory.' : 'Inferior = II, III, aVF. Anterior = V3–V4. Lateral = I, aVL, V5–V6.',
+    qfb3a: correct ? 'rSR\' in V1 = right bundle fires LATE giving terminal R\' in V1 (always taller than initial r).' : 'RBBB V1 = rSR\' "rabbit ears". LBBB V1 = QS pattern. Remember: R\' in V1 is taller than r.',
+    qfb3b: correct ? 'New LBBB + symptoms = STEMI equivalent per Sgarbossa criteria. Cath lab NOW.' : 'New LBBB + chest pain = STEMI equivalent. Always activate cath lab — do NOT wait.',
+    qfb4a: correct ? 'V3–V4 ST elevation = anterior STEMI (LAD territory). Activate cath lab immediately.' : 'V3–V4 ST elevation = anterior STEMI. This is a STEMI — not just ischemia. Activate cath lab.',
+    qfb4b: correct ? 'Pathological Q waves (>0.04s wide, >25% of R) = irreversible necrosis.' : 'Q waves = irreversible infarction. ST elevation = still reversible injury. T inversion = ischemia.',
+    qfb5a: correct ? 'Inferior STEMI + hypotension + JVD + clear lungs = RV MI. Fluids, no nitrates!' : 'This is RV MI! Nitrates in RV MI → fatal hypotension. Give fluids, avoid nitrates, cath lab.',
+    qfb5b: correct ? 'Posterior MI reciprocal: tall R + ST depression + upright T in V1–V4 = mirror image of posterior STEMI.' : 'Posterior MI = tall R, ST depression, upright T in V1–V4 (mirror of posterior elevation).',
+    qfb6:  correct ? 'I positive + aVF negative = upper-left quadrant = Left Axis Deviation.' : 'I+ / aVF- = upper left quadrant = Left Axis Deviation.',
+    qfb7:  correct ? '19+18=37mm exceeds Sokolow-Lyon 35mm threshold for patient >35 years old.' : '35mm rule: S(V1 or V2) + R(V5 or V6) >35mm. 19+18=37 > 35. This IS LVH.',
+    qfbfa: correct ? 'Grauer\'s 3-lead method: I, V1, V6 differentiate all BBBs in seconds.' : 'Dr. Grauer\'s key leads are I, V1, and V6 — sufficient to classify any bundle branch block.',
+    qfbfb: correct ? 'V3–V4 = LAD diagonal branch (anterior STEMI). Left main would involve V1–V6.' : 'V3–V4 = anterior STEMI = LAD territory.',
+    qfbfc: correct ? 'LBBB: cannot diagnose LVH (voltage unreliable) OR Q-wave MI (QS in V1 is expected, not abnormal).' : 'LBBB invalidates both LVH voltage criteria AND Q-wave MI interpretation — critical limitation!',
+  };
+  return expl[fbId] || '';
+}
+
+function updateScore(blockId){
+  const sc = scores[blockId];
+  if(!sc) return;
+  const pct = sc.t > 0 ? (sc.c/sc.t)*100 : 0;
+  // find score bar in same qbox
+  const block = document.getElementById(blockId);
+  if(!block) return;
+  const qbox = block.closest('.qbox');
+  if(!qbox) return;
+  const bar = qbox.querySelector('.scr-fi');
+  const txt = qbox.querySelector('[id^="st"]');
+  if(bar) bar.style.width = pct + '%';
+}
+
+// ============ CASE REVEALS ============
+function toggleCase(id, btn){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(el.classList.contains('vis')){
+    el.classList.remove('vis');
+    btn.textContent = btn.textContent.replace('▼','▶');
+  } else {
+    el.classList.add('vis');
+    btn.textContent = btn.textContent.replace('▶','▼');
+  }
+}
+
+// ============ FINAL SCORE ============
+function showFinalScore(){
+  const sc = scores['qbfc'] || {c:0, t:0};
+  const allFinal = ['qbfa','qbfb','qbfc'];
+  let total = 0, correct = 0;
+  allFinal.forEach(k=>{ if(scores[k]){ total += scores[k].t; correct += scores[k].c; }});
+  const pct = total > 0 ? Math.round((correct/total)*100) : 0;
+  const bar = document.getElementById('sfF');
+  const txt = document.getElementById('stF');
+  if(bar) bar.style.width = pct + '%';
+  if(txt) txt.textContent = correct + '/' + total;
+  const msg = document.getElementById('finalMsg');
+  const ftxt = document.getElementById('finalTxt');
+  if(msg && ftxt){
+    msg.style.display = 'block';
+    if(pct === 100) ftxt.textContent = '🏆 PERFECT SCORE — Paramedic-Level Mastery!';
+    else if(pct >= 67) ftxt.textContent = '✓ Good Work — Review Missed Items Above';
+    else ftxt.textContent = '📚 Review Required — Revisit All Modules';
+  }
+  const btn = document.getElementById('qnxtF');
+  if(btn) btn.classList.add('vis');
+}
+
+// ============ RENDER ALL WAVEFORMS ============
+function renderAll(){
+  const c = C();
+  drawAnnotated();
+  drawECG('cv-pw',   'normal_II', c.green,  2);
+  drawECG('cv-qrs',  'normal_II', c.cyan,   2);
+  drawECG('cv-st',   'normal_II', c.amber,  2);
+  drawECG('cv-pr',   'normal_II', c.orange, 2);
+  // BBB
+  drawECG('cv-rbbb-v1', 'rbbb_V1', c.amber, 2);
+  drawECG('cv-rbbb-v6', 'rbbb_V6', c.amber, 2);
+  drawECG('cv-rbbb-i',  'rbbb_I',  c.amber, 2);
+  drawECG('cv-lbbb-v1', 'lbbb_V1', c.cyan,  2);
+  drawECG('cv-lbbb-v6', 'lbbb_V6', c.cyan,  2);
+  drawECG('cv-lbbb-i',  'lbbb_I',  c.cyan,  2);
+  // Ischemia/STEMI
+  drawECG('cv-isch',  'ischemia',   c.amber,  2);
+  drawECG('cv-stemi', 'stemi',      c.orange, 2);
+  drawECG('cv-infr',  'infarction', c.red,    2);
+  drawECG('cv-st2',   'stemi',      c.orange, 2);
+  drawECG('cv-recip', 'reciprocal', c.cyan,   2);
+  drawECG('cv-hyper', 'hyperacute', c.orange, 2);
+  // Cases
+  drawECG('cv-c1', 'stemi',      c.orange, 2);
+  drawECG('cv-c2', 'hyperacute', c.orange, 2);
+  drawECG('cv-c3', 'rbbb_V1',   c.amber,  2);
+  drawECG('cv-c4', 'wpw',       c.cyan,   2);
+  drawECG('cv-c5', 'stemi',     c.red,    3);
+  // Lead grid
+  if(selLead >= 0) renderLeadDetail();
+  LEADS.forEach((ld,i)=>{
+    const cv = document.getElementById(`lm${i}`);
+    if(cv){ cv.width = cv.offsetWidth || 80; drawECG(`lm${i}`, ld.waves.Normal, c.green, 2); }
+  });
+  // Axis
+  drawAxisDiagram(null);
+}
+
+// ============ RESIZE ============
+let resizeT;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeT);
+  resizeT = setTimeout(()=>{
+    if(heroAnim) cancelAnimationFrame(heroAnim);
+    animHero();
+    renderAll();
+  }, 200);
+});
+
+// ============ INIT ============
+window.addEventListener('load', ()=>{
+  buildLeadGrid();
+  animHero();
+  setTimeout(renderAll, 300);
+  initAxis();
+});
+</script>
+</body>
+</html>
