@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VA Daily Symptom Log</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DARK / NIGHT MODE  (default)
+═══════════════════════════════════════════ */
+:root,
+[data-theme="dark"] {
+  --bg:          #080c12;
+  --bg2:         #0d1117;
+  --surface:     #111820;
+  --surface2:    #161e28;
+  --surface3:    #1c2533;
+  --border:      #243040;
+  --border-soft: #1a2332;
+
+  --accent:      #d4a043;
+  --accent-dim:  rgba(212,160,67,0.14);
+  --accent-glow: rgba(212,160,67,0.10);
+  --accent-ring: rgba(212,160,67,0.22);
+
+  --red:         #e8625e;
+  --red-dim:     rgba(232,98,94,0.14);
+  --green:       #52c48a;
+  --green-dim:   rgba(82,196,138,0.13);
+  --blue:        #5aabff;
+  --blue-dim:    rgba(90,171,255,0.13);
+  --purple:      #a78bfa;
+
+  --text:        #dde6f0;
+  --text-mid:    #7e8fa3;
+  --text-dim:    #3d4f63;
+  --text-faint:  #243040;
+
+  --header-bg:   rgba(10,15,22,0.92);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.45);
+  --shadow-deep: 0 8px 40px rgba(0,0,0,0.6);
+  --glow-accent: 0 0 20px rgba(212,160,67,0.18);
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'DM Serif Display', serif;
+  --sans:  'DM Sans', sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   LIGHT MODE
+═══════════════════════════════════════════ */
+[data-theme="light"] {
+  --bg:          #f4f1eb;
+  --bg2:         #ede9e1;
+  --surface:     #faf8f4;
+  --surface2:    #f0ece4;
+  --surface3:    #e8e3d8;
+  --border:      #d4cdc0;
+  --border-soft: #e0dbd2;
+
+  --accent:      #a0611a;
+  --accent-dim:  rgba(160,97,26,0.10);
+  --accent-glow: rgba(160,97,26,0.08);
+  --accent-ring: rgba(160,97,26,0.18);
+
+  --red:         #c94040;
+  --red-dim:     rgba(201,64,64,0.10);
+  --green:       #2e7d55;
+  --green-dim:   rgba(46,125,85,0.10);
+  --blue:        #1b66b0;
+  --blue-dim:    rgba(27,102,176,0.10);
+  --purple:      #6d4ea0;
+
+  --text:        #1e1a14;
+  --text-mid:    #5c5244;
+  --text-dim:    #9c9080;
+  --text-faint:  #c8bfb0;
+
+  --header-bg:   rgba(250,248,244,0.95);
+  --shadow-card: 0 1px 8px rgba(0,0,0,0.07), 0 4px 20px rgba(0,0,0,0.05);
+  --shadow-deep: 0 4px 24px rgba(0,0,0,0.12);
+  --glow-accent: none;
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212,160,67,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 30% at 100% 100%, rgba(90,171,255,0.03) 0%, transparent 50%);
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(160,97,26,0.04) 0%, transparent 55%);
+}
+
+/* ═══════════════════════════════════════════
+   THEME TOGGLE BUTTON
+═══════════════════════════════════════════ */
+.theme-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+  outline: none;
+}
+.theme-toggle:focus-visible { box-shadow: 0 0 0 3px var(--accent-ring); }
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+[data-theme="light"] .theme-toggle::before { transform: translateX(24px); }
+.theme-toggle-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.theme-toggle .icon-moon { left: 7px; }
+.theme-toggle .icon-sun  { right: 6px; }
+[data-theme="dark"]  .theme-toggle .icon-moon { opacity: 1; }
+[data-theme="dark"]  .theme-toggle .icon-sun  { opacity: 0.35; }
+[data-theme="light"] .theme-toggle .icon-moon { opacity: 0.35; }
+[data-theme="light"] .theme-toggle .icon-sun  { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   SETUP SCREEN
+═══════════════════════════════════════════ */
+#setup-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 52px 48px;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-deep);
+}
+[data-theme="dark"] .setup-card {
+  background: linear-gradient(160deg, #131c28 0%, #0f1720 100%);
+  border-color: #253040;
+}
+.setup-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 14px;
+  letter-spacing: .18em;
+  border-radius: 20px;
+  margin-bottom: 28px;
+}
+[data-theme="light"] .setup-badge { color: #fff; }
+.setup-card h2 { font-family: var(--serif); font-size: 2rem; margin-bottom: 12px; line-height: 1.2; }
+.setup-card > p { color: var(--text-mid); font-size: 14px; line-height: 1.75; margin-bottom: 36px; }
+.setup-option {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.setup-option:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+  box-shadow: var(--glow-accent);
+}
+.setup-option-icon { font-size: 26px; flex-shrink: 0; margin-top: 1px; }
+.setup-option-text h4 { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--text); margin-bottom: 5px; text-transform: uppercase; }
+.setup-option-text p  { font-size: 12px; color: var(--text-mid); margin: 0; line-height: 1.55; }
+.setup-note { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 22px; line-height: 1.7; }
+.setup-note strong { color: var(--text-mid); }
+.setup-theme-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 24px; }
+.setup-theme-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: .08em; }
+
+/* ═══════════════════════════════════════════
+   FILE STATUS BAR
+═══════════════════════════════════════════ */
+#file-status-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 7px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  gap: 12px;
+}
+[data-theme="dark"] #file-status-bar { background: #060a10; }
+.file-status-left { display: flex; align-items: center; gap: 9px; }
+.file-indicator { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.file-indicator.connected    { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.file-indicator.disconnected { background: var(--red);   box-shadow: 0 0 6px var(--red); }
+#file-path-display { color: var(--text-mid); font-size: 10px; }
+.btn-relink {
+  padding: 3px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-mid);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-relink:hover { border-color: var(--accent); color: var(--accent); }
+.saving-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-left: 6px; animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-card);
+  gap: 12px;
+}
+[data-theme="dark"] header {
+  border-bottom-color: #1e2d40;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.5);
+}
+.header-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.va-badge {
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 4px 10px;
+  letter-spacing: .2em;
+  border-radius: 3px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+.header-text h1 { font-family: var(--serif); font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-text p  { font-size: 10px; color: var(--text-mid); font-family: var(--mono); margin-top: 1px; }
+.header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  background: var(--surface);
+  position: sticky;
+  top: 57px;
+  z-index: 90;
+}
+[data-theme="dark"] .tabs { background: #0e1620; border-bottom-color: #1e2d40; }
+.tab {
+  padding: 12px 20px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--text-dim);
+  cursor: pointer;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  text-transform: uppercase;
+  transition: all .2s;
+}
+.tab:hover { color: var(--text-mid); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+main { max-width: 780px; margin: 0 auto; padding: 28px 24px 60px; }
+
+/* ═══════════════════════════════════════════
+   FORM CARDS
+═══════════════════════════════════════════ */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-card);
+  transition: background 0.35s, border-color 0.35s;
+}
+[data-theme="dark"] .form-card {
+  background: linear-gradient(175deg, #131c28 0%, #0f1820 100%);
+  border-color: #1e2d40;
+}
+.card-header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 11px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+[data-theme="dark"] .card-header { background: rgba(10,18,30,0.7); }
+.card-header .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+[data-theme="dark"] .card-header .dot { box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(212,160,67,0.3); }
+.card-header span { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--text-mid); }
+
+.form-grid { padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-grid.single { grid-template-columns: 1fr; }
+.field-full { grid-column: 1 / -1; }
+
+/* ═══════════════════════════════════════════
+   FIELD LABELS & INPUTS
+═══════════════════════════════════════════ */
+.field label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: 8px;
+}
+.field label .req { color: var(--accent); margin-left: 3px; }
+
+input[type="date"],
+input[type="number"],
+input[type="text"],
+textarea {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 10px 13px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  -webkit-appearance: none;
+}
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] textarea {
+  background: rgba(5,10,18,0.7);
+  border-color: #1e2d40;
+}
+input:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+  background: var(--bg);
+}
+input[type="number"] { text-align: center; }
+
+/* ── RANGE SLIDER ── */
+.scale-wrapper { display: flex; align-items: center; gap: 14px; }
+.scale-wrapper input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  background: var(--border);
+  border: none;
+  border-radius: 3px;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+}
+[data-theme="dark"] .scale-wrapper input[type="range"] { background: #1a2840; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  border: 2px solid var(--bg);
+}
+[data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
+  box-shadow: 0 0 10px rgba(212,160,67,.5), 0 2px 8px rgba(0,0,0,0.4);
+}
+[data-theme="light"] input[type="range"]::-webkit-slider-thumb {
+  box-shadow: 0 2px 8px rgba(160,97,26,0.4);
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.scale-value {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 600;
+  min-width: 34px;
+  text-align: center;
+  transition: color .2s;
+  line-height: 1;
+}
+.scale-labels { display: flex; justify-content: space-between; margin-top: 6px; font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: .04em; }
+
+/* ── YES/NO TOGGLE ── */
+.yn-group { display: flex; gap: 8px; }
+.yn-btn {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg2);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: .04em;
+}
+.yn-btn:hover { border-color: var(--text-mid); color: var(--text); }
+.yn-btn.yes.selected { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+.yn-btn.no.selected  { background: var(--red-dim);   border-color: var(--red);   color: var(--red); }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn-primary {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 4px;
+}
+[data-theme="dark"] .btn-primary {
+  box-shadow: 0 2px 16px rgba(212,160,67,0.25);
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(160,97,26,0.35);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-mid);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+
+/* ═══════════════════════════════════════════
+   UNSUPPORTED BANNER
+═══════════════════════════════════════════ */
+.unsupported-banner {
+  background: var(--red-dim);
+  border: 1px solid rgba(232,98,94,0.3);
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   LOG VIEW
+═══════════════════════════════════════════ */
+.log-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.log-count { font-family: var(--mono); font-size: 11px; color: var(--text-mid); }
+.log-count strong { color: var(--accent); font-size: 14px; }
+
+.log-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+  box-shadow: var(--shadow-card);
+}
+[data-theme="dark"] .log-entry {
+  background: linear-gradient(175deg, #131c28 0%, #0f1820 100%);
+  border-color: #1e2d40;
+}
+.log-entry:hover { border-color: var(--accent); transform: translateY(-1px); }
+[data-theme="dark"] .log-entry:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.5), var(--glow-accent); }
+[data-theme="light"] .log-entry:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+.log-entry-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: var(--surface2);
+  border-bottom: 1px solid transparent;
+  transition: border-color .15s;
+  gap: 12px;
+}
+[data-theme="dark"] .log-entry-header { background: rgba(8,14,24,0.6); }
+.log-entry.open .log-entry-header { border-bottom-color: var(--border-soft); }
+.log-date { font-family: var(--serif); font-size: 1rem; flex-shrink: 0; }
+
+.log-pills { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+.pill { font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: .06em; text-transform: uppercase; }
+.pill-red   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(232,98,94,0.25); }
+.pill-amber { background: var(--accent-dim); color: var(--accent);border: 1px solid rgba(212,160,67,0.25); }
+.pill-blue  { background: var(--blue-dim);   color: var(--blue);  border: 1px solid rgba(90,171,255,0.2); }
+.pill-gray  { background: var(--surface3);   color: var(--text-mid); border: 1px solid var(--border); }
+
+.log-entry-body { display: none; padding: 20px; }
+.log-entry.open .log-entry-body { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.lf-label { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.lf-value { font-family: var(--mono); font-size: 13px; color: var(--text); }
+.log-field.full { grid-column: 1/-1; }
+.log-actions { grid-column: 1/-1; display: flex; gap: 8px; padding-top: 14px; border-top: 1px dashed var(--border); margin-top: 4px; }
+
+.btn-delete {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid rgba(232,98,94,0.3);
+  border-radius: 5px;
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-delete:hover { background: var(--red-dim); }
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty-state { text-align: center; padding: 70px 20px; }
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state h3 { font-family: var(--serif); font-size: 1.3rem; color: var(--text-mid); margin-bottom: 8px; }
+.empty-state p  { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  box-shadow: var(--shadow-deep);
+  transform: translateY(90px) scale(0.95);
+  opacity: 0;
+  transition: all .35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+  pointer-events: none;
+  max-width: 320px;
+}
+[data-theme="dark"] #toast { background: #131c28; }
+#toast.show { transform: translateY(0) scale(1); opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   NIGHT MODE EXTRA GLOW ENHANCEMENTS
+═══════════════════════════════════════════ */
+[data-theme="dark"] .card-header { border-bottom: 1px solid #1a2840; }
+[data-theme="dark"] .form-card   { box-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.02) inset; }
+[data-theme="dark"] .log-entry   { box-shadow: 0 2px 16px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.02) inset; }
+[data-theme="dark"] .btn-primary { box-shadow: 0 2px 20px rgba(212,160,67,0.3), 0 0 40px rgba(212,160,67,0.08); }
+[data-theme="dark"] .setup-card  { box-shadow: 0 0 60px rgba(212,160,67,0.07), 0 20px 60px rgba(0,0,0,0.7); }
+
+/* ═══════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════ */
+@media print {
+  #setup-screen, header, .tabs, .header-actions,
+  .btn-primary, .btn-secondary, .btn-delete,
+  .log-controls, #file-status-bar, .theme-toggle { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .log-entry { border: 1px solid #ccc !important; break-inside: avoid; box-shadow: none !important; background: #fff !important; }
+  .log-entry-body { display: grid !important; grid-template-columns: 1fr 1fr 1fr; background: #fff !important; }
+  .log-entry-header { background: #f5f5f5 !important; }
+  .lf-value, .log-date { color: #000 !important; }
+  .lf-label { color: #555 !important; }
+  .pill { border: 1px solid #ccc !important; background: #f0f0f0 !important; color: #333 !important; }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  main { padding: 20px 16px 60px; }
+  header { padding: 14px 16px; }
+  .header-text p { display: none; }
+  .tabs { padding: 0 16px; }
+  #file-status-bar { padding: 7px 16px; }
+  .setup-card { padding: 32px 24px; }
+  .log-entry.open .log-entry-body { grid-template-columns: 1fr 1fr; }
+  .btn-secondary { padding: 8px 12px; font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     SETUP SCREEN
+══════════════════════════════════ -->
+<div id="setup-screen" style="display:none;">
+  <div class="setup-card">
+    <div class="setup-badge">🏥 VA · Daily Log</div>
+    <h2>Choose Your Save Location</h2>
+    <p>Your log saves as a <strong><code>va_daily_log.json</code></strong> file directly on your computer — fully independent of your browser. Survives cache clears, browser updates, and reinstalls.</p>
+
+    <div class="setup-option" onclick="createNewFile()">
+      <div class="setup-option-icon">📄</div>
+      <div class="setup-option-text">
+        <h4>Create a New Log File</h4>
+        <p>Choose a folder and start fresh. Save to Documents, Desktop, or a USB drive you back up.</p>
+      </div>
+    </div>
+
+    <div class="setup-option" onclick="openExistingFile()">
+      <div class="setup-option-icon">📂</div>
+      <div class="setup-option-text">
+        <h4>Open an Existing Log File</h4>
+        <p>Have a <code>va_daily_log.json</code> already? Browse to it and pick up where you left off.</p>
+      </div>
+    </div>
+
+    <div class="setup-theme-row">
+      <span class="setup-theme-label">🌙 Night</span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-toggle-icon icon-moon">🌙</span>
+        <span class="theme-toggle-icon icon-sun">☀️</span>
+      </button>
+      <span class="setup-theme-label">Day ☀️</span>
+    </div>
+
+    <div class="setup-note">
+      <strong>Best with Chrome or Edge.</strong> Firefox &amp; Safari have limited file system support.
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     MAIN APP
+══════════════════════════════════ -->
+<div id="app" style="display:none;">
+
+  <!-- File Status Bar -->
+  <div id="file-status-bar">
+    <div class="file-status-left">
+      <div class="file-indicator" id="file-indicator"></div>
+      <span id="file-path-display">No file linked</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span id="save-indicator" style="font-size:10px;color:var(--text-dim);display:none;align-items:center;">Saving<span class="saving-dot"></span></span>
+      <button class="btn-relink" onclick="changeFile()">⇄ Change File</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="va-badge">VA</div>
+      <div class="header-text">
+        <h1>Daily Symptom Log</h1>
+        <p>Disability Claim Documentation · Saved to Your Computer</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+        <span class="theme-toggle-icon icon-moon">🌙</span>
+        <span class="theme-toggle-icon icon-sun">☀️</span>
+      </button>
+      <button class="btn-secondary" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn-secondary" onclick="window.print()">⎙ Print</button>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('entry',this)">New Entry</button>
+    <button class="tab"        onclick="showTab('log',this)">View Log</button>
+  </div>
+
+  <main>
+
+    <!-- ENTRY FORM -->
+    <div id="entry-view">
+
+      <div id="unsupported-msg" class="unsupported-banner" style="display:none;">
+        <strong>⚠ File System API not available in this browser.</strong> Data is saved to browser storage as a fallback. Switch to Chrome or Edge for true local file saving.
+      </div>
+
+      <!-- Date & Sleep -->
+      <div class="form-card">
+        <div class="card-header"><div class="dot"></div><span>Entry Info</span></div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Date <span class="req">*</span></label>
+            <input type="date" id="f-date">
+          </div>
+          <div class="field">
+            <label>Sleep (hours)</label>
+            <input type="number" id="f-sleep" min="0" max="24" step="0.5" placeholder="0.0">
+          </div>
+        </div>
+      </div>
+
+      <!-- Symptom Scales -->
+      <div class="form-card">
+        <div class="card-header"><div class="dot"></div><span>Symptom Scales</span></div>
+        <div class="form-grid">
+          <div class="field field-full">
+            <label>Brain Fog Severity &nbsp;(0 = None · 10 = Debilitating)</label>
+            <div class="scale-wrapper">
+              <input type="range" id="f-fog" min="0" max="10" value="0" oninput="updateScale('fog')">
+              <div class="scale-value" id="fog-val">0</div>
+            </div>
+            <div class="scale-labels"><span>0 — None</span><span>5 — Moderate</span><span>10 — Severe</span></div>
+          </div>
+          <div class="field field-full">
+            <label>Pain Level &nbsp;(0 = None · 10 = Worst Possible)</label>
+            <div class="scale-wrapper">
+              <input type="range" id="f-pain" min="0" max="10" value="0" oninput="updateScale('pain')">
+              <div class="scale-value" id="pain-val">0</div>
+            </div>
+            <div class="scale-labels"><span>0 — None</span><span>5 — Moderate</span><span>10 — Severe</span></div>
+          </div>
+          <div class="field">
+            <label>Panic Attacks (# today)</label>
+            <input type="number" id="f-panic" min="0" max="99" step="1" placeholder="0">
+          </div>
+          <div class="field">
+            <label>Migraine Today?</label>
+            <div class="yn-group">
+              <button class="yn-btn yes" id="migraine-yes" onclick="selectYN('migraine','yes')">Yes</button>
+              <button class="yn-btn no selected" id="migraine-no" onclick="selectYN('migraine','no')">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Functioning -->
+      <div class="form-card">
+        <div class="card-header"><div class="dot"></div><span>Daily Functioning</span></div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Left Home Today?</label>
+            <div class="yn-group">
+              <button class="yn-btn yes" id="lefthome-yes" onclick="selectYN('lefthome','yes')">Yes</button>
+              <button class="yn-btn no selected" id="lefthome-no" onclick="selectYN('lefthome','no')">No</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Missed Work Today?</label>
+            <div class="yn-group">
+              <button class="yn-btn yes" id="missedwork-yes" onclick="selectYN('missedwork','yes')">Yes</button>
+              <button class="yn-btn no selected" id="missedwork-no" onclick="selectYN('missedwork','no')">No</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Work Hours Completed</label>
+            <input type="number" id="f-workhours" min="0" max="24" step="0.5" placeholder="0.0">
+          </div>
+          <div class="field">
+            <label>Needed Help at Home?</label>
+            <div class="yn-group">
+              <button class="yn-btn yes" id="helpathome-yes" onclick="selectYN('helpathome','yes')">Yes</button>
+              <button class="yn-btn no selected" id="helpathome-no" onclick="selectYN('helpathome','no')">No</button>
+            </div>
+          </div>
+          <div class="field field-full" id="help-detail-wrap" style="display:none;">
+            <label>Describe Assistance Needed</label>
+            <input type="text" id="f-helpdetail" placeholder="e.g., meal prep, bathing, transportation, medication management…">
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-card">
+        <div class="card-header"><div class="dot"></div><span>Additional Notes</span></div>
+        <div class="form-grid single">
+          <div class="field">
+            <label>Narrative / Observations</label>
+            <textarea id="f-notes" placeholder="Describe how symptoms affected daily activities, triggers, medications taken, or anything relevant to your claim…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-bottom:40px;">
+        <button class="btn-primary" onclick="saveEntry()">⊕ &nbsp; Save Daily Entry</button>
+      </div>
+
+    </div><!-- /entry-view -->
+
+
+    <!-- LOG VIEW -->
+    <div id="log-view" style="display:none;">
+      <div class="log-controls">
+        <div class="log-count">Showing <strong id="log-count-num">0</strong> entries</div>
+        <button class="btn-secondary" onclick="clearAll()" style="border-color:rgba(232,98,94,0.35);color:var(--red);">✕ Clear All</button>
+      </div>
+      <div id="log-list"></div>
+    </div>
+
+  </main>
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let fileHandle  = null;
+let entries     = [];
+let fsSupported = ('showSaveFilePicker' in window);
+const FALLBACK_KEY  = 'va_daily_log_fallback';
+const THEME_KEY     = 'va_log_theme';
+const ynState = { migraine:'no', lefthome:'no', missedwork:'no', helpathome:'no' };
+
+// ═══════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+async function init() {
+  // Apply saved theme
+  applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+
+  document.getElementById('f-date').value = todayStr();
+
+  if (!fsSupported) {
+    entries = loadFallback();
+    document.getElementById('unsupported-msg').style.display = 'block';
+    setFileStatus(false, 'Browser storage only — use Chrome/Edge for local file saving');
+    showApp();
+    return;
+  }
+
+  const saved = await loadHandleFromIDB();
+  if (saved) {
+    try {
+      let perm = await saved.queryPermission({ mode:'readwrite' });
+      if (perm !== 'granted') perm = await saved.requestPermission({ mode:'readwrite' });
+      if (perm === 'granted') {
+        fileHandle = saved;
+        await loadFromFile();
+        showApp();
+        return;
+      }
+    } catch(e) {}
+  }
+
+  document.getElementById('setup-screen').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════
+async function createNewFile() {
+  try {
+    fileHandle = await window.showSaveFilePicker({
+      suggestedName: 'va_daily_log.json',
+      types: [{ description:'JSON Log', accept:{'application/json':['.json']} }]
+    });
+    entries = [];
+    await persistToFile();
+    await saveHandleToIDB(fileHandle);
+    document.getElementById('setup-screen').style.display = 'none';
+    showApp();
+    toast('✓ New log file created — entries auto-save here.');
+  } catch(e) { if (e.name !== 'AbortError') toast('Could not create file: ' + e.message, true); }
+}
+
+async function openExistingFile() {
+  try {
+    [fileHandle] = await window.showOpenFilePicker({
+      types: [{ description:'JSON Log', accept:{'application/json':['.json']} }]
+    });
+    await loadFromFile();
+    await saveHandleToIDB(fileHandle);
+    document.getElementById('setup-screen').style.display = 'none';
+    showApp();
+    toast('✓ File loaded — ' + entries.length + ' entries found.');
+  } catch(e) { if (e.name !== 'AbortError') toast('Could not open file: ' + e.message, true); }
+}
+
+function changeFile() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════
+// FILE I/O
+// ═══════════════════════════════════════════
+async function loadFromFile() {
+  try {
+    const file = await fileHandle.getFile();
+    const data = JSON.parse(await file.text());
+    entries = Array.isArray(data) ? data : (data.entries || []);
+    setFileStatus(true, fileHandle.name);
+  } catch(e) {
+    entries = [];
+    setFileStatus(true, fileHandle ? fileHandle.name : 'unknown');
+  }
+}
+
+async function persistToFile() {
+  if (!fsSupported || !fileHandle) { saveFallback(); return; }
+  showSavingIndicator();
+  try {
+    const writable = await fileHandle.createWritable();
+    await writable.write(JSON.stringify({ entries, updated: new Date().toISOString() }, null, 2));
+    await writable.close();
+    setFileStatus(true, fileHandle.name);
+  } catch(e) { toast('⚠ Could not write to file: ' + e.message, true); }
+  hideSavingIndicator();
+}
+
+function saveFallback() { localStorage.setItem(FALLBACK_KEY, JSON.stringify(entries)); }
+function loadFallback() { try { return JSON.parse(localStorage.getItem(FALLBACK_KEY)) || []; } catch { return []; } }
+
+// ═══════════════════════════════════════════
+// INDEXEDDB
+// ═══════════════════════════════════════════
+function openIDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('va_log_db', 1);
+    r.onupgradeneeded = e => e.target.result.createObjectStore('handles');
+    r.onsuccess = e => res(e.target.result);
+    r.onerror   = () => rej();
+  });
+}
+async function saveHandleToIDB(h) {
+  try { (await openIDB()).transaction('handles','readwrite').objectStore('handles').put(h,'primary'); } catch(e) {}
+}
+async function loadHandleFromIDB() {
+  try {
+    const db = await openIDB();
+    return await new Promise(res => {
+      const r = db.transaction('handles','readonly').objectStore('handles').get('primary');
+      r.onsuccess = () => res(r.result || null);
+      r.onerror   = () => res(null);
+    });
+  } catch { return null; }
+}
+
+// ═══════════════════════════════════════════
+// ENTRY FORM
+// ═══════════════════════════════════════════
+async function saveEntry() {
+  const date = document.getElementById('f-date').value;
+  if (!date) { toast('Please select a date.', true); return; }
+
+  const entry = {
+    id:         Date.now(), date,
+    sleep:      document.getElementById('f-sleep').value     || '—',
+    fog:        document.getElementById('f-fog').value,
+    pain:       document.getElementById('f-pain').value,
+    panic:      document.getElementById('f-panic').value      || '0',
+    migraine:   ynState.migraine,
+    lefthome:   ynState.lefthome,
+    missedwork: ynState.missedwork,
+    workhours:  document.getElementById('f-workhours').value  || '0',
+    helpathome: ynState.helpathome,
+    helpdetail: document.getElementById('f-helpdetail').value || '',
+    notes:      document.getElementById('f-notes').value      || '',
+  };
+
+  if (entries.find(e => e.date === date)) {
+    if (!confirm('An entry for this date already exists. Save another?')) return;
+  }
+  entries.unshift(entry);
+  await persistToFile();
+  resetForm();
+  toast('✓ Entry saved to your computer');
+}
+
+function resetForm() {
+  document.getElementById('f-date').value       = todayStr();
+  document.getElementById('f-sleep').value      = '';
+  document.getElementById('f-fog').value        = 0;
+  document.getElementById('f-pain').value       = 0;
+  document.getElementById('f-panic').value      = '';
+  document.getElementById('f-workhours').value  = '';
+  document.getElementById('f-helpdetail').value = '';
+  document.getElementById('f-notes').value      = '';
+  document.getElementById('fog-val').textContent  = '0';
+  document.getElementById('pain-val').textContent = '0';
+  document.getElementById('fog-val').style.color  = '';
+  document.getElementById('pain-val').style.color = '';
+  ['migraine','lefthome','missedwork','helpathome'].forEach(g => selectYN(g,'no'));
+}
+
+// ═══════════════════════════════════════════
+// LOG VIEW
+// ═══════════════════════════════════════════
+function renderLog() {
+  document.getElementById('log-count-num').textContent = entries.length;
+  const list = document.getElementById('log-list');
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>No Entries Yet</h3>
+      <p>Switch to the New Entry tab to log your first day.</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = entries.map(e => {
+    const fog = parseInt(e.fog), pain = parseInt(e.pain);
+    let pills = '';
+    pills += fog  >= 7 ? `<span class="pill pill-red">Fog: ${fog}</span>`   : fog  >= 4 ? `<span class="pill pill-amber">Fog: ${fog}</span>`   : `<span class="pill pill-gray">Fog: ${fog}</span>`;
+    pills += pain >= 7 ? `<span class="pill pill-red">Pain: ${pain}</span>` : pain >= 4 ? `<span class="pill pill-amber">Pain: ${pain}</span>` : `<span class="pill pill-gray">Pain: ${pain}</span>`;
+    if (e.migraine   === 'yes') pills += `<span class="pill pill-red">Migraine</span>`;
+    if (parseInt(e.panic) > 0)  pills += `<span class="pill pill-amber">${e.panic} Panic</span>`;
+    if (e.missedwork === 'yes') pills += `<span class="pill pill-red">Missed Work</span>`;
+    if (e.helpathome === 'yes') pills += `<span class="pill pill-blue">Needed Help</span>`;
+    if (e.lefthome   === 'no')  pills += `<span class="pill pill-amber">Stayed Home</span>`;
+
+    return `<div class="log-entry" id="entry-${e.id}">
+      <div class="log-entry-header" onclick="document.getElementById('entry-${e.id}').classList.toggle('open')">
+        <div class="log-date">${fmtDate(e.date)}</div>
+        <div class="log-pills">${pills}<span style="font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-left:5px;">›</span></div>
+      </div>
+      <div class="log-entry-body">
+        <div class="log-field"><div class="lf-label">Sleep</div><div class="lf-value">${e.sleep} hrs</div></div>
+        <div class="log-field"><div class="lf-label">Brain Fog</div><div class="lf-value">${e.fog} / 10</div></div>
+        <div class="log-field"><div class="lf-label">Pain</div><div class="lf-value">${e.pain} / 10</div></div>
+        <div class="log-field"><div class="lf-label">Panic Attacks</div><div class="lf-value">${e.panic}</div></div>
+        <div class="log-field"><div class="lf-label">Migraine</div><div class="lf-value">${cap(e.migraine)}</div></div>
+        <div class="log-field"><div class="lf-label">Left Home</div><div class="lf-value">${cap(e.lefthome)}</div></div>
+        <div class="log-field"><div class="lf-label">Work Hours</div><div class="lf-value">${e.workhours} hrs</div></div>
+        <div class="log-field"><div class="lf-label">Missed Work</div><div class="lf-value">${cap(e.missedwork)}</div></div>
+        <div class="log-field"><div class="lf-label">Help at Home</div><div class="lf-value">${cap(e.helpathome)}</div></div>
+        ${e.helpdetail ? `<div class="log-field full"><div class="lf-label">Help Detail</div><div class="lf-value">${e.helpdetail}</div></div>` : ''}
+        ${e.notes      ? `<div class="log-field full"><div class="lf-label">Notes</div><div class="lf-value" style="font-size:12px;line-height:1.65;">${e.notes}</div></div>` : ''}
+        <div class="log-actions">
+          <button class="btn-delete" onclick="deleteEntry(${e.id})">✕ Delete Entry</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function deleteEntry(id) {
+  if (!confirm('Delete this entry? Cannot be undone.')) return;
+  entries = entries.filter(e => e.id !== id);
+  await persistToFile();
+  renderLog();
+}
+
+async function clearAll() {
+  if (!confirm('Delete ALL entries permanently?')) return;
+  entries = [];
+  await persistToFile();
+  renderLog();
+}
+
+// ═══════════════════════════════════════════
+// CSV EXPORT
+// ═══════════════════════════════════════════
+function exportCSV() {
+  if (!entries.length) { toast('No entries to export.', true); return; }
+  const cols = ['Date','Sleep (hrs)','Brain Fog (0-10)','Pain (0-10)','Panic Attacks','Migraine','Left Home','Work Hours','Missed Work','Help at Home','Help Detail','Notes'];
+  const rows = entries.map(e => [
+    e.date, e.sleep, e.fog, e.pain, e.panic,
+    cap(e.migraine), cap(e.lefthome), e.workhours,
+    cap(e.missedwork), cap(e.helpathome),
+    '"'+(e.helpdetail||'').replace(/"/g,'""')+'"',
+    '"'+(e.notes||'').replace(/"/g,'""')+'"'
+  ].join(','));
+  const blob = new Blob([[cols.join(','), ...rows].join('\n')], { type:'text/csv' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'va_daily_log_'+todayStr()+'.csv' });
+  a.click();
+  toast('CSV exported — ' + entries.length + ' entries');
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function showApp() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('entry-view').style.display = tab === 'entry' ? 'block' : 'none';
+  document.getElementById('log-view').style.display   = tab === 'log'   ? 'block' : 'none';
+  if (tab === 'log') renderLog();
+}
+
+function setFileStatus(connected, label) {
+  document.getElementById('file-indicator').className = 'file-indicator ' + (connected ? 'connected' : 'disconnected');
+  document.getElementById('file-path-display').textContent = (connected ? '📄 ' : '') + label;
+}
+
+function updateScale(key) {
+  const val = document.getElementById('f-' + key).value;
+  const n   = parseInt(val);
+  const el  = document.getElementById(key + '-val');
+  el.textContent = val;
+  el.style.color = n >= 8 ? 'var(--red)' : n >= 5 ? 'var(--accent)' : n >= 3 ? '#d4a043' : 'var(--green)';
+}
+
+function selectYN(group, val) {
+  ynState[group] = val;
+  document.getElementById(group + '-yes').className = 'yn-btn yes' + (val === 'yes' ? ' selected' : '');
+  document.getElementById(group + '-no').className  = 'yn-btn no'  + (val === 'no'  ? ' selected' : '');
+  if (group === 'helpathome') document.getElementById('help-detail-wrap').style.display = val === 'yes' ? 'block' : 'none';
+}
+
+let savingTimer;
+function showSavingIndicator() { document.getElementById('save-indicator').style.display = 'inline-flex'; clearTimeout(savingTimer); }
+function hideSavingIndicator() { savingTimer = setTimeout(() => document.getElementById('save-indicator').style.display = 'none', 900); }
+
+let toastTimer;
+function toast(msg, err=false) {
+  const el = document.getElementById('toast');
+  el.textContent      = msg;
+  el.style.borderColor = err ? 'var(--red)' : 'var(--accent)';
+  el.style.color       = err ? 'var(--red)' : 'var(--accent)';
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function fmtDate(d) { return new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}); }
+function cap(s)     { return s ? s.charAt(0).toUpperCase() + s.slice(1) : '—'; }
+
+// ── START ──
+init();
+</script>
+</body>
+</html>
