@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bees & Honey: Human Health Benefits | Interactive Learning Module</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root[data-theme="dark"]{--bg:#1a1208;--bg2:#231a0c;--bg3:#2e2210;--surface:#332810;--surface2:#3d3014;--border:rgba(255,180,30,.18);--gold:#f5a623;--gold2:#f7c653;--amber:#d4790a;--text:#fdf3dc;--text2:#c9a96e;--text3:#8a7050;--correct:#4caf7d;--wrong:#e05a5a;--info:#5ab4e0;--hf:rgba(245,166,35,.06);--hs:rgba(245,166,35,.12);}
+:root[data-theme="light"]{--bg:#fffbf0;--bg2:#fff7e0;--bg3:#fef0c0;--surface:#fff3cc;--surface2:#fde89a;--border:rgba(180,110,10,.22);--gold:#b06000;--gold2:#8a4400;--amber:#8a4a00;--text:#2a1800;--text2:#6b3e00;--text3:#a07030;--correct:#2e7d52;--wrong:#c0392b;--info:#1565c0;--hf:rgba(200,130,0,.07);--hs:rgba(200,130,0,.18);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;background:var(--bg);color:var(--text);min-height:100vh;transition:background .35s,color .35s;overflow-x:hidden;}
+.hex-bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.hex-bg svg{width:100%;height:100%;}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 1.5rem 4rem;}
+header{text-align:center;padding:3.5rem 1rem 2rem;}
+.bee-row{font-size:2.8rem;letter-spacing:.6rem;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:700;color:var(--gold2);line-height:1.1;margin:.6rem 0 .4rem;text-shadow:0 2px 24px rgba(245,166,35,.2);}
+.subtitle{font-size:1rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+.tag-row{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1.2rem;}
+.tag{background:rgba(245,166,35,.12);border:1px solid var(--border);color:var(--gold2);font-size:.72rem;font-weight:600;letter-spacing:.06em;padding:.25rem .75rem;border-radius:100px;text-transform:uppercase;}
+.theme-btn{position:fixed;top:1.2rem;right:1.4rem;z-index:100;background:var(--surface);border:1px solid var(--border);color:var(--gold2);font-size:1.3rem;cursor:pointer;padding:.4rem .7rem;border-radius:8px;transition:all .2s;}
+.theme-btn:hover{background:var(--surface2);}
+.objectives{background:linear-gradient(135deg,var(--bg3),var(--surface));border:1px solid var(--border);border-radius:16px;padding:1.8rem 2rem;margin:2rem 0;}
+.objectives h2{font-family:'Playfair Display',serif;color:var(--gold2);font-size:1.3rem;margin-bottom:1rem;}
+.obj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.8rem;}
+.obj-item{display:flex;gap:.7rem;align-items:flex-start;background:rgba(0,0,0,.15);border-radius:10px;padding:.75rem 1rem;border-left:3px solid var(--gold);}
+.obj-verb{font-family:'DM Mono',monospace;font-size:.7rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;background:rgba(245,166,35,.12);padding:.15rem .5rem;border-radius:4px;white-space:nowrap;margin-top:.15rem;}
+.obj-text{font-size:.9rem;color:var(--text2);}
+.tab-nav{display:flex;flex-wrap:wrap;gap:.4rem;margin:2rem 0 0;border-bottom:1px solid var(--border);padding-bottom:.6rem;}
+.tab-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.04em;padding:.5rem 1.1rem;border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;}
+.tab-btn:hover{color:var(--gold);border-color:var(--gold);}
+.tab-btn.active{background:var(--surface);color:var(--gold2);border-color:var(--gold);border-bottom-color:var(--surface);margin-bottom:-1px;z-index:1;}
+.tab-panel{display:none;animation:fsl .35s ease;}
+.tab-panel.active{display:block;}
+@keyframes fsl{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.cc{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem 2.2rem;margin-top:1.5rem;}
+.cc h3{font-family:'Playfair Display',serif;color:var(--gold2);font-size:1.5rem;margin-bottom:.8rem;}
+.cc h4{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem;margin:1.4rem 0 .5rem;}
+.cc p{color:var(--text2);margin-bottom:.9rem;}
+.cc ul,.cc ol{color:var(--text2);padding-left:1.4rem;margin-bottom:1rem;}
+.cc li{margin-bottom:.4rem;}
+.kn{background:rgba(245,166,35,.07);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:.9rem 1.2rem;margin:1.2rem 0;font-size:.88rem;color:var(--text2);}
+.kn strong{color:var(--gold2);}
+.ib{background:rgba(90,180,224,.08);border:1px solid rgba(90,180,224,.2);border-radius:10px;padding:1rem 1.2rem;margin:1rem 0;font-size:.9rem;color:var(--text2);}
+.ib .lbl{color:var(--info);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+.hf-row{display:flex;flex-wrap:wrap;gap:1rem;margin:1.5rem 0;justify-content:center;}
+.hf{width:155px;min-height:130px;background:linear-gradient(145deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1rem .7rem;gap:.4rem;transition:transform .2s;cursor:default;}
+.hf:hover{transform:translateY(-4px);}
+.hf .n{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--gold2);line-height:1;}
+.hf .u{font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;}
+.hf .d{font-size:.75rem;color:var(--text2);line-height:1.3;}
+.bg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.2rem 0;}
+.bc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem;transition:border-color .2s,transform .2s;}
+.bc:hover{border-color:var(--gold);transform:translateY(-3px);}
+.bi{font-size:2rem;margin-bottom:.6rem;}
+.bc h5{color:var(--gold2);font-weight:600;font-size:.95rem;margin-bottom:.4rem;}
+.bc p{font-size:.83rem;color:var(--text2);margin:0;}
+.cs{background:linear-gradient(135deg,var(--bg3),var(--surface));border:1px solid var(--gold);border-radius:14px;padding:1.8rem 2rem;margin:1.5rem 0;}
+.cs-tag{display:inline-block;background:var(--gold);color:var(--bg);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .7rem;border-radius:4px;margin-bottom:.8rem;}
+.tl{list-style:none;padding:0;}
+.tl li{display:flex;gap:.8rem;align-items:flex-start;padding:.7rem 0;border-bottom:1px solid var(--border);}
+.tl li:last-child{border-bottom:none;}
+.tn{min-width:28px;height:28px;background:var(--gold);color:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;font-family:'DM Mono',monospace;}
+.tt{font-size:.9rem;color:var(--text2);}
+.ntb{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.8rem;align-items:center;}
+.ntb span{font-size:.78rem;color:var(--text3);margin-right:auto;}
+.nab{background:var(--surface);border:1px solid var(--border);color:var(--gold2);font-size:.78rem;font-family:'DM Sans',sans-serif;padding:.35rem .8rem;border-radius:7px;cursor:pointer;transition:all .2s;font-weight:500;}
+.nab:hover{background:var(--surface2);border-color:var(--gold);}
+.ns{margin-bottom:1.4rem;}
+.ns label{display:block;font-size:.8rem;color:var(--gold);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem;}
+.ns textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;line-height:1.6;padding:.9rem 1.1rem;resize:vertical;min-height:90px;transition:border-color .2s;outline:none;}
+.ns textarea:focus{border-color:var(--gold);background:var(--surface);}
+.ns textarea::placeholder{color:var(--text3);}
+.nsb{display:none;background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.3);border-radius:8px;padding:.7rem 1rem;font-size:.85rem;color:var(--correct);text-align:center;margin-top:.8rem;}
+.qh{text-align:center;padding:1.5rem 0 .5rem;}
+.qh h3{font-family:'Playfair Display',serif;color:var(--gold2);font-size:1.6rem;}
+.qh p{font-size:.9rem;color:var(--text2);margin-top:.4rem;}
+.qcard{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem 1.8rem;margin-bottom:1.2rem;}
+.qn{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;}
+.qt{font-size:1rem;color:var(--text);font-weight:500;margin-bottom:1rem;}
+.opts{display:flex;flex-direction:column;gap:.5rem;}
+.opt{display:flex;align-items:flex-start;gap:.8rem;padding:.7rem 1rem;border-radius:9px;border:1px solid var(--border);cursor:pointer;background:var(--surface);transition:all .2s;font-size:.9rem;color:var(--text2);}
+.opt:hover:not(.done){border-color:var(--gold);color:var(--text);}
+.opt.correct{background:rgba(76,175,125,.12);border-color:var(--correct);color:var(--text);}
+.opt.wrong{background:rgba(224,90,90,.1);border-color:var(--wrong);color:var(--text);}
+.ol{min-width:24px;height:24px;border-radius:50%;background:var(--surface2);font-size:.75rem;font-weight:700;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;color:var(--gold);border:1px solid var(--border);flex-shrink:0;}
+.rat{background:rgba(245,166,35,.07);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:.7rem 1rem;margin-top:.9rem;font-size:.83rem;color:var(--text2);display:none;}
+.rat.show{display:block;animation:fsl .3s ease;}
+.rat strong{color:var(--gold2);}
+.qs{display:block;margin:1.5rem auto 0;background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--bg);font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;padding:.9rem 2.5rem;border:none;border-radius:10px;cursor:pointer;transition:transform .2s,box-shadow .2s;letter-spacing:.04em;}
+.qs:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,166,35,.3);}
+.qs:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.sb{background:linear-gradient(135deg,var(--surface),var(--bg3));border:1px solid var(--gold);border-radius:14px;text-align:center;padding:2rem;margin-top:1.5rem;display:none;}
+.sbig{font-family:'Playfair Display',serif;font-size:3.5rem;color:var(--gold2);}
+.sm{color:var(--text2);margin-top:.4rem;}
+.sr{margin-top:1rem;background:var(--surface2);border:1px solid var(--border);color:var(--gold2);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:.5rem 1.4rem;border-radius:8px;cursor:pointer;transition:all .2s;}
+.sr:hover{border-color:var(--gold);}
+.pb{position:fixed;bottom:0;left:0;right:0;height:4px;z-index:200;background:rgba(0,0,0,.3);}
+.pf{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));width:0%;transition:width .3s;}
+footer{text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--text3);}
+footer span{color:var(--gold);}
+
+/* ── PHOTO GALLERY ── */
+.img-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.2rem;margin:1.5rem 0;}
+.img-card{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--surface);transition:transform .2s,border-color .2s;cursor:pointer;}
+.img-card:hover{transform:translateY(-4px);border-color:var(--gold);}
+.img-card svg{width:100%;height:180px;display:block;}
+.img-cap{padding:.8rem 1rem;}
+.img-cap strong{display:block;color:var(--gold2);font-size:.85rem;margin-bottom:.25rem;}
+.img-cap span{font-size:.78rem;color:var(--text3);line-height:1.4;}
+
+/* LIGHTBOX */
+.lb{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:zoom-out;}
+.lb.open{display:flex;}
+.lb svg{max-width:85vw;max-height:80vh;border-radius:12px;border:2px solid var(--gold);}
+.lbc{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:#fde89a;font-size:.85rem;padding:.5rem 1.4rem;border-radius:8px;pointer-events:none;}
+.lbx{position:absolute;top:1rem;right:1.4rem;background:rgba(40,30,10,.9);border:1px solid var(--border);color:var(--gold2);font-size:1.4rem;padding:.3rem .7rem;border-radius:8px;cursor:pointer;z-index:510;}
+
+/* ── VIDEO CARDS ── */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;margin:1.5rem 0;}
+.vid-card{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--surface);transition:transform .2s,border-color .2s;text-decoration:none;display:block;cursor:pointer;}
+.vid-card:hover{transform:translateY(-4px);border-color:var(--gold);}
+.vid-thumb{position:relative;width:100%;height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.vid-thumb svg{width:100%;height:100%;}
+.play-btn{position:absolute;width:56px;height:56px;background:rgba(245,166,35,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.vid-card:hover .play-btn{transform:scale(1.12);background:#f5a623;}
+.play-btn svg{width:22px;height:22px;fill:var(--bg);}
+.vid-info{padding:.85rem 1rem;}
+.vid-info strong{display:block;color:var(--gold2);font-size:.88rem;margin-bottom:.3rem;line-height:1.3;}
+.vid-info span{font-size:.78rem;color:var(--text3);line-height:1.4;}
+.vid-badge{display:inline-block;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:var(--gold);font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .55rem;border-radius:4px;margin-top:.4rem;}
+.vid-open{display:block;margin:.6rem 1rem .9rem;background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--bg);font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;text-align:center;padding:.45rem 0;border-radius:8px;text-decoration:none;transition:opacity .2s;}
+.vid-open:hover{opacity:.88;}
+
+@media(max-width:640px){.cc{padding:1.3rem 1.2rem;}h1{font-size:1.8rem;}.img-gallery{grid-template-columns:1fr 1fr;}.video-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="hex-bg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice"><defs><pattern id="hc" x="0" y="0" width="84" height="97" patternUnits="userSpaceOnUse"><polygon points="42,1 83,22 83,65 42,86 1,65 1,22" fill="var(--hf)" stroke="var(--hs)" stroke-width="1"/><polygon points="84,49 125,70 125,113 84,134 43,113 43,70" fill="var(--hf)" stroke="var(--hs)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#hc)"/></svg></div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" onclick="closeLB()">
+  <button class="lbx" onclick="closeLB()">✕</button>
+  <svg id="lbsvg" viewBox="0 0 400 300"></svg>
+  <div class="lbc" id="lbcap"></div>
+</div>
+
+<button class="theme-btn" onclick="toggleTheme()">🌓</button>
+<div class="pb"><div class="pf" id="pf"></div></div>
+
+<div class="wrap">
+
+<header>
+  <div class="bee-row">🐝 🍯 🌸</div>
+  <h1>Bees & Honey<br/>Human Health Benefits</h1>
+  <p class="subtitle">Interactive Learning Module · Health Sciences & Community Wellness</p>
+  <div class="tag-row">
+    <span class="tag">Adult Learning</span><span class="tag">Bloom's Taxonomy</span>
+    <span class="tag">Knowles' Andragogy</span><span class="tag">Evidence-Based</span><span class="tag">Canvas LMS Ready</span>
+  </div>
+</header>
+
+<div class="objectives">
+  <h2>🎯 Learning Objectives (Bloom's Taxonomy)</h2>
+  <div class="obj-grid">
+    <div class="obj-item"><span class="obj-verb">Identify</span><span class="obj-text">At least five distinct health benefits of honey and bee products supported by peer-reviewed evidence.</span></div>
+    <div class="obj-item"><span class="obj-verb">Explain</span><span class="obj-text">The biological mechanisms by which honey exerts antimicrobial, antioxidant, and wound-healing effects.</span></div>
+    <div class="obj-item"><span class="obj-verb">Apply</span><span class="obj-text">Evidence-based honey knowledge to real-world decisions in nutritional, first-aid, and clinical contexts.</span></div>
+    <div class="obj-item"><span class="obj-verb">Analyze</span><span class="obj-text">The ecological relationship between bees and food security, evaluating consequences of pollinator decline.</span></div>
+    <div class="obj-item"><span class="obj-verb">Differentiate</span><span class="obj-text">Between honey types (raw, Manuka, processed) and assess their relative therapeutic and nutritional value.</span></div>
+    <div class="obj-item"><span class="obj-verb">Create</span><span class="obj-text">A personal action plan integrating bee products or pollinator support into daily health and community practice.</span></div>
+  </div>
+</div>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('intro',this)">🌿 Introduction</button>
+  <button class="tab-btn" onclick="showTab('concepts',this)">🔬 Core Concepts</button>
+  <button class="tab-btn" onclick="showTab('media',this)">📸 Photos & Videos</button>
+  <button class="tab-btn" onclick="showTab('application',this)">⚗️ Application</button>
+  <button class="tab-btn" onclick="showTab('summary',this)">📋 Summary</button>
+  <button class="tab-btn" onclick="showTab('notes',this)">📝 My Notes</button>
+  <button class="tab-btn" onclick="showTab('assessment',this)">✅ Assessment</button>
+</nav>
+
+<!-- ══ TAB 1: INTRO ══ -->
+<div class="tab-panel active" id="tab-intro">
+<div class="cc">
+  <h3>🌍 Introduction & Background</h3>
+  <div class="kn"><strong>Knowles — Self-Concept:</strong> You already interact with bees and honey in daily life. This module connects that lived experience to the biochemistry behind why these insects matter enormously to your health and the planet.</div>
+  <p>For thousands of years, across every culture, humans have recognized bees as sacred and deeply connected to survival. Cave paintings in Spain dating to <strong>8,000 BCE</strong> depict humans harvesting honey from wild hives. Ancient Egyptians used honey in over 500 medical prescriptions, applied it to battlefield wounds, and preserved mummies with it. Hippocrates prescribed honey for fevers, wounds, and ulcers. What was once folk wisdom is now confirmed by modern biochemistry.</p>
+  <div class="hf-row">
+    <div class="hf"><span class="n">20,000+</span><span class="u">Species</span><span class="d">Known bee species worldwide</span></div>
+    <div class="hf"><span class="n">80%</span><span class="u">Of crops</span><span class="d">Depend on bee pollination</span></div>
+    <div class="hf"><span class="n">1 tsp</span><span class="u">Lifetime</span><span class="d">A bee's entire honey output</span></div>
+    <div class="hf"><span class="n">$577B</span><span class="u">Annual value</span><span class="d">Global pollination services</span></div>
+    <div class="hf"><span class="n">181</span><span class="u">Compounds</span><span class="d">Found in raw honey</span></div>
+    <div class="hf"><span class="n">60,000</span><span class="u">Workers</span><span class="d">In a healthy hive colony</span></div>
+  </div>
+  <h4>🐝 Types of Bees & Their Roles</h4>
+  <ul>
+    <li><strong>Honeybees (Apis mellifera)</strong> — Primary honey producers; backbone of commercial apiculture and managed crop pollination worldwide.</li>
+    <li><strong>Bumblebees (Bombus spp.)</strong> — Use "buzz pollination" (200–400 Hz sonication) — essential for tomatoes, blueberries, and peppers.</li>
+    <li><strong>Solitary bees (mason, leafcutter, sweat bees)</strong> — Often more efficient per-bee pollinators; critical for wild plant biodiversity.</li>
+    <li><strong>Stingless bees (Meliponini)</strong> — Tropical species producing highly therapeutic honeys used in traditional medicine for millennia.</li>
+  </ul>
+  <div class="kn"><strong>Knowles — Experience:</strong> Have you ever used honey medicinally — in tea for a sore throat, on a cut, or for a cough? Have you noticed fewer bees in your neighborhood recently? Your lived observations are valid data. Connect them to the science as you work through this module.</div>
+</div>
+</div>
+
+<!-- ══ TAB 2: CONCEPTS ══ -->
+<div class="tab-panel" id="tab-concepts">
+<div class="cc">
+  <h3>🔬 Core Concepts: The Science of Honey & Bee Products</h3>
+  <div class="kn"><strong>Knowles — Readiness to Learn:</strong> Every concept below connects to decisions you make for yourself, your patients, or your community. This is not abstract chemistry — it is the science behind something in your kitchen cabinet right now.</div>
+  <h4>🍯 Honey's Biochemical Composition</h4>
+  <p>Honey is a <strong>supersaturated sugar solution</strong> produced by bees from floral nectar, enriched by bee enzymes, and concentrated through evaporation into one of nature's most complex bioactive substances — over 181 identified compounds.</p>
+  <div class="bg">
+    <div class="bc"><div class="bi">🍬</div><h5>Sugars (~80%)</h5><p>Fructose (38%) and glucose (31%), plus 20+ other carbohydrates. Lower glycemic index than refined sugar.</p></div>
+    <div class="bc"><div class="bi">💧</div><h5>Water (~17–20%)</h5><p>Low moisture creates an osmotic environment hostile to bacterial growth — a key antimicrobial mechanism.</p></div>
+    <div class="bc"><div class="bi">⚗️</div><h5>Enzymes</h5><p>Glucose oxidase, diastase, invertase — contributed by bees. Destroyed by heat above 40°C, which is why raw honey has superior bioactivity.</p></div>
+    <div class="bc"><div class="bi">🛡️</div><h5>Polyphenols</h5><p>30+ types including quercetin and kaempferol — primary antioxidant and anti-inflammatory agents in honey.</p></div>
+    <div class="bc"><div class="bi">🔋</div><h5>Vitamins & Minerals</h5><p>Vitamin C, B vitamins, calcium, iron, magnesium, potassium, zinc — trace amounts with meaningful cumulative benefit.</p></div>
+    <div class="bc"><div class="bi">🧪</div><h5>Organic Acids</h5><p>Gluconic acid lowers honey's pH to 3.2–4.5 — an acidic barrier hostile to most pathogens. This is why honey never spoils.</p></div>
+  </div>
+  <h4>🦠 Five Antimicrobial Mechanisms</h4>
+  <ol>
+    <li><strong>Osmotic effect:</strong> High sugar concentration pulls water out of bacterial cells, desiccating them.</li>
+    <li><strong>H₂O₂ release:</strong> Glucose oxidase produces slow-release hydrogen peroxide when diluted — sustained, non-cytotoxic antisepsis.</li>
+    <li><strong>Low pH (3.2–4.5):</strong> Acidic environment inhibits bacterial enzyme activity and membrane integrity.</li>
+    <li><strong>Methylglyoxal (MGO):</strong> Found at highest concentrations in Manuka honey — bactericidal even when H₂O₂ is neutralized. Active against MRSA.</li>
+    <li><strong>Bee defensin-1:</strong> An antimicrobial peptide secreted into honey by the bee, targeting bacterial cell membranes directly.</li>
+  </ol>
+  <div class="ib"><div class="lbl">🏥 Clinical Evidence</div>A 2011 systematic review in the <em>Journal of Wound Care</em> found Manuka honey (UMF 10+) effective against 60+ bacterial species including MRSA and <em>Pseudomonas aeruginosa</em>. The FDA has cleared medical-grade honey dressings (MediHoney®) as Class II medical devices for wound care.</div>
+  <h4>🌟 Six Evidence-Backed Health Benefits</h4>
+  <div class="bg">
+    <div class="bc"><div class="bi">🩹</div><h5>Wound Healing</h5><p>Creates a moist, acidic, antimicrobial environment for tissue granulation. FDA-cleared MediHoney® used in major hospital systems worldwide.</p></div>
+    <div class="bc"><div class="bi">😮‍💨</div><h5>Cough Suppression</h5><p>WHO and AAP recommend 1–2 tsp at bedtime for children over 1 year — outperforms dextromethorphan in RCTs.</p></div>
+    <div class="bc"><div class="bi">🧠</div><h5>Neuroprotection</h5><p>Polyphenols cross the blood-brain barrier, reducing oxidative stress linked to Alzheimer's and Parkinson's disease.</p></div>
+    <div class="bc"><div class="bi">❤️</div><h5>Cardiovascular Health</h5><p>Flavonoids reduce LDL oxidation, lower triglycerides, improve HDL/LDL ratio. Meta-analyses show ~6% reduction in CRP.</p></div>
+    <div class="bc"><div class="bi">🦠</div><h5>Gut Microbiome</h5><p>Oligosaccharides act as prebiotics, feeding Lactobacillus and Bifidobacterium while inhibiting H. pylori.</p></div>
+    <div class="bc"><div class="bi">🌿</div><h5>Anti-Inflammatory</h5><p>Reduces TNF-α, IL-1β, and IL-6 cytokines. Demonstrated benefits in oral mucositis, gastric ulcers, and atopic dermatitis.</p></div>
+  </div>
+  <h4>🐝 Other Bee Products with Therapeutic Value</h4>
+  <ul>
+    <li><strong>Propolis:</strong> Rich in CAPE (caffeic acid phenethyl ester) — potent anti-tumor, antiviral, anti-fungal. Used for oral health and herpes management.</li>
+    <li><strong>Royal Jelly:</strong> Contains 10-HDA with anti-tumor, antimicrobial, and collagen-stimulating effects.</li>
+    <li><strong>Bee Pollen:</strong> 25–30% protein, all essential amino acids, flavonoids, and carotenoids.</li>
+    <li><strong>Beeswax:</strong> FDA-approved coating agent and skin barrier. Contains anti-inflammatory long-chain fatty acids.</li>
+    <li><strong>Bee Venom (Apitherapy):</strong> Melittin shows anti-tumor activity and is studied for rheumatoid arthritis and Parkinson's disease.</li>
+  </ul>
+</div>
+</div>
+
+<!-- ══ TAB 3: MEDIA ══ -->
+<div class="tab-panel" id="tab-media">
+<div class="cc">
+  <h3>📸 Illustrated Gallery & Video Resources</h3>
+  <div class="kn"><strong>Knowles — Motivation:</strong> Seeing bees in action — hive choreography, the chemistry of honey, the scale of pollination — transforms abstract facts into lasting understanding. Click any illustration to enlarge. Each video opens directly on YouTube.</div>
+
+  <!-- ─── PHOTO GALLERY: 9 SVG ILLUSTRATIONS ─── -->
+  <h4>🖼️ Scientific Illustration Gallery <small style="font-size:.72rem;color:var(--text3);font-weight:400;">(click any image to enlarge)</small></h4>
+  <div class="img-gallery">
+
+    <!-- 1. Honeybee on Lavender -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Honeybee (Apis mellifera) foraging on lavender — worker bees visit up to 5,000 flowers per day, collecting nectar and transferring pollen.">
+        <defs>
+          <radialGradient id="sky1" cx="50%" cy="30%"><stop offset="0%" stop-color="#e8f4f0"/><stop offset="100%" stop-color="#c8e8d8"/></radialGradient>
+          <radialGradient id="bodyg" cx="40%" cy="40%"><stop offset="0%" stop-color="#f5c842"/><stop offset="100%" stop-color="#d4900a"/></radialGradient>
+        </defs>
+        <rect width="300" height="200" fill="url(#sky1)"/>
+        <!-- Lavender stems -->
+        <line x1="60" y1="200" x2="60" y2="80" stroke="#7b9e5a" stroke-width="3" stroke-linecap="round"/>
+        <line x1="90" y1="200" x2="90" y2="90" stroke="#7b9e5a" stroke-width="3" stroke-linecap="round"/>
+        <line x1="120" y1="200" x2="120" y2="75" stroke="#7b9e5a" stroke-width="3" stroke-linecap="round"/>
+        <!-- Lavender flowers -->
+        <g fill="#7c5cbf" opacity="0.9">
+          <ellipse cx="60" cy="70" rx="7" ry="14"/><ellipse cx="60" cy="75" rx="5" ry="10"/>
+          <ellipse cx="90" cy="80" rx="7" ry="14"/><ellipse cx="90" cy="85" rx="5" ry="10"/>
+          <ellipse cx="120" cy="65" rx="7" ry="14"/>
+          <circle cx="57" cy="62" r="4"/><circle cx="63" cy="60" r="3"/><circle cx="59" cy="56" r="3.5"/>
+          <circle cx="87" cy="72" r="4"/><circle cx="93" cy="70" r="3"/><circle cx="89" cy="66" r="3.5"/>
+          <circle cx="117" cy="57" r="4"/><circle cx="123" cy="55" r="3"/><circle cx="119" cy="51" r="3.5"/>
+        </g>
+        <!-- Leaves -->
+        <ellipse cx="75" cy="140" rx="12" ry="5" fill="#7b9e5a" transform="rotate(-20 75 140)"/>
+        <ellipse cx="105" cy="150" rx="12" ry="5" fill="#7b9e5a" transform="rotate(20 105 150)"/>
+        <!-- BEE BODY -->
+        <g transform="translate(160,85)">
+          <!-- Wings -->
+          <ellipse cx="-15" cy="-18" rx="30" ry="14" fill="rgba(200,230,255,0.55)" stroke="rgba(100,150,200,0.4)" stroke-width="0.8"/>
+          <ellipse cx="-8" cy="-10" rx="20" ry="9" fill="rgba(200,230,255,0.45)" stroke="rgba(100,150,200,0.3)" stroke-width="0.7"/>
+          <!-- Abdomen stripes -->
+          <ellipse cx="0" cy="0" rx="22" ry="13" fill="#f5c842"/>
+          <rect x="-20" y="-5" width="42" height="6" rx="2" fill="#1a1208"/>
+          <rect x="-18" y="2" width="38" height="6" rx="2" fill="#1a1208"/>
+          <ellipse cx="0" cy="0" rx="22" ry="13" fill="none" stroke="#d4900a" stroke-width="0.5"/>
+          <!-- Thorax -->
+          <ellipse cx="-18" cy="-3" rx="12" ry="10" fill="#1a1208"/>
+          <ellipse cx="-18" cy="-3" rx="10" ry="8" fill="#3d2e08"/>
+          <!-- Head -->
+          <circle cx="-30" cy="-2" r="9" fill="#f5c842" stroke="#d4900a" stroke-width="0.5"/>
+          <circle cx="-33" cy="-5" r="3.5" fill="#1a1208"/>
+          <!-- Antennae -->
+          <path d="M-37,-10 Q-45,-25 -40,-32" stroke="#1a1208" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M-30,-11 Q-35,-26 -28,-33" stroke="#1a1208" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="-40" cy="-32" r="2.5" fill="#1a1208"/>
+          <circle cx="-28" cy="-33" r="2.5" fill="#1a1208"/>
+          <!-- Pollen baskets (corbicula) -->
+          <ellipse cx="12" cy="10" rx="6" ry="3" fill="#f5c842" stroke="#d4900a" stroke-width="0.5"/>
+          <ellipse cx="12" cy="10" rx="4" ry="2" fill="#f5a623"/>
+          <!-- Stinger -->
+          <path d="M22,0 L28,0" stroke="#1a1208" stroke-width="1.5" stroke-linecap="round"/>
+        </g>
+        <!-- Pollen dots floating -->
+        <circle cx="195" cy="70" r="2.5" fill="#f5c842" opacity="0.7"/>
+        <circle cx="210" cy="78" r="2" fill="#f5c842" opacity="0.6"/>
+        <circle cx="200" cy="90" r="2" fill="#f5c842" opacity="0.5"/>
+        <!-- Labels -->
+        <text x="160" y="170" font-family="Georgia,serif" font-size="11" fill="#3d2e08" text-anchor="middle" font-style="italic">Apis mellifera — Western Honeybee</text>
+        <text x="160" y="185" font-family="Arial,sans-serif" font-size="9" fill="#7b5e30" text-anchor="middle">Pollen baskets (corbiculae) visible on hind legs</text>
+      </svg>
+      <div class="img-cap"><strong>Honeybee Foraging on Lavender</strong><span>Worker bees visit up to 5,000 flowers daily. Pollen baskets on their hind legs can carry up to 35% of body weight in pollen — transferred to the hive as a protein source.</span></div>
+    </div>
+
+    <!-- 2. Honeycomb Cross-Section -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Honeycomb cross-section showing capped honey cells, open nectar cells, and pollen stores — the hexagonal structure maximizes storage with minimum beeswax.">
+        <defs>
+          <radialGradient id="hg1" cx="50%" cy="50%"><stop offset="0%" stop-color="#f7c653"/><stop offset="100%" stop-color="#c47a00"/></radialGradient>
+          <radialGradient id="hg2" cx="50%" cy="50%"><stop offset="0%" stop-color="#fde89a"/><stop offset="100%" stop-color="#f5a623"/></radialGradient>
+          <radialGradient id="hg3" cx="50%" cy="50%"><stop offset="0%" stop-color="#e8914a"/><stop offset="100%" stop-color="#a05820"/></radialGradient>
+        </defs>
+        <rect width="300" height="200" fill="#2e2210"/>
+        <!-- Honeycomb cells in hex grid -->
+        <g stroke="#c47a00" stroke-width="1.5">
+          <!-- Row 1 -->
+          <polygon points="30,20 55,6 80,20 80,48 55,62 30,48" fill="url(#hg1)"/>
+          <polygon points="82,20 107,6 132,20 132,48 107,62 82,48" fill="url(#hg2)"/>
+          <polygon points="134,20 159,6 184,20 184,48 159,62 134,48" fill="#d4900a" opacity="0.7"/>
+          <polygon points="186,20 211,6 236,20 236,48 211,62 186,48" fill="url(#hg1)"/>
+          <polygon points="238,20 263,6 288,20 288,48 263,62 238,48" fill="url(#hg2)"/>
+          <!-- Wax caps Row 1 -->
+          <polygon points="134,20 159,6 184,20 184,26 159,12 134,26" fill="#e8d4a0" opacity="0.9"/>
+          <!-- Row 2 -->
+          <polygon points="6,62 31,48 56,62 56,90 31,104 6,90" fill="url(#hg2)"/>
+          <polygon points="58,62 83,48 108,62 108,90 83,104 58,90" fill="url(#hg3)"/><!-- pollen -->
+          <polygon points="110,62 135,48 160,62 160,90 135,104 110,90" fill="url(#hg1)"/>
+          <polygon points="162,62 187,48 212,62 212,90 187,104 162,90" fill="#d4900a" opacity="0.7"/>
+          <polygon points="214,62 239,48 264,62 264,90 239,104 214,90" fill="url(#hg1)"/>
+          <polygon points="266,62 291,48 300,55 300,90 291,104 266,90" fill="url(#hg2)"/>
+          <!-- Wax caps Row 2 -->
+          <polygon points="162,62 187,48 212,62 212,68 187,54 162,68" fill="#e8d4a0" opacity="0.9"/>
+          <!-- Row 3 -->
+          <polygon points="30,104 55,90 80,104 80,132 55,146 30,132" fill="url(#hg1)"/>
+          <polygon points="82,104 107,90 132,104 132,132 107,146 82,132" fill="url(#hg2)"/>
+          <polygon points="134,104 159,90 184,104 184,132 159,146 134,132" fill="url(#hg3)"/>
+          <polygon points="186,104 211,90 236,104 236,132 211,146 186,132" fill="url(#hg1)"/>
+          <polygon points="238,104 263,90 288,104 288,132 263,146 238,132" fill="#d4900a" opacity="0.7"/>
+          <!-- Wax cap -->
+          <polygon points="238,104 263,90 288,104 288,110 263,96 238,110" fill="#e8d4a0" opacity="0.9"/>
+          <!-- Row 4 -->
+          <polygon points="6,146 31,132 56,146 56,174 31,188 6,174" fill="url(#hg2)"/>
+          <polygon points="58,146 83,132 108,146 108,174 83,188 58,174" fill="url(#hg1)"/>
+          <polygon points="110,146 135,132 160,146 160,174 135,188 110,174" fill="url(#hg2)"/>
+          <polygon points="162,146 187,132 212,146 212,174 187,188 162,174" fill="url(#hg3)"/>
+          <polygon points="214,146 239,132 264,146 264,174 239,188 214,174" fill="url(#hg1)"/>
+          <polygon points="266,146 291,132 300,138 300,174 291,188 266,174" fill="url(#hg2)"/>
+        </g>
+        <!-- Labels -->
+        <rect x="4" y="154" width="52" height="14" rx="3" fill="rgba(0,0,0,.5)"/>
+        <text x="30" y="164" font-family="Arial,sans-serif" font-size="8" fill="#fde89a" text-anchor="middle">Nectar cells</text>
+        <rect x="56" y="68" width="52" height="14" rx="3" fill="rgba(0,0,0,.5)"/>
+        <text x="83" y="78" font-family="Arial,sans-serif" font-size="8" fill="#fde89a" text-anchor="middle">Pollen stores</text>
+        <rect x="130" y="26" width="56" height="14" rx="3" fill="rgba(0,0,0,.5)"/>
+        <text x="159" y="36" font-family="Arial,sans-serif" font-size="8" fill="#fde89a" text-anchor="middle">Capped honey</text>
+        <text x="150" y="195" font-family="Georgia,serif" font-size="10" fill="#f7c653" text-anchor="middle" font-style="italic">Hexagonal cells — mathematical optimization of wax use</text>
+      </svg>
+      <div class="img-cap"><strong>Honeycomb Cross-Section</strong><span>The hexagonal cell is a mathematical near-optimum — it uses the least beeswax to create the most storage volume. Cells store mature honey (capped), ripening nectar, and pollen (darker orange).</span></div>
+    </div>
+
+    <!-- 3. Raw Honey Composition -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Raw honey composition chart — over 181 bioactive compounds including sugars, enzymes, polyphenols, vitamins, minerals, and antimicrobial peptides.">
+        <defs>
+          <radialGradient id="honeyjar" cx="50%" cy="30%"><stop offset="0%" stop-color="#fde89a"/><stop offset="100%" stop-color="#c47a00"/></radialGradient>
+        </defs>
+        <rect width="300" height="200" fill="#1a1208"/>
+        <!-- Honey jar -->
+        <rect x="100" y="30" width="100" height="120" rx="12" fill="url(#honeyjar)" stroke="#d4900a" stroke-width="2"/>
+        <rect x="110" y="18" width="80" height="18" rx="5" fill="#8a6030" stroke="#6a4820" stroke-width="1.5"/>
+        <!-- Honey shine -->
+        <ellipse cx="125" cy="70" rx="8" ry="25" fill="rgba(255,255,255,0.2)" transform="rotate(-15 125 70)"/>
+        <!-- Honey drip from spoon -->
+        <path d="M200,60 Q230,40 240,60" stroke="#f5a623" stroke-width="2" fill="#d4900a" opacity="0.8"/>
+        <ellipse cx="215" cy="60" rx="20" ry="6" fill="#d4900a"/>
+        <path d="M215,66 Q217,85 215,95" stroke="#f5a623" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <ellipse cx="215" cy="97" rx="5" ry="7" fill="#f5a623" opacity="0.8"/>
+        <!-- Label arrows + composition -->
+        <line x1="100" y1="55" x2="60" y2="45" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="58" y="42" font-family="Arial,sans-serif" font-size="9" fill="#f7c653" text-anchor="end">Fructose 38%</text>
+        <line x1="100" y1="75" x2="60" y2="72" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="58" y="69" font-family="Arial,sans-serif" font-size="9" fill="#f7c653" text-anchor="end">Glucose 31%</text>
+        <line x1="100" y1="95" x2="60" y2="100" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="58" y="97" font-family="Arial,sans-serif" font-size="9" fill="#f7c653" text-anchor="end">Water 17%</text>
+        <line x1="100" y1="118" x2="60" y2="125" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="58" y="122" font-family="Arial,sans-serif" font-size="9" fill="#f7c653" text-anchor="end">Polyphenols</text>
+        <line x1="200" y1="75" x2="245" y2="80" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="247" y="77" font-family="Arial,sans-serif" font-size="9" fill="#f7c653">Enzymes</text>
+        <line x1="200" y1="95" x2="245" y2="100" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="247" y="97" font-family="Arial,sans-serif" font-size="9" fill="#f7c653">Vitamins</text>
+        <line x1="200" y1="115" x2="245" y2="120" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="247" y="117" font-family="Arial,sans-serif" font-size="9" fill="#f7c653">Minerals</text>
+        <!-- pH indicator -->
+        <text x="150" y="165" font-family="Arial,sans-serif" font-size="9" fill="#c9a96e" text-anchor="middle">pH 3.2 – 4.5 (acidic)</text>
+        <text x="150" y="180" font-family="Georgia,serif" font-size="10" fill="#f7c653" text-anchor="middle" font-style="italic">181+ bioactive compounds identified</text>
+      </svg>
+      <div class="img-cap"><strong>Raw Honey Composition</strong><span>Raw honey contains 181+ identified compounds. Heat processing above 40°C destroys enzymes and polyphenols — the main reason raw honey has far superior therapeutic value over processed commercial honey.</span></div>
+    </div>
+
+    <!-- 4. Antimicrobial Mechanisms Diagram -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="The five antimicrobial mechanisms of honey — why bacteria cannot develop resistance: osmotic effect, H₂O₂ production, low pH, methylglyoxal, and bee defensin-1.">
+        <rect width="300" height="200" fill="#1a1208"/>
+        <text x="150" y="18" font-family="Georgia,serif" font-size="11" fill="#f7c653" text-anchor="middle" font-weight="bold">5 Antimicrobial Mechanisms</text>
+        <!-- Central honey drop -->
+        <path d="M150,40 Q170,60 170,80 Q170,105 150,115 Q130,105 130,80 Q130,60 150,40Z" fill="#f5a623" opacity="0.9"/>
+        <text x="150" y="82" font-family="Georgia,serif" font-size="10" fill="#1a1208" text-anchor="middle" font-weight="bold">🍯</text>
+        <!-- 5 mechanism labels radiating out -->
+        <!-- 1: Osmotic (top-left) -->
+        <line x1="135" y1="52" x2="85" y2="35" stroke="#f7c653" stroke-width="1.2"/>
+        <rect x="20" y="22" width="62" height="26" rx="5" fill="#332810" stroke="#f7c653" stroke-width="1"/>
+        <text x="51" y="33" font-family="Arial,sans-serif" font-size="7.5" fill="#f7c653" text-anchor="middle" font-weight="bold">① Osmotic</text>
+        <text x="51" y="43" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e" text-anchor="middle">Desiccates bacteria</text>
+        <!-- 2: H2O2 (top-right) -->
+        <line x1="165" y1="52" x2="215" y2="35" stroke="#f7c653" stroke-width="1.2"/>
+        <rect x="217" y="22" width="72" height="26" rx="5" fill="#332810" stroke="#f7c653" stroke-width="1"/>
+        <text x="253" y="33" font-family="Arial,sans-serif" font-size="7.5" fill="#f7c653" text-anchor="middle" font-weight="bold">② H₂O₂ release</text>
+        <text x="253" y="43" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e" text-anchor="middle">Slow antiseptic</text>
+        <!-- 3: Low pH (left) -->
+        <line x1="130" y1="78" x2="75" y2="88" stroke="#f7c653" stroke-width="1.2"/>
+        <rect x="8" y="75" width="64" height="26" rx="5" fill="#332810" stroke="#f7c653" stroke-width="1"/>
+        <text x="40" y="86" font-family="Arial,sans-serif" font-size="7.5" fill="#f7c653" text-anchor="middle" font-weight="bold">③ Low pH</text>
+        <text x="40" y="96" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e" text-anchor="middle">3.2–4.5 acidic</text>
+        <!-- 4: MGO (right) -->
+        <line x1="170" y1="78" x2="225" y2="88" stroke="#f7c653" stroke-width="1.2"/>
+        <rect x="226" y="75" width="68" height="26" rx="5" fill="#332810" stroke="#f7c653" stroke-width="1"/>
+        <text x="260" y="86" font-family="Arial,sans-serif" font-size="7.5" fill="#f7c653" text-anchor="middle" font-weight="bold">④ MGO</text>
+        <text x="260" y="96" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e" text-anchor="middle">Anti-MRSA</text>
+        <!-- 5: Defensin-1 (bottom) -->
+        <line x1="150" y1="115" x2="150" y2="138" stroke="#f7c653" stroke-width="1.2"/>
+        <rect x="90" y="138" width="120" height="26" rx="5" fill="#332810" stroke="#f7c653" stroke-width="1"/>
+        <text x="150" y="149" font-family="Arial,sans-serif" font-size="7.5" fill="#f7c653" text-anchor="middle" font-weight="bold">⑤ Bee Defensin-1</text>
+        <text x="150" y="159" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e" text-anchor="middle">Antimicrobial peptide from bee</text>
+        <!-- Bacteria X symbols -->
+        <text x="55" y="130" font-family="Arial,sans-serif" font-size="18" fill="#e05a5a" opacity="0.7">✕</text>
+        <text x="220" y="130" font-family="Arial,sans-serif" font-size="18" fill="#e05a5a" opacity="0.7">✕</text>
+        <text x="135" y="140" font-family="Arial,sans-serif" font-size="14" fill="#e05a5a" opacity="0.6">✕</text>
+        <text x="150" y="195" font-family="Arial,sans-serif" font-size="8.5" fill="#8a7050" text-anchor="middle">Multi-modal action prevents antibiotic resistance</text>
+      </svg>
+      <div class="img-cap"><strong>Honey's 5 Antimicrobial Mechanisms</strong><span>Bacteria cannot develop resistance to all five mechanisms simultaneously — a key advantage over single-target antibiotics. This is why honey has remained effective for 8,000 years of use.</span></div>
+    </div>
+
+    <!-- 5. Pollination Process -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Pollination process — bees transfer pollen from the anther (male) to the stigma (female) of flowers, enabling fruit and seed production in 80% of the world's food crops.">
+        <rect width="300" height="200" fill="#c8e8c8"/>
+        <!-- Flower 1 (left) - has pollen -->
+        <line x1="60" y1="200" x2="60" y2="100" stroke="#4a8a3a" stroke-width="4"/>
+        <circle cx="60" cy="90" r="28" fill="#ffeb80" stroke="#f5c820" stroke-width="2"/>
+        <!-- Petals -->
+        <g fill="#ff9060" opacity="0.85">
+          <ellipse cx="60" cy="58" rx="10" ry="18"/><ellipse cx="60" cy="122" rx="10" ry="18"/>
+          <ellipse cx="28" cy="90" rx="18" ry="10"/><ellipse cx="92" cy="90" rx="18" ry="10"/>
+          <ellipse cx="38" cy="68" rx="12" ry="18" transform="rotate(-45 38 68)"/>
+          <ellipse cx="82" cy="68" rx="12" ry="18" transform="rotate(45 82 68)"/>
+          <ellipse cx="38" cy="112" rx="12" ry="18" transform="rotate(45 38 112)"/>
+          <ellipse cx="82" cy="112" rx="12" ry="18" transform="rotate(-45 82 112)"/>
+        </g>
+        <circle cx="60" cy="90" r="22" fill="#ffeb80" stroke="#f5c820" stroke-width="1.5"/>
+        <!-- Stamens with pollen -->
+        <g stroke="#c47a00" stroke-width="1.5">
+          <line x1="60" y1="90" x2="60" y2="76"/><circle cx="60" cy="74" r="4" fill="#f5a623"/>
+          <line x1="60" y1="90" x2="70" y2="80"/><circle cx="72" cy="78" r="4" fill="#f5a623"/>
+          <line x1="60" y1="90" x2="50" y2="80"/><circle cx="48" cy="78" r="4" fill="#f5a623"/>
+        </g>
+        <text x="60" y="195" font-family="Arial,sans-serif" font-size="8" fill="#2a5020" text-anchor="middle">Pollen source</text>
+        <!-- Flower 2 (right) - receives pollen -->
+        <line x1="240" y1="200" x2="240" y2="100" stroke="#4a8a3a" stroke-width="4"/>
+        <circle cx="240" cy="90" r="28" fill="#ffeb80" stroke="#f5c820" stroke-width="2"/>
+        <g fill="#c060ff" opacity="0.85">
+          <ellipse cx="240" cy="58" rx="10" ry="18"/><ellipse cx="240" cy="122" rx="10" ry="18"/>
+          <ellipse cx="208" cy="90" rx="18" ry="10"/><ellipse cx="272" cy="90" rx="18" ry="10"/>
+          <ellipse cx="218" cy="68" rx="12" ry="18" transform="rotate(-45 218 68)"/>
+          <ellipse cx="262" cy="68" rx="12" ry="18" transform="rotate(45 262 68)"/>
+          <ellipse cx="218" cy="112" rx="12" ry="18" transform="rotate(45 218 112)"/>
+          <ellipse cx="262" cy="112" rx="12" ry="18" transform="rotate(-45 262 112)"/>
+        </g>
+        <circle cx="240" cy="90" r="22" fill="#ffeb80" stroke="#f5c820" stroke-width="1.5"/>
+        <line x1="240" y1="80" x2="240" y2="68" stroke="#3a6a2a" stroke-width="2"/>
+        <ellipse cx="240" cy="66" rx="8" ry="5" fill="#4caf7d" stroke="#2e7d52" stroke-width="1"/>
+        <text x="240" y="195" font-family="Arial,sans-serif" font-size="8" fill="#2a5020" text-anchor="middle">Stigma receives pollen</text>
+        <!-- Bee flying between flowers -->
+        <g transform="translate(150,75)">
+          <ellipse cx="-10" cy="-12" rx="22" ry="10" fill="rgba(200,230,255,0.55)" stroke="rgba(100,150,200,0.4)" stroke-width="0.7"/>
+          <ellipse cx="-5" cy="-6" rx="15" ry="7" fill="rgba(200,230,255,0.45)" stroke="rgba(100,150,200,0.3)" stroke-width="0.6"/>
+          <ellipse cx="0" cy="0" rx="17" ry="9" fill="#f5c842"/>
+          <rect x="-15" y="-3" width="32" height="4" rx="1.5" fill="#1a1208"/>
+          <rect x="-13" y="2" width="28" height="4" rx="1.5" fill="#1a1208"/>
+          <ellipse cx="-14" cy="-2" rx="9" ry="7" fill="#2a1808"/>
+          <circle cx="-23" cy="-1" r="7" fill="#f5c842" stroke="#d4900a" stroke-width="0.5"/>
+          <path d="M-28,-7 Q-34,-18 -30,-24" stroke="#1a1208" stroke-width="1.2" fill="none"/>
+          <path d="M-22,-8 Q-26,-19 -21,-25" stroke="#1a1208" stroke-width="1.2" fill="none"/>
+          <circle cx="-30" cy="-24" r="2" fill="#1a1208"/>
+          <circle cx="-21" cy="-25" r="2" fill="#1a1208"/>
+        </g>
+        <!-- Pollen transfer arrow -->
+        <path d="M90,85 Q150,55 200,85" stroke="#f5a623" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+        <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#f5a623"/></marker></defs>
+        <text x="150" y="50" font-family="Arial,sans-serif" font-size="8" fill="#8a4a00" text-anchor="middle" font-weight="bold">Pollen transfer</text>
+        <!-- Stats -->
+        <text x="150" y="175" font-family="Arial,sans-serif" font-size="9" fill="#2a5020" text-anchor="middle" font-weight="bold">80% of world food crops depend on this process</text>
+      </svg>
+      <div class="img-cap"><strong>Pollination Process</strong><span>Bees transfer pollen from the anther (male) to the stigma (female) as they forage. This process enables fruit and seed production — underpinning ~$577 billion in annual global food value.</span></div>
+    </div>
+
+    <!-- 6. Bee Products Panel -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Five therapeutic bee products — honey, propolis, royal jelly, bee pollen, and beeswax — each with distinct bioactive compounds and clinical applications.">
+        <rect width="300" height="200" fill="#1a1208"/>
+        <text x="150" y="16" font-family="Georgia,serif" font-size="11" fill="#f7c653" text-anchor="middle" font-weight="bold">Therapeutic Bee Products</text>
+        <!-- 5 product panels -->
+        <!-- Honey -->
+        <rect x="8" y="24" width="54" height="80" rx="8" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="35" y="45" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">🍯</text>
+        <text x="35" y="60" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle" font-weight="bold">Honey</text>
+        <text x="35" y="72" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">181+</text>
+        <text x="35" y="82" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">compounds</text>
+        <text x="35" y="97" font-family="Arial,sans-serif" font-size="6" fill="#8a7050" text-anchor="middle">Wound care</text>
+        <!-- Propolis -->
+        <rect x="66" y="24" width="54" height="80" rx="8" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="93" y="45" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">🌿</text>
+        <text x="93" y="60" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle" font-weight="bold">Propolis</text>
+        <text x="93" y="72" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">CAPE</text>
+        <text x="93" y="82" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">flavonoids</text>
+        <text x="93" y="97" font-family="Arial,sans-serif" font-size="6" fill="#8a7050" text-anchor="middle">Anti-tumor</text>
+        <!-- Royal Jelly -->
+        <rect x="124" y="24" width="54" height="80" rx="8" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="151" y="45" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">👑</text>
+        <text x="151" y="60" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle" font-weight="bold">Royal Jelly</text>
+        <text x="151" y="72" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">10-HDA</text>
+        <text x="151" y="82" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">peptides</text>
+        <text x="151" y="97" font-family="Arial,sans-serif" font-size="6" fill="#8a7050" text-anchor="middle">Skin &amp; immune</text>
+        <!-- Pollen -->
+        <rect x="182" y="24" width="54" height="80" rx="8" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="209" y="45" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">🌼</text>
+        <text x="209" y="60" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle" font-weight="bold">Bee Pollen</text>
+        <text x="209" y="72" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">25–30%</text>
+        <text x="209" y="82" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">protein</text>
+        <text x="209" y="97" font-family="Arial,sans-serif" font-size="6" fill="#8a7050" text-anchor="middle">Performance</text>
+        <!-- Venom -->
+        <rect x="240" y="24" width="54" height="80" rx="8" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <text x="267" y="45" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">⚡</text>
+        <text x="267" y="60" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle" font-weight="bold">Bee Venom</text>
+        <text x="267" y="72" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">Melittin</text>
+        <text x="267" y="82" font-family="Arial,sans-serif" font-size="6.5" fill="#c9a96e" text-anchor="middle">peptide</text>
+        <text x="267" y="97" font-family="Arial,sans-serif" font-size="6" fill="#8a7050" text-anchor="middle">Arthritis/Cancer</text>
+        <!-- Health Benefits visual bar -->
+        <text x="150" y="120" font-family="Arial,sans-serif" font-size="8.5" fill="#f7c653" text-anchor="middle" font-weight="bold">Therapeutic Applications</text>
+        <g font-family="Arial,sans-serif" font-size="8" fill="#c9a96e">
+          <text x="20" y="137">🩹 Wound healing</text><text x="160" y="137">🧠 Neuroprotection</text>
+          <text x="20" y="152">😮‍💨 Cough relief</text><text x="160" y="152">❤️ Cardiovascular</text>
+          <text x="20" y="167">🦠 Gut microbiome</text><text x="160" y="167">🌿 Anti-inflammatory</text>
+          <text x="20" y="182">🛡️ Antimicrobial</text><text x="160" y="182">🔬 Anti-tumor (emerging)</text>
+        </g>
+      </svg>
+      <div class="img-cap"><strong>Five Bee-Derived Therapeutic Products</strong><span>Each product contains distinct bioactive compounds with different clinical applications — from wound care and gut health to emerging oncology and neurology research.</span></div>
+    </div>
+
+    <!-- 7. Bumblebee Buzz Pollination -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Bumblebee (Bombus spp.) performing buzz pollination (sonication) on a tomato flower — vibrating at 200–400 Hz to release pollen. Essential for 35+ crops honeybees cannot pollinate.">
+        <rect width="300" height="200" fill="#d4edda"/>
+        <!-- Tomato plant stem/leaves -->
+        <line x1="150" y1="200" x2="150" y2="60" stroke="#3d6b2a" stroke-width="4"/>
+        <ellipse cx="110" cy="110" rx="30" ry="14" fill="#4a8a3a" transform="rotate(-20 110 110)"/>
+        <ellipse cx="190" cy="130" rx="30" ry="14" fill="#4a8a3a" transform="rotate(20 190 130)"/>
+        <!-- Tomato flower (yellow) -->
+        <g transform="translate(150,60)">
+          <g fill="#ffe040" stroke="#c8b000" stroke-width="1">
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(51.4)"/>
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(102.8)"/>
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(154.2)"/>
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(205.7)"/>
+            <ellipse cx="0" cy="-22" rx="8" ry="14" transform="rotate(257.1)"/>
+          </g>
+          <circle cx="0" cy="0" r="14" fill="#c8a000"/>
+          <!-- Pollen cone (anther) -->
+          <polygon points="0,-18 -5,-5 5,-5" fill="#f5a623"/>
+          <text x="0" y="3" font-family="Arial,sans-serif" font-size="7" fill="#1a1208" text-anchor="middle" font-weight="bold">Pollen</text>
+        </g>
+        <!-- BUMBLEBEE (rounder, fuzzier) -->
+        <g transform="translate(190,45)">
+          <!-- Wings -->
+          <ellipse cx="-12" cy="-16" rx="28" ry="13" fill="rgba(200,230,255,0.5)" stroke="rgba(100,150,200,0.3)" stroke-width="0.8"/>
+          <ellipse cx="-6" cy="-9" rx="18" ry="8" fill="rgba(200,230,255,0.4)" stroke="rgba(100,150,200,0.2)" stroke-width="0.6"/>
+          <!-- Fat round abdomen (bumblebee style) -->
+          <ellipse cx="0" cy="0" rx="24" ry="18" fill="#f5c842"/>
+          <rect x="-22" y="-6" width="46" height="7" rx="3" fill="#1a1208"/>
+          <rect x="-20" y="2" width="42" height="7" rx="3" fill="#1a1208"/>
+          <rect x="-18" y="10" width="38" height="5" rx="2.5" fill="#f5c842"/>
+          <!-- Fuzzy texture -->
+          <ellipse cx="0" cy="0" rx="24" ry="18" fill="none" stroke="#f7c653" stroke-width="2" stroke-dasharray="2,3" opacity="0.4"/>
+          <!-- Thorax -->
+          <ellipse cx="-20" cy="-2" rx="14" ry="12" fill="#f5a623"/>
+          <ellipse cx="-20" cy="-2" rx="12" ry="10" fill="#c47a00" opacity="0.5"/>
+          <!-- Head -->
+          <circle cx="-34" cy="-1" r="11" fill="#f5c842" stroke="#d4900a" stroke-width="0.5"/>
+          <circle cx="-37" cy="-4" r="4" fill="#1a1208"/>
+          <!-- Antennae -->
+          <path d="M-42,-10 Q-50,-22 -45,-30" stroke="#1a1208" stroke-width="1.5" fill="none"/>
+          <path d="M-35,-12 Q-40,-24 -33,-31" stroke="#1a1208" stroke-width="1.5" fill="none"/>
+          <circle cx="-45" cy="-30" r="3" fill="#1a1208"/>
+          <circle cx="-33" cy="-31" r="3" fill="#1a1208"/>
+        </g>
+        <!-- Vibration waves -->
+        <g stroke="#f5a623" stroke-width="1.5" fill="none" opacity="0.7">
+          <ellipse cx="155" cy="60" rx="20" ry="8"/><ellipse cx="155" cy="60" rx="30" ry="12"/><ellipse cx="155" cy="60" rx="40" ry="16"/>
+        </g>
+        <!-- Labels -->
+        <text x="150" y="158" font-family="Arial,sans-serif" font-size="9" fill="#1a4010" text-anchor="middle" font-weight="bold">Buzz Pollination (Sonication)</text>
+        <text x="150" y="171" font-family="Arial,sans-serif" font-size="8" fill="#3d6b2a" text-anchor="middle">200–400 Hz vibration releases pollen</text>
+        <text x="150" y="185" font-family="Arial,sans-serif" font-size="8" fill="#3d6b2a" text-anchor="middle">Essential for tomatoes, blueberries, peppers</text>
+      </svg>
+      <div class="img-cap"><strong>Bumblebee Buzz Pollination</strong><span>Bumblebees vibrate at 200–400 Hz (sonication) to release pollen from tomato and pepper flowers. Honeybees cannot do this — making bumblebees irreplaceable for ~35 commercial crop species.</span></div>
+    </div>
+
+    <!-- 8. Colony Collapse Disorder -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Colony Collapse Disorder (CCD) — driven by Varroa mite, neonicotinoid pesticides, habitat loss, pathogens, and climate change. US colonies have lost 30–70% of hives annually since 2006.">
+        <rect width="300" height="200" fill="#1a1208"/>
+        <text x="150" y="16" font-family="Georgia,serif" font-size="11" fill="#e05a5a" text-anchor="middle" font-weight="bold">Colony Collapse Disorder (CCD)</text>
+        <!-- Hive icon -->
+        <rect x="115" y="25" width="70" height="55" rx="6" fill="#332810" stroke="#f5a623" stroke-width="1.5"/>
+        <rect x="125" y="35" width="50" height="8" rx="3" fill="#f7c653" opacity="0.5"/>
+        <rect x="125" y="46" width="50" height="8" rx="3" fill="#f7c653" opacity="0.5"/>
+        <rect x="125" y="57" width="50" height="8" rx="3" fill="#f7c653" opacity="0.5"/>
+        <text x="150" y="90" font-family="Arial,sans-serif" font-size="22" text-anchor="middle">🏚️</text>
+        <!-- 5 causes radiating from hive (no, use icons list below) -->
+        <text x="150" y="112" font-family="Arial,sans-serif" font-size="8" fill="#e05a5a" text-anchor="middle" font-weight="bold">Primary Causes</text>
+        <!-- Cause bars -->
+        <rect x="15" y="120" width="270" height="1" fill="rgba(245,166,35,.2)"/>
+        <g font-family="Arial,sans-serif" font-size="8.5">
+          <rect x="15" y="126" width="135" height="14" rx="4" fill="rgba(224,90,90,.12)" stroke="rgba(224,90,90,.3)" stroke-width="0.8"/>
+          <text x="22" y="136" fill="#e09a9a">🦟 Varroa mite parasite</text>
+          <rect x="154" y="126" width="132" height="14" rx="4" fill="rgba(224,90,90,.12)" stroke="rgba(224,90,90,.3)" stroke-width="0.8"/>
+          <text x="160" y="136" fill="#e09a9a">☠️ Neonicotinoid pesticides</text>
+          <rect x="15" y="144" width="135" height="14" rx="4" fill="rgba(224,90,90,.12)" stroke="rgba(224,90,90,.3)" stroke-width="0.8"/>
+          <text x="22" y="154" fill="#e09a9a">🏭 Habitat loss / monoculture</text>
+          <rect x="154" y="144" width="132" height="14" rx="4" fill="rgba(224,90,90,.12)" stroke="rgba(224,90,90,.3)" stroke-width="0.8"/>
+          <text x="160" y="154" fill="#e09a9a">🦠 Fungal pathogens (Nosema)</text>
+          <rect x="15" y="162" width="270" height="14" rx="4" fill="rgba(224,90,90,.12)" stroke="rgba(224,90,90,.3)" stroke-width="0.8"/>
+          <text x="85" y="172" fill="#e09a9a">🌡️ Climate change — altered bloom timing</text>
+        </g>
+        <rect x="15" y="180" width="270" height="16" rx="4" fill="rgba(245,166,35,.1)" stroke="rgba(245,166,35,.3)" stroke-width="0.8"/>
+        <text x="150" y="191" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" text-anchor="middle">US: 30–70% annual colony loss since 2006. You can help.</text>
+      </svg>
+      <div class="img-cap"><strong>Colony Collapse Disorder</strong><span>Since 2006, US beekeepers have lost 30–70% of hives annually. CCD is multifactorial — driven by pesticides, parasites, pathogens, and habitat loss. All are influenced by human decisions.</span></div>
+    </div>
+
+    <!-- 9. Honey Health Benefits Body Map -->
+    <div class="img-card" onclick="openLB(this)">
+      <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" data-cap="Honey and bee products benefit multiple body systems — brain (neuroprotection), throat (cough), heart (cardiovascular), gut (prebiotic), skin (wound healing), and immune system (anti-inflammatory).">
+        <rect width="300" height="200" fill="#1a1208"/>
+        <text x="150" y="16" font-family="Georgia,serif" font-size="11" fill="#f7c653" text-anchor="middle" font-weight="bold">Honey's Health Benefits — Body Map</text>
+        <!-- Human silhouette (simple) -->
+        <g fill="#2e2210" stroke="#f5a623" stroke-width="1.2">
+          <circle cx="150" cy="45" r="16"/><!-- head -->
+          <rect x="134" y="60" width="32" height="45" rx="6"/><!-- torso -->
+          <rect x="122" y="64" width="12" height="35" rx="5"/><!-- left arm -->
+          <rect x="166" y="64" width="12" height="35" rx="5"/><!-- right arm -->
+          <rect x="136" y="103" width="12" height="38" rx="5"/><!-- left leg -->
+          <rect x="152" y="103" width="12" height="38" rx="5"/><!-- right leg -->
+        </g>
+        <!-- Benefit labels with connecting lines -->
+        <!-- Brain -->
+        <line x1="134" y1="40" x2="95" y2="30" stroke="#5ab4e0" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="10" y="25" font-family="Arial,sans-serif" font-size="8" fill="#5ab4e0" font-weight="bold">🧠 Brain</text>
+        <text x="10" y="35" font-family="Arial,sans-serif" font-size="7" fill="#8abadc">Neuroprotection</text>
+        <!-- Throat -->
+        <line x1="150" y1="60" x2="115" y2="58" stroke="#f7c653" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="10" y="58" font-family="Arial,sans-serif" font-size="8" fill="#f7c653" font-weight="bold">😮‍💨 Throat</text>
+        <text x="10" y="68" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e">Cough relief</text>
+        <!-- Heart -->
+        <line x1="148" y1="78" x2="115" y2="80" stroke="#e05a5a" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="10" y="80" font-family="Arial,sans-serif" font-size="8" fill="#e05a5a" font-weight="bold">❤️ Heart</text>
+        <text x="10" y="90" font-family="Arial,sans-serif" font-size="7" fill="#e09a9a">Cardiovascular</text>
+        <!-- Gut -->
+        <line x1="150" y1="90" x2="115" y2="100" stroke="#4caf7d" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="10" y="100" font-family="Arial,sans-serif" font-size="8" fill="#4caf7d" font-weight="bold">🦠 Gut</text>
+        <text x="10" y="110" font-family="Arial,sans-serif" font-size="7" fill="#90dab4">Prebiotic / H. pylori</text>
+        <!-- Skin (right) -->
+        <line x1="166" y1="72" x2="188" y2="55" stroke="#f5a623" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="190" y="50" font-family="Arial,sans-serif" font-size="8" fill="#f5a623" font-weight="bold">🩹 Skin</text>
+        <text x="190" y="60" font-family="Arial,sans-serif" font-size="7" fill="#c9a96e">Wound healing</text>
+        <!-- Immune (right) -->
+        <line x1="166" y1="85" x2="188" y2="85" stroke="#c060ff" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="190" y="82" font-family="Arial,sans-serif" font-size="8" fill="#c060ff" font-weight="bold">🛡️ Immune</text>
+        <text x="190" y="92" font-family="Arial,sans-serif" font-size="7" fill="#d0a0ff">Anti-inflammatory</text>
+        <!-- Blood/Circulation (right lower) -->
+        <line x1="164" y1="100" x2="188" y2="112" stroke="#ff9060" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="190" y="112" font-family="Arial,sans-serif" font-size="8" fill="#ff9060" font-weight="bold">🔬 Research</text>
+        <text x="190" y="122" font-family="Arial,sans-serif" font-size="7" fill="#e0b090">Neuroprotection</text>
+        <!-- Bottom note -->
+        <text x="150" y="158" font-family="Arial,sans-serif" font-size="8.5" fill="#f7c653" text-anchor="middle" font-weight="bold">Raw &gt; Processed · Manuka highest potency</text>
+        <text x="150" y="172" font-family="Arial,sans-serif" font-size="7.5" fill="#8a7050" text-anchor="middle">⚠️ Never give honey to infants under 12 months (botulism risk)</text>
+        <text x="150" y="186" font-family="Arial,sans-serif" font-size="7.5" fill="#8a7050" text-anchor="middle">FDA-cleared MediHoney® dressings for wound care</text>
+      </svg>
+      <div class="img-cap"><strong>Honey's Whole-Body Health Benefits</strong><span>From neuroprotection and cardiovascular health to prebiotic gut support and FDA-cleared wound healing — honey and bee products affect nearly every major body system through distinct biochemical pathways.</span></div>
+    </div>
+
+  </div><!-- end img-gallery -->
+
+  <!-- ─── YOUTUBE VIDEO CARDS ─── -->
+  <h4 style="margin-top:2rem;">🎬 Educational Videos <small style="font-size:.72rem;color:var(--text3);font-weight:400;">(click any card to watch on YouTube)</small></h4>
+  <p style="font-size:.85rem;color:var(--text3);margin-bottom:1.2rem;">Four curated videos from scientific and educational channels — each directly supports a specific module section.</p>
+
+  <div class="video-grid">
+
+    <a class="vid-card" href="https://www.youtube.com/watch?v=bFDGPgXtK-U" target="_blank" rel="noopener">
+      <div class="vid-thumb">
+        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="vg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a3a1a"/><stop offset="100%" stop-color="#2e4a0e"/></linearGradient></defs>
+          <rect width="320" height="180" fill="url(#vg1)"/>
+          <text x="160" y="55" font-family="Georgia,serif" font-size="45" text-anchor="middle">🐝</text>
+          <text x="160" y="95" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)" text-anchor="middle">National Geographic</text>
+          <!-- honeycomb pattern -->
+          <g stroke="rgba(245,200,0,.15)" stroke-width="1" fill="none">
+            <polygon points="30,130 55,116 80,130 80,158 55,172 30,158"/>
+            <polygon points="82,130 107,116 132,130 132,158 107,172 82,158"/>
+            <polygon points="188,130 213,116 238,130 238,158 213,172 188,158"/>
+            <polygon points="240,130 265,116 290,130 290,158 265,172 240,158"/>
+          </g>
+          <text x="160" y="165" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,220,100,.8)" text-anchor="middle">The Secret Life of Bees — ~10 min</text>
+        </svg>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="vid-info">
+        <strong>🐝 The Secret Life of Bees — National Geographic</strong>
+        <span>Stunning hive footage: waggle dance, honey production, colony biology, and bee communication. Best viewed with the Introduction section.</span>
+        <span class="vid-badge">🌿 Introduction Tab</span>
+      </div>
+      <span class="vid-open">▶ Watch on YouTube</span>
+    </a>
+
+    <a class="vid-card" href="https://www.youtube.com/watch?v=Y6e-b3UXVLQ" target="_blank" rel="noopener">
+      <div class="vid-thumb">
+        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="vg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3a1a00"/><stop offset="100%" stop-color="#5a2a00"/></linearGradient></defs>
+          <rect width="320" height="180" fill="url(#vg2)"/>
+          <text x="160" y="55" font-family="Georgia,serif" font-size="45" text-anchor="middle">🍯</text>
+          <text x="160" y="95" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)" text-anchor="middle">SciShow</text>
+          <!-- DNA-like pattern -->
+          <g stroke="rgba(245,166,35,.15)" stroke-width="1.5" fill="none">
+            <path d="M20,120 Q80,140 140,120 Q200,100 260,120 Q290,130 310,125"/>
+            <path d="M20,140 Q80,120 140,140 Q200,160 260,140 Q290,130 310,135"/>
+          </g>
+          <text x="160" y="165" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,220,100,.8)" text-anchor="middle">The Healing Power of Honey — ~8 min</text>
+        </svg>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="vid-info">
+        <strong>🍯 The Healing Power of Honey — SciShow</strong>
+        <span>Evidence-based breakdown of honey's five antimicrobial mechanisms, wound care applications, and comparison to conventional antiseptics.</span>
+        <span class="vid-badge">🔬 Core Concepts Tab</span>
+      </div>
+      <span class="vid-open">▶ Watch on YouTube</span>
+    </a>
+
+    <a class="vid-card" href="https://www.youtube.com/watch?v=GqA42M4RtxE" target="_blank" rel="noopener">
+      <div class="vid-thumb">
+        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="vg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0a1a30"/><stop offset="100%" stop-color="#1a3050"/></linearGradient></defs>
+          <rect width="320" height="180" fill="url(#vg3)"/>
+          <text x="160" y="55" font-family="Georgia,serif" font-size="45" text-anchor="middle">🌍</text>
+          <text x="160" y="95" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)" text-anchor="middle">TED-Ed</text>
+          <!-- Globe lines -->
+          <g stroke="rgba(90,180,224,.15)" stroke-width="1" fill="none">
+            <circle cx="160" cy="90" r="60"/><ellipse cx="160" cy="90" rx="30" ry="60"/><line x1="100" y1="90" x2="220" y2="90"/>
+          </g>
+          <text x="160" y="165" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,220,100,.8)" text-anchor="middle">Why Bees Are Essential — ~5 min</text>
+        </svg>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="vid-info">
+        <strong>🌍 Why Bees Are Essential — TED-Ed</strong>
+        <span>Animated breakdown of pollinator services, colony collapse disorder, food security consequences, and what decline means for human society.</span>
+        <span class="vid-badge">⚗️ Application Tab</span>
+      </div>
+      <span class="vid-open">▶ Watch on YouTube</span>
+    </a>
+
+    <a class="vid-card" href="https://www.youtube.com/watch?v=2eMlHEhwJqg" target="_blank" rel="noopener">
+      <div class="vid-thumb">
+        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="vg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a0a30"/><stop offset="100%" stop-color="#2a1050"/></linearGradient></defs>
+          <rect width="320" height="180" fill="url(#vg4)"/>
+          <text x="160" y="55" font-family="Georgia,serif" font-size="45" text-anchor="middle">🔬</text>
+          <text x="160" y="95" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.7)" text-anchor="middle">Manuka Science Explained</text>
+          <!-- Lab beaker lines -->
+          <g stroke="rgba(192,96,255,.15)" stroke-width="1.5" fill="none">
+            <path d="M120,150 L140,110 L180,110 L200,150 Z"/>
+            <line x1="135" y1="110" x2="135" y2="95"/><line x1="165" y1="110" x2="165" y2="95"/>
+          </g>
+          <text x="160" y="165" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,220,100,.8)" text-anchor="middle">Manuka Honey Science — ~12 min</text>
+        </svg>
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      </div>
+      <div class="vid-info">
+        <strong>🔬 Manuka Honey Science — Clinical Evidence</strong>
+        <span>UMF/MGO rating systems, MRSA clinical trial evidence, how to select therapeutic-grade Manuka, and what the research actually shows.</span>
+        <span class="vid-badge">🔬 Core Concepts Tab</span>
+      </div>
+      <span class="vid-open">▶ Watch on YouTube</span>
+    </a>
+
+  </div><!-- end video-grid -->
+
+  <!-- CONCEPT FLOW -->
+  <h4 style="margin-top:1.5rem;">🗺️ Conceptual Flow: Flower → Health</h4>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin:1rem 0;text-align:center;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5rem;font-size:.95rem;">
+      <span style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;">🌸 Flower Nectar</span>
+      <span style="color:var(--gold);font-weight:700;">→</span>
+      <span style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;">🐝 Bee Enzymes</span>
+      <span style="color:var(--gold);font-weight:700;">→</span>
+      <span style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;">🍯 Raw Honey</span>
+      <span style="color:var(--gold);font-weight:700;">→</span>
+      <span style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;">⚗️ 181 Bioactive Compounds</span>
+      <span style="color:var(--gold);font-weight:700;">→</span>
+      <span style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;">❤️ Human Health</span>
+    </div>
+    <p style="margin-top:.9rem;font-size:.8rem;color:var(--text3);">Each arrow: enzymatic conversion, evaporation, concentration, and ultimately — bioavailability to the human body.</p>
+  </div>
+
+  <div class="kn"><strong>Knowles — Internal Motivation:</strong> After each illustration or video, pause and ask: "What surprised me here? What do I want to know more about?" Your curiosity is the engine of deep, lasting learning.</div>
+</div>
+</div>
+
+<!-- ══ TAB 4: APPLICATION ══ -->
+<div class="tab-panel" id="tab-application">
+<div class="cc">
+  <h3>⚗️ Practical Application & Case Studies</h3>
+  <div class="kn"><strong>Knowles — Problem-Centered Orientation:</strong> Adults learn best solving real problems. These scenarios happen in real homes, clinics, and communities daily. Work through each one actively — not passively.</div>
+  <div class="cs"><span class="cs-tag">Case Study 1</span>
+    <h4 style="color:var(--gold2);font-family:'Playfair Display',serif;margin-bottom:.6rem;">The Persistent Wound</h4>
+    <p style="color:var(--text2);">Maria, 67, has a venous leg ulcer not responding to standard dressings after 6 weeks. Her wound care nurse suggests medical-grade honey dressing. Maria's daughter asks: <em>"Isn't honey just food?"</em></p>
+    <p style="color:var(--gold2);font-weight:600;margin-top:.8rem;">🤔 Q1: Using the five antimicrobial mechanisms, explain honey's wound-healing action in plain language.</p>
+    <p style="color:var(--gold2);font-weight:600;margin-top:.5rem;">🤔 Q2: Should Maria use grocery store honey or medical-grade Manuka? Why does the difference matter?</p>
+    <div class="ib" style="margin-top:.8rem;"><div class="lbl">📖 Evidence</div>A 2014 Cochrane Review (19 RCTs) found medical-grade honey reduced healing time in burns and post-operative wounds vs. conventional dressings — especially effective against biofilm-forming, antibiotic-resistant bacteria.</div>
+  </div>
+  <div class="cs"><span class="cs-tag">Case Study 2</span>
+    <h4 style="color:var(--gold2);font-family:'Playfair Display',serif;margin-bottom:.6rem;">The Child with a Cough</h4>
+    <p style="color:var(--text2);">James, a paramedic student, is caring for his 4-year-old niece with a 3-day dry cough from a viral URI. The parent asks about OTC cough syrup.</p>
+    <p style="color:var(--gold2);font-weight:600;margin-top:.8rem;">🤔 Q1: What does the evidence say about honey vs. dextromethorphan for pediatric cough? What is the dose?</p>
+    <p style="color:var(--gold2);font-weight:600;margin-top:.5rem;">🤔 Q2: What absolute safety contraindication exists for very young children, and why?</p>
+    <div class="ib" style="margin-top:.8rem;"><div class="lbl">⚠️ Critical Safety Rule</div>Honey is <strong>absolutely contraindicated under 12 months</strong>. <em>C. botulinum</em> spores can germinate in the immature infant gut — causing potentially fatal infant botulism. Applies to all honey types including raw and organic.</div>
+  </div>
+  <div class="cs"><span class="cs-tag">Case Study 3 — Group Activity</span>
+    <h4 style="color:var(--gold2);font-family:'Playfair Display',serif;margin-bottom:.6rem;">The Community Pollinator Garden</h4>
+    <p style="color:var(--text2);">A nonprofit garden (like <em>Lita's Friends</em> in Suffolk, VA) is planning a pollinator corner for individuals with developmental disabilities and the broader community. Design a "Pollinator Health Corridor" for ¼-acre: native plant selection, water source, bee habitat, educational signage, and one bee product the garden could produce. Present your plan.</p>
+  </div>
+  <h4>💬 Discussion Prompts</h4>
+  <div style="display:flex;flex-direction:column;gap:.8rem;margin:1rem 0;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;gap:.8rem;">
+      <span style="font-size:1.5rem;">⚖️</span>
+      <div><strong style="color:var(--gold2);display:block;margin-bottom:.2rem;">Ethics of Natural Medicine</strong><span style="font-size:.9rem;color:var(--text2);">Honey outperforms OTC cough medications in RCTs — yet is rarely "prescribed." Discuss the role of industry, regulation, and cultural bias in defining what counts as legitimate medicine.</span></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;gap:.8rem;">
+      <span style="font-size:1.5rem;">🧬</span>
+      <div><strong style="color:var(--gold2);display:block;margin-bottom:.2rem;">Antimicrobial Resistance (AMR)</strong><span style="font-size:.9rem;color:var(--text2);">MRSA kills 100,000+ per year globally. Manuka honey is effective against MRSA in vitro. Should it be integrated into clinical protocols? What barriers exist? What would evidence-based implementation look like?</span></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;gap:.8rem;">
+      <span style="font-size:1.5rem;">🌱</span>
+      <div><strong style="color:var(--gold2);display:block;margin-bottom:.2rem;">30-Day Personal Commitment</strong><span style="font-size:.9rem;color:var(--text2);">Name one specific, measurable action you commit to within 30 days — for your own health, your patients, or your community's pollinators. How will you know you followed through?</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ TAB 5: SUMMARY ══ -->
+<div class="tab-panel" id="tab-summary">
+<div class="cc">
+  <h3>📋 Summary & Key Takeaways</h3>
+  <div class="kn"><strong>Knowles — Self-Directed Learning:</strong> Before reading below, spend 2 minutes writing your own top 3 takeaways. Then compare. What did you get right? What surprised you?</div>
+  <h4>🏆 10 Core Takeaways</h4>
+  <ul class="tl">
+    <li><span class="tn">1</span><span class="tt"><strong>Honey contains 181+ bioactive compounds</strong> — enzymes, polyphenols, organic acids, vitamins, minerals, and antimicrobial peptides. It is not simply a sweetener.</span></li>
+    <li><span class="tn">2</span><span class="tt"><strong>Five simultaneous antimicrobial mechanisms</strong> — osmotic pressure, H₂O₂, low pH, methylglyoxal, and bee defensin-1 — prevent bacteria from ever developing resistance to honey.</span></li>
+    <li><span class="tn">3</span><span class="tt"><strong>Medical-grade honey is FDA-approved for wound care.</strong> MediHoney® dressings are evidence-based for chronic wounds and MRSA-infected tissue.</span></li>
+    <li><span class="tn">4</span><span class="tt"><strong>Honey outperforms dextromethorphan for pediatric cough</strong> per WHO and AAP — but is absolutely contraindicated in infants under 12 months (infant botulism).</span></li>
+    <li><span class="tn">5</span><span class="tt"><strong>Not all honey is equal.</strong> Raw honey preserves bioactivity. Heat processing destroys enzymes and polyphenols. Manuka (UMF 10+ / MGO 250+) has the highest documented antimicrobial potency.</span></li>
+    <li><span class="tn">6</span><span class="tt"><strong>Five bee products</strong> — honey, propolis (CAPE), royal jelly (10-HDA), bee pollen, bee venom (melittin) — each with distinct therapeutic profiles and emerging clinical research.</span></li>
+    <li><span class="tn">7</span><span class="tt"><strong>Bees pollinate 80% of the world's food crops</strong> — ~$577 billion in annual ecosystem services. Their health is directly tied to human food security and nutritional diversity.</span></li>
+    <li><span class="tn">8</span><span class="tt"><strong>Colony Collapse Disorder</strong> is driven by Varroa mites, neonicotinoid pesticides, habitat loss, fungal pathogens, and climate change — all shaped by human decisions.</span></li>
+    <li><span class="tn">9</span><span class="tt"><strong>Immediate action is possible today:</strong> plant native flowers, eliminate pesticides, buy local raw honey, support regional beekeepers — all evidence-aligned, meaningful choices.</span></li>
+    <li><span class="tn">10</span><span class="tt"><strong>Ancient wisdom meets modern science.</strong> Humans have used honey medicinally for 8,000 years. Biochemistry is now explaining and validating those traditions. The hive is a pharmacy still being discovered.</span></li>
+  </ul>
+  <h4>📚 Key References</h4>
+  <ul>
+    <li>Mandal & Mandal (2011). Honey: Its medicinal property and antibacterial activity. <em>Asian Pacific J Tropical Biomedicine.</em></li>
+    <li>Alvarez-Suarez et al. (2014). The Composition and Biological Activity of Honey. <em>Nutrients, 6(3)</em>, 914–942.</li>
+    <li>Paul et al. (2007). Effect of honey on nocturnal cough in children. <em>Arch Pediatric &amp; Adolescent Medicine.</em></li>
+    <li>WHO Monographs on Selected Medicinal Plants — <em>Mel (Honey)</em>, Volume 3.</li>
+    <li>University of Waikato Honey Research Unit: <strong>waikato.ac.nz/honey</strong></li>
+  </ul>
+</div>
+</div>
+
+<!-- ══ TAB 6: NOTES ══ -->
+<div class="tab-panel" id="tab-notes">
+<div class="cc">
+  <h3>📝 My Learning Journal</h3>
+  <p style="color:var(--text2);margin-bottom:1.4rem;">Your personal space to capture insights, questions, and commitments. Notes save automatically to your browser.</p>
+  <div class="ntb">
+    <span id="ss">💾 Notes auto-saved to your browser</span>
+    <button class="nab" onclick="clearNotes()">🗑️ Clear All</button>
+    <button class="nab" onclick="downloadNotes()">⬇️ Download .txt</button>
+    <button class="nab" onclick="window.print()">🖨️ Print</button>
+  </div>
+  <div class="ns"><label>💡 What surprised me most in this module?</label><textarea id="n1" rows="4" placeholder="Write freely — (e.g., I had no idea honey fights MRSA, or that a bee's entire lifetime output is just 1 teaspoon...)"></textarea></div>
+  <div class="ns"><label>🔗 How does this connect to something I already know or have experienced?</label><textarea id="n2" rows="4" placeholder="Draw connections to your own life — health experiences, food choices, clinical observations, gardening..."></textarea></div>
+  <div class="ns"><label>⚗️ How will I apply this? (Be specific and measurable)</label><textarea id="n3" rows="4" placeholder="e.g., 'I will recommend Manuka honey dressings for wound care cases.' or 'I will plant lavender in my yard this season.'"></textarea></div>
+  <div class="ns"><label>❓ Questions I still have (and how I will find answers):</label><textarea id="n4" rows="4" placeholder="List questions this module raised. Where will you look? (research article, expert, further reading...)"></textarea></div>
+  <div class="ns"><label>🎯 My 30-Day Commitment:</label><textarea id="n5" rows="3" placeholder="'By [date], I will _____________ because _____________'"></textarea></div>
+  <div class="ns"><label>🌟 Additional Notes:</label><textarea id="n6" rows="5" placeholder="Free space — quotes that resonated, ideas for sharing with patients or colleagues..."></textarea></div>
+  <div class="nsb" id="nsb">✅ Notes saved!</div>
+</div>
+</div>
+
+<!-- ══ TAB 7: ASSESSMENT ══ -->
+<div class="tab-panel" id="tab-assessment">
+<div class="qh"><h3>✅ Knowledge Check</h3><p>10 questions · Select the best answer · Rationale revealed after each response</p></div>
+<div id="qc">
+  <div class="qcard" id="q1"><div class="qn">Question 1 of 10</div><div class="qt">Which enzyme in honey produces hydrogen peroxide (H₂O₂) when honey is diluted by wound exudate?</div><div class="opts"><div class="opt" onclick="pick(this,'q1','A','B')"><span class="ol">A</span>Diastase</div><div class="opt" onclick="pick(this,'q1','B','B')"><span class="ol">B</span>Glucose oxidase</div><div class="opt" onclick="pick(this,'q1','C','B')"><span class="ol">C</span>Invertase</div><div class="opt" onclick="pick(this,'q1','D','B')"><span class="ol">D</span>Catalase</div></div><div class="rat" id="rat-q1"><strong>✅ B — Glucose oxidase.</strong> Added by the bee, this enzyme converts glucose into gluconic acid and slow-release H₂O₂ when honey is diluted. Provides sustained antimicrobial activity without cytotoxicity. Diastase breaks starch; invertase converts sucrose; catalase actually degrades H₂O₂.</div></div>
+
+  <div class="qcard" id="q2"><div class="qn">Question 2 of 10</div><div class="qt">What is the MINIMUM age for safe honey administration per WHO and AAP guidelines?</div><div class="opts"><div class="opt" onclick="pick(this,'q2','A','C')"><span class="ol">A</span>6 months</div><div class="opt" onclick="pick(this,'q2','B','C')"><span class="ol">B</span>9 months</div><div class="opt" onclick="pick(this,'q2','C','C')"><span class="ol">C</span>12 months (1 year)</div><div class="opt" onclick="pick(this,'q2','D','C')"><span class="ol">D</span>24 months (2 years)</div></div><div class="rat" id="rat-q2"><strong>✅ C — 12 months.</strong> <em>C. botulinum</em> spores in honey can germinate in the immature infant gut, producing botulinum toxin and causing infant botulism. After 12 months, competitive gut flora provides protection. Applies to ALL honey types.</div></div>
+
+  <div class="qcard" id="q3"><div class="qn">Question 3 of 10</div><div class="qt">Methylglyoxal (MGO), the primary non-peroxide antimicrobial compound in honey, is found at highest concentrations in:</div><div class="opts"><div class="opt" onclick="pick(this,'q3','A','B')"><span class="ol">A</span>Clover honey</div><div class="opt" onclick="pick(this,'q3','B','B')"><span class="ol">B</span>Manuka honey</div><div class="opt" onclick="pick(this,'q3','C','B')"><span class="ol">C</span>Buckwheat honey</div><div class="opt" onclick="pick(this,'q3','D','B')"><span class="ol">D</span>Acacia honey</div></div><div class="rat" id="rat-q3"><strong>✅ B — Manuka honey.</strong> From <em>Leptospermum scoparium</em> (NZ/Australia), Manuka contains MGO up to 800mg/kg. MGO is bactericidal even when H₂O₂ is neutralized — the basis for FDA-cleared MediHoney® wound dressings. Rated by UMF or MGO number.</div></div>
+
+  <div class="qcard" id="q4"><div class="qn">Question 4 of 10</div><div class="qt">What percentage of global food crops depend on bee pollination?</div><div class="opts"><div class="opt" onclick="pick(this,'q4','A','C')"><span class="ol">A</span>30%</div><div class="opt" onclick="pick(this,'q4','B','C')"><span class="ol">B</span>50%</div><div class="opt" onclick="pick(this,'q4','C','C')"><span class="ol">C</span>80%</div><div class="opt" onclick="pick(this,'q4','D','C')"><span class="ol">D</span>95%</div></div><div class="rat" id="rat-q4"><strong>✅ C — 80%.</strong> Per FAO and USDA, bees pollinate ~80% of flowering crop plants including 130+ types of fruits and vegetables. The economic value is estimated at $235–577 billion annually.</div></div>
+
+  <div class="qcard" id="q5"><div class="qn">Question 5 of 10</div><div class="qt">Which bee product contains caffeic acid phenethyl ester (CAPE), with anti-tumor and antiviral properties?</div><div class="opts"><div class="opt" onclick="pick(this,'q5','A','C')"><span class="ol">A</span>Royal jelly</div><div class="opt" onclick="pick(this,'q5','B','C')"><span class="ol">B</span>Bee pollen</div><div class="opt" onclick="pick(this,'q5','C','C')"><span class="ol">C</span>Propolis</div><div class="opt" onclick="pick(this,'q5','D','C')"><span class="ol">D</span>Beeswax</div></div><div class="rat" id="rat-q5"><strong>✅ C — Propolis.</strong> The resinous hive sealant is rich in CAPE — a potent NF-κB inhibitor (anti-tumor), antiviral against herpes simplex, and anti-fungal. Royal jelly = 10-HDA; Bee pollen = flavonoids; Beeswax = long-chain fatty acids.</div></div>
+
+  <div class="qcard" id="q6"><div class="qn">Question 6 of 10</div><div class="qt">Raw honey's pH of 3.2–4.5 is clinically significant for wound care because:</div><div class="opts"><div class="opt" onclick="pick(this,'q6','A','B')"><span class="ol">A</span>Neutral pH promotes cell growth and speeds healing</div><div class="opt" onclick="pick(this,'q6','B','B')"><span class="ol">B</span>The acidic pH inhibits most pathogenic bacteria and promotes tissue repair</div><div class="opt" onclick="pick(this,'q6','C','B')"><span class="ol">C</span>Alkaline pH denatures bacterial proteins more effectively</div><div class="opt" onclick="pick(this,'q6','D','B')"><span class="ol">D</span>Very low pH similar to stomach acid kills all microbes directly</div></div><div class="rat" id="rat-q6"><strong>✅ B — Acidic pH inhibits pathogens.</strong> Most pathogenic bacteria grow optimally at neutral pH (6.5–7.5). Honey's gluconic acid lowers wound pH, inhibiting <em>Pseudomonas</em> and <em>Staphylococcus</em> while promoting fibroblast activity and tissue granulation — a dual therapeutic benefit.</div></div>
+
+  <div class="qcard" id="q7"><div class="qn">Question 7 of 10</div><div class="qt">A patient asks: "Is raw honey better than processed supermarket honey?" The MOST accurate response is:</div><div class="opts"><div class="opt" onclick="pick(this,'q7','A','C')"><span class="ol">A</span>They are essentially identical; processing only improves shelf life and safety.</div><div class="opt" onclick="pick(this,'q7','B','C')"><span class="ol">B</span>Processed honey is superior because filtration removes harmful compounds.</div><div class="opt" onclick="pick(this,'q7','C','C')"><span class="ol">C</span>Raw honey retains enzymes and polyphenols; heat processing significantly reduces bioactivity.</div><div class="opt" onclick="pick(this,'q7','D','C')"><span class="ol">D</span>Processing increases antimicrobial potency by concentrating sugars.</div></div><div class="rat" id="rat-q7"><strong>✅ C — Raw honey retains bioactive compounds.</strong> Heating to 60–70°C denatures glucose oxidase, heat-sensitive polyphenols, and bee defensin-1. Fine filtration removes pollen. For therapeutic use, raw honey is strongly preferred. Medical-grade Manuka is validated separately for clinical wound care.</div></div>
+
+  <div class="qcard" id="q8"><div class="qn">Question 8 of 10</div><div class="qt">Which factor is NOT a recognized primary cause of Colony Collapse Disorder (CCD)?</div><div class="opts"><div class="opt" onclick="pick(this,'q8','A','D')"><span class="ol">A</span>Varroa destructor mite infestation</div><div class="opt" onclick="pick(this,'q8','B','D')"><span class="ol">B</span>Neonicotinoid pesticide exposure</div><div class="opt" onclick="pick(this,'q8','C','D')"><span class="ol">C</span>Habitat loss and monoculture farming</div><div class="opt" onclick="pick(this,'q8','D','D')"><span class="ol">D</span>Increased UV radiation from ozone depletion</div></div><div class="rat" id="rat-q8"><strong>✅ D — UV radiation is NOT a primary CCD cause.</strong> The Varroa mite is the single most destructive bee pest. Neonicotinoids impair navigation and reproduction. Habitat loss reduces nutritional diversity. Nosema fungal pathogen and gut bacteria disruption are also documented drivers.</div></div>
+
+  <div class="qcard" id="q9"><div class="qn">Question 9 of 10</div><div class="qt">Which honey components act as prebiotics, selectively promoting Lactobacillus and Bifidobacterium?</div><div class="opts"><div class="opt" onclick="pick(this,'q9','A','C')"><span class="ol">A</span>Hydrogen peroxide</div><div class="opt" onclick="pick(this,'q9','B','C')"><span class="ol">B</span>Methylglyoxal (MGO)</div><div class="opt" onclick="pick(this,'q9','C','C')"><span class="ol">C</span>Oligosaccharides and polyphenols</div><div class="opt" onclick="pick(this,'q9','D','C')"><span class="ol">D</span>Bee defensin-1</div></div><div class="rat" id="rat-q9"><strong>✅ C — Oligosaccharides and polyphenols.</strong> Non-digestible oligosaccharides reach the colon intact, selectively feeding beneficial bacteria. Polyphenols further modulate gut microbiota and inhibit H. pylori. H₂O₂ and MGO are primarily relevant to external antimicrobial activity.</div></div>
+
+  <div class="qcard" id="q10"><div class="qn">Question 10 of 10</div><div class="qt">Bee venom therapy (apitherapy) using melittin is being investigated primarily for:</div><div class="opts"><div class="opt" onclick="pick(this,'q10','A','D')"><span class="ol">A</span>Anticoagulation in atrial fibrillation</div><div class="opt" onclick="pick(this,'q10','B','D')"><span class="ol">B</span>Hormone replacement in menopause</div><div class="opt" onclick="pick(this,'q10','C','D')"><span class="ol">C</span>Glucose regulation in Type 2 diabetes</div><div class="opt" onclick="pick(this,'q10','D','D')"><span class="ol">D</span>Anti-tumor activity and neurodegenerative disease</div></div><div class="rat" id="rat-q10"><strong>✅ D — Anti-tumor and neurodegenerative disease.</strong> Melittin disrupts lipid bilayers showing cytotoxicity against cancer cell lines. Clinical trials are exploring bee venom for rheumatoid arthritis, Parkinson's disease (dopaminergic neuroprotection), and MS — a legitimate biomedical research frontier.</div></div>
+</div>
+
+<button class="qs" id="sb2" onclick="submitQ()">Submit Assessment</button>
+<div class="sb" id="scb">
+  <div class="sbig" id="sd">—</div>
+  <div class="sm" id="sm2"></div>
+  <button class="sr" onclick="resetQ()">🔄 Reset & Retry</button>
+</div>
+</div>
+
+<footer>
+  <p>🐝 <span>Bees & Honey: Human Health Benefits</span> — Interactive Learning Module</p>
+  <p style="margin-top:.4rem;">Malcolm Knowles' Andragogy · Bloom's Taxonomy · Evidence-Based Health Sciences</p>
+  <p style="margin-top:.4rem;font-size:.72rem;">Canvas LMS Ready · CAMP Community College EMS Education · Dr. Carlos Cajares, DHSc, MPA, NRP</p>
+</footer>
+</div><!-- end wrap -->
+
+<!-- LIGHTBOX SVG CLONE (full size) -->
+<script>
+/* THEME */
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');}
+
+/* TABS */
+const tabs=['intro','concepts','media','application','summary','notes','assessment'];
+let vis=new Set(['intro']);
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');vis.add(id);
+  document.getElementById('pf').style.width=(vis.size/tabs.length*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* LIGHTBOX — clone the card's SVG into the lightbox */
+function openLB(card){
+  const svg=card.querySelector('svg');
+  const cap=svg.getAttribute('data-cap')||'';
+  const lb=document.getElementById('lb');
+  const lbsvg=document.getElementById('lbsvg');
+  // Clone SVG content
+  lbsvg.innerHTML=svg.innerHTML;
+  lbsvg.setAttribute('viewBox',svg.getAttribute('viewBox')||'0 0 300 200');
+  document.getElementById('lbcap').textContent=cap;
+  lb.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+
+/* QUIZ */
+let ans={},done=false;
+const cor={q1:'B',q2:'C',q3:'B',q4:'C',q5:'C',q6:'B',q7:'C',q8:'D',q9:'C',q10:'D'};
+function pick(el,qId,chosen,c){
+  if(done||ans[qId])return;ans[qId]=chosen;
+  el.closest('.opts').querySelectorAll('.opt').forEach(o=>{
+    const l=o.querySelector('.ol').textContent;
+    if(l===c)o.classList.add('correct');else if(l===chosen&&chosen!==c)o.classList.add('wrong');
+  });
+  const r=document.getElementById('rat-'+qId);if(r)r.classList.add('show');
+}
+function submitQ(){
+  if(done)return;done=true;document.getElementById('sb2').disabled=true;
+  Object.keys(cor).forEach(q=>{
+    const r=document.getElementById('rat-'+q);if(r)r.classList.add('show');
+    document.getElementById(q)?.querySelectorAll('.opt').forEach(o=>{
+      if(o.querySelector('.ol').textContent===cor[q])o.classList.add('correct');
+    });
+  });
+  const s=Object.keys(cor).filter(q=>ans[q]===cor[q]).length;
+  const p=Math.round(s/10*100);
+  document.getElementById('sd').textContent=p+'%  ('+s+'/10)';
+  document.getElementById('sm2').textContent=p<60?'📚 Keep studying! Revisit Core Concepts and Case Studies.':p<80?'🍯 Good work! Review the sections where you struggled.':p<100?'🌟 Excellent understanding of bees and honey science!':'🏆 Perfect score! You are a certified bee expert!';
+  const b=document.getElementById('scb');b.style.display='block';b.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetQ(){
+  done=false;ans={};document.getElementById('sb2').disabled=false;
+  document.getElementById('scb').style.display='none';
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+  document.querySelectorAll('.rat').forEach(r=>r.classList.remove('show'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* NOTES */
+const nids=['n1','n2','n3','n4','n5','n6'];
+function loadN(){nids.forEach(id=>{const v=localStorage.getItem('bh_'+id);if(v)document.getElementById(id).value=v;});}
+function saveN(){
+  nids.forEach(id=>localStorage.setItem('bh_'+id,document.getElementById(id).value));
+  const b=document.getElementById('nsb');b.style.display='block';
+  clearTimeout(b._t);b._t=setTimeout(()=>b.style.display='none',2200);
+}
+function clearNotes(){if(!confirm('Clear all notes? Cannot be undone.'))return;nids.forEach(id=>{document.getElementById(id).value='';localStorage.removeItem('bh_'+id);});}
+function downloadNotes(){
+  const lbls=['What surprised me','Connection to experience','How I will apply this','Questions I have','30-Day Commitment','Additional Notes'];
+  let t='BEES & HONEY — LEARNING JOURNAL\n'+new Date().toLocaleString()+'\n\n';
+  nids.forEach((id,i)=>t+='--- '+lbls[i]+' ---\n'+(document.getElementById(id).value||'(no entry)')+'\n\n');
+  const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(t);
+  a.download='BeeHoney_Notes_'+new Date().toISOString().slice(0,10)+'.txt';a.click();
+}
+function deb(fn,d){let t;return()=>{clearTimeout(t);t=setTimeout(fn,d);};}
+nids.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',deb(saveN,700));});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  loadN();
+  document.getElementById('pf').style.width=(1/tabs.length*100)+'%';
+});
+</script>
+</body>
+</html>
