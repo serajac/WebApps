@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cajares Prompt Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f8f5f0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1c1917;
+  }
+
+  /* ── Header ── */
+  #header {
+    background: linear-gradient(135deg, #1c1917 0%, #44403c 100%);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  #logo {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 20px rgba(245,158,11,.5);
+  }
+  #header-text { flex: 1; }
+  #header-sub  { font-size: 10px; color: #fbbf24; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+  #header-title{ font-size: 22px; color: #fff; font-weight: 900; letter-spacing: .04em; line-height: 1.1; }
+  #live-badge  {
+    background: rgba(134,239,172,.2); border: 1px solid rgba(134,239,172,.5);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; color: #86efac; font-weight: 700; letter-spacing: .1em;
+    white-space: nowrap;
+  }
+
+  /* ── Body ── */
+  #body { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .card-label {
+    font-size: 10px; color: #a8a29e;
+    letter-spacing: .15em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 10px;
+  }
+
+  /* ── Mode pills ── */
+  #mode-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill {
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+    border-width: 1.5px; border-style: solid;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .pill.active { color: #fff !important; }
+
+  /* ── Input card ── */
+  #input-card {
+    background: #fff;
+    border: 2px solid #d97706;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(217,119,6,.15);
+    margin-bottom: 14px;
+  }
+  #input-header {
+    background: linear-gradient(135deg, #92400e, #b45309);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #input-label { font-size: 11px; color: #fde68a; letter-spacing: .15em; font-weight: 700; text-transform: uppercase; }
+  #example-btn {
+    background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4);
+    border-radius: 12px; padding: 4px 14px; color: #fff;
+    font-size: 11px; cursor: pointer; font-weight: 700;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  #example-btn:hover { background: rgba(255,255,255,.32); }
+  #goal-input {
+    width: 100%; min-height: 160px;
+    background: transparent; border: none; outline: none;
+    color: #1c1917; font-size: 15px; line-height: 1.7;
+    padding: 16px; resize: vertical;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  #goal-input::placeholder { color: #b0a090; }
+  #input-footer {
+    padding: 4px 16px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  #input-hint { font-size: 11px; color: #c4b5a0; font-style: italic; }
+  #char-count  { font-size: 11px; color: #a8a29e; }
+
+  /* ── Buttons ── */
+  #btn-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  #generate-btn {
+    flex: 1; padding: 16px 20px;
+    background: linear-gradient(135deg, #d97706, #dc2626);
+    border: none; border-radius: 10px;
+    color: #fff; font-size: 14px; font-weight: 800;
+    letter-spacing: .15em; text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(220,38,38,.35);
+    transition: all .2s;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  #generate-btn:disabled {
+    background: #e5e7eb; color: #9ca3af;
+    box-shadow: none; cursor: not-allowed;
+  }
+  #clear-btn {
+    padding: 16px 20px;
+    background: #fff; border: 2px solid #d1d5db;
+    border-radius: 10px; color: #6b7280;
+    font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 700; font-family: inherit;
+    display: none;
+  }
+
+  /* ── Output card ── */
+  #output-card {
+    background: #fff;
+    border: 2px solid #38bdf8;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(14,165,233,.15);
+    display: none;
+    animation: fadeUp .35s ease-out;
+  }
+  #output-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  #output-mode-info { display: flex; align-items: center; gap: 10px; }
+  #output-icon  { font-size: 20px; }
+  #output-label { font-size: 13px; color: #fff; font-weight: 800; letter-spacing: .05em; }
+  #copy-top-btn {
+    padding: 7px 18px;
+    background: rgba(255,255,255,.25); border: none;
+    border-radius: 20px; color: #fff;
+    font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+  #copy-top-btn.copied { background: rgba(16,185,129,.9); }
+  #prompt-body {
+    padding: 20px; font-size: 13.5px; line-height: 1.9;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 500px; overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    background: #f0f9ff;
+    color: #1e293b;
+  }
+  #output-footer {
+    padding: 14px 20px; background: #fff;
+    border-top: 1px solid #f1f5f9;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  #output-hint  { font-size: 11px; color: #94a3b8; }
+  #copy-bottom-btn {
+    padding: 10px 24px;
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+
+  /* ── Footer ── */
+  #page-footer {
+    text-align: center; margin-top: 40px;
+    font-size: 10px; color: #c4b5a0; letter-spacing: .12em;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #d4b896; border-radius: 3px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="header">
+  <div id="logo">⚡</div>
+  <div id="header-text">
+    <div id="header-sub">Dr. Carlos Cajares · DHSc, MPA, NRP</div>
+    <div id="header-title">PROMPT ENGINE</div>
+  </div>
+  <div id="live-badge">● INSTANT</div>
+</div>
+
+<!-- Body -->
+<div id="body">
+
+  <!-- Mode pills -->
+  <div class="card">
+    <div class="card-label" id="pill-label">11 Available Modes — Auto-detected from your input</div>
+    <div id="mode-pills"></div>
+  </div>
+
+  <!-- Input -->
+  <div id="input-card">
+    <div id="input-header">
+      <span id="input-label">▸ MISSION BRIEFING</span>
+      <button id="example-btn" onclick="fillExample()">Try Example ↺</button>
+    </div>
+    <textarea id="goal-input"
+      placeholder="Describe what you want to build, write, create, or plan...&#10;&#10;Examples:&#10;• A bee &amp; honey educational module with images, videos, and progress notes&#10;• Email to Norfolk Fire-Rescue about a clinical partnership&#10;• MCI scenario for a school campus with 200 students&#10;• Salsa song about my EMS journey from Puerto Rico to Virginia"
+      oninput="onInput()" onkeydown="onKey(event)"></textarea>
+    <div id="input-footer">
+      <span id="input-hint">No internet needed — generates instantly</span>
+      <span id="char-count">0 chars</span>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div id="btn-row">
+    <button id="generate-btn" onclick="generate()" disabled>⚡ GENERATE PROMPT</button>
+    <button id="clear-btn" onclick="clearAll()">CLEAR</button>
+  </div>
+
+  <!-- Output -->
+  <div id="output-card">
+    <div id="output-header">
+      <div id="output-mode-info">
+        <span id="output-icon"></span>
+        <span id="output-label"></span>
+      </div>
+      <button id="copy-top-btn" onclick="copyPrompt('top')">⧉ COPY</button>
+    </div>
+    <div id="prompt-body"></div>
+    <div id="output-footer">
+      <span id="output-hint">Paste into ChatGPT · Claude · Gemini · Suno · any AI tool</span>
+      <button id="copy-bottom-btn" onclick="copyPrompt('bottom')">COPY & DEPLOY</button>
+    </div>
+  </div>
+
+  <div id="page-footer">CAJARES PROMPT ENGINE · DHSc, MPA, NRP · CAMP EMS PROGRAM · v4.0</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  MODE DEFINITIONS
+// ═══════════════════════════════════════════════════════
+const MODES = [
+  {
+    id: "module", label: "Instructional Module Builder", icon: "📚",
+    bg: "#ede9fe", color: "#5b21b6", border: "#c4b5fd",
+    keywords: ["module","lesson","educational","education","learn","course","training","workshop","curriculum","teach","student","class","bee","honey","garden","picture","video","image","media","note","progress","lita","benefits"],
+    build: g => `Act as an expert instructional designer and web developer specializing in adult learning theory (Malcolm Knowles).
+
+Build a complete interactive educational module on the following topic:
+
+TOPIC: ${g}
+
+MODULE REQUIREMENTS:
+─────────────────────────────────────────
+1. LEARNING OBJECTIVES (Bloom's Taxonomy)
+   - Define 4–6 measurable outcomes using action verbs (identify, explain, apply, analyze, create)
+
+2. CONTENT SECTIONS (Tabbed Layout)
+   - Section 1: Introduction & Background
+   - Section 2: Core Concepts with real-world examples
+   - Section 3: Visual & Media Integration
+     • Suggest relevant images with descriptive captions
+     • Embed or link to appropriate YouTube/video resources
+   - Section 4: Practical Application / Case Study
+   - Section 5: Summary & Key Takeaways
+
+3. PROGRESS NOTES AREA
+   - Student-facing journaling/notes section
+   - Prompts: "What surprised you?", "How will you apply this?", "Questions I still have:"
+
+4. ASSESSMENT
+   - 5–10 knowledge-check questions (multiple choice or short answer)
+   - Include rationale for correct answers
+
+5. ANDRAGOGY ALIGNMENT
+   - Apply all 6 Knowles principles throughout
+   - Connect content to real-life experience and immediate relevance
+
+6. INTERACTIVITY SUGGESTIONS
+   - Discussion prompts, reflection activities, group exercises
+
+OUTPUT FORMAT: Structured, ready for Canvas LMS or standalone HTML module.`
+  },
+  {
+    id: "ems_program", label: "EMS Program Builder", icon: "🏥",
+    bg: "#e0f2fe", color: "#075985", border: "#7dd3fc",
+    keywords: ["ems","paramedic","emt","aemt","program","cohort","accreditation","clinical","rotation","camp","schedule","syllabus","coaemsP","nremt","vccs"],
+    build: g => `Act as an EMS Program Director and accreditation expert (CoAEMSP, NREMT, VCCS).
+
+Design a complete, implementation-ready EMS program solution for a community college setting.
+
+PROGRAM FOCUS: ${g}
+
+DELIVERABLES:
+─────────────────────────────────────────
+1. CURRICULUM STRUCTURE
+   - Aligned to National EMS Education Standards
+   - VCCS course codes and credit hours
+   - Sequence: EMT → AEMT → Paramedic pathway
+
+2. COURSE SEQUENCING
+   - Week-by-week or module-by-module breakdown
+   - Lecture, lab, and clinical hour distribution
+
+3. CLINICAL & FIELD INTEGRATION
+   - Partner agency requirements (ALS/BLS transport, hospital rotations)
+   - Minimum patient contact benchmarks
+   - Clinical coordinator role and workflow
+
+4. FACULTY & RESOURCE NEEDS
+   - Lead instructor qualifications
+   - Adjunct/clinical faculty ratios
+   - Equipment list and simulation lab requirements
+
+5. ACCREDITATION ROADMAP
+   - CoAEMSP self-study checklist
+   - NREMT exam prep integration
+   - Timeline: initial accreditation to full status
+
+6. BUDGET & SCALABILITY
+   - Per-student cost estimates
+   - Revenue model (tuition, grants, agency partnerships)
+   - Expansion pathway for growing cohorts
+
+Make this immediately actionable for a community college EMS Program Director.`
+  },
+  {
+    id: "comms", label: "Professional Communication", icon: "✉️",
+    bg: "#e0f2fe", color: "#0c4a6e", border: "#7dd3fc",
+    keywords: ["email","letter","write","message","memo","proposal","communicate","partnership","outreach","contact","draft","send","request","invite","stakeholder","admin","dean","director","fire","rescue","norfolk","suffolk","hospital"],
+    build: g => `Act as Dr. Carlos Cajares, EMS Program Director — writing in a confident, professional, and charismatic voice.
+
+Write a polished professional communication for the following purpose:
+
+CONTEXT: ${g}
+
+COMMUNICATION REQUIREMENTS:
+─────────────────────────────────────────
+SUBJECT LINE (if email): [Compelling, specific, action-oriented]
+
+OPENING (2–3 sentences):
+- Hook the reader immediately
+- Establish credibility and shared mission
+
+BODY (3–4 paragraphs):
+- Paragraph 1: State the purpose clearly and confidently
+- Paragraph 2: Provide supporting context, data, or rationale
+- Paragraph 3: Describe the mutual benefit / value proposition
+- Paragraph 4 (if needed): Address potential concerns proactively
+
+CALL TO ACTION:
+- Specific, easy next step for the reader
+- Include a deadline or timeframe if appropriate
+
+CLOSING:
+- Warm but professional
+- Signature block: Dr. Carlos Cajares, DHSc, MPA, NRP | EMS Program Director | CAMP Community College
+
+TONE: Confident, inviting, visionary — not bureaucratic.`
+  },
+  {
+    id: "mci", label: "MCI Simulation Engine", icon: "🚨",
+    bg: "#fee2e2", color: "#991b1b", border: "#fca5a5",
+    keywords: ["mci","mass casualty","drill","exercise","simulation","tabletop","scenario","incident","disaster","hseep","triage","campus","school","explosion","trauma","patients","operation","functional","silent"],
+    build: g => `Act as a disaster simulation designer and EMS training expert (HSEEP-compliant).
+
+Create a high-fidelity MCI tabletop or functional exercise scenario.
+
+SCENARIO FOCUS: ${g}
+
+SCENARIO PACKAGE:
+─────────────────────────────────────────
+1. INCIDENT OVERVIEW
+   - Type, location, and environmental conditions
+   - Triggering event and initial 911 report
+   - Jurisdiction and responding agencies
+
+2. PATIENT PROFILES (minimum 8–12 patients)
+   - Name/Tag #, Age, Mechanism of injury
+   - START triage category (Immediate/Delayed/Minor/Expectant)
+   - Chief complaint, vitals, and presenting signs
+   - Expected interventions and disposition
+
+3. TIMELINE PROGRESSION (T+0 to T+60 min)
+   - T+0: Initial dispatch and scene arrival
+   - T+10: Situation evolves (additional patients, hazard identified)
+   - T+20: Resource request inject
+   - T+40: Complications inject (patient deterioration, communication failure)
+
+4. INJECTS (5–8 scenario injects)
+   - Media arriving on scene
+   - Hospital diversion notice
+   - Missing/unaccounted person report
+   - Secondary hazard discovered
+
+5. DECISION POINTS & EXPECTED ACTIONS
+   - ICS structure activation
+   - Medical branch director decisions
+   - Resource allocation and mutual aid requests
+
+6. EVALUATION METRICS
+   - Triage accuracy rate
+   - Time to treatment benchmarks
+   - Communication effectiveness
+
+7. DEBRIEF GUIDE
+   - Hot wash questions (3 things done well, 3 to improve)
+   - After Action Report (AAR) template`
+  },
+  {
+    id: "andragogy", label: "Andragogy Master Mode", icon: "🎓",
+    bg: "#ede9fe", color: "#5b21b6", border: "#c4b5fd",
+    keywords: ["andragogy","adult learning","knowles","interactive","instructional","bloom","objective","assessment","quiz","case study","debrief","design","modular"],
+    build: g => `Act as an expert in adult learning theory (Malcolm Knowles) and instructional design for healthcare education.
+
+Design a full modular course applying all 6 Andragogy principles.
+
+TOPIC: ${g}
+
+ANDRAGOGY ALIGNMENT:
+─────────────────────────────────────────
+1. Need to Know — Why does the learner need this? State real consequences.
+2. Self-Concept — Position learner as a capable professional, not a passive student.
+3. Prior Experience — Build on what they already know; use case-based bridges.
+4. Readiness to Learn — Tie content to current job role or immediate challenges.
+5. Orientation to Learning — Problem-centered, not subject-centered delivery.
+6. Motivation — Connect to intrinsic rewards (patient outcomes, career growth).
+
+MODULE STRUCTURE:
+─────────────────────────────────────────
+Module 1: Foundation & Real-World Context
+- Scenario hook (open with a patient case or real incident)
+- Learning objectives (Bloom's levels: Remember → Create)
+- Core content delivery
+
+Module 2: Deep Dive & Application
+- Interactive activity (think-pair-share, case analysis, or simulation)
+- Decision-making exercise with branching outcomes
+
+Module 3: Synthesis & Assessment
+- Capstone scenario requiring integration of all concepts
+- Reflection prompts: "How will I use this in my next shift?"
+- 10-question post-assessment with rationale
+
+DELIVERY FORMAT: Canvas LMS compatible, suitable for hybrid or fully online delivery.`
+  },
+  {
+    id: "business", label: "Business & Revenue Growth", icon: "📈",
+    bg: "#ffedd5", color: "#9a3412", border: "#fdba74",
+    keywords: ["business","revenue","saas","monetize","pricing","market","startup","product","scale","growth","income","profit","subscription","clients","customers","sell","launch","platform","mci exercise","lumio","calix","monarch","anesthesia","consulting","grant","nonprofit","lita"],
+    build: g => `Act as a business strategist and revenue architect with expertise in EdTech, healthcare, and SaaS.
+
+Develop a comprehensive business and revenue growth plan.
+
+BUSINESS FOCUS: ${g}
+
+BUSINESS PLAN:
+─────────────────────────────────────────
+1. EXECUTIVE SUMMARY
+   - Problem being solved
+   - Solution and unique value proposition
+   - Target market and TAM estimate
+
+2. MARKET ANALYSIS
+   - Primary audience segments
+   - Key competitors and differentiation
+   - Market trends supporting this opportunity
+
+3. REVENUE MODEL
+   - Primary revenue streams (subscription, licensing, consulting, grants)
+   - Pricing tiers with rationale
+   - Revenue projections (Year 1–3)
+
+4. GO-TO-MARKET STRATEGY
+   - Launch sequence (MVP → beta → full release)
+   - Partnership and channel strategy
+   - Marketing and outreach tactics
+
+5. SCALING PLAN
+   - Operational milestones
+   - Team and hiring roadmap
+   - Technology or platform requirements
+
+6. RISK MITIGATION
+   - Top 3 risks and contingency plans
+   - Funding strategy (bootstrap, grants, investors)
+
+Make this actionable for an entrepreneur-operator ready to execute immediately.`
+  },
+  {
+    id: "creative", label: "Creative Mode", icon: "🎵",
+    bg: "#fce7f3", color: "#9d174d", border: "#f9a8d4",
+    keywords: ["song","music","salsa","lyric","creative","story","narrative","poem","hook","chorus","verse","suno","beat","melody","spanish","cali","nueva york","reggaeton","cumbia","sing","write a song","compose"],
+    build: g => `Act as a creative director, songwriter, and storytelling expert with deep cultural fluency.
+
+Create a powerful, emotionally resonant creative piece.
+
+CREATIVE REQUEST: ${g}
+
+CREATIVE BRIEF:
+─────────────────────────────────────────
+1. CONCEPT & THEME
+   - Core emotional message and narrative arc
+   - Cultural context and authenticity markers
+   - Target audience and intended impact
+
+2. STRUCTURE (for songs — adapt as needed)
+   - Intro/Hook (8 bars): Set the scene, grab attention immediately
+   - Verse 1: Establish the story — origin, struggle, context
+   - Pre-Chorus: Build emotional tension
+   - Chorus: The anthem moment — memorable, singable, universal
+   - Verse 2: Growth, conflict, or revelation
+   - Bridge: Unexpected turn or emotional peak
+   - Outro: Resolution or call to action
+
+3. SUNO AI PROMPT (if applicable)
+   - Genre tags: [specify]
+   - Style descriptors: [tempo, instrumentation, mood]
+   - Voice type: [male/female, language, accent]
+   - Production feel: [live band, studio polish, raw, orchestral]
+
+4. STANDOUT ELEMENTS
+   - Signature line or hook phrase
+   - Cultural references that add authenticity
+   - Emotional payoff moment
+
+Make it unforgettable.`
+  },
+  {
+    id: "command", label: "Command Mode", icon: "⚡",
+    bg: "#fef3c7", color: "#92400e", border: "#fcd34d",
+    keywords: ["decide","decision","strategy","action","execute","recommend","fix","solve","problem","challenge","issue","priority","urgent","immediately","now","quick","fast","what should","how do i","help me figure"],
+    build: g => `Act as a senior EMS Program Director, healthcare executive, and strategic operator.
+
+Provide a decisive, no-fluff strategic response. Zero filler. Maximum execution value.
+
+SITUATION: ${g}
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. SITUATION ASSESSMENT (2–3 sentences)
+   - What is actually happening here?
+   - What is the core problem or opportunity?
+
+2. CLEAR RECOMMENDATION
+   - State the recommended course of action directly
+   - No hedging — commit to a position
+
+3. EXECUTION PLAN (Step-by-step)
+   - Step 1 (Do today):
+   - Step 2 (Do this week):
+   - Step 3 (Do this month):
+
+4. RISKS & MITIGATION
+   - Top 2–3 risks if this path is taken
+   - How to reduce each risk
+
+5. EXPECTED OUTCOMES
+   - Short-term (30 days): What changes?
+   - Long-term (6–12 months): What does success look like?
+
+6. BACKUP PLAN
+   - Alternative if primary approach fails
+
+Make this actionable starting today.`
+  },
+  {
+    id: "truth", label: "Truth Mode", icon: "🎯",
+    bg: "#fefce8", color: "#854d0e", border: "#fde047",
+    keywords: ["honest","truth","real talk","blunt","gap","weakness","problem","wrong","failing","critique","feedback","assess","evaluate","review","audit","blind spot","sugarcoat"],
+    build: g => `TRUTH MODE ACTIVATED. No filler. No flattery. No sugarcoating.
+
+TOPIC FOR ANALYSIS: ${g}
+
+─────────────────────────────────────────
+GROUND TRUTH ASSESSMENT:
+
+1. WHAT IS ACTUALLY HAPPENING
+   - Strip away assumptions and see the situation clearly
+   - What are the facts vs. the stories being told?
+
+2. BLIND SPOTS
+   - What is being missed or ignored?
+   - What uncomfortable truth needs to be said out loud?
+
+3. GAPS & RISKS
+   - Where are the critical weaknesses?
+   - What could go wrong that hasn't been planned for?
+
+4. LEVERAGE POINTS
+   - What 1–2 moves would create the most impact?
+   - Where is there untapped advantage?
+
+5. DIRECT RECOMMENDATIONS
+   - What must be done immediately?
+   - What must be stopped immediately?
+   - What must be started that hasn't begun yet?
+
+6. THE HARD QUESTION
+   - The one question that must be answered before moving forward.
+
+Respond with the directness of a trusted advisor, not a yes-man.`
+  },
+  {
+    id: "meta", label: "Meta Prompt Engineer", icon: "🔧",
+    bg: "#eef2ff", color: "#3730a3", border: "#a5b4fc",
+    keywords: ["improve","optimize","prompt","rewrite","better","upgrade","refine","enhance","meta","engineer","structure","clarity","output","make this prompt"],
+    build: g => `Act as an elite AI Prompt Engineer with expertise in large language model optimization.
+
+Analyze and dramatically improve the following prompt or concept for maximum AI output quality.
+
+INPUT TO IMPROVE: ${g}
+
+PROMPT ENGINEERING ANALYSIS:
+─────────────────────────────────────────
+1. DIAGNOSIS
+   - What is weak or ambiguous in the current prompt/concept?
+   - What is the AI likely to misinterpret?
+   - What context is missing?
+
+2. OPTIMIZATION PRINCIPLES APPLIED
+   - Role assignment: Give the AI a specific expert persona
+   - Context injection: Add all relevant background
+   - Output scaffolding: Define exact format and length
+   - Constraint setting: Tell the AI what NOT to do
+   - Chain-of-thought: Break complex tasks into steps
+
+3. OPTIMIZED PROMPT (Ready to Use)
+   ┌─────────────────────────────────────┐
+   [FULLY REWRITTEN, POWER-CHARGED PROMPT]
+   └─────────────────────────────────────┘
+
+4. WHY THIS VERSION IS BETTER
+   - Specific improvements made and why they matter
+
+5. ADVANCED VARIATIONS
+   - Version A: For detailed, long-form output
+   - Version B: For quick, punchy output
+   - Version C: For structured/tabular output`
+  },
+  {
+    id: "product", label: "AI Product Builder", icon: "⚙️",
+    bg: "#d1fae5", color: "#065f46", border: "#6ee7b7",
+    keywords: ["app","tool","platform","build","develop","software","web","html","react","feature","dashboard","portal","system","database","canvas","lms","nexus","hub","interface","ui","ux","design"],
+    build: g => `Act as a product architect and full-stack AI systems builder.
+
+Design a complete, scalable product or platform.
+
+PRODUCT CONCEPT: ${g}
+
+PRODUCT BLUEPRINT:
+─────────────────────────────────────────
+1. PRODUCT OVERVIEW
+   - Core problem solved
+   - Primary user persona and use case
+   - Key differentiator vs. existing tools
+
+2. CORE FEATURES (MVP)
+   - Feature 1: [Name] — [What it does, why it matters]
+   - Feature 2: [Name] — [What it does, why it matters]
+   - Feature 3: [Name] — [What it does, why it matters]
+   - Feature 4: [Name] — [What it does, why it matters]
+
+3. USER ROLES & PERMISSIONS
+   - Admin: Full access, configuration, reporting
+   - Instructor/Manager: Content creation, monitoring
+   - Student/End User: Consumption, interaction, notes
+
+4. WORKFLOW & UX
+   - Onboarding flow (steps 1–5)
+   - Core user journey (primary use case end-to-end)
+   - Key interaction patterns
+
+5. DATA & ANALYTICS
+   - Key metrics tracked
+   - Dashboard KPIs
+   - Export and reporting capabilities
+
+6. TECH STACK RECOMMENDATION
+   - Frontend / Backend / Database / AI layer / Hosting
+
+7. MONETIZATION STRATEGY
+   - Pricing tiers and rationale
+   - Free vs. paid feature split`
+  },
+  {
+    id: "va", label: "VA Benefits Expert Agent", icon: "🎖️",
+    bg: "#e8f0fe", color: "#1a3a6e", border: "#4a7fd4",
+    keywords: [
+      "va","veterans affairs","veteran","veterans","service connected","service-connected",
+      "disability","disability rating","disability claim","compensation","pension",
+      "claim","supplemental claim","higher level review","hlr","board of veterans",
+      "bva","nexus","nexus letter","dbq","disability benefits questionnaire",
+      "c&p exam","compensation and pension","appeals","appeal","ama","legacy appeal",
+      "vso","accredited","agent orange","ptsd","tbi","mst","military sexual trauma",
+      "sleep apnea","tinnitus","hearing loss","hypertension","diabetes","burn pit",
+      "pact act","buddy statement","lay statement","medical evidence","IMO",
+      "independent medical opinion","rating","cfr","38 cfr","38 usc",
+      "effective date","cue","clear and unmistakable error","tdiu","total disability",
+      "individual unemployability","caregiver","vr&e","vocational rehab",
+      "chapter 31","chapter 33","gi bill","education benefit","home loan",
+      "va health care","eligibility","discharge upgrade","dd214",
+      "service records","military records","national personnel records",
+      "caren","crna","anesthesia","nurse anesthetist","military service"
+    ],
+    build: g => `Act as an expert US Department of Veterans Affairs (VA) benefits specialist, accredited claims agent, and veteran advocate with 20+ years of experience navigating VA regulations, CFR Title 38, and the Appeals Modernization Act (AMA).
+
+VETERAN'S REQUEST: ${g}
+
+YOUR ROLE & AUTHORITY:
+─────────────────────────────────────────
+You have deep expertise in:
+- VA disability compensation (38 CFR Part 3 & 4)
+- Service connection: direct, secondary, aggravation, presumptive
+- VA ratings system and combined ratings formula
+- Appeals pathways: Supplemental Claim, Higher-Level Review (HLR), Board of Veterans' Appeals (BVA)
+- PACT Act presumptive conditions (burn pits, toxic exposure)
+- Medical nexus requirements and IMO/IME standards
+- C&P exam preparation and challenges
+- TDIU (Total Disability Individual Unemployability)
+- VA healthcare eligibility and enrollment
+- Surviving spouse/dependent benefits (DIC, Chapter 35)
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. SITUATION ASSESSMENT
+   - Summarize the veteran's/claimant's core issue
+   - Identify the legal basis under 38 CFR or 38 U.S.C.
+   - Flag any time-sensitive deadlines or effective date considerations
+
+2. ELIGIBILITY & SERVICE CONNECTION ANALYSIS
+   - Type of service connection that applies:
+     □ Direct service connection (in-service event + current diagnosis + nexus)
+     □ Secondary service connection (aggravated by service-connected condition)
+     □ Presumptive service connection (PACT Act, Agent Orange, POW, etc.)
+     □ Aggravation of pre-existing condition
+   - Evidence threshold: What is needed to meet the "at least as likely as not" (50%+) standard?
+   - Favorable lay/buddy statement guidance
+
+3. REQUIRED EVIDENCE PACKAGE
+   □ Service records: DD-214, STRs (Service Treatment Records), personnel file
+   □ Medical evidence: Current diagnosis, treatment records, lab results, imaging
+   □ Nexus letter / IMO: Specific language required ("at least as likely as not due to...")
+   □ DBQ (Disability Benefits Questionnaire): Which form applies, who can complete it
+   □ Buddy/lay statements: What to include, format, and who should submit
+   □ Private medical records vs. VA records strategy
+
+4. NEXUS LETTER TEMPLATE (if applicable)
+   Draft the key language a treating provider or IMO physician should include:
+
+   "It is my opinion that [condition] is at least as likely as not (50% or greater probability)
+   related to the Veteran's military service. This opinion is based on: [clinical rationale,
+   service records reviewed, medical literature]. The Veteran's service records document
+   [specific in-service event/exposure]. Current medical evidence shows [diagnosis +
+   supporting findings]. Medical literature supports [causal/aggravation link]."
+
+5. RATING ESTIMATE & COMBINED FORMULA
+   - Probable VA rating range for claimed condition(s) under 38 CFR Part 4
+   - Combined rating calculation if multiple conditions (explain whole person method)
+   - Bilateral factor consideration if applicable
+   - TDIU eligibility if ratings approach 60% (single) or 70% combined with one at 40%+
+
+6. STRATEGIC CLAIMS ROADMAP
+   Step 1 — Gather & Organize Evidence (Timeline: ___ weeks)
+   Step 2 — Submit/File Claim via [VA.gov / VSO / Accredited Agent]
+   Step 3 — C&P Exam Preparation (what to say, what NOT to minimize)
+   Step 4 — Monitor claim status on VA.gov (expected decision window)
+   Step 5 — If denied or under-rated → Choose appeal lane:
+             □ Supplemental Claim (new and relevant evidence)
+             □ Higher-Level Review (no new evidence; error in prior decision)
+             □ Board of Veterans' Appeals (Direct Review / Evidence / Hearing)
+
+7. EFFECTIVE DATE STRATEGY
+   - Earliest possible effective date based on filing history
+   - CUE (Clear and Unmistakable Error) opportunities in prior decisions
+   - Continuous pursuit strategy to protect effective date
+
+8. C&P EXAM COACHING
+   - How to describe symptoms at their WORST (not average) day
+   - Functional impact statements: work, daily activities, relationships
+   - What examiners must document per M21-1 manual
+   - How to challenge an inadequate or unfavorable C&P exam
+
+9. APPEALS LANE RECOMMENDATION (if applicable)
+   - Why this specific lane is best for this situation
+   - Evidence needed for Supplemental Claim
+   - Arguments for HLR: duty to assist errors, clear error of fact or law
+   - BVA hearing prep: what to bring, how to present
+
+10. ADDITIONAL BENEFITS TO EXPLORE
+    □ VA Health Care enrollment (Priority Groups 1–8)
+    □ CHAMPVA for dependents
+    □ Special Monthly Compensation (SMC) for severe disabilities
+    □ Caregiver Support Program (Program of Comprehensive Assistance)
+    □ Vocational Rehabilitation & Employment (VR&E / Chapter 31)
+    □ Home loan guarantee (Certificate of Eligibility)
+    □ Life insurance options (VGLI, SDVI)
+    □ Property tax exemptions (state-specific)
+    □ Discharge upgrade pathway if characterization is an issue
+
+IMPORTANT DISCLAIMERS:
+─────────────────────────────────────────
+• This output is for informational and preparation purposes only.
+• Always verify current regulations at 38 CFR and VA.gov — rules change frequently.
+• For legal representation, work with a VA-accredited attorney, claims agent, or VSO.
+• Free VSO assistance: DAV, VFW, American Legion, AMVETS, PVA (no fees allowed by law).
+• VA benefits are non-taxable and do not affect Social Security income.`
+  }
+];
+
+const EXAMPLES = [
+  "A bee and honey human benefits educational module with pictures, videos, and a progress notes section",
+  "Email to Norfolk Fire-Rescue proposing a new clinical rotation partnership for our paramedic students",
+  "MCI drill scenario for a school campus with 200 students and multiple trauma injuries",
+  "A salsa song about my journey from EMS in Puerto Rico to EMS Program Director in Virginia",
+  "Scale MCI Exercise HUB into a full SaaS platform with subscription pricing tiers",
+  "Create a paramedic curriculum plan for our Fall 2026 cohort at CAMP Community College",
+  "Build a web app that lets students track their clinical hours and patient contacts",
+  "Help me file a VA supplemental claim for service-connected hypertension with a nexus letter",
+  "What evidence do I need to win a VA disability appeal for sleep apnea related to military service",
+  "Explain PACT Act presumptive conditions and how to file a toxic exposure VA claim",
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentMode = null;
+let currentPrompt = "";
+let copyTimer = null;
+
+// ═══════════════════════════════════════════════════════
+//  INIT — render pills
+// ═══════════════════════════════════════════════════════
+(function init() {
+  const container = document.getElementById("mode-pills");
+  MODES.forEach(m => {
+    const el = document.createElement("span");
+    el.className = "pill";
+    el.id = "pill-" + m.id;
+    el.textContent = m.icon + " " + m.label;
+    el.style.color = m.color;
+    el.style.background = m.bg;
+    el.style.borderColor = m.border;
+    container.appendChild(el);
+  });
+  document.getElementById("pill-label").textContent =
+    MODES.length + " Available Modes — Auto-detected from your input";
+})();
+
+// ═══════════════════════════════════════════════════════
+//  INPUT HANDLING
+// ═══════════════════════════════════════════════════════
+function onInput() {
+  const val = document.getElementById("goal-input").value;
+  document.getElementById("char-count").textContent = val.length + " chars";
+  const btn = document.getElementById("generate-btn");
+  btn.disabled = !val.trim();
+  document.getElementById("clear-btn").style.display = val ? "block" : "none";
+}
+
+function onKey(e) {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate();
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXAMPLE FILL
+// ═══════════════════════════════════════════════════════
+function fillExample() {
+  const ex = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+  document.getElementById("goal-input").value = ex;
+  onInput();
+  clearOutput();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODE DETECTION
+// ═══════════════════════════════════════════════════════
+function detectMode(input) {
+  const lower = input.toLowerCase();
+  let best = MODES[0], bestScore = 0;
+  for (const mode of MODES) {
+    const score = mode.keywords.reduce((a, kw) => a + (lower.includes(kw) ? 1 : 0), 0);
+    if (score > bestScore) { bestScore = score; best = mode; }
+  }
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════
+function generate() {
+  const goal = document.getElementById("goal-input").value.trim();
+  if (!goal) return;
+
+  currentMode   = detectMode(goal);
+  currentPrompt = currentMode.build(goal);
+
+  // Highlight active pill
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    if (m.id === currentMode.id) {
+      el.classList.add("active");
+      el.style.background = m.color;
+      el.style.color = "#fff";
+      el.style.borderColor = m.color;
+      el.style.boxShadow = "0 2px 10px " + m.border;
+    } else {
+      el.classList.remove("active");
+      el.style.background = m.bg;
+      el.style.color = m.color;
+      el.style.borderColor = m.border;
+      el.style.boxShadow = "none";
+    }
+  });
+
+  // Populate output card
+  document.getElementById("output-icon").textContent  = currentMode.icon;
+  document.getElementById("output-label").textContent = currentMode.label;
+  document.getElementById("prompt-body").textContent  = currentPrompt;
+
+  const oh = document.getElementById("output-header");
+  oh.style.background = "linear-gradient(135deg, " + currentMode.color + ", " + currentMode.border + ")";
+
+  const oc = document.getElementById("output-card");
+  oc.style.borderColor = currentMode.border;
+  oc.style.boxShadow  = "0 4px 24px " + currentMode.border + "60";
+  oc.style.display    = "block";
+
+  document.getElementById("prompt-body").style.background = currentMode.bg;
+
+  const cbb = document.getElementById("copy-bottom-btn");
+  cbb.style.background = "linear-gradient(135deg, " + currentMode.color + ", #7c3aed)";
+  cbb.style.boxShadow  = "0 4px 14px " + currentMode.border + "90";
+
+  resetCopyBtns();
+  document.getElementById("clear-btn").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("output-card").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+}
+
+// ═══════════════════════════════════════════════════════
+//  COPY
+// ═══════════════════════════════════════════════════════
+function copyPrompt(which) {
+  if (!currentPrompt) return;
+  navigator.clipboard.writeText(currentPrompt).then(() => {
+    document.getElementById("copy-top-btn").textContent    = "✓ COPIED!";
+    document.getElementById("copy-top-btn").classList.add("copied");
+    document.getElementById("copy-bottom-btn").textContent = "✓ COPIED!";
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(resetCopyBtns, 2500);
+  });
+}
+
+function resetCopyBtns() {
+  document.getElementById("copy-top-btn").textContent    = "⧉ COPY";
+  document.getElementById("copy-top-btn").classList.remove("copied");
+  document.getElementById("copy-bottom-btn").textContent = "COPY & DEPLOY";
+}
+
+// ═══════════════════════════════════════════════════════
+//  CLEAR
+// ═══════════════════════════════════════════════════════
+function clearOutput() {
+  document.getElementById("output-card").style.display = "none";
+  currentMode = null; currentPrompt = "";
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    el.classList.remove("active");
+    el.style.background = m.bg;
+    el.style.color = m.color;
+    el.style.borderColor = m.border;
+    el.style.boxShadow = "none";
+  });
+}
+
+function clearAll() {
+  document.getElementById("goal-input").value = "";
+  document.getElementById("char-count").textContent = "0 chars";
+  document.getElementById("generate-btn").disabled = true;
+  document.getElementById("clear-btn").style.display = "none";
+  clearOutput();
+}
+</script>
+</body>
+</html>
