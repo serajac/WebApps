@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grant Command HUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060C12;--bg2:#0A1520;--bg3:#0F1E2E;--bg4:#142436;
+  --amber:#F59E0B;--amber2:#FCD34D;--amber3:rgba(245,158,11,0.14);
+  --green:#34D399;--green2:rgba(52,211,153,0.12);
+  --red:#FC8181;--red2:rgba(252,129,129,0.12);
+  --blue:#60A5FA;--blue2:rgba(96,165,250,0.12);
+  --purple:#A78BFA;--purple2:rgba(167,139,250,0.12);
+  --teal:#2DD4BF;--teal2:rgba(45,212,191,0.12);
+  --border:rgba(245,158,11,0.2);--border2:rgba(245,158,11,0.5);
+  --text:#E2EEF8;--text2:#C0D4E8;--text3:#F8FAFC;
+  --mono:'IBM Plex Mono',monospace;--ui:'Inter',sans-serif;--display:'Rajdhani',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;background:#060C12;min-height:100%;}
+body{background:#060C12;color:#E2EEF8;font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;line-height:1.65;}
+/* Force all small inline labels to be readable */
+[style*="font-size:0.6rem"]{font-size:0.7rem !important;}
+[style*="color:var(--text2)"]{color:#C0D4E8 !important;}
+[style*="color:var(--text3)"]{color:#F8FAFC !important;}
+.topbar{background:linear-gradient(90deg,#030810,var(--bg2));border-bottom:1px solid var(--border2);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:0.6rem;}
+.logo-icon{width:28px;height:28px;background:var(--amber);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.logo-text{font-family:var(--display);font-size:1.15rem;font-weight:700;color:var(--text3);letter-spacing:0.06em;}
+.logo-text span{color:var(--amber);}
+.topbar-right{display:flex;align-items:center;gap:0.8rem;}
+.save-ind{font-family:var(--mono);font-size:0.63rem;color:#34D399;letter-spacing:0.1em;}
+.btn-sm{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.5);color:#FCD34D;padding:0.45rem 1rem;cursor:pointer;transition:all 0.2s;font-weight:500;}
+.btn-sm:hover{background:rgba(245,158,11,0.28);}
+.btn-sm.g{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.5);color:#34D399;}
+.btn-sm.g:hover{background:rgba(52,211,153,0.25);}
+.nav{background:#0D1E30;border-bottom:2px solid rgba(245,158,11,0.25);display:flex;overflow-x:auto;padding:0 1.5rem;position:sticky;top:56px;z-index:190;}
+.nav-btn{font-family:var(--mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:#C0D5E8;background:none;border:none;border-bottom:2px solid transparent;padding:0.9rem 1.4rem;cursor:pointer;white-space:nowrap;transition:all 0.2s;font-weight:500;}
+.nav-btn:hover{color:#FCD34D;}
+.nav-btn.active{color:#FCD34D;border-bottom-color:#FCD34D;background:rgba(245,158,11,0.06);}
+.nbadge{display:inline-block;background:var(--amber);color:#000;font-family:var(--mono);font-size:0.55rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:2px;margin-left:0.4rem;}
+.content{max-width:1320px;margin:0 auto;padding:2rem 1.5rem 6rem;background:#060C12;}
+.page{display:none;background:#060C12;}
+.page.active{display:block;animation:fu 0.3s ease;background:#060C12;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sh{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;}
+.sh-num{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:#FCD34D;background:rgba(245,158,11,0.18);border:1px solid rgba(245,158,11,0.55);padding:0.28rem 0.7rem;letter-spacing:0.15em;font-weight:600;}
+.sh-title{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:#FFFFFF;letter-spacing:0.05em;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,0.5);}
+.intro{background:#0F1E2E;border-left:3px solid #F59E0B;padding:1rem 1.3rem;margin-bottom:1.8rem;font-size:0.97rem;color:#F8FAFC;line-height:1.7;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.mb1{margin-bottom:1rem;}.mb2{margin-bottom:1.5rem;}.mt2{margin-top:1.5rem;}
+.flex{display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;}
+.card{background:#0F1E2E;border:1px solid rgba(245,158,11,0.22);padding:1.4rem;}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:#FFFFFF;letter-spacing:0.04em;margin-bottom:0.4rem;}
+.clabel{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#FCD34D;margin-bottom:0.8rem;display:block;font-weight:600;}
+.sc{background:#0F1E2E;border:1px solid rgba(245,158,11,0.22);padding:1.2rem 1.4rem;}
+.sn{font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:#FCD34D;line-height:1;}
+.sl{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:#A8C8E4;letter-spacing:0.12em;text-transform:uppercase;margin-top:0.35rem;}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.7rem;border:1px solid;display:inline-block;font-weight:500;}
+.bg{color:#34D399;border-color:rgba(52,211,153,0.5);background:rgba(52,211,153,0.12);}
+.ba{color:#FCD34D;border-color:rgba(252,211,77,0.5);background:rgba(252,211,77,0.12);}
+.br{color:#FC8181;border-color:rgba(252,129,129,0.5);background:rgba(252,129,129,0.12);}
+.bb{color:#93C5FD;border-color:rgba(147,197,253,0.5);background:rgba(147,197,253,0.12);}
+.bgr{color:#C0D4E8;border-color:rgba(192,212,232,0.4);background:rgba(192,212,232,0.07);}
+.btn{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.44rem 1rem;border:1px solid;cursor:pointer;transition:all 0.2s;font-weight:500;}
+.bp{background:rgba(245,158,11,0.16);border-color:rgba(245,158,11,0.55);color:#FCD34D;}
+.bp:hover{background:rgba(245,158,11,0.28);}
+.bo{background:rgba(255,255,255,0.04);border-color:rgba(192,212,232,0.45);color:#C0D4E8;}
+.bo:hover{border-color:rgba(245,158,11,0.5);color:#FCD34D;}
+.bgrn{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.5);color:#34D399;}
+.bgrn:hover{background:rgba(52,211,153,0.22);}
+.bred{background:rgba(252,129,129,0.12);border-color:rgba(252,129,129,0.45);color:#FC8181;}
+.bred:hover{background:rgba(252,129,129,0.22);}
+.fg{margin-bottom:1.2rem;}
+.fl{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:#F0B429;display:block;margin-bottom:0.45rem;font-weight:500;}
+.fi,.fs,.ft{width:100%;background:var(--bg2);border:1px solid rgba(245,158,11,0.25);color:var(--text3);font-family:var(--ui);font-size:0.93rem;padding:0.6rem 0.85rem;outline:none;transition:border-color 0.2s;}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--border2);}
+.fi::placeholder{color:#5A7A92;}
+.ft{resize:vertical;min-height:90px;line-height:1.6;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.dt{width:100%;border-collapse:collapse;}
+.dt th{background:rgba(245,158,11,0.14);color:#FCD34D;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.7rem 1rem;border:1px solid var(--border);text-align:left;}
+.dt td{padding:0.7rem 1rem;border:1px solid var(--border);color:var(--text);font-size:0.9rem;vertical-align:middle;}
+.dt tr:hover td{background:rgba(245,158,11,0.04);}
+.tbox{background:#040A12;border:1px solid rgba(245,158,11,0.22);padding:1.5rem;font-family:var(--mono);font-size:0.82rem;line-height:2;color:#D4E4F4;white-space:pre-wrap;max-height:540px;overflow-y:auto;}
+.yb{font-family:var(--mono);font-size:0.68rem;letter-spacing:0.1em;padding:0.45rem 1.3rem;border:1px solid rgba(168,187,207,0.35);color:#A8BBCF;background:none;cursor:pointer;transition:all 0.2s;}
+.yb.active{border-color:var(--border2);color:#FCD34D;background:var(--amber3);}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov.open{display:flex;}
+.modal{background:#0C1928;border:1px solid var(--border2);max-width:840px;width:100%;max-height:92vh;overflow-y:auto;}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg3);}
+.mt{font-family:var(--display);font-size:1.25rem;font-weight:700;color:var(--text3);letter-spacing:0.05em;}
+.mc{font-family:var(--mono);font-size:0.72rem;color:#A8BBCF;background:none;border:1px solid rgba(168,187,207,0.35);padding:0.3rem 0.7rem;cursor:pointer;}
+.mc:hover{color:var(--text3);border-color:rgba(168,187,207,0.6);}
+.mb_{padding:1.5rem;}
+/* Library */
+.filt-wrap{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.4rem;}
+.fb{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.42rem 1rem;border:1px solid rgba(192,212,232,0.45);color:#C0D4E8;background:rgba(255,255,255,0.05);cursor:pointer;transition:all 0.18s;font-weight:500;}
+.fb:hover{color:#FCD34D;border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.08);}
+.fb.active{color:#FCD34D;border-color:rgba(245,158,11,0.6);background:rgba(245,158,11,0.15);font-weight:600;}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1rem;}
+.lc{background:#0F1E2E;border:1px solid rgba(245,158,11,0.22);padding:1.3rem;position:relative;transition:all 0.22s;}
+.lc:hover{border-color:rgba(245,158,11,0.5);background:#142436;}
+.lc.sel{border-color:rgba(52,211,153,0.65);background:rgba(52,211,153,0.07);}
+.lc .acc{position:absolute;left:0;top:0;bottom:0;width:3px;}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;}
+.lc-name{font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:#FFFFFF;}
+.lc-full{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#A8C8E4;letter-spacing:0.03em;margin-bottom:0.6rem;line-height:1.5;}
+.lc-meta{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+.lt{font-family:'IBM Plex Mono',monospace;font-size:0.67rem;padding:0.2rem 0.6rem;border:1px solid;font-weight:500;}
+.lc-desc{font-size:0.94rem;color:#D0E4F4;line-height:1.65;margin-bottom:0.8rem;}
+.lc-act{display:flex;gap:0.5rem;align-items:center;}
+.stog{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.44rem 0.95rem;border:1px solid;cursor:pointer;transition:all 0.2s;font-weight:500;}
+.stog.off{border-color:rgba(192,212,232,0.45);color:#C8DCF0;background:rgba(255,255,255,0.04);}
+.stog.off:hover{border-color:rgba(52,211,153,0.65);color:#34D399;background:rgba(52,211,153,0.1);}
+.stog.on{border-color:rgba(52,211,153,0.65);color:#34D399;background:rgba(52,211,153,0.14);}
+/* Apply page */
+.app-row{background:#0F1E2E;border:1px solid rgba(245,158,11,0.22);border-left:3px solid #F59E0B;padding:1.2rem 1.4rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.ar-name{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:#FFFFFF;}
+.ar-sub{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:#A8C8E4;margin-top:0.3rem;}
+.batch{background:#0F1E2E;border:1px solid rgba(245,158,11,0.45);padding:1.4rem;margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.binfo{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:#E2EEF8;}
+.binfo span{color:#FCD34D;font-weight:600;}
+/* Generate */
+.gs{background:#0F1E2E;border:1px solid rgba(245,158,11,0.22);margin-bottom:1.2rem;}
+.gh{display:flex;justify-content:space-between;align-items:center;padding:0.95rem 1.2rem;border-bottom:1px solid rgba(245,158,11,0.18);background:#142436;cursor:pointer;}
+.ghl{display:flex;gap:0.8rem;align-items:center;}
+.gn{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:700;color:#FFFFFF;}
+.gb_{padding:1.2rem;display:none;}
+.gb_.open{display:block;}
+/* Timeline */
+.tl-row{display:grid;grid-template-columns:150px 1fr 140px 100px 110px;border-bottom:1px solid rgba(245,158,11,0.18);align-items:stretch;}
+.tl-row.hdr{background:rgba(245,158,11,0.12);}
+.tl-c{padding:0.75rem 1rem;border-right:1px solid rgba(245,158,11,0.18);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;display:flex;align-items:flex-start;flex-direction:column;justify-content:center;color:#E2EEF8;}
+.tl-c:last-child{border-right:none;}
+.tl-ch{color:#FCD34D;letter-spacing:0.1em;text-transform:uppercase;font-size:0.65rem;font-weight:600;}
+input[type="date"]{color-scheme:dark;}
+@media(max-width:900px){.g2,.g3,.g4,.fr,.fr3{grid-template-columns:1fr;}.tl-row{grid-template-columns:1fr;}.app-row{flex-direction:column;align-items:flex-start;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="logo-icon"></div><div class="logo-text">Grant <span>Command HUB</span></div></div>
+  <div class="topbar-right">
+    <span class="save-ind" id="saveInd">● AUTO-SAVED</span>
+    <button class="btn-sm g" onclick="showPage('apply')">⚡ MY GRANTS <span id="tc" class="nbadge">0</span></button>
+    <button class="btn-sm" onclick="openExportMenu()">⬇ EXPORT</button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active"  onclick="showPage('dash')">Dashboard</button>
+  <button class="nav-btn"         onclick="showPage('agency')">Agency Profile</button>
+  <button class="nav-btn"         onclick="showPage('library')">Grant Library</button>
+  <button class="nav-btn"         onclick="showPage('apply')">My Applications <span id="nc" class="nbadge">0</span></button>
+  <button class="nav-btn"         onclick="showPage('gen');buildGen()">Generate Narratives</button>
+  <button class="nav-btn"         onclick="showPage('tracker')">Submission Tracker</button>
+  <button class="nav-btn"         onclick="showPage('timeline')">Deadline Calendar</button>
+</nav>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<div id="page-dash" class="page active">
+  <div class="sh"><span class="sh-num">01</span><h2 class="sh-title">Dashboard</h2></div>
+  <div class="intro">Welcome, <strong id="dn">—</strong>. Browse the Grant Library, select any or all grants, then generate all narratives at once with your Agency Profile auto-filled.</div>
+  <div class="g4 mb2">
+    <div class="sc"><div class="sn" id="s1">0</div><div class="sl">Total Submissions</div></div>
+    <div class="sc"><div class="sn" style="color:#FCD34D" id="s2">0</div><div class="sl">Grants Selected</div></div>
+    <div class="sc"><div class="sn" style="color:#34D399" id="s3">0</div><div class="sl">Awarded</div></div>
+    <div class="sc"><div class="sn" style="color:#FC8181" id="s4">0</div><div class="sl">Due ≤60 Days</div></div>
+  </div>
+  <div class="g2 mb2">
+    <div class="card"><div class="clabel">Upcoming Deadlines</div><div id="ddl" style="font-family:var(--mono);font-size:0.8rem;line-height:2.2;color:var(--text);">Loading...</div></div>
+    <div class="card"><div class="clabel">Selected Grants</div><div id="dsg" style="font-family:var(--mono);font-size:0.8rem;line-height:2;color:var(--text);">None selected — go to Grant Library.</div></div>
+  </div>
+  <div class="g3">
+    <div class="card" style="border-top:2px solid var(--amber);cursor:pointer" onclick="showPage('library')">
+      <div class="clabel" style="color:var(--amber)">Step 1</div>
+      <div class="card-title">Browse Grant Library</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65">16 grant programs — federal, state, and foundation. Select any that apply to your agency.</p>
+      <div class="flex mt2"><button class="btn bp">Open Library →</button></div>
+    </div>
+    <div class="card" style="border-top:2px solid var(--green);cursor:pointer" onclick="showPage('apply')">
+      <div class="clabel" style="color:var(--green)">Step 2</div>
+      <div class="card-title">My Applications</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65">Review selected grants, set parameters, and manage your active pipeline.</p>
+      <div class="flex mt2"><button class="btn bgrn">View Applications →</button></div>
+    </div>
+    <div class="card" style="border-top:2px solid var(--blue);cursor:pointer" onclick="showPage('gen');buildGen()">
+      <div class="clabel" style="color:var(--blue)">Step 3</div>
+      <div class="card-title">Generate All Narratives</div>
+      <p style="font-size:0.92rem;color:var(--text);line-height:1.65">Auto-fill agency info into every selected grant. Copy any narrative to paste into the portal.</p>
+      <div class="flex mt2"><button class="btn" style="background:rgba(96,165,250,0.14);border-color:rgba(96,165,250,0.5);color:#93C5FD">Generate All →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENCY PROFILE -->
+<div id="page-agency" class="page">
+  <div class="sh"><span class="sh-num">02</span><h2 class="sh-title">Agency Profile</h2></div>
+  <div class="intro">Fill this once. Every grant narrative auto-populates with your information instantly.</div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div class="clabel">Organization Info</div>
+        <div class="fg"><label class="fl">Agency / Organization Name</label><input class="fi" id="ag-name" placeholder="Suffolk Fire & Rescue" oninput="saveProfile()"></div>
+        <div class="fr"><div class="fg"><label class="fl">City</label><input class="fi" id="ag-city" placeholder="Suffolk" oninput="saveProfile()"></div><div class="fg"><label class="fl">State</label><input class="fi" id="ag-state" placeholder="Virginia" oninput="saveProfile()"></div></div>
+        <div class="fr"><div class="fg"><label class="fl">County / Jurisdiction</label><input class="fi" id="ag-county" placeholder="City of Suffolk" oninput="saveProfile()"></div>
+          <div class="fg"><label class="fl">Agency Type</label><select class="fs" id="ag-type" onchange="saveProfile()"><option>EMS / Fire Department</option><option>Emergency Management Office</option><option>EMS Education Program</option><option>Hospital / Health System</option><option>Small Business / LLC</option><option>Nonprofit Organization</option><option>State Agency</option></select></div></div>
+        <div class="fr"><div class="fg"><label class="fl">EIN (Tax ID)</label><input class="fi" id="ag-ein" placeholder="XX-XXXXXXX" oninput="saveProfile()"></div><div class="fg"><label class="fl">SAM.gov UEI</label><input class="fi" id="ag-uei" placeholder="12-char UEI" oninput="saveProfile()"></div></div>
+        <div class="fg"><label class="fl">Physical Address</label><input class="fi" id="ag-address" placeholder="123 Main St, Suffolk, VA 23434" oninput="saveProfile()"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb1">
+        <div class="clabel">Authorized Representative</div>
+        <div class="fr"><div class="fg"><label class="fl">Contact Name</label><input class="fi" id="ag-contact" placeholder="Dr. Carlos Cajares" oninput="saveProfile()"></div><div class="fg"><label class="fl">Title / Credentials</label><input class="fi" id="ag-title" placeholder="DHSc, NRP, EMS Director" oninput="saveProfile()"></div></div>
+        <div class="fr"><div class="fg"><label class="fl">Phone</label><input class="fi" id="ag-phone" placeholder="(757) 555-0000" oninput="saveProfile()"></div><div class="fg"><label class="fl">Email</label><input class="fi" id="ag-email" placeholder="ccajares@agency.edu" oninput="saveProfile()"></div></div>
+        <div class="fg"><label class="fl">Mission Statement</label><textarea class="ft" id="ag-mission" rows="3" placeholder="Describe the agency's core mission..." oninput="saveProfile()"></textarea></div>
+      </div>
+      <div class="card">
+        <div class="clabel">Demographic & Budget Data</div>
+        <div class="fr"><div class="fg"><label class="fl">Annual Operating Budget ($)</label><input class="fi" id="ag-budget" placeholder="2,500,000" oninput="saveProfile()"></div><div class="fg"><label class="fl">Personnel Count</label><input class="fi" id="ag-staff" placeholder="85" oninput="saveProfile()"></div></div>
+        <div class="fr"><div class="fg"><label class="fl">Population Served</label><input class="fi" id="ag-pop" placeholder="95,000" oninput="saveProfile()"></div><div class="fg"><label class="fl">Coverage Area</label><input class="fi" id="ag-area" placeholder="430 sq. miles" oninput="saveProfile()"></div></div>
+        <div class="fg"><label class="fl">Prior Federal Awards</label><textarea class="ft" id="ag-past" rows="2" placeholder="List any prior FEMA, DHS, or federal grants..." oninput="saveProfile()"></textarea></div>
+      </div>
+    </div>
+  </div>
+  <div class="flex mt2"><button class="btn bp" onclick="saveProfile();flashSave('Profile saved!')">💾 Save Profile</button><button class="btn bo" onclick="if(confirm('Clear?')){state.p={};saveState();loadProfile();}">Clear</button></div>
+</div>
+
+<!-- GRANT LIBRARY -->
+<div id="page-library" class="page">
+  <div class="sh"><span class="sh-num">03</span><h2 class="sh-title">Grant Library</h2></div>
+  <div class="intro">16 grant programs. Click <strong>+ Select</strong> on any grant to add it to your pipeline. Use filters to narrow by category. Narratives generate automatically from your Agency Profile.</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;">
+    <div class="filt-wrap" id="filters">
+      <button class="fb active" onclick="filterLib('all',this)">All (56)</button>
+      <button class="fb" onclick="filterLib('federal',this)">Federal</button>
+      <button class="fb" onclick="filterLib('state',this)">State / Virginia</button>
+      <button class="fb" onclick="filterLib('ems',this)">EMS / Fire</button>
+      <button class="fb" onclick="filterLib('health',this)">Healthcare</button>
+      <button class="fb" onclick="filterLib('nonprofit',this)">Nonprofit</button>
+      <button class="fb" onclick="filterLib('sbiz',this)">Small Business</button>
+      <button class="fb" onclick="filterLib('idd',this)">IDD / Disability</button>
+      <button class="fb" onclick="filterLib('ag',this)">Agriculture / Hort</button>
+      <button class="fb" onclick="filterLib('rural',this)">Rural Areas</button>
+      <button class="fb" onclick="filterLib('veterans',this)">Veterans</button>
+      <button class="fb" onclick="filterLib('minority',this)">Minorities</button>
+    </div>
+    <div class="flex"><button class="btn bgrn" onclick="selectAllVisible()">✓ Select All Visible</button><button class="btn bo" onclick="clearAll()">✕ Clear All</button></div>
+  </div>
+  <div class="lib-grid" id="lib-grid"></div>
+</div>
+
+<!-- MY APPLICATIONS -->
+<div id="page-apply" class="page">
+  <div class="sh"><span class="sh-num">04</span><h2 class="sh-title">My Applications</h2></div>
+  <div class="intro">Your selected grants. Set parameters for each, then generate all narratives at once.</div>
+  <div class="batch">
+    <div class="binfo"><span id="bpc">0</span> grants selected &nbsp;·&nbsp; Profile: <span id="bpp">Not filled</span></div>
+    <div class="flex">
+      <button class="btn bp" onclick="showPage('gen');buildGen()">⚡ Generate All Narratives</button>
+      <button class="btn bo" onclick="showPage('library')">+ Add More Grants</button>
+    </div>
+  </div>
+  <div id="app-list"><p style="font-family:var(--mono);font-size:0.78rem;color:#C0D4E8;padding:2rem 0">No grants selected. Go to the Grant Library to add grants.</p></div>
+</div>
+
+<!-- GENERATE NARRATIVES -->
+<div id="page-gen" class="page">
+  <div class="sh"><span class="sh-num">05</span><h2 class="sh-title">Generate Narratives</h2></div>
+  <div class="intro">All selected grants are auto-filled with your Agency Profile. Expand any section, copy the narrative, and paste into the official grant portal. Click ⚙ Params to customize per-grant details.</div>
+  <div class="flex mb2">
+    <button class="btn bp" onclick="buildGen()">🔄 Regenerate All</button>
+    <button class="btn" style="background:rgba(96,165,250,0.14);border-color:rgba(96,165,250,0.5);color:#93C5FD" onclick="openDocPreview()">👁 Preview Full Document</button>
+    <button class="btn bo" onclick="copyAll()">📋 Copy All</button>
+    <button class="btn bo" onclick="showPage('library')">+ Add Grants</button>
+  </div>
+  <div id="gen-container"><p style="font-family:var(--mono);font-size:0.78rem;color:#C0D4E8;padding:2rem 0">Select grants from the library, then click Regenerate All.</p></div>
+</div>
+
+<!-- SUBMISSION TRACKER -->
+<div id="page-tracker" class="page">
+  <div class="sh"><span class="sh-num">06</span><h2 class="sh-title">Submission Tracker</h2></div>
+  <div class="intro">Log every submission. Your single source of truth for all grant activity.</div>
+  <div class="flex mb2"><button class="btn bp" onclick="openAdd()">+ Add Entry</button><button class="btn bo" onclick="expCSV()">⬇ Export CSV</button></div>
+  <div style="overflow-x:auto"><table class="dt" id="dtbl"><thead><tr><th>Grant</th><th>Agency</th><th>FY</th><th>Amount</th><th>Deadline</th><th>Submitted</th><th>Status</th><th>Award</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+
+<!-- DEADLINE CALENDAR -->
+<div id="page-timeline" class="page">
+  <div class="sh"><span class="sh-num">07</span><h2 class="sh-title">Deadline Calendar</h2></div>
+  <div class="intro">All grant deadlines. Dates marked (est.) are based on historical patterns — verify with the funder. Click any date to override it.</div>
+  <div class="flex mb2">
+    <button class="yb active" onclick="setYr(2026,this)">2026</button>
+    <button class="yb" onclick="setYr(2027,this)">2027</button>
+  </div>
+  <div id="tl-grid"></div>
+</div>
+
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-ov" id="addMod"><div class="modal">
+  <div class="mh"><div class="mt" id="mod-title">Add Submission</div><button class="mc" onclick="closeMod('addMod')">✕</button></div>
+  <div class="mb_">
+    <div class="fr"><div class="fg"><label class="fl">Grant Name</label><input class="fi" id="m-grant" list="gl" placeholder="EMPG, BRIC, etc."><datalist id="gl"></datalist></div><div class="fg"><label class="fl">Fiscal Year</label><input class="fi" id="m-fy" placeholder="FY2026"></div></div>
+    <div class="fg"><label class="fl">Agency / Applicant</label><input class="fi" id="m-agency"></div>
+    <div class="fr"><div class="fg"><label class="fl">Amount Requested ($)</label><input class="fi" id="m-amount" placeholder="75,000"></div><div class="fg"><label class="fl">Deadline</label><input class="fi" type="date" id="m-deadline"></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Date Submitted</label><input class="fi" type="date" id="m-sub"></div><div class="fg"><label class="fl">Status</label><select class="fs" id="m-status"><option>Not Started</option><option>In Progress</option><option>Submitted</option><option>Under Review</option><option>Awarded</option><option>Denied</option><option>Withdrawn</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Award Amount ($)</label><input class="fi" id="m-award" placeholder="If awarded"></div><div class="fg"><label class="fl">Funder POC</label><input class="fi" id="m-poc"></div></div>
+    <div class="fg"><label class="fl">Notes</label><textarea class="ft" id="m-notes" rows="3"></textarea></div>
+    <div class="flex"><button class="btn bp" onclick="saveEntry()">Save</button><button class="btn bo" onclick="closeMod('addMod')">Cancel</button></div>
+  </div>
+</div></div>
+
+<!-- PARAMS MODAL -->
+<div class="modal-ov" id="paramsMod"><div class="modal">
+  <div class="mh"><div class="mt" id="pm-title">Grant Parameters</div><button class="mc" onclick="closeMod('paramsMod')">✕</button></div>
+  <div class="mb_" id="pm-body"></div>
+</div></div>
+
+<!-- EXPORT MENU MODAL -->
+<div class="modal-ov" id="expMenuMod"><div class="modal" style="max-width:420px">
+  <div class="mh"><div class="mt">Export Options</div><button class="mc" onclick="closeMod('expMenuMod')">✕</button></div>
+  <div class="mb_">
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:#A8C8E4;margin-bottom:1.2rem;line-height:1.6">On mobile, tap an option below. If the file doesn't download automatically, the text will open so you can copy it.</p>
+    <div style="display:flex;flex-direction:column;gap:0.8rem">
+      <button class="btn bp" style="width:100%;padding:0.8rem;font-size:0.72rem;text-align:left" onclick="closeMod('expMenuMod');exportAll()">
+        💾 &nbsp;Full Backup (JSON) — profile, grants, submissions
+      </button>
+      <button class="btn bgrn" style="width:100%;padding:0.8rem;font-size:0.72rem;text-align:left" onclick="closeMod('expMenuMod');exportNarratives()">
+        📄 &nbsp;All Selected Narratives (TXT) — copy into grant portals
+      </button>
+      <button class="btn bo" style="width:100%;padding:0.8rem;font-size:0.72rem;text-align:left" onclick="closeMod('expMenuMod');expCSV()">
+        📊 &nbsp;Submission Tracker (CSV) — open in Excel or Sheets
+      </button>
+    </div>
+  </div>
+</div></div>
+
+<!-- EXPORT FALLBACK MODAL (iOS) -->
+<div class="modal-ov" id="exportMod"><div class="modal">
+  <div class="mh">
+    <div>
+      <div class="mt">Export Ready</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:#A8C8E4;margin-top:0.2rem" id="exp-filename">file.txt</div>
+    </div>
+    <button class="mc" onclick="closeMod('exportMod')">✕</button>
+  </div>
+  <div class="mb_">
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:#A8C8E4;margin-bottom:1rem;line-height:1.6">Your browser blocked the automatic download. Tap <strong style="color:#FCD34D">Copy All</strong> below, then paste into Notes, Gmail, or any app to save.</p>
+    <div class="flex mb1">
+      <button class="btn bp" onclick="copyExportContent()">📋 Copy All Content</button>
+      <button class="btn bo" onclick="closeMod('exportMod')">Close</button>
+    </div>
+    <textarea id="exp-content" style="width:100%;height:280px;background:#040A12;border:1px solid rgba(245,158,11,0.25);color:#D4E4F4;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:1rem;resize:none;line-height:1.7;outline:none" readonly></textarea>
+  </div>
+</div></div>
+
+<script>
+// ── GRANT LIBRARY DATA ──────────────────────────────────
+const GRANTS=[
+  {id:'empg',name:'EMPG',full:'Emergency Management Performance Grant',funder:'FEMA / VDEM',award:'$10K–$500K',color:'#F59E0B',cats:['federal','ems'],desc:'Annual federal grant for local emergency management — exercises, planning, training, equipment. Requires 50/50 cost-share match.',dl26:'2026-04-15',dl27:'2027-04-15',portal:'vdem.virginia.gov',note:'Submit through VDEM. Verify current NOFO each year.',params:['fy','amount','match','period','activity','exercises','details']},
+  {id:'bric',name:'BRIC',full:'Building Resilient Infrastructure & Communities',funder:'FEMA',award:'$50K–$1M+',color:'#10B981',cats:['federal','ems'],desc:'Pre-disaster mitigation grant. Funds hazard mitigation projects and capability-building. No cost-share required for capability activities.',dl26:'2026-01-31',dl27:'2027-01-31',portal:'fema.gov/grants/mitigation/bric',note:'FY2026 cycle opened Oct 2025.',params:['fy','amount','project','hazard','bcr','details']},
+  {id:'uasi',name:'UASI/HSGP',full:'Urban Area Security Initiative / Homeland Security Grant Program',funder:'DHS/FEMA via VDEM',award:'Varies by region',color:'#3B82F6',cats:['federal','ems'],desc:'Homeland security grant for high-risk urban areas. Funds MCI exercises, CBRNE training, multi-agency coordination. Hampton Roads is a designated UASI area.',dl26:'2026-05-01',dl27:'2027-05-01',portal:'vdem.virginia.gov',note:'Submit Investment Justification through VDEM.',params:['fy','amount','area','capability','threat','partners']},
+  {id:'sbir',name:'SBIR/STTR',full:'Small Business Innovation Research / Technology Transfer',funder:'DHS / FEMA',award:'$275K (Phase I) · $1.75M (II)',color:'#8B5CF6',cats:['federal','sbiz'],desc:'Federal R&D funding for small businesses. MCI Exercise HUB qualifies under emergency preparedness tech topics. Two DHS solicitation cycles per year.',dl26:'2026-06-15',dl27:'2027-06-15',portal:'sbir.gov',note:'Check dhs.gov/sbir for open solicitations. Register at SAM.gov first.',params:['phase','year','topic','company','pi','innovation']},
+  {id:'phep',name:'PHEP',full:'Public Health Emergency Preparedness Cooperative Agreement',funder:'CDC via VDH',award:'$50K–$300K',color:'#14B8A6',cats:['federal','health'],desc:'CDC funding for public health emergency preparedness capabilities. Supports MCI and mass casualty response planning and exercises at the jurisdiction level.',dl26:'2026-03-30',dl27:'2027-03-30',portal:'cdc.gov/phpr/phep',note:'Flows through State Health Dept. Contact Virginia Dept of Health (VDH).',params:['fy','amount','capability','details']},
+  {id:'nsgp',name:'NSGP',full:'Nonprofit Security Grant Program',funder:'DHS / FEMA',award:'$50K–$150K',color:'#F97316',cats:['federal','nonprofit'],desc:'Security enhancement grants for nonprofits at elevated risk of attack. Eligible if your nonprofit organization demonstrates a credible threat.',dl26:'2026-04-30',dl27:'2027-04-30',portal:'fema.gov/grants/preparedness/nonprofit',note:'Must demonstrate elevated risk. Apply via VDEM.',params:['fy','amount','riskDesc','securityProject','details']},
+  {id:'stopbleed',name:'Stop the Bleed',full:'Stop the Bleed / ACS Foundation Training Grant',funder:'American College of Surgeons',award:'$2K–$25K',color:'#EF4444',cats:['health','nonprofit','ems'],desc:'Funding to expand bleeding control training programs. Supports kits, instructor certification, and community outreach. Excellent fit for EMS education programs.',dl26:'2026-07-31',dl27:'2027-07-31',portal:'bleedingcontrol.org/grants',note:'Rolling applications. Small grants with fast turnaround.',params:['amount','trainees','trainers','community','details']},
+  {id:'empgs',name:'EMPG-S',full:'Emergency Management Performance Grant — Supplement',funder:'FEMA / VDEM',award:'$5K–$75K',color:'#F59E0B',cats:['federal','ems'],desc:'Supplemental EMPG funding issued in select years for specific priority activities. Check current NOFO for availability and allowable costs.',dl26:'2026-05-15',dl27:'2027-05-15',portal:'vdem.virginia.gov',note:'Not available every year. Check current FEMA NOFO before applying.',params:['fy','amount','activity','details']},
+  {id:'hrsa',name:'HRSA Rural',full:'HRSA Rural Health Outreach / Rural EMS Grant',funder:'HRSA (HHS)',award:'$150K–$500K',color:'#14B8A6',cats:['federal','health','ems'],desc:'Health Resources & Services Administration grant for rural health systems. Strong fit for CAMP EMS serving rural localities like Franklin and Isle of Wight.',dl26:'2026-07-15',dl27:'2027-07-15',portal:'hrsa.gov/grants/find-funding',note:'Rural designation required. Use HRSA FIND tool to verify eligibility.',params:['fy','amount','ruralArea','project','details']},
+  {id:'byrne',name:'Byrne JAG',full:'Edward Byrne Memorial Justice Assistance Grant',funder:'DOJ / Bureau of Justice Assistance',award:'$20K–$200K',color:'#3B82F6',cats:['federal','ems'],desc:'Broad-purpose public safety grant. Funds training, equipment, and technology for multi-agency first responder programs. Local direct and state-administered tracks.',dl26:'2026-08-01',dl27:'2027-08-01',portal:'bja.ojp.gov/funding/jag-program',note:'Local direct and state-administered tracks available.',params:['fy','amount','purpose','details']},
+  {id:'vdem',name:'VDEM State EM',full:'Virginia VDEM Supplemental Emergency Management Funding',funder:'Virginia VDEM',award:'$5K–$100K',color:'#F97316',cats:['state','ems'],desc:'Virginia-specific supplemental funding for local emergency management programs. Awarded through VDEM regional coordinators.',dl26:'2026-03-31',dl27:'2027-03-31',portal:'vdem.virginia.gov/grants',note:'Contact your VDEM Regional Coordinator for current cycles.',params:['fy','amount','activity','details']},
+  {id:'vsbdc',name:'VSBDC / SBA',full:'Virginia Small Business Development Center / SBA Programs',funder:'SBA / VSBDC',award:'$2K–$50K',color:'#8B5CF6',cats:['state','sbiz'],desc:'Small business support programs including grants, micro-loans, and free technical assistance. Relevant for MCI Exercise HUB LLC launch and growth.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'vsbdc.org',note:'Rolling — no hard deadline. VSBDC counseling is always free.',params:['amount','businessPurpose','details']},
+  {id:'naemse',name:'NAEMSE Fdn',full:'National Association of EMS Educators Foundation Grant',funder:'NAEMSE Foundation',award:'$500–$5,000',color:'#F59E0B',cats:['ems','nonprofit'],desc:'Small grants for EMS education program improvement — curriculum development, simulation equipment, faculty development. Strong fit for CAMP EMS.',dl26:'2026-09-01',dl27:'2027-09-01',portal:'naemse.org/foundation',note:'Annual grant cycle. NAEMSE membership recommended.',params:['amount','project','eduImpact','details']},
+  {id:'emsstrong',name:'EMS Strong',full:'National EMS Foundation Grant',funder:'National EMS Foundation',award:'$1K–$10K',color:'#10B981',cats:['ems','nonprofit'],desc:'Grants supporting EMS providers and programs nationwide — scholarships, equipment, and training programs for certified EMS agencies and education programs.',dl26:'2026-10-15',dl27:'2027-10-15',portal:'nationalemsfoundation.org',note:'Multiple grant categories. Apply per eligibility.',params:['amount','purpose','details']},
+  {id:'cdc',name:'CDC PHPR',full:'CDC Public Health Preparedness & Response Training Grant',funder:'CDC / ASTHO',award:'$25K–$200K',color:'#14B8A6',cats:['federal','health'],desc:'CDC funding for public health and medical preparedness training. Supports hospital, EMS, and public health workforce exercises and continuing education.',dl26:'2026-06-30',dl27:'2027-06-30',portal:'cdc.gov/ophpr',note:'Flows through ASTHO and state health departments.',params:['fy','amount','trainingFocus','details']},
+  {id:'titleiii',name:'Title III HM',full:'Stafford Act Section 203 / Title III Hazard Mitigation',funder:'FEMA / State',award:'$10K–$250K',color:'#3B82F6',cats:['federal','ems'],desc:'Hazard mitigation planning grants. Funds local and multi-jurisdictional hazard mitigation plan updates, exercises, and capability projects.',dl26:'2026-09-30',dl27:'2027-09-30',portal:'fema.gov/grants/mitigation',note:'Administered through VDEM Hazard Mitigation Office.',params:['fy','amount','planType','details']},
+
+  // ── INTELLECTUAL DISABILITY & NONPROFIT GRANTS ──
+  {id:'acl_dd',name:'ACL / ADD',full:'Administration for Community Living — Developmental Disabilities Programs',funder:'HHS / ACL',award:'$50K–$750K',color:'#EC4899',cats:['federal','idd','nonprofit'],desc:'Federal grants under the Developmental Disabilities Act for programs supporting people with intellectual and developmental disabilities. Funds advocacy, community inclusion, workforce, and direct service programs.',dl26:'2026-06-01',dl27:'2027-06-01',portal:'acl.gov/programs/aging-and-disability-networks',note:'Multiple funding tracks: DD Councils, UCEDDs, P&As. Contact Virginia DBHDS for state application.',params:['fy','amount','programType','popServed','details']},
+
+  {id:'dbhds',name:'VA DBHDS',full:'Virginia Dept of Behavioral Health & Developmental Services Grant',funder:'Virginia DBHDS',award:'$10K–$200K',color:'#8B5CF6',cats:['state','idd','nonprofit'],desc:'Virginia state grants for organizations serving individuals with intellectual and developmental disabilities. Funds community integration, day support, employment, and family services programs.',dl26:'2026-05-01',dl27:'2027-05-01',portal:'dbhds.virginia.gov/developmental-services',note:'Contact your DBHDS regional office. Funding tied to state budget cycles.',params:['fy','amount','serviceType','popServed','details']},
+
+  {id:'arc',name:'The Arc Fdn',full:'The Arc of the United States Foundation Grant',funder:'The Arc Foundation',award:'$5K–$50K',color:'#10B981',cats:['nonprofit','idd'],desc:'Grants for nonprofits serving people with intellectual and developmental disabilities. Funds community inclusion, advocacy, and quality-of-life programs. The Arc of Virginia is the state affiliate.',dl26:'2026-08-15',dl27:'2027-08-15',portal:'thearc.org/our-initiatives/grants',note:'Contact The Arc of Virginia (thearcofva.org) for state-level opportunities.',params:['amount','project','popServed','details']},
+
+  {id:'usda_cf',name:'USDA Comm Fac',full:'USDA Community Facilities Direct Loan & Grant Program',funder:'USDA Rural Development',award:'$10K–$500K',color:'#16A34A',cats:['federal','nonprofit','idd'],desc:"USDA grants for essential community facilities in rural areas. Funds construction, renovation, and equipment for facilities that serve people with disabilities — including therapeutic community gardens and day programs. Strong fit for Lita's Friends.",dl26:'2026-07-01',dl27:'2027-07-01',portal:'rd.usda.gov/programs-services/community-facilities',note:'Requires rural designation. Suffolk/Franklin area likely qualifies. Contact USDA Virginia State Office.',params:['amount','facilityType','ruralArea','popServed','details']},
+
+  {id:'nidilrr',name:'NIDILRR',full:'National Institute on Disability, Independent Living & Rehabilitation Research',funder:'HHS / ACL',award:'$100K–$500K',color:'#0EA5E9',cats:['federal','idd'],desc:'Federal research and demonstration grants improving outcomes for people with disabilities. Funds innovative programs, assistive technology, and inclusive community models. Competitive but highly prestigious.',dl26:'2026-09-15',dl27:'2027-09-15',portal:'acl.gov/programs/research-context/nidilrr',note:'Highly competitive federal research grant. Partnering with a university strengthens applications.',params:['fy','amount','researchFocus','partners','details']},
+
+  {id:'weinberg',name:'Weinberg Fdn',full:'Harry & Jeanette Weinberg Foundation — Disability Services',funder:'Harry & Jeanette Weinberg Foundation',award:'$25K–$250K',color:'#F59E0B',cats:['nonprofit','idd'],desc:'Large private foundation funding nonprofits that improve quality of life for people with disabilities. Supports direct services, employment, housing, and community programs. Accepts letters of inquiry year-round.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'hjweinbergfoundation.org',note:'Submit Letter of Inquiry first. Focus on Baltimore/MD region but funds national orgs with presence.',params:['amount','project','popServed','details']},
+
+  {id:'ancor',name:'ANCOR Fdn',full:'ANCOR Foundation — Disability Services Nonprofit Grant',funder:'ANCOR Foundation',award:'$5K–$25K',color:'#EC4899',cats:['nonprofit','idd'],desc:'Grants for community nonprofit organizations providing direct support to people with intellectual and developmental disabilities. Supports workforce development, program innovation, and direct service improvements.',dl26:'2026-10-01',dl27:'2027-10-01',portal:'ancorfoundation.org',note:'ANCOR membership preferred. Rolling applications. Annual grant cycle.',params:['amount','project','popServed','details']},
+
+  {id:'rwjf',name:'RWJF Disability',full:'Robert Wood Johnson Foundation — Disability Health & Inclusion',funder:'Robert Wood Johnson Foundation',award:'$50K–$500K',color:'#EF4444',cats:['nonprofit','idd','health'],desc:'RWJF funds initiatives that improve health equity and community inclusion for people with disabilities. Supports inclusive programs, health access, and systems change. Letters of inquiry accepted year-round.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'rwjf.org/en/grants',note:'Submit LOI before full proposal. Focus on health equity, inclusion, and systems change.',params:['amount','project','healthFocus','popServed','details']},
+
+  {id:'sol_va',name:'Special Olympics VA',full:'Special Olympics Virginia Healthy Communities Grant',funder:'Special Olympics Virginia',award:'$1K–$15K',color:'#F97316',cats:['nonprofit','idd'],desc:'Grants supporting inclusive sports, recreation, and health programs for individuals with intellectual disabilities in Virginia. Ideal for community organizations adding adaptive or inclusive programming.',dl26:'2026-06-30',dl27:'2027-06-30',portal:'specialolympicsva.org',note:'Contact Special Olympics Virginia directly for current grant cycles and eligibility.',params:['amount','programType','participants','community','details']},
+
+  {id:'lidf',name:'Litas Friends Ready',full:'Community Garden & Inclusion Program — Foundation Grants',funder:'Multiple Foundations',award:'$2K–$50K',color:'#84CC16',cats:['nonprofit','idd','ag'],desc:'Bundle of small foundation grants ideal for community garden programs serving individuals with developmental disabilities — including AHS Horticultural Therapy grants, Virginia Community Foundation, and JABA Foundation. Each supports therapeutic community programming.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'vacommunityfoundation.org',note:"Virginia Community Foundation: apply through local affiliate. AHS: ahsgarden.org/grants. JABA: jabacares.org.",params:['amount','gardenProgram','popServed','partners','details']},
+
+  // ── AGRICULTURE & HORTICULTURE GRANTS ──
+  {id:'usda_rbg',name:'USDA RBEG',full:'USDA Rural Business Enterprise Grant',funder:'USDA Rural Development',award:'$10K–$500K',color:'#65A30D',cats:['federal','ag'],desc:'Funds projects that support small and emerging businesses in rural areas, including agricultural enterprises, farm markets, food hubs, and agri-tourism. Excellent for rural Virginia farm or garden operations.',dl26:'2026-06-15',dl27:'2027-06-15',portal:'rd.usda.gov/programs-services/business-programs/rural-business-enterprise-grants',note:'Apply through USDA Virginia Rural Development state office. Rolling applications.',params:['fy','amount','businessType','ruralArea','details']},
+
+  {id:'usda_rbp',name:'USDA RBDG',full:'USDA Rural Business Development Grant',funder:'USDA Rural Development',award:'$10K–$500K',color:'#4D7C0F',cats:['federal','ag'],desc:'Supports targeted technical assistance, training, and other activities to stimulate rural economic development and job creation. Funds agricultural training programs, cooperative development, and farm business planning.',dl26:'2026-07-01',dl27:'2027-07-01',portal:'rd.usda.gov/programs-services/business-programs/rural-business-development-grants',note:'Contact USDA Virginia Rural Development. Targeted grants for smaller orgs under $1M revenue.',params:['fy','amount','trainingProgram','ruralArea','details']},
+
+  {id:'usda_sare',name:'USDA SARE',full:'Sustainable Agriculture Research & Education Grant',funder:'USDA / SARE',award:'$5K–$250K',color:'#84CC16',cats:['federal','ag'],desc:'Highly competitive federal grant for sustainable agriculture research, education, and outreach. Funds farmer-led research, cover crops, integrated pest management, organic transitions, and agri-education programs.',dl26:'2026-03-01',dl27:'2027-03-01',portal:'sare.org/grants',note:'Multiple tracks: Farmer/Rancher, Research & Education, Professional Development. SARE Southern Region covers Virginia.',params:['fy','amount','researchTopic','farmType','details']},
+
+  {id:'usda_snap_ed',name:'SNAP-Ed',full:'USDA SNAP Education / Nutrition Incentive Grant',funder:'USDA / FNS',award:'$25K–$300K',color:'#65A30D',cats:['federal','ag','nonprofit'],desc:'Funds nutrition education and healthy food access programs, including community gardens, farm-to-table initiatives, and food literacy programs serving low-income populations. Strong fit for therapeutic garden programs.',dl26:'2026-04-01',dl27:'2027-04-01',portal:'snaped.fns.usda.gov',note:'Administered through Virginia Dept of Health. Contact VDH for state implementation plan alignment.',params:['fy','amount','nutritionFocus','community','details']},
+
+  {id:'usda_farmers_mkt',name:'USDA FMPP',full:'USDA Farmers Market Promotion Program',funder:'USDA / AMS',award:'$50K–$500K',color:'#A3E635',cats:['federal','ag'],desc:'Funds projects that establish, expand, and promote direct producer-to-consumer agricultural markets — farmers markets, roadside stands, community-supported agriculture (CSA), agri-tourism, and online markets.',dl26:'2026-05-01',dl27:'2027-05-01',portal:'ams.usda.gov/grants/fmpp',note:'Competitive federal grant. Applications via Grants.gov. Strong narrative on market impact needed.',params:['fy','amount','marketType','producersServed','details']},
+
+  {id:'vdacs',name:'VDACS Grants',full:'Virginia Dept of Agriculture & Consumer Services Grant Programs',funder:'Virginia VDACS',award:'$5K–$100K',color:'#84CC16',cats:['state','ag'],desc:'Multiple Virginia state agriculture grants including the Virginia Agriculture Development Fund, Buy Local Challenge, and Specialty Crop Block Grant. Supports local food systems, specialty crops, and agri-business development in Virginia.',dl26:'2026-06-30',dl27:'2027-06-30',portal:'vdacs.virginia.gov/agriculture-development-grants',note:'Multiple programs with different cycles. Contact VDACS Office of Ag Development for current NOFOs.',params:['fy','amount','programTrack','cropType','details']},
+
+  {id:'scbg',name:'SCBG',full:'USDA Specialty Crop Block Grant Program',funder:'USDA / AMS via VDACS',award:'$10K–$200K',color:'#4D7C0F',cats:['federal','state','ag'],desc:'Enhances competitiveness of specialty crops — fruits, vegetables, tree nuts, dried fruits, horticulture, and nursery crops. Virginia passes through federal funds via VDACS. Strong fit for horticultural therapy gardens and specialty producers.',dl26:'2026-04-15',dl27:'2027-04-15',portal:'vdacs.virginia.gov/specialty-crop-block-grant',note:'Apply through VDACS. Priority given to projects benefiting specialty crop industry broadly.',params:['fy','amount','cropType','projectGoal','details']},
+
+  {id:'ahs_hort',name:'AHS Hort Grant',full:'American Horticultural Society — Horticultural Therapy & Education Grant',funder:'American Horticultural Society',award:'$1K–$10K',color:'#65A30D',cats:['nonprofit','ag','idd'],desc:'Supports horticultural therapy programs, community gardens, and garden-based education. Ideal for programs using gardening as therapeutic intervention for individuals with disabilities, veterans, or at-risk populations.',dl26:'2026-09-01',dl27:'2027-09-01',portal:'ahsgardening.org/grants',note:'Annual cycle. Strong fit for Litas Friends garden program. Narrative should emphasize therapeutic outcomes.',params:['amount','therapyFocus','popServed','gardenType','details']},
+
+  {id:'ahta',name:'AHTA Grant',full:'American Horticultural Therapy Association Project Grant',funder:'AHTA Foundation',award:'$500–$5,000',color:'#84CC16',cats:['nonprofit','ag','idd'],desc:'Small project grants advancing the field of horticultural therapy. Funds program development, research, training, and demonstration projects that use plants and gardening as therapeutic treatment.',dl26:'2026-10-15',dl27:'2027-10-15',portal:'ahta.org/grants',note:'AHTA membership recommended. Small but prestigious. Apply early — competitive.',params:['amount','therapyProject','population','outcomes','details']},
+
+  {id:'ncg_hort',name:'National Garden Clubs',full:'National Garden Clubs — Civic Improvement & Therapy Garden Grant',funder:'National Garden Clubs / Virginia Federation',award:'$500–$5,000',color:'#A3E635',cats:['nonprofit','ag'],desc:'Grants for community beautification, therapeutic gardens, environmental education, and civic garden projects. The Virginia Federation of Garden Clubs administers state-level awards. Excellent entry-level grant for new garden programs.',dl26:'2026-03-15',dl27:'2027-03-15',portal:'gardenclub.org/grants',note:'Apply through Virginia Federation of Garden Clubs. Local garden club sponsorship strongly preferred.',params:['amount','gardenProject','community','civicImpact','details']},
+
+  {id:'va_growva',name:'Grow VA Fund',full:'Virginia Agriculture Development Fund — Grow Virginia',funder:'Virginia VDACS / General Assembly',award:'$10K–$150K',color:'#4D7C0F',cats:['state','ag'],desc:'Virginia-specific fund supporting value-added agriculture, agri-tourism, local food system infrastructure, and innovative farm programs. Designed to grow Virginia agriculture revenue and expand market access.',dl26:'2026-07-31',dl27:'2027-07-31',portal:'vdacs.virginia.gov/agriculture-development-grants',note:'Competitive Virginia state grant. Strong preference for projects with measurable economic impact on VA agriculture.',params:['fy','amount','projectType','econImpact','details']},
+
+  {id:'usda_lfpp',name:'USDA LFPP',full:'USDA Local Food Promotion Program',funder:'USDA / AMS',award:'$25K–$500K',color:'#65A30D',cats:['federal','ag','nonprofit'],desc:'Funds planning and implementation of local and regional food systems — including food hubs, aggregation centers, cooperative marketing, and value-added processing. Strong fit for farm-to-institution programs serving schools or nonprofits.',dl26:'2026-05-15',dl27:'2027-05-15',portal:'ams.usda.gov/grants/lfpp',note:'Two tracks: Planning ($25K–$100K) and Implementation ($100K–$500K). Apply via Grants.gov.',params:['fy','amount','foodSystemType','partnersServed','details']},
+
+  // ── RURAL AREA GRANTS ──
+  {id:'usda_rdcf',name:'USDA RD Comm Fac',full:'USDA Rural Development Community Facilities Grant',funder:'USDA Rural Development',award:'$10K–$750K',color:'#0EA5E9',cats:['federal','rural'],desc:'Funds essential community facilities in rural areas — healthcare, public safety, education, childcare, and social services. Covers new construction, renovation, and equipment. The most broadly applicable USDA rural grant.',dl26:'2026-07-01',dl27:'2027-07-01',portal:'rd.usda.gov/programs-services/community-facilities',note:'Contact USDA Virginia Rural Development State Office. Applications accepted year-round. Rural population threshold applies.',params:['fy','amount','facilityType','ruralArea','popServed','details']},
+
+  {id:'usda_rdhf',name:'USDA Rural Housing',full:'USDA Rural Housing & Community Development Service Grant',funder:'USDA Rural Development',award:'$10K–$500K',color:'#0284C7',cats:['federal','rural'],desc:'Supports affordable housing, self-help housing, and community development in rural America. Funds housing rehabilitation, rural rental assistance, and community development financial institutions in underserved rural areas.',dl26:'2026-06-01',dl27:'2027-06-01',portal:'rd.usda.gov/programs-services/housing-programs',note:'Multiple tracks. Virginia rural communities with populations under 35,000 are eligible.',params:['fy','amount','housingType','ruralArea','details']},
+
+  {id:'usda_rbe',name:'USDA ReConnect',full:'USDA ReConnect Broadband Infrastructure Grant',funder:'USDA Rural Development',award:'$25K–$25M',color:'#38BDF8',cats:['federal','rural'],desc:'Funds broadband infrastructure in rural communities currently lacking sufficient service. Critical for telehealth, remote education, EMS communications, and rural economic development.',dl26:'2026-06-30',dl27:'2027-06-30',portal:'usda.gov/reconnect',note:'Highly competitive. Requires speed and coverage eligibility verification. Contact USDA RD Virginia.',params:['fy','amount','broadbandType','ruralArea','details']},
+
+  {id:'appalachian',name:'ARC Grant',full:'Appalachian Regional Commission Area Development Grant',funder:'Appalachian Regional Commission',award:'$50K–$2M',color:'#0EA5E9',cats:['federal','rural'],desc:'ARC funds projects in Appalachian counties addressing infrastructure, economic development, workforce, healthcare, and education. Virginia has 24 ARC-eligible counties including several in Southwest Virginia EMS service areas.',dl26:'2026-05-01',dl27:'2027-05-01',portal:'arc.gov/funding-opportunities',note:'Only available in ARC-designated Virginia counties. Contact Virginia ARC state program at dhcd.virginia.gov.',params:['fy','amount','projectType','appalachianCounty','details']},
+
+  {id:'va_dhcd',name:'VA DHCD',full:'Virginia Dept of Housing & Community Development — Community Development Block Grant',funder:'Virginia DHCD / HUD',award:'$50K–$750K',color:'#0284C7',cats:['state','rural'],desc:'Federal Community Development Block Grant (CDBG) funds administered through Virginia DHCD for rural and small cities. Supports housing, public facilities, economic development, and public services benefiting low-to-moderate income residents.',dl26:'2026-03-01',dl27:'2027-03-01',portal:'dhcd.virginia.gov/community-development-block-grant',note:'Two cycles: Community Development and Vibrant Communities. Strong preference for LMI benefit documentation.',params:['fy','amount','projectType','lmiBenefit','ruralArea','details']},
+
+  {id:'usda_hrip',name:'USDA HRIP',full:'USDA High Energy Cost Rural Community Grant',funder:'USDA Rural Utilities Service',award:'$100K–$5M',color:'#38BDF8',cats:['federal','rural'],desc:'Addresses high energy costs in rural communities by funding energy infrastructure upgrades, renewable energy systems, and energy efficiency improvements in community facilities.',dl26:'2026-08-01',dl27:'2027-08-01',portal:'rd.usda.gov/programs-services/electric-programs/high-energy-cost-grant-program',note:'Targeted to rural communities with above-average energy costs. Contact USDA Rural Utilities Service.',params:['fy','amount','energyProject','ruralArea','details']},
+
+  {id:'va_rural_health',name:'VA Rural Health',full:'Virginia Office of Rural Health — Rural Health Network Grant',funder:'Virginia DMAS / ORHPC',award:'$25K–$250K',color:'#0EA5E9',cats:['state','rural','health'],desc:'Funds rural health networks, telehealth expansion, EMS capacity building, and healthcare workforce development in rural Virginia. Directly aligned with CAMP EMS rural service areas.',dl26:'2026-04-15',dl27:'2027-04-15',portal:'vdh.virginia.gov/rural-health',note:'Contact Virginia Office of Rural Health Policy and Communications (ORHPC). Priority to critical access areas.',params:['fy','amount','healthProgram','ruralArea','details']},
+
+  // ── VETERANS GRANTS ──
+  {id:'va_grants',name:'VA Supportive Svcs',full:'VA Supportive Services for Veteran Families Grant',funder:'Dept of Veterans Affairs',award:'$50K–$500K',color:'#1D4ED8',cats:['federal','veterans'],desc:'Funds services to prevent homelessness and support very low-income veteran families in transitional or permanent housing — case management, transportation, childcare, mental health, and employment services.',dl26:'2026-05-01',dl27:'2027-05-01',portal:'va.gov/homeless/ssvf/index.asp',note:'Annual competitive grant. Must be incorporated nonprofit. Contact VA SSVF program office.',params:['fy','amount','veteranService','veteransServed','details']},
+
+  {id:'dav_grant',name:'DAV Fdn Grant',full:'Disabled American Veterans Foundation Grant',funder:'DAV Foundation',award:'$5K–$50K',color:'#1E40AF',cats:['nonprofit','veterans'],desc:'Supports programs serving disabled veterans — rehabilitation, mobility, mental health, employment, and community integration. Open to nonprofits with demonstrated direct veteran services.',dl26:'2026-09-30',dl27:'2027-09-30',portal:'dav.org/learn-more/grants',note:'Rolling applications. Must demonstrate direct benefit to disabled veterans. DAV chapter engagement helpful.',params:['amount','veteranProgram','veteransServed','details']},
+
+  {id:'vvf',name:'Virginia Vets Fdn',full:'Virginia Veterans Foundation Grant',funder:'Virginia Veterans Foundation',award:'$2K–$25K',color:'#2563EB',cats:['state','veterans'],desc:'Virginia-specific foundation supporting veterans programs including mental health, vocational training, adaptive recreation, and emergency assistance. Administered through the Virginia Dept of Veterans Services.',dl26:'2026-06-30',dl27:'2027-06-30',portal:'dvs.virginia.gov',note:'Contact Virginia Dept of Veterans Services. Priority to Virginia-based nonprofits serving Virginia veterans.',params:['amount','veteranProgram','veteransServed','vaCounty','details']},
+
+  {id:'pcori_vets',name:'Cohen Veterans Network',full:'Cohen Veterans Network Behavioral Health Clinic Grant',funder:'Steven A. Cohen Military Family Foundation',award:'$100K–$1M',color:'#1D4ED8',cats:['nonprofit','veterans','health'],desc:'Funds mental health clinics and behavioral health services for post-9/11 veterans and military families. High-value grant for organizations expanding veteran mental health access in underserved communities.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'cohenveteransnetwork.org',note:'Submit letter of inquiry. Focus on post-9/11 service members and families. Competitive.',params:['amount','mhProgram','veteransServed','details']},
+
+  {id:'uso_grant',name:'USO Grant',full:'USO / Walmart Foundation Military Family Grant',funder:'USO / Walmart Foundation',award:'$5K–$50K',color:'#2563EB',cats:['nonprofit','veterans'],desc:'Funds programs supporting military families and transitioning service members — recreation, workforce training, financial literacy, and community integration programs near military installations.',dl26:'2026-08-31',dl27:'2027-08-31',portal:'uso.org/stories/2605-uso-grant-program',note:'Priority given to orgs within 50 miles of military installations. Hampton Roads has strong eligibility.',params:['amount','familyProgram','militaryFamilies','details']},
+
+  // ── MINORITY GRANTS ──
+  {id:'mbda',name:'MBDA Grant',full:'Minority Business Development Agency Business Center Grant',funder:'US Dept of Commerce / MBDA',award:'$250K–$1M',color:'#7C3AED',cats:['federal','minority'],desc:'Funds Minority Business Development Centers providing business consulting, financial assistance, and contract procurement support to minority-owned businesses. MBDA Business Centers operate in Virginia.',dl26:'2026-04-01',dl27:'2027-04-01',portal:'mbda.gov/programs/mbda-business-centers',note:'Competitive 3-year cooperative agreement. Must demonstrate capacity to serve MBEs. MBDA Mid-Atlantic Region.',params:['fy','amount','businessServices','minorityServed','details']},
+
+  {id:'sba8a',name:'SBA 8(a) Program',full:'SBA 8(a) Business Development Program & Grants',funder:'Small Business Administration',award:'Varies (set-aside contracts)',color:'#6D28D9',cats:['federal','minority','sbiz'],desc:'SBA 8(a) program certifies socially and economically disadvantaged small businesses for set-aside federal contracts and business development assistance. Once certified, businesses can access sole-source contracts up to $4.5M.',dl26:'2026-12-31',dl27:'2027-12-31',portal:'sba.gov/federal-contracting/contracting-assistance-programs/8a-business-development-program',note:'9-year program. Requires SBA certification. Strong tool for minority-owned small businesses pursuing federal contracts.',params:['businessType','annualRevenue','ownerBackground','details']},
+
+  {id:'usda_outreach',name:'USDA 2501',full:'USDA Outreach & Assistance for Socially Disadvantaged Farmers',funder:'USDA / FSA',award:'$50K–$500K',color:'#7C3AED',cats:['federal','minority','ag'],desc:'Funds outreach and technical assistance to socially disadvantaged farmers and ranchers — including Black, Hispanic, Native American, Asian, and women farmers. Increases access to USDA programs and agricultural resources.',dl26:'2026-06-01',dl27:'2027-06-01',portal:'fsa.usda.gov/programs-and-services/outreach-and-education/index',note:'Section 2501 of the Food Agriculture Conservation and Trade Act. Applications via Grants.gov.',params:['fy','amount','outreachPopulation','farmersServed','details']},
+
+  {id:'hbcu',name:'HBCU / MSI Grant',full:'HBCU / Minority-Serving Institution Capacity Building Grant',funder:'HHS / ED / USDA',award:'$100K–$500K',color:'#6D28D9',cats:['federal','minority'],desc:'Multiple federal programs fund capacity building at HBCUs and Minority-Serving Institutions — including HSIs, Tribal Colleges, and Alaska Native institutions. Funds infrastructure, curriculum, research, and student services. Relevant if CAMP is designated MSI.',dl26:'2026-07-01',dl27:'2027-07-01',portal:'ed.gov/programs/idueshsi/index.html',note:'Check current DOE Title III and Title V solicitations. Also check USDA NIFA HBCU programs.',params:['fy','amount','institutionType','capacityProject','details']},
+
+  {id:'va_dmbe',name:'VA DMBE Grant',full:'Virginia Dept of Small Business & Supplier Diversity Grant',funder:'Virginia DMBE / SBSD',award:'$5K–$75K',color:'$7C3AED',cats:['state','minority','sbiz'],desc:'Virginia state grants and technical assistance for minority-owned, woman-owned, and service-disabled veteran-owned businesses. Includes SWaM certification support and supplier development programs.',dl26:'2026-09-30',dl27:'2027-09-30',portal:'sbsd.virginia.gov',note:'Contact Virginia SBSD office. SWaM certification required or concurrent. Rolling applications.',params:['amount','businessType','ownerDemographic','details']},
+
+  {id:'nul_grant',name:'Urban League Grant',full:'National Urban League / Hampton Roads Urban League Program Grant',funder:'National Urban League / Local Affiliate',award:'$5K–$50K',color:'#7C3AED',cats:['nonprofit','minority'],desc:'Supports programs advancing economic empowerment, education, health, and civic engagement for Black Americans and underserved communities. The Hampton Roads Urban League is the local affiliate serving the Suffolk/Norfolk region.',dl26:'2026-10-01',dl27:'2027-10-01',portal:'nul.org/programs',note:'Contact Hampton Roads Urban League directly. Priority to programs in NUL service footprint.',params:['amount','communityProgram','population','details']}
+];
+
+// ── STATE ──────────────────────────────────────
+let S={p:{},subs:[],sel:[],gp:{},dl:{},yr:2026};
+let eidx=-1, curFilt='all';
+
+window.onload=()=>{loadS();loadProfile();renderLib();renderApply();renderTracker();renderTL();updateDash();buildDatalist();};
+
+function saveS(){try{localStorage.setItem('gchub',JSON.stringify(S));}catch(e){} document.getElementById('saveInd').textContent='● SAVED '+new Date().toLocaleTimeString();}
+function loadS(){try{const s=localStorage.getItem('gchub');if(s)S=JSON.parse(s);}catch(e){}}
+function flashSave(m){const el=document.getElementById('saveInd');el.textContent='● '+m;setTimeout(()=>el.textContent='● AUTO-SAVED',2000);}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const pages=['dash','agency','library','apply','gen','tracker','timeline'];
+  const i=pages.indexOf(id); if(i>=0) document.querySelectorAll('.nav-btn')[i].classList.add('active');
+  if(id==='apply')renderApply(); if(id==='dash')updateDash();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// PROFILE
+function saveProfile(){
+  ['name','city','state','county','type','ein','uei','address','contact','title','phone','email','mission','budget','staff','pop','area','past']
+    .forEach(f=>{const e=document.getElementById('ag-'+f);if(e)S.p[f]=e.value;});
+  saveS(); updateDash();
+}
+function loadProfile(){Object.keys(S.p).forEach(k=>{const e=document.getElementById('ag-'+k);if(e)e.value=S.p[k];});}
+function gp(f,fb){return S.p[f]||fb||'['+f.toUpperCase()+']';}
+
+// DASHBOARD
+function updateDash(){
+  const n=S.sel.length, today=new Date(), in60=new Date(today.getTime()+60*864e5);
+  document.getElementById('dn').textContent=gp('name','Your Agency');
+  document.getElementById('s1').textContent=S.subs.length;
+  document.getElementById('s2').textContent=n;
+  document.getElementById('s3').textContent=S.subs.filter(s=>s.status==='Awarded').length;
+  document.getElementById('s4').textContent=GRANTS.filter(g=>{const d=new Date(S.dl[g.id]||g.dl26);return d>=today&&d<=in60;}).length;
+  document.getElementById('nc').textContent=n; document.getElementById('tc').textContent=n;
+  const sorted=[...GRANTS].sort((a,b)=>new Date(S.dl[a.id]||a.dl26)-new Date(S.dl[b.id]||b.dl26));
+  document.getElementById('ddl').innerHTML=sorted.filter(g=>new Date(S.dl[g.id]||g.dl26)>=today).slice(0,6).map(g=>{
+    const d=new Date(S.dl[g.id]||g.dl26),days=Math.ceil((d-today)/864e5);
+    const c=days<30?'var(--red)':days<60?'var(--amber)':'var(--green)';
+    return `<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:0.25rem 0;"><span style="color:var(--text3)">${g.name}</span><span style="color:${c}">${days}d — ${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></div>`;
+  }).join('')||'No upcoming deadlines.';
+  document.getElementById('dsg').innerHTML=n?S.sel.map(id=>{const g=GRANTS.find(x=>x.id===id);return g?`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:0.25rem 0;"><span style="color:var(--text3)">${g.name}</span><span style="color:${g.color};font-size:0.65rem">${g.funder}</span></div>`:''}).join(''):'None selected — go to Grant Library.';
+  const bpc=document.getElementById('bpc');if(bpc)bpc.textContent=n;
+  const bpp=document.getElementById('bpp');if(bpp)bpp.textContent=S.p.name?'✓ '+S.p.name:'⚠ Not filled';
+}
+
+// LIBRARY
+function filterLib(cat,btn){curFilt=cat;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLib();}
+function renderLib(){
+  const vis=GRANTS.filter(g=>curFilt==='all'||g.cats.includes(curFilt));
+  document.getElementById('lib-grid').innerHTML=vis.map(g=>{
+    const sel=S.sel.includes(g.id);
+    return `<div class="lc ${sel?'sel':''}" id="lc-${g.id}">
+      <div class="acc" style="background:${g.color}"></div>
+      <div class="lc-top"><div><div class="lc-name">${g.name}</div><div class="lc-full">${g.full}</div></div>${sel?'<span class="badge bg">✓</span>':''}</div>
+      <div class="lc-meta"><span class="lt" style="color:${g.color};border-color:${g.color}40">${g.funder}</span><span class="lt bgr">${g.award}</span></div>
+      <div class="lc-desc">${g.desc}</div>
+      <div class="lc-act">
+        <button class="stog ${sel?'on':'off'}" onclick="togGrant('${g.id}')">${sel?'✓ Selected':'+ Select'}</button>
+        <button class="btn bo" style="font-size:0.6rem;padding:0.3rem 0.7rem" onclick="openParams('${g.id}')">⚙ Params</button>
+        <a href="https://${g.portal}" target="_blank" style="font-family:var(--mono);font-size:0.6rem;color:#A8C8E8;text-decoration:none;margin-left:auto" title="Open portal">↗</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+function togGrant(id){const i=S.sel.indexOf(id);if(i>=0)S.sel.splice(i,1);else S.sel.push(id);saveS();renderLib();updateDash();}
+function selectAllVisible(){GRANTS.filter(g=>curFilt==='all'||g.cats.includes(curFilt)).forEach(g=>{if(!S.sel.includes(g.id))S.sel.push(g.id);});saveS();renderLib();updateDash();}
+function clearAll(){if(!confirm('Remove all selected grants?'))return;S.sel=[];saveS();renderLib();updateDash();}
+
+// PARAMS MODAL
+const PDEFS={
+  fy:{l:'Fiscal Year',p:'FY2026',opts:['FY2026','FY2027','FY2025']},
+  amount:{l:'Requested Amount ($)',p:'75,000'},
+  match:{l:'Local Match Amount ($)',p:'75,000'},
+  period:{l:'Grant Period',p:'Oct 1, 2026 – Sep 30, 2027'},
+  activity:{l:'Primary Activity',p:'',opts:['Mass Casualty Incident Exercises & Training','Emergency Operations Plan Development','Multi-Agency Coordination Exercises','Hazard Mitigation Planning','Emergency Management Equipment']},
+  exercises:{l:'Number of Exercises',p:'3'},
+  project:{l:'Project Type',p:'',opts:['Capability & Capacity Building','Hazard Mitigation Planning','Infrastructure Mitigation','Community Education & Outreach']},
+  hazard:{l:'Hazards Addressed',p:'MCIs, Active Threat, Natural Disasters'},
+  bcr:{l:'Benefit-Cost Ratio Estimate',p:'4:1'},
+  capability:{l:'Core Capability',p:'',opts:['Mass Casualty Response','CBRNE Detection','Multi-Agency Coordination','Public Health & Medical Surge','Emergency Operations Coordination']},
+  area:{l:'Urban Area / Region',p:'Hampton Roads Urban Area'},
+  threat:{l:'Threat / Scenario Focus',p:'Active Shooter, IED, CBRNE'},
+  partners:{l:'Partnering Agencies',p:'Law enforcement, fire, EMS, hospital...'},
+  phase:{l:'SBIR Phase',p:'',opts:['Phase I ($275,000)','Phase II ($1,750,000)']},
+  year:{l:'Solicitation Year',p:'',opts:['2026','2027']},
+  topic:{l:'DHS Topic Area',p:'',opts:['Emergency Preparedness & Response Technology','First Responder Training Technology','Mass Casualty Incident Management Tools','AI/ML for Emergency Management']},
+  company:{l:'Company Name',p:'MCI Exercise HUB LLC'},
+  pi:{l:'Principal Investigator',p:'Dr. Carlos Cajares, DHSc, NRP'},
+  innovation:{l:'Innovation Description',p:'Describe what makes your technology innovative...'},
+  riskDesc:{l:'Risk Description',p:'Describe the elevated risk your organization faces'},
+  securityProject:{l:'Security Project Description',p:'Physical security enhancements, training, technology'},
+  trainees:{l:'Estimated # of Trainees',p:'500'},
+  trainers:{l:'# of Instructors / Trainers',p:'10'},
+  community:{l:'Target Community',p:'Suffolk, VA — general public and first responders'},
+  ruralArea:{l:'Rural Area Served',p:'Franklin, Courtland, Isle of Wight County'},
+  purpose:{l:'Program Purpose',p:'Describe the primary purpose of this grant'},
+  planType:{l:'Plan Type',p:'Local Hazard Mitigation Plan Update'},
+  trainingFocus:{l:'Training Focus',p:'Mass Casualty / Medical Surge'},
+  eduImpact:{l:'Educational Impact',p:'Describe impact on EMS education program'},
+  businessPurpose:{l:'Business Purpose',p:'MCI Exercise HUB platform development and launch'},
+  programType:{l:'Program Type',p:'Community Inclusion / Day Support / Employment'},
+  serviceType:{l:'Service Type',p:'Community Integration, Therapeutic Programming, Family Support'},
+  popServed:{l:'Population Served',p:'Adults with intellectual and developmental disabilities'},
+  researchFocus:{l:'Research Focus / Innovation',p:'Inclusive community model, assistive technology, outcomes research'},
+  healthFocus:{l:'Health Focus Area',p:'Disability health equity, inclusive care, community wellness'},
+  gardenProgram:{l:'Garden Program Description',p:'Therapeutic horticulture for adults with developmental disabilities'},
+  programType2:{l:'Program / Activity Type',p:'Inclusive sports, recreation, adaptive activities'},
+  participants:{l:'Estimated Participants',p:'25 individuals with IDD per program cycle'},
+  facilityType:{l:'Facility Type',p:'Community garden, day program facility, accessible outdoor space'},
+  // Agriculture & Horticulture params
+  businessType:{l:'Business / Project Type',p:'Agricultural enterprise, farm market, food hub, agri-tourism'},
+  trainingProgram:{l:'Training Program Description',p:'Farm business planning, sustainable agriculture education'},
+  researchTopic:{l:'Research / Project Topic',p:'Cover crops, organic transition, integrated pest management'},
+  farmType:{l:'Farm / Operation Type',p:'Small family farm, community garden, specialty crop producer'},
+  nutritionFocus:{l:'Nutrition / Food Access Focus',p:'Community garden, healthy food access, farm-to-table'},
+  marketType:{l:'Market Type',p:'Farmers market, CSA, roadside stand, online market, agri-tourism'},
+  producersServed:{l:'Producers / Farmers Served',p:'15 small-scale specialty crop producers'},
+  programTrack:{l:'VDACS Program Track',p:'Buy Local Challenge / Specialty Crop / Ag Development Fund'},
+  cropType:{l:'Crop / Commodity Type',p:'Specialty vegetables, herbs, fruits, ornamental horticulture'},
+  projectGoal:{l:'Project Goal',p:'Enhance market competitiveness of specialty crop producers in region'},
+  therapyFocus:{l:'Horticultural Therapy Focus',p:'Therapeutic gardening, sensory garden, vocational horticulture'},
+  gardenType:{l:'Garden Type',p:'Therapeutic community garden, raised bed, sensory garden'},
+  therapyProject:{l:'Therapy Project Description',p:'Develop horticultural therapy curriculum for adults with IDD'},
+  outcomes:{l:'Expected Therapeutic Outcomes',p:'Improved motor skills, social engagement, vocational readiness'},
+  civicImpact:{l:'Civic / Community Impact',p:'Beautification, education, community gathering space'},
+  projectType:{l:'Project Type',p:'Value-added agriculture, agri-tourism, farm market infrastructure'},
+  econImpact:{l:'Economic Impact Estimate',p:'20 new farm jobs, $500K increased farm revenue over 3 years'},
+  foodSystemType:{l:'Food System Type',p:'Food hub, aggregation, cooperative marketing, farm-to-institution'},
+  partnersServed:{l:'Partners / Institutions Served',p:'Schools, hospitals, food banks, community organizations'},
+  // Rural params
+  housingType:{l:'Housing Project Type',p:'Housing rehabilitation, affordable rental, self-help housing'},
+  broadbandType:{l:'Broadband Project Type',p:'Fiber infrastructure, last-mile broadband, community access points'},
+  appalachianCounty:{l:'Appalachian County',p:'e.g. Buchanan, Dickenson, Wise, Lee County VA'},
+  lmiBenefit:{l:'LMI Benefit Documentation',p:'70% of residents at or below 80% Area Median Income'},
+  energyProject:{l:'Energy Project Type',p:'Solar installation, energy efficiency upgrades, renewable energy'},
+  healthProgram:{l:'Rural Health Program',p:'Telehealth, EMS capacity, rural health workforce, mobile health'},
+  // Veteran params
+  veteranService:{l:'Veteran Service Type',p:'Housing, mental health, employment, transportation, childcare'},
+  veteransServed:{l:'Estimated Veterans Served',p:'150 veterans and military families per year'},
+  vaCounty:{l:'Virginia County / City',p:'City of Suffolk, Isle of Wight County'},
+  mhProgram:{l:'Mental Health Program',p:'Counseling, peer support, crisis services for veterans'},
+  militaryFamilies:{l:'Military Families Served',p:'Active duty, transitioning service members, families near base'},
+  veteranProgram:{l:'Veteran Program Description',p:'Describe the specific program or service for veterans'},
+  // Minority params
+  minorityServed:{l:'Minority Community Served',p:'Black, Hispanic, Native American, Asian-American entrepreneurs'},
+  businessServices:{l:'Business Services Provided',p:'Consulting, access to capital, contract procurement support'},
+  outreachPopulation:{l:'Outreach Target Population',p:'Socially disadvantaged farmers: Black, Hispanic, Native American'},
+  farmersServed:{l:'Farmers / Ranchers Served',p:'50 socially disadvantaged farmers annually'},
+  institutionType:{l:'Institution Type',p:'HBCU, HSI, Tribal College, Alaska Native Institution'},
+  capacityProject:{l:'Capacity Building Project',p:'Infrastructure, curriculum development, research capacity'},
+  ownerDemographic:{l:'Owner Demographic',p:'Minority-owned, woman-owned, service-disabled veteran-owned'},
+  ownerBackground:{l:'Owner Background / Eligibility',p:'Describe social and economic disadvantage narrative'},
+  communityProgram:{l:'Community Program',p:'Economic empowerment, education, health, civic engagement'},
+  details:{l:'Additional Details',p:'Any specific scenarios, partners, deliverables, or notes...'}
+};
+
+function openParams(id){
+  const g=GRANTS.find(x=>x.id===id);if(!g)return;
+  const pv=S.gp[id]||{};
+  document.getElementById('pm-title').textContent=g.name+' — Parameters';
+  let html='<div class="fr">';
+  g.params.forEach((pk,i)=>{
+    const d=PDEFS[pk]||{l:pk,p:''};const v=pv[pk]||'';
+    if(pk==='details'||pk==='innovation'||pk==='riskDesc'||pk==='partners'){
+      html+='</div><div class="fg" style="margin-top:0.5rem"><label class="fl">'+d.l+'</label><textarea class="ft" id="pm-'+pk+'" rows="3" placeholder="'+d.p+'">'+v+'</textarea></div><div class="fr">';
+    } else if(d.opts){
+      html+='<div class="fg"><label class="fl">'+d.l+'</label><select class="fs" id="pm-'+pk+'">'+d.opts.map(o=>`<option${v===o?' selected':''}>${o}</option>`).join('')+'</select></div>';
+    } else {
+      html+='<div class="fg"><label class="fl">'+d.l+'</label><input class="fi" id="pm-'+pk+'" placeholder="'+d.p+'" value="'+v+'"></div>';
+    }
+  });
+  html+='</div>';
+  html+='<div class="fg"><label class="fl">Submission Deadline Override</label><input class="fi" type="date" id="pm-dl" value="'+(S.dl[id]||g.dl26||'')+'"></div>';
+  html+='<div class="flex mt2"><button class="btn bp" onclick="saveParams(\''+id+'\')">Save Parameters</button><button class="btn bo" onclick="closeMod(\'paramsMod\')">Cancel</button></div>';
+  document.getElementById('pm-body').innerHTML=html;
+  document.getElementById('paramsMod').classList.add('open');
+}
+function saveParams(id){
+  const g=GRANTS.find(x=>x.id===id);if(!g)return;
+  const p={};g.params.forEach(pk=>{const e=document.getElementById('pm-'+pk);if(e)p[pk]=e.value;});
+  const dl=document.getElementById('pm-dl');if(dl&&dl.value)S.dl[id]=dl.value;
+  S.gp[id]=p;saveS();closeMod('paramsMod');flashSave('Parameters saved!');
+}
+
+// MY APPLICATIONS
+function renderApply(){
+  updateDash();
+  const el=document.getElementById('app-list');
+  if(!S.sel.length){el.innerHTML='<p style="font-family:var(--mono);font-size:0.78rem;color:#C0D4E8;padding:2rem 0">No grants selected. Go to the Grant Library to add grants.</p>';return;}
+  el.innerHTML=S.sel.map(id=>{
+    const g=GRANTS.find(x=>x.id===id);if(!g)return'';
+    const hp=!!(S.gp[id]&&Object.keys(S.gp[id]).length);
+    const dl=S.dl[id]||g.dl26,days=Math.ceil((new Date(dl)-new Date())/864e5);
+    const c=days<30?'var(--red)':days<60?'var(--amber)':'var(--green)';
+    return`<div class="app-row" style="border-left-color:${g.color}">
+      <div style="flex:1"><div class="ar-name">${g.name} <span style="font-size:0.78rem;color:var(--text2);font-family:var(--mono);font-weight:400">— ${g.full}</span></div>
+      <div class="ar-sub">${g.funder} &nbsp;|&nbsp; ${g.award} &nbsp;|&nbsp; <span style="color:${c}">Due: ${new Date(dl).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} (${days}d)</span></div></div>
+      <div class="flex">
+        ${hp?'<span class="badge bg">Params ✓</span>':'<span class="badge ba">No params</span>'}
+        <button class="btn bo" style="font-size:0.6rem;padding:0.3rem 0.75rem" onclick="openParams('${id}')">⚙ Params</button>
+        <button class="btn bp" style="font-size:0.6rem;padding:0.3rem 0.75rem" onclick="showPage('gen');buildGen();setTimeout(()=>{const e=document.getElementById('gs-${id}');if(e)e.scrollIntoView({behavior:'smooth'});},400)">Narrative</button>
+        <button class="btn bred" style="font-size:0.6rem;padding:0.3rem 0.6rem" onclick="togGrant('${id}');renderApply()">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// GENERATE
+function buildGen(){
+  const c=document.getElementById('gen-container');
+  if(!S.sel.length){c.innerHTML='<p style="font-family:var(--mono);font-size:0.78rem;color:#C0D4E8;padding:2rem 0">Select grants from the library first, then click Regenerate All.</p>';return;}
+  c.innerHTML=S.sel.map(id=>{
+    const g=GRANTS.find(x=>x.id===id);if(!g)return'';
+    const txt=genNarr(id);
+    return`<div class="gs" id="gs-${id}">
+      <div class="gh" onclick="togGS('${id}')">
+        <div class="ghl">
+          <span style="display:inline-block;width:3px;height:20px;background:${g.color};margin-right:6px;vertical-align:middle"></span>
+          <span class="gn">${g.name}</span>
+          <span class="badge bgr" style="margin-left:0.5rem;font-size:0.55rem">${g.full}</span>
+        </div>
+        <div class="flex">
+          <button class="btn bp" style="font-size:0.6rem;padding:0.3rem 0.8rem" onclick="event.stopPropagation();copyN('gt-${id}')">📋 Copy</button>
+          <button class="btn bo" style="font-size:0.6rem;padding:0.3rem 0.8rem" onclick="event.stopPropagation();logSub('${g.name}')">✓ Log</button>
+          <button class="btn bo" style="font-size:0.6rem;padding:0.3rem 0.8rem" onclick="event.stopPropagation();openParams('${id}')">⚙ Params</button>
+          <span style="font-family:var(--mono);font-size:0.7rem;color:var(--text2)" id="ci-${id}">▾</span>
+        </div>
+      </div>
+      <div class="gb_ open" id="gb-${id}"><div class="tbox" id="gt-${id}">${txt}</div></div>
+    </div>`;
+  }).join('');
+}
+function togGS(id){const b=document.getElementById('gb-'+id),i=document.getElementById('ci-'+id);if(b.classList.contains('open')){b.classList.remove('open');i.textContent='▸';}else{b.classList.add('open');i.textContent='▾';}}
+function copyN(eid){const t=document.getElementById(eid)?.textContent||'';navigator.clipboard.writeText(t).then(()=>flashSave('Copied!')).catch(()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flashSave('Copied!');});}
+function copyAll(){const all=S.sel.map(id=>{const g=GRANTS.find(x=>x.id===id);return'═'.repeat(60)+'\n'+g?.name+' — '+g?.full+'\n'+'═'.repeat(60)+'\n'+genNarr(id);}).join('\n\n');navigator.clipboard.writeText(all).then(()=>flashSave('All narratives copied!')).catch(()=>flashSave('Copy failed — try individual buttons'));}
+
+// NARRATIVE GENERATOR
+function genNarr(id){
+  const g=GRANTS.find(x=>x.id===id);const p=S.gp[id]||{};
+  const ag=gp('name','[AGENCY NAME]'),city=gp('city','[CITY]'),st=gp('state','[STATE]');
+  const contact=gp('contact','[CONTACT]'),title=gp('title','[TITLE]');
+  const pop=gp('pop','[POPULATION]'),area=gp('area','[AREA]');
+  const mission=gp('mission',ag+' is committed to protecting the lives and property of the communities it serves.');
+  const fy=p.fy||'FY2026',amt=p.amount||'[AMOUNT]';
+  const HDR=g.name+' — '+g.full+'\n'+fy+' APPLICATION NARRATIVE\nApplicant: '+ag+' | '+city+', '+st+'\nContact: '+contact+', '+title+'\nFederal Request: $'+amt+'\n'+'━'.repeat(47);
+  switch(id){
+    case'empg':return genEMPG(p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'bric':return genBRIC(p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'uasi':return genUASI(p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'sbir':return genSBIR(p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'acl_dd':case'dbhds':case'arc':case'ancor':case'weinberg':case'rwjf':case'sol_va':case'lidf':case'usda_cf':case'nidilrr':
+      return genIDD(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'usda_rbg':case'usda_rbp':case'usda_sare':case'usda_snap_ed':case'usda_farmers_mkt':case'vdacs':case'scbg':case'ahs_hort':case'ahta':case'ncg_hort':case'va_growva':case'usda_lfpp':
+      return genAg(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'usda_rdcf':case'usda_rdhf':case'usda_rbe':case'appalachian':case'va_dhcd':case'usda_hrip':case'va_rural_health':
+      return genRural(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'va_grants':case'dav_grant':case'vvf':case'pcori_vets':case'uso_grant':
+      return genVet(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    case'mbda':case'sba8a':case'usda_outreach':case'hbcu':case'va_dmbe':case'nul_grant':
+      return genMinority(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+    default:   return genGeneric(g,p,HDR,ag,city,st,contact,title,pop,area,mission,fy,amt);
+  }
+}
+function genEMPG(p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  const match=p.match||'[MATCH]',period=p.period||'Oct 1, 2026 – Sep 30, 2027',activity=p.activity||'Mass Casualty Incident Exercises & Training',exN=p.exercises||'3',det=p.details||'';
+  return H+'\nLocal Match: $'+match+' | Grant Period: '+period+'\n\nSECTION A — ORGANIZATIONAL OVERVIEW\n'+ag+' serves approximately '+pop+' residents across '+area+', providing emergency management, fire, and EMS services. '+mission+' As a local emergency management entity, '+ag+' maintains and exercises its Emergency Operations Plan (EOP), coordinates multi-agency response, and ensures compliance with NIMS/ICS standards.\n\nSECTION B — PROJECT DESCRIPTION\nPrimary Activity: '+activity+'\n'+ag+' requests EMPG funding to deliver '+exN+' HSEEP-aligned exercises during '+period+'. Each exercise will test and validate mass casualty and all-hazards response capabilities, producing full After-Action Reports (AAR) and Improvement Plans (IP) per FEMA HSEEP requirements.'+(det?'\n\nAdditional Details:\n'+det:'')+ '\n\nSECTION C — GOALS AND OBJECTIVES\nGoal 1: Strengthen Emergency Management Capabilities\n  1.1: Conduct '+exN+' HSEEP-compliant exercises within the performance period\n  1.2: Submit AAR/IP documentation within 60 days of each exercise\n  1.3: Implement corrective actions from prior exercise cycles\nGoal 2: Enhance Multi-Agency Coordination\n  2.1: Involve ≥3 partner agencies in each full-scale exercise\n  2.2: Integrate lessons learned into updated SOGs/SOPs\nGoal 3: Maintain EMPG Compliance\n  3.1: Submit all required reports to VDEM on schedule\n  3.2: Maintain time-and-effort documentation for funded personnel\n\nSECTION D — BUDGET JUSTIFICATION\nFederal Request: $'+amt+'\n  Personnel/Overtime (Exercise Days): 40% | Exercise Design & Software: 25%\n  Training Materials: 20% | Travel & Logistics: 10% | Administrative (≤10%): 5%\nLocal Match: $'+match+' — In-Kind Staff Time (60%), Facility Use (25%), Equipment (15%)\n\nSECTION E — EVALUATION & PERFORMANCE\nSuccess Metrics: '+exN+' completed exercises, all AAR/IP submitted on time, ≥80% corrective actions closed.\nPOC: '+contact+', '+title+'\n\n[END OF NARRATIVE — Attach SF-424, budget detail, and required assurances]\n[Submit via vdem.virginia.gov per current NOFO instructions]';
+}
+function genBRIC(p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  const proj=p.project||'Capability & Capacity Building',haz=p.hazard||'Mass Casualty Incidents, Natural Disasters',bcr=p.bcr||'',det=p.details||'';
+  return H+'\nProject Type: '+proj+'\n\nSECTION A — COMMUNITY OVERVIEW & HAZARD PROFILE\n'+ag+' serves approximately '+pop+' residents in '+city+', '+st+'. The jurisdiction\'s FEMA-approved Hazard Mitigation Plan identifies the following priority hazards: '+haz+'. The proposed project directly addresses capability gaps identified in the most recent risk and vulnerability assessment.\n\nSECTION B — PROJECT DESCRIPTION\nTitle: '+proj+' — '+ag+'\n'+(det||ag+' proposes a '+proj.toLowerCase()+' initiative that measurably reduces risk from '+haz+'. All activities comply with applicable federal, state, and local regulations and support implementation of the jurisdiction\'s FEMA-approved HMP.')+'\n\nSECTION C — OUTCOMES & BENEFITS\n• Direct risk reduction for '+pop+' residents\n• Improved coordination among response and recovery partners\n• Documented increase in jurisdiction-wide preparedness capability\n• Sustainable outcomes extending beyond the grant period\n'+(bcr?'\nBenefit-Cost Analysis: Estimated BCR — '+bcr+' (FEMA BCA Toolkit methodology)\n':'')+'\nCore Capabilities: Mitigation Planning, Community Resilience, Long-Term Vulnerability Reduction, Risk & Disaster Resilience Assessment\n\nSECTION D — PROJECT TIMELINE\nMonth 1–3: Kickoff, stakeholder engagement, procurement\nMonth 4–9: Primary project implementation\nMonth 10–15: Testing, evaluation, documentation\nMonth 16–18: Final reporting, sustainability planning\n\nSECTION E — BUDGET\nTotal Federal Request: $'+amt+'\n  Planning & Design: 20% | Implementation: 45% | Technology/Equipment: 20% | Training: 10% | Admin (≤5%): 5%\nNo local cost-share required for Capability & Capacity Building activities.\n\n[END — Attach SF-424, Project Worksheet, BCA results, HMP documentation]\n[Submit via fema.gov/grants/mitigation/bric]';
+}
+function genUASI(p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  const ua=p.area||'Hampton Roads Urban Area',cap=p.capability||'Mass Casualty Response',threat=p.threat||'Active Shooter, IED, CBRNE',partners=p.partners||'Regional law enforcement, fire, EMS, hospitals';
+  return H+'\nUrban Area: '+ua+' | Core Capability: '+cap+'\n\nSECTION A — INVESTMENT OVERVIEW\nThis Investment Justification requests '+fy+' UASI/HSGP funding for '+ag+' to enhance the '+ua+'\'s capability to prevent, protect against, mitigate, respond to, and recover from terrorist incidents involving '+threat+'. The investment addresses gaps identified in the urban area\'s THIRA/SPR process.\n\nSECTION B — THREAT ENVIRONMENT & CAPABILITY GAP\nThe '+ua+' encompasses critical infrastructure including military installations, transportation corridors, and dense residential areas. THIRA assessments identify '+threat+' as priority threats. Current gaps exist in: '+cap.toLowerCase()+' capability, multi-agency exercise coordination, and HSEEP-compliant documentation.\n\nPartnering Agencies: '+partners+'\n\nSECTION C — PROPOSED ACTIVITIES\nActivity 1: Full-Scale Exercise — '+threat+' Scenario\n  Deliverable: Completed FSE with HSEEP AAR/IP within 60 days\n  Core Capability: '+cap+'\n\nActivity 2: Multi-Agency Training Program\n  Deliverable: ≥24-hour curriculum for all partner agencies\n  NIMS Compliance: Aligned to ICS-100 through ICS-400\n\nActivity 3: Technology & Capability Enhancement\n  Deliverable: Acquisition and deployment of specified capability items\n  Procurement: All purchases via SAM.gov-registered vendors\n\nSECTION D — BUDGET\nTotal Investment: $'+amt+'\n  Exercise Design & Execution: 35% | Training: 25% | Equipment/Technology: 30% | Platform/Software: 5% | Admin (≤5%): 5%\nNo local cost-share required. All funds expended within performance period.\n\nSECTION E — SUSTAINMENT\nPost-grant: annual exercise cycles via EMPG, institutionalized protocols in agency SOGs, maintained mutual aid agreements.\n\n[END — Attach SF-424B, Certification forms, Equipment justification]\n[Submit through VDEM to DHS. Contact VDEM Homeland Security for current NOFO]';
+}
+function genSBIR(p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  const phase=p.phase||'Phase I ($275,000)',yr=p.year||'2026',topic=p.topic||'Emergency Preparedness & Response Technology',company=p.company||'MCI Exercise HUB LLC',pi=p.pi||contact,innovation=p.innovation||'',pAmt=phase.includes('275')?'275,000':'1,750,000';
+  return 'DHS SBIR '+phase+' — '+yr+' SOLICITATION\nCompany: '+company+' | PI: '+pi+'\nTopic: '+topic+' | Amount: $'+pAmt+'\n'+'━'.repeat(47)+'\n\nSECTION 1 — IDENTIFICATION AND SIGNIFICANCE\nProblem: Emergency management agencies across the US lack purpose-built, HSEEP-compliant tools for MCI exercise design, execution, and documentation. Current workarounds (Word templates, generic LMS, email chains) fail FEMA audit requirements and create excessive administrative burden. Agencies that cannot document exercises risk EMPG grant clawbacks and accreditation failures.\n\nSignificance: This gap represents both a national preparedness vulnerability and an unmet market. No purpose-built HSEEP-native SaaS currently exists for the estimated 52,000+ US agencies with federally mandated exercise requirements.\n\nSECTION 2 — INNOVATION & TECHNICAL APPROACH\n'+company+' proposes MCI Exercise HUB — a cloud-based, HSEEP-compliant SaaS platform transforming the exercise lifecycle from concept through documentation.'+(innovation?'\n\nInnovation: '+innovation:'')+'\n\nCore Technical Innovations:\n1. AI-Assisted Exercise Design Engine — reduces design time by 60–80%\n2. Real-Time Multi-Agency Collaboration Layer — WebSocket-based simultaneous planning\n3. Automated HSEEP-Compliant AAR/IP Generator — one-click FEMA-audit-ready export\n4. Grant Documentation Bundle — outputs formatted for EMPG, BRIC, UASI compliance\n\nPI Qualifications: '+pi+' holds a Doctorate in Health Science (DHSc), is a certified NRP, and serves as EMS Program Director with direct MCI exercise experience at local, regional, and state levels.\n\nSECTION 3 — PHASE I OBJECTIVES\nMonth 1–2: Prototype with 25+ MCI scenario templates\nMonth 2–4: HSEEP compliance engine validated by certified practitioners\nMonth 4–6: Beta deployment with 3–5 agencies\nMonth 5–6: 10+ Letters of Intent from potential customers\n\nSECTION 4 — COMMERCIALIZATION POTENTIAL\nTAM: ~52,000 agencies, 630 CoAEMSP programs, 6,200+ hospital EDs — ~$420M SAM\nRevenue: SaaS subscriptions $99–$599/mo + consulting + licensing. Projected Y3 ARR $700K–$1.2M\n\nSECTION 5 — BUDGET ($'+pAmt+')\nPersonnel (PI + Developer): ~55% | Subcontracts/Consultants: ~15% | Direct Costs: ~20% | F&A: ~10%\n\n[Also prepare Vol. II: Cost/Price and Vol. III: Company Qualifications]\n[Register at SAM.gov | Submit via sbir.gov or per solicitation | DHS SBIR: dhs.gov/sbir]';
+}
+function genIDD(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  var popServed=p.popServed||'individuals with intellectual and developmental disabilities (IDD)';
+  var programType=p.programType||p.serviceType||p.gardenProgram||'[PROGRAM TYPE]';
+  var partners=p.partners||'community partners, families, support providers';
+  var det=p.details||'';
+  var facilityNote='';
+  if(g.id==='usda_cf'){
+    facilityNote='\nFACILITY DESCRIPTION\nThis project involves development of a community facility — specifically a '+(p.facilityType||'therapeutic community garden and accessible outdoor program space')+' — located in a qualifying rural area ('+(p.ruralArea||city+', '+st)+'). The facility will serve '+popServed+' and provide year-round structured programming.\n';
+  }
+  var researchNote='';
+  if(g.id==='nidilrr'){
+    researchNote='\nRESEARCH DESIGN SUMMARY\nResearch Focus: '+(p.researchFocus||'Inclusive community programming outcomes for adults with IDD')+'\nPartners: '+(p.partners||'[University or Research Partners]')+'\nMethodology: Mixed-methods evaluation measuring quality of life, community integration, and health outcomes.\nExpected Deliverables: Peer-reviewed publication, practitioner toolkit, and model replication guide.\n';
+  }
+  var narrative='\n\nSECTION A — ORGANIZATIONAL OVERVIEW\n';
+  narrative+=ag+' is a '+gp('type','nonprofit organization')+' based in '+city+', '+st+'. '+mission+'\n\n';
+  narrative+=ag+' directly serves '+popServed+' and their families in '+city+' and the surrounding region. The organization is committed to advancing community inclusion, dignity, and quality of life for individuals who are too often excluded from mainstream programs and opportunities.\n\n';
+  narrative+='SECTION B — POPULATION NEED & PROJECT DESCRIPTION\nTarget Population: '+popServed+'\nProgram / Project: '+programType+'\n\n';
+  narrative+='Individuals with intellectual and developmental disabilities face significant barriers to community participation, health equity, employment, and independent living. In '+city+', '+st+', gaps in available day programming, therapeutic activities, and inclusive community spaces leave many individuals and their families without adequate support.\n';
+  if(det){narrative+='\nProject Narrative:\n'+det+'\n';}
+  else{narrative+='\n'+ag+' proposes to use '+g.name+' funding to implement '+programType+'. This project directly addresses documented community need and aligns with the '+g.name+" program's goals of expanding access, promoting inclusion, and improving outcomes for people with disabilities.\n";}
+  narrative+=facilityNote+researchNote;
+  narrative+='\nSECTION C — GOALS AND MEASURABLE OBJECTIVES\n';
+  narrative+='Goal 1: Expand Access to Inclusive Programming\n';
+  narrative+='  1.1: Serve a minimum of '+(p.participants||'[NUMBER]')+' individuals with IDD during the grant period\n';
+  narrative+='  1.2: Achieve 85% or higher participant satisfaction in quarterly surveys\n';
+  narrative+='  1.3: Document at least 3 measurable quality-of-life improvements per participant cohort\n\n';
+  narrative+='Goal 2: Build Organizational Capacity\n';
+  narrative+='  2.1: Hire or retain qualified direct support professionals to deliver programming\n';
+  narrative+='  2.2: Establish or strengthen partnerships with '+partners+'\n';
+  narrative+='  2.3: Develop program evaluation tools replicable by similar organizations\n\n';
+  narrative+='Goal 3: Promote Community Inclusion and Belonging\n';
+  narrative+='  3.1: Integrate program activities with the broader community (not segregated settings)\n';
+  narrative+='  3.2: Engage family members and caregivers as active program participants\n';
+  narrative+='  3.3: Document community integration outcomes and share with funders annually\n\n';
+  narrative+='SECTION D — BUDGET JUSTIFICATION\n';
+  narrative+='Total Grant Request: $'+amt+'\n';
+  narrative+='  Personnel / Direct Support Staff: 45%\n';
+  narrative+='  Program Supplies, Materials & Equipment: 25%\n';
+  narrative+='  Facility Costs / Site Development: 15%\n';
+  narrative+='  Participant Transportation & Accessibility: 10%\n';
+  narrative+='  Administrative / Indirect (10% or less): 5%\n\n';
+  narrative+='All expenses are directly tied to program delivery and are necessary, reasonable, and allowable under '+g.name+' guidelines. '+ag+' maintains a financial management system compliant with 2 CFR Part 200 for federal awards.\n\n';
+  narrative+='SECTION E — EVALUATION & SUSTAINABILITY\n';
+  narrative+=ag+' will collect outcome data using validated tools aligned to the '+g.name+' program priorities. Key metrics include participant enrollment, community integration episodes, family satisfaction, and employment or independent living gains where applicable.\n\n';
+  narrative+='Post-grant sustainability: '+ag+' will pursue complementary funding through state developmental services contracts, individual donor campaigns, and additional foundation grants to sustain program operations beyond the grant period.\n\n';
+  narrative+='Point of Contact: '+contact+', '+title+'\n';
+  narrative+='Application Portal: '+g.portal+'\n';
+  narrative+='Note: '+g.note+'\n\n';
+  narrative+='[END — Attach IRS determination letter (501c3), board list, most recent audited financials, and program logic model]\n';
+  narrative+='[For federal grants: also attach SF-424 and applicable assurances]';
+  return H+narrative;
+}
+
+function genAg(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  var farmType=p.farmType||p.businessType||p.marketType||p.foodSystemType||'agricultural / horticultural project';
+  var cropType=p.cropType||'specialty crops, vegetables, herbs, and ornamental horticulture';
+  var ruralArea=p.ruralArea||city+', '+st;
+  var projGoal=p.projectGoal||p.projectType||p.trainingProgram||p.researchTopic||p.nutritionFocus||'advance sustainable agriculture and strengthen local food systems';
+  var partners=p.partners||p.partnersServed||'local farmers, extension agents, community organizations';
+  var det=p.details||'';
+  var econImpact=p.econImpact||'';
+  var isTherapy=(g.id==='ahs_hort'||g.id==='ahta'||g.id==='ncg_hort');
+  var popNote=isTherapy?'\nThis program specifically integrates horticultural therapy principles — using plant cultivation and garden-based activities as therapeutic interventions for '+(p.popServed||'individuals with disabilities, veterans, and at-risk populations')+'.\n':'';
+
+  var narrative='\n\nSECTION A — APPLICANT OVERVIEW\n';
+  narrative+=ag+' is a '+gp('type','nonprofit organization / agricultural enterprise')+' based in '+city+', '+st+'. '+mission+'\n\n';
+  narrative+='This application is submitted in response to the '+fy+' '+g.name+' Notice of Funding Opportunity administered by '+g.funder+'. '+ag+' is uniquely positioned to advance the goals of this program through its established presence in the community, existing agricultural infrastructure, and demonstrated commitment to sustainable, inclusive food systems.\n\n';
+
+  narrative+='SECTION B — PROJECT DESCRIPTION\n';
+  narrative+='Project Type: '+farmType+'\n';
+  narrative+='Geographic Focus: '+ruralArea+'\n';
+  narrative+='Primary Goal: '+projGoal+'\n\n';
+  if(det){narrative+='Project Narrative:\n'+det+'\n\n';}
+  else{
+    narrative+=ag+' proposes to use '+g.name+' funding to implement a '+farmType+' initiative that directly supports the '+g.name+" program's core mission. ";
+    narrative+='The project will engage '+partners+' and produce measurable improvements in local agricultural production, food access, and economic resilience in '+ruralArea+'.\n\n';
+  }
+  narrative+=popNote;
+
+  if(cropType&&!isTherapy){narrative+='Crops / Commodities: '+cropType+'\n\n';}
+
+  narrative+='SECTION C — GOALS AND OBJECTIVES\n';
+  narrative+='Goal 1: Strengthen Local Agricultural Production and Markets\n';
+  narrative+='  1.1: Implement planned project activities within the grant performance period\n';
+  narrative+='  1.2: Engage a minimum of '+(p.producersServed||p.participants||'[NUMBER]')+' producers, participants, or community members\n';
+  narrative+='  1.3: Document measurable output and outcome data per program reporting requirements\n\n';
+  narrative+='Goal 2: Advance Sustainable and Inclusive Agricultural Practices\n';
+  narrative+='  2.1: Demonstrate replicable best practices in '+farmType+'\n';
+  narrative+='  2.2: Partner with '+partners+' to extend project reach\n';
+  narrative+='  2.3: Share findings through extension services, publications, or public events\n\n';
+  narrative+='Goal 3: Build Long-Term Program Sustainability\n';
+  narrative+='  3.1: Develop revenue streams or partnerships that sustain program beyond grant period\n';
+  narrative+='  3.2: Create program documentation and toolkits for replication by other communities\n';
+  narrative+='  3.3: Report outcomes annually to funder and stakeholders\n\n';
+
+  narrative+='SECTION D — BUDGET JUSTIFICATION\n';
+  narrative+='Total Grant Request: $'+amt+'\n';
+  if(isTherapy){
+    narrative+='  Program Materials & Garden Supplies: 35%\n';
+    narrative+='  Personnel (Horticultural Therapist / Program Staff): 35%\n';
+    narrative+='  Site Development / Accessibility Improvements: 20%\n';
+    narrative+='  Training, Certification & Professional Development: 5%\n';
+    narrative+='  Administrative / Indirect (10% or less): 5%\n\n';
+  } else {
+    narrative+='  Project Implementation & Operations: 40%\n';
+    narrative+='  Equipment, Infrastructure & Materials: 25%\n';
+    narrative+='  Personnel & Technical Assistance: 20%\n';
+    narrative+='  Marketing, Outreach & Education: 10%\n';
+    narrative+='  Administrative / Indirect (10% or less): 5%\n\n';
+  }
+  narrative+='All expenditures are necessary, reasonable, and allowable under '+g.name+' program guidelines. '+ag+' will maintain separate project accounts and submit financial reports per funder requirements.\n\n';
+
+  if(econImpact){narrative+='SECTION E — ECONOMIC IMPACT\n'+econImpact+'\n\n';}
+
+  narrative+='SECTION '+(econImpact?'F':'E')+' — EVALUATION & SUSTAINABILITY\n';
+  narrative+=ag+' will track key performance indicators including participant/producer enrollment, pounds of food produced (where applicable), revenue generated, jobs created or retained, and community reach. Data will be collected quarterly and reported to '+g.funder+' per program requirements.\n\n';
+  narrative+='Sustainability: After the grant period, '+ag+' will sustain operations through earned revenue (market sales, CSA memberships, program fees), USDA farm loan programs, state agricultural development funding, and foundation support.\n\n';
+  narrative+='Point of Contact: '+contact+', '+title+'\n';
+  narrative+='Application Portal: '+g.portal+'\n';
+  narrative+='Note: '+g.note+'\n\n';
+  narrative+='[END — Attach organizational financials, letters of support, site plan (if applicable), and any required federal forms]\n';
+  narrative+='[For USDA programs: register at SAM.gov before applying via Grants.gov]';
+  return H+narrative;
+}
+
+
+function genRural(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  var ruralArea=p.ruralArea||city+', '+st;
+  var projType=p.projectType||p.housingType||p.broadbandType||p.energyProject||p.healthProgram||p.facilityType||'community infrastructure project';
+  var lmi=p.lmiBenefit||'low-to-moderate income residents comprising the majority of the service area';
+  var det=p.details||'';
+  var n='\n\nSECTION A — COMMUNITY OVERVIEW\n';
+  n+=ag+' is a '+gp('type','public agency / nonprofit organization')+' serving '+ruralArea+'. '+mission+'\n\n';
+  n+='The community served by '+ag+' meets the eligibility criteria for the '+g.name+' program as a rural area with documented need for '+projType+'. ';
+  n+='This application is submitted in response to the '+fy+' '+g.name+' Notice of Funding Opportunity administered by '+g.funder+'.\n\n';
+  n+='SECTION B — RURAL NEED & PROJECT DESCRIPTION\n';
+  n+='Geographic Area: '+ruralArea+'\nProject Type: '+projType+'\nPopulation Served: '+pop+' residents\n\n';
+  if(det){n+='Project Narrative:\n'+det+'\n\n';}
+  else{n+=ag+' proposes to use '+g.name+' funding to address a documented gap in '+projType+' that directly limits the quality of life, economic opportunity, and community resilience of residents in '+ruralArea+'. The project is consistent with the '+g.name+" program's priority of strengthening rural communities through targeted infrastructure and service investments.\n\n";}
+  n+='Community Need Documentation:\n';
+  n+='The target area has a per-capita income and poverty rate that qualify under program thresholds. The community has been identified as having limited access to adequate '+projType+'. This project directly responds to the highest-priority need identified through community input and local planning processes.\n\n';
+  n+='Benefit to Low-Income Residents: '+lmi+'\n\n';
+  n+='SECTION C — GOALS AND OBJECTIVES\n';
+  n+='Goal 1: Deliver Essential Community Infrastructure / Services\n';
+  n+='  1.1: Complete project implementation within the performance period\n';
+  n+='  1.2: Serve a minimum of '+pop+' residents through improved '+projType+'\n';
+  n+='  1.3: Achieve all required performance metrics per program guidelines\n\n';
+  n+='Goal 2: Ensure Long-Term Community Benefit\n';
+  n+='  2.1: Establish maintenance and operational plan for all completed infrastructure\n';
+  n+='  2.2: Partner with local government and community organizations for sustainability\n';
+  n+='  2.3: Document and report outcomes annually to '+g.funder+'\n\n';
+  n+='SECTION D — BUDGET JUSTIFICATION\n';
+  n+='Total Grant Request: $'+amt+'\n';
+  n+='  Construction / Infrastructure / Equipment: 55%\n';
+  n+='  Professional Services & Engineering: 20%\n';
+  n+='  Project Management & Administration: 15%\n';
+  n+='  Contingency (10% or less): 10%\n\n';
+  n+='All costs are necessary, reasonable, and consistent with '+g.name+' eligible cost categories. '+ag+' will procure all contracts per federal/state requirements and maintain detailed project records.\n\n';
+  n+='SECTION E — SUSTAINABILITY\n';
+  n+=ag+' has identified funding sources and operational plans to sustain project outcomes beyond the grant period including local appropriations, user fees (where applicable), and complementary state funding programs.\n\n';
+  n+='Point of Contact: '+contact+', '+title+'\nPortal: '+g.portal+'\nNote: '+g.note+'\n\n';
+  n+='[END — Attach SF-424, environmental review documentation, letters of support from local government]\n';
+  n+='[For USDA RD programs: contact your State Rural Development office before applying]';
+  return H+n;
+}
+
+function genVet(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  var vetProgram=p.veteranProgram||p.veteranService||p.mhProgram||p.familyProgram||'veteran support services';
+  var vetsServed=p.veteransServed||p.militaryFamilies||'[NUMBER] veterans and military families';
+  var vaCounty=p.vaCounty||city+', '+st;
+  var det=p.details||'';
+  var n='\n\nSECTION A — ORGANIZATIONAL OVERVIEW\n';
+  n+=ag+' is a '+gp('type','nonprofit organization')+' based in '+city+', '+st+'. '+mission+'\n\n';
+  n+=ag+' has a demonstrated commitment to serving veterans and military families in '+vaCounty+' and surrounding areas. ';
+  n+='The organization submits this application in response to the '+fy+' '+g.name+' program administered by '+g.funder+'.\n\n';
+  n+='SECTION B — VETERAN NEED & PROJECT DESCRIPTION\n';
+  n+='Program: '+vetProgram+'\nVeterans / Military Families Served: '+vetsServed+'\nService Area: '+vaCounty+'\n\n';
+  if(det){n+='Program Narrative:\n'+det+'\n\n';}
+  else{
+    n+='Veterans in '+vaCounty+' face significant challenges transitioning from military service to civilian life — including housing instability, behavioral health needs, employment gaps, and social isolation. ';
+    n+=ag+' proposes to address these needs through '+vetProgram+'. This program directly aligns with '+g.name+" program priorities and will deliver measurable improvements in veteran well-being and community integration.\n\n";
+  }
+  n+='Veteran Population Context:\n';
+  n+='The Hampton Roads region — including '+vaCounty+' — has one of the highest concentrations of active-duty and veteran populations in the United States, driven by the presence of Naval Station Norfolk, Joint Base Langley-Eustis, and other installations. Despite this concentration, many veterans lack access to timely, community-based supportive services.\n\n';
+  n+='SECTION C — GOALS AND OBJECTIVES\n';
+  n+='Goal 1: Deliver Direct Services to Veterans and Military Families\n';
+  n+='  1.1: Serve '+vetsServed+' during the grant performance period\n';
+  n+='  1.2: Achieve 85% or higher participant satisfaction rate\n';
+  n+='  1.3: Document measurable improvement in housing stability, employment, or health outcomes\n\n';
+  n+='Goal 2: Build Community Veteran Support Infrastructure\n';
+  n+='  2.1: Coordinate with VA medical centers, VSOs, and DoD transition programs\n';
+  n+='  2.2: Establish warm referral pathways with housing, mental health, and employment partners\n';
+  n+='  2.3: Train staff in military cultural competency\n\n';
+  n+='Goal 3: Ensure Program Sustainability\n';
+  n+='  3.1: Pursue complementary state and local veteran funding\n';
+  n+='  3.2: Develop outcome reporting aligned with VA national metrics\n';
+  n+='  3.3: Submit all required performance reports on schedule\n\n';
+  n+='SECTION D — BUDGET JUSTIFICATION\n';
+  n+='Total Grant Request: $'+amt+'\n';
+  n+='  Personnel (Case Managers, Coordinators): 50%\n';
+  n+='  Direct Veteran Assistance (stipends, emergency needs): 25%\n';
+  n+='  Program Operations & Supplies: 15%\n';
+  n+='  Administrative / Indirect (10% or less): 10%\n\n';
+  n+='All expenditures directly support veteran services and are allowable under '+g.name+' program guidelines.\n\n';
+  n+='SECTION E — EVALUATION & SUSTAINABILITY\n';
+  n+=ag+' will track enrollment, service units delivered, housing stability rates, employment placements, and participant-reported outcomes. Reports will be submitted per program requirements. Post-grant sustainability relies on state DVS funding, individual donor support, and VA community partner agreements.\n\n';
+  n+='Point of Contact: '+contact+', '+title+'\nPortal: '+g.portal+'\nNote: '+g.note+'\n\n';
+  n+='[END — Attach 501(c)(3) determination, most recent audit, veteran service documentation]\n';
+  n+='[Veteran-specific grants may require DD-214 or veteran verification protocols]';
+  return H+n;
+}
+
+function genMinority(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  var minPop=p.minorityServed||p.outreachPopulation||p.ownerDemographic||'minority and underserved community members';
+  var program=p.businessServices||p.communityProgram||p.capacityProject||p.veteranProgram||'targeted support program';
+  var served=p.farmersServed||p.minorityServed||'[NUMBER] individuals';
+  var det=p.details||'';
+  var isBiz=(g.id==='mbda'||g.id==='sba8a'||g.id==='va_dmbe');
+  var n='\n\nSECTION A — APPLICANT OVERVIEW\n';
+  n+=ag+' is a '+gp('type',isBiz?'small business / organization':'nonprofit organization')+' based in '+city+', '+st+'. '+mission+'\n\n';
+  n+=ag+' serves '+minPop+' and submits this application in response to the '+fy+' '+g.name+' program administered by '+g.funder+'.\n\n';
+  n+='SECTION B — COMMUNITY NEED & PROJECT DESCRIPTION\n';
+  n+='Target Population: '+minPop+'\nProgram / Service: '+program+'\nIndividuals / Businesses Served: '+served+'\n\n';
+  if(det){n+='Program Narrative:\n'+det+'\n\n';}
+  else{
+    n+=minPop+' in '+city+', '+st+' face systemic barriers to economic opportunity, healthcare access, educational advancement, and civic participation rooted in historical and ongoing inequities. ';
+    n+=ag+' proposes to address these barriers through '+program+'. This initiative directly advances the '+g.name+" program's mission of expanding equity, opportunity, and representation.\n\n";
+  }
+  if(isBiz){
+    n+='Business / Organization Background:\n';
+    n+=ag+' is owned and operated by individuals from a socially and economically disadvantaged background as defined under relevant program criteria. The organization has demonstrated the capacity to deliver '+program+' and has an established track record serving '+minPop+'.\n\n';
+  }
+  n+='SECTION C — GOALS AND OBJECTIVES\n';
+  n+='Goal 1: Expand Access and Opportunity for '+minPop+'\n';
+  n+='  1.1: Serve '+served+' during the program period\n';
+  n+='  1.2: Achieve measurable improvement in economic, educational, or health outcomes\n';
+  n+='  1.3: Document and report outcomes per '+g.funder+' requirements\n\n';
+  n+='Goal 2: Build Institutional Equity and Capacity\n';
+  n+='  2.1: Partner with community-based organizations, HBCUs, or MSIs where applicable\n';
+  n+='  2.2: Develop or expand services that address documented disparities\n';
+  n+='  2.3: Create replicable models that can be adopted by other communities\n\n';
+  n+='Goal 3: Advance Long-Term Systemic Change\n';
+  n+='  3.1: Engage policymakers and community stakeholders in program design\n';
+  n+='  3.2: Publish outcome data to contribute to the evidence base for equity programs\n';
+  n+='  3.3: Sustain program through diversified funding beyond the grant period\n\n';
+  n+='SECTION D — BUDGET JUSTIFICATION\n';
+  n+='Total Grant Request: $'+amt+'\n';
+  n+='  Personnel (Program Staff, Outreach Workers): 45%\n';
+  n+='  Direct Participant Services & Assistance: 30%\n';
+  n+='  Program Operations, Materials & Technology: 15%\n';
+  n+='  Administrative / Indirect (10% or less): 10%\n\n';
+  n+='All costs are necessary, reasonable, and consistent with '+g.name+' eligible cost categories. '+ag+' maintains financial systems compliant with 2 CFR Part 200 for federal awards.\n\n';
+  n+='SECTION E — EVALUATION & SUSTAINABILITY\n';
+  n+=ag+' will collect disaggregated data by race, ethnicity, and income level to track program equity. Outcome metrics include enrollment numbers, services delivered, economic gains (income, employment, contracts awarded), and participant-reported quality-of-life improvements. Post-grant sustainability relies on federal set-aside programs, state equity grants, and philanthropic support.\n\n';
+  n+='Point of Contact: '+contact+', '+title+'\nPortal: '+g.portal+'\nNote: '+g.note+'\n\n';
+  n+='[END — Attach proof of minority/disadvantaged status, IRS determination or business registration, audited financials]\n';
+  n+='[For federal programs: SAM.gov registration required before applying via Grants.gov]';
+  return H+n;
+}
+
+function genGeneric(g,p,H,ag,city,st,contact,title,pop,area,mission,fy,amt){
+  const det=p.details||'',purpose=p.purpose||p.project||p.trainingFocus||p.businessPurpose||p.eduImpact||'[PROJECT PURPOSE]';
+  return H+'\n\nSECTION A — APPLICANT OVERVIEW\n'+ag+' is a '+gp('type','public safety agency')+' serving '+pop+' residents across '+area+' in '+city+', '+st+'. '+mission+'\n\n'+ag+' qualifies as an eligible applicant under the '+g.name+' program administered by '+g.funder+'. This application is submitted in response to the '+fy+' Notice of Funding Opportunity (NOFO) as published at '+g.portal+'.\n\nSECTION B — PROJECT DESCRIPTION\nProject Purpose: '+purpose+'\n\n'+(det||ag+' proposes to utilize '+g.name+' funding to support the program purpose described above. This project aligns directly with '+g.name+' program priorities and will produce measurable outcomes that justify the federal investment.')+'\n\nSECTION C — GOALS AND OBJECTIVES\nGoal 1: Successfully implement the proposed project within the performance period\n  1.1: Complete all planned activities on schedule\n  1.2: Achieve all identified performance metrics\n  1.3: Submit all required reports and documentation\n\nGoal 2: Demonstrate measurable community benefit\n  2.1: Document direct impact on target population\n  2.2: Collect and report evaluation data\n  2.3: Identify lessons learned and sustainability pathways\n\nSECTION D — BUDGET JUSTIFICATION\nTotal Federal Request: $'+amt+'\nAll expenditures are necessary, reasonable, and allowable under the '+g.name+' program guidelines. Budget categories will be detailed in the accompanying budget detail form.\n\nSECTION E — EVALUATION & SUSTAINABILITY\n'+ag+' will collect both quantitative and qualitative data to measure project effectiveness. Performance data will be reported in required progress reports. Post-award sustainability will be addressed through integration with existing operations and pursuit of complementary funding.\n\nPOC: '+contact+', '+title+'\nPortal: '+g.portal+'\nNote: '+g.note+'\n\n[END — Customize sections with program-specific details]\n[Verify current forms and requirements at: '+g.portal+']';
+}
+
+// TRACKER
+function buildDatalist(){const dl=document.getElementById('gl');if(dl)dl.innerHTML=GRANTS.map(g=>'<option value="'+g.name+'">').join('');}
+function stBadge(s){const m={'Not Started':'bgr','In Progress':'ba','Submitted':'bb','Under Review':'bb','Awarded':'bg','Denied':'br','Withdrawn':'bgr'};return'<span class="badge '+m[s]+'" >'+s+'</span>';}
+function renderTracker(){
+  const tb=document.getElementById('tbody');
+  if(!S.subs.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:#C0D4E8;padding:2rem;font-family:var(--mono);font-size:0.75rem">No submissions logged yet.</td></tr>';return;}
+  tb.innerHTML=S.subs.map((s,i)=>`<tr><td><strong style="color:var(--text3)">${s.grant}</strong></td><td>${s.agency||'—'}</td><td style="font-family:var(--mono);font-size:0.72rem">${s.fy||'—'}</td><td style="font-family:var(--mono);font-size:0.72rem;color:var(--amber2)">${s.amount?'$'+s.amount:'—'}</td><td style="font-family:var(--mono);font-size:0.7rem">${s.deadline||'—'}</td><td style="font-family:var(--mono);font-size:0.7rem">${s.submitted||'—'}</td><td>${stBadge(s.status)}</td><td style="font-family:var(--mono);font-size:0.72rem;color:var(--green)">${s.award?'$'+s.award:'—'}</td><td style="font-size:0.8rem;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${s.notes||''}">${s.notes||'—'}</td><td><button class="btn bo" style="font-size:0.58rem;padding:0.22rem 0.5rem;margin-right:3px" onclick="editEntry(${i})">Edit</button><button class="btn bred" style="font-size:0.58rem;padding:0.22rem 0.5rem" onclick="delEntry(${i})">Del</button></td></tr>`).join('');
+}
+function openAdd(pre){eidx=-1;document.getElementById('mod-title').textContent='Add Submission';document.getElementById('m-grant').value=pre||'';document.getElementById('m-agency').value=gp('name','');document.getElementById('m-fy').value='FY2026';['m-amount','m-deadline','m-sub','m-award','m-poc','m-notes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});document.getElementById('m-status').value='Not Started';document.getElementById('addMod').classList.add('open');}
+function editEntry(i){eidx=i;const s=S.subs[i];document.getElementById('mod-title').textContent='Edit Submission';['grant','agency','fy','amount','deadline','sub','status','award','poc','notes'].forEach(k=>{const el=document.getElementById('m-'+k);if(el)el.value=s[k==='sub'?'submitted':k]||'';});document.getElementById('addMod').classList.add('open');}
+function saveEntry(){const e={grant:document.getElementById('m-grant').value,agency:document.getElementById('m-agency').value,fy:document.getElementById('m-fy').value,amount:document.getElementById('m-amount').value,deadline:document.getElementById('m-deadline').value,submitted:document.getElementById('m-sub').value,status:document.getElementById('m-status').value,award:document.getElementById('m-award').value,poc:document.getElementById('m-poc').value,notes:document.getElementById('m-notes').value,createdAt:new Date().toISOString()};if(eidx>=0)S.subs[eidx]=e;else S.subs.push(e);saveS();renderTracker();updateDash();closeMod('addMod');}
+function delEntry(i){if(!confirm('Delete?'))return;S.subs.splice(i,1);saveS();renderTracker();updateDash();}
+function logSub(name){openAdd(name);showPage('tracker');setTimeout(()=>document.getElementById('addMod').classList.add('open'),150);}
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+
+// TIMELINE
+function setYr(yr,btn){S.yr=yr;document.querySelectorAll('.yb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTL();}
+function renderTL(){
+  const grid=document.getElementById('tl-grid');const today=new Date();const dlf=S.yr===2026?'dl26':'dl27';
+  const sorted=[...GRANTS].sort((a,b)=>new Date(S.dl[a.id]||a[dlf])-new Date(S.dl[b.id]||b[dlf]));
+  grid.innerHTML='<div class="tl-row hdr"><div class="tl-c tl-ch">Grant</div><div class="tl-c tl-ch" style="flex:1">Full Name / Notes</div><div class="tl-c tl-ch">Deadline</div><div class="tl-c tl-ch">Days</div><div class="tl-c tl-ch">Status</div></div>'+sorted.map(g=>{
+    const raw=S.dl[g.id]||g[dlf],d=new Date(raw),days=Math.ceil((d-today)/864e5);
+    const isPast=days<0,isU=days>=0&&days<=30,isW=days>30&&days<=60;
+    const sc=isPast?'var(--red)':isU?'var(--red)':isW?'var(--amber)':'var(--green)';
+    const st=isPast?'PAST DUE':isU?'URGENT':isW?'UPCOMING':'ON TRACK';
+    const isSel=S.sel.includes(g.id);
+    return`<div class="tl-row" style="border-left:3px solid ${g.color}">
+      <div class="tl-c"><span style="font-weight:700;color:${g.color};font-family:var(--display);font-size:0.85rem">${g.name}</span>${isSel?'<span style="font-family:var(--mono);font-size:0.55rem;color:#34D399;margin-top:2px">● SELECTED</span>':''}</div>
+      <div class="tl-c" style="flex:1;gap:0.25rem"><span style="font-family:var(--mono);font-size:0.65rem;color:#C0D4E8">${g.full}</span><span style="font-family:var(--mono);font-size:0.6rem;color:#E2EEF8;margin-top:2px">${g.note}</span><input type="date" style="background:var(--bg2);border:1px solid var(--border);color:var(--amber2);font-family:var(--mono);font-size:0.62rem;padding:0.12rem 0.4rem;outline:none;margin-top:4px;width:140px" value="${raw}" onchange="S.dl['${g.id}']=this.value;saveS();renderTL()"></div>
+      <div class="tl-c"><span style="font-family:var(--mono);font-size:0.7rem">${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'})}</span><span style="font-family:var(--mono);font-size:0.55rem;color:var(--text2);margin-top:2px">(est.)</span></div>
+      <div class="tl-c"><span style="font-family:var(--mono);font-size:0.78rem;font-weight:700;color:${sc}">${isPast?'PAST':'+'+days+'d'}</span></div>
+      <div class="tl-c"><span class="badge" style="color:${sc};border-color:${sc}40;background:${sc}18">${st}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// EXPORT
+function expCSV(){
+  var h=['Grant','Agency','FY','Amount','Deadline','Submitted','Status','Award','Notes'];
+  var r=S.subs.map(function(s){return[s.grant,s.agency,s.fy,s.amount,s.deadline,s.submitted,s.status,s.award,s.notes].map(function(v){return'"'+(v||'').replace(/"/g,'""')+'"';}).join(',');});
+  var csv=[h.join(',')].concat(r).join('\n');
+  downloadText(csv,'grant-tracker.csv','text/csv');
+}
+
+function exportAll(){
+  var d={exportDate:new Date().toISOString(),profile:S.p,selectedGrants:S.sel,grantParams:S.gp,submissions:S.subs,deadlines:S.dl};
+  downloadText(JSON.stringify(d,null,2),'grant-command-hub-backup.json','application/json');
+}
+
+function exportNarratives(){
+  if(!S.sel.length){alert('No grants selected. Go to the Grant Library and select grants first.');return;}
+  var all=S.sel.map(function(id){
+    var g=GRANTS.find(function(x){return x.id===id;});
+    var line='='.repeat(60);
+    return line+'\n'+(g?g.name+' — '+g.full:id)+'\n'+line+'\n'+genNarr(id);
+  }).join('\n\n');
+  downloadText(all,'grant-narratives.txt','text/plain');
+}
+
+function downloadText(content, filename, mime){
+  // Try standard download link first
+  try {
+    var blob=new Blob([content],{type:mime});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download=filename;
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1500);
+  } catch(e){
+    showExportFallback(content, filename);
+  }
+  // iOS fallback: also show in modal after short delay if nothing happened
+  var isMobile=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(isMobile){ setTimeout(function(){ showExportFallback(content, filename); }, 400); }
+}
+
+function showExportFallback(content, filename){
+  var ov=document.getElementById('exportMod');
+  document.getElementById('exp-filename').textContent=filename;
+  document.getElementById('exp-content').value=content;
+  ov.classList.add('open');
+}
+
+function copyExportContent(){
+  var ta=document.getElementById('exp-content');
+  ta.select();
+  try{navigator.clipboard.writeText(ta.value).then(function(){flashSave('Copied!');});}
+  catch(e){document.execCommand('copy');flashSave('Copied!');}
+}
+
+function openExportMenu(){
+  document.getElementById('expMenuMod').classList.add('open');
+}
+
+
+['addMod','paramsMod'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});});
+['exportMod','expMenuMod'].forEach(id=>{var el=document.getElementById(id);if(el)el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});});
+</script>
+<!-- FULL DOCUMENT PREVIEW MODAL -->
+<div id="previewMod" style="position:fixed;inset:0;background:#040A14;z-index:600;display:none;flex-direction:column;">
+
+  <!-- Preview Topbar -->
+  <div style="background:#0A1826;border-bottom:2px solid rgba(245,158,11,0.35);padding:0 1.2rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:0.8rem;">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button onclick="closePreview()" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;background:rgba(252,129,129,0.12);border:1px solid rgba(252,129,129,0.4);color:#FC8181;padding:0.38rem 0.85rem;cursor:pointer;">✕ Close</button>
+      <span style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:#FFFFFF;letter-spacing:0.05em">DOCUMENT PREVIEW</span>
+      <span id="prev-count" style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:#A8C8E4;"></span>
+    </div>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+      <button onclick="prevDoc(-1)" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;background:rgba(255,255,255,0.05);border:1px solid rgba(192,212,232,0.35);color:#C0D4E8;padding:0.38rem 0.75rem;cursor:pointer;">◀ Prev</button>
+      <button onclick="prevDoc(1)"  style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;background:rgba(255,255,255,0.05);border:1px solid rgba(192,212,232,0.35);color:#C0D4E8;padding:0.38rem 0.75rem;cursor:pointer;">Next ▶</button>
+      <button onclick="copyCurrentNarr()" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);color:#FCD34D;padding:0.38rem 0.85rem;cursor:pointer;">📋 Copy This</button>
+      <button onclick="exportNarratives()" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.45);color:#34D399;padding:0.38rem 0.85rem;cursor:pointer;">⬇ Export All</button>
+    </div>
+  </div>
+
+  <!-- Two-panel layout -->
+  <div style="display:flex;flex:1;overflow:hidden;">
+
+    <!-- Left: Table of Contents -->
+    <div id="prev-toc" style="width:220px;background:#0A1826;border-right:1px solid rgba(245,158,11,0.18);overflow-y:auto;flex-shrink:0;padding:1rem 0;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:#FCD34D;padding:0 1rem 0.8rem;border-bottom:1px solid rgba(245,158,11,0.15);margin-bottom:0.5rem;">Contents</div>
+      <div id="prev-toc-items"></div>
+    </div>
+
+    <!-- Right: Document view -->
+    <div style="flex:1;overflow-y:auto;padding:2rem;display:flex;flex-direction:column;gap:0;" id="prev-scroll">
+
+      <!-- Grant title banner -->
+      <div id="prev-banner" style="background:#0F1E2E;border-left:4px solid #F59E0B;padding:1rem 1.4rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <div id="prev-gname" style="font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:#FFFFFF;"></div>
+          <div id="prev-gfull" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:#A8C8E4;margin-top:0.2rem;"></div>
+        </div>
+        <div style="text-align:right;">
+          <div id="prev-gfunder" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:#FCD34D;"></div>
+          <div id="prev-gaward" style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:#A8C8E4;margin-top:0.2rem;"></div>
+        </div>
+      </div>
+
+      <!-- Narrative text -->
+      <div id="prev-text" style="background:#040A12;border:1px solid rgba(245,158,11,0.18);padding:2rem;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;line-height:2;color:#D4E4F4;white-space:pre-wrap;flex:1;min-height:400px;"></div>
+
+      <!-- Bottom nav -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;margin-top:1rem;">
+        <button onclick="prevDoc(-1)" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(192,212,232,0.35);color:#C0D4E8;padding:0.5rem 1.2rem;cursor:pointer;">◀ Previous Grant</button>
+        <span id="prev-pos" style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:#A8C8E4;"></span>
+        <button onclick="prevDoc(1)" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(192,212,232,0.35);color:#C0D4E8;padding:0.5rem 1.2rem;cursor:pointer;">Next Grant ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var prevIdx=0, prevNarrs=[];
+
+function openDocPreview(){
+  if(!S.sel.length){alert('No grants selected. Go to the Grant Library and select grants first.');return;}
+  prevNarrs=S.sel.map(function(id){
+    var g=GRANTS.find(function(x){return x.id===id;});
+    return{id:id,g:g,text:genNarr(id)};
+  });
+  prevIdx=0;
+  buildTOC();
+  renderPrev(0);
+  document.getElementById('previewMod').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+
+function closePreview(){
+  document.getElementById('previewMod').style.display='none';
+  document.body.style.overflow='';
+}
+
+function buildTOC(){
+  var items=document.getElementById('prev-toc-items');
+  items.innerHTML=prevNarrs.map(function(n,i){
+    return '<div onclick="renderPrev('+i+')" id="toc-'+i+'" style="padding:0.7rem 1rem;cursor:pointer;border-left:3px solid transparent;font-family:\'IBM Plex Mono\',monospace;font-size:0.68rem;color:#A8C8E4;line-height:1.4;transition:all 0.15s;">'
+      +'<div style="color:#FFFFFF;font-weight:600;margin-bottom:0.2rem">'+(n.g?n.g.name:'Grant')+'</div>'
+      +'<div style="font-size:0.6rem;color:#7A9AB8">'+(n.g?n.g.funder:'')+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('prev-count').textContent=prevNarrs.length+' grant'+(prevNarrs.length===1?'':'s');
+}
+
+function renderPrev(i){
+  if(i<0)i=prevNarrs.length-1;
+  if(i>=prevNarrs.length)i=0;
+  prevIdx=i;
+  var n=prevNarrs[i];
+  var g=n.g||{};
+  // Update banner
+  document.getElementById('prev-gname').textContent=g.name||'Grant';
+  document.getElementById('prev-gfull').textContent=g.full||'';
+  document.getElementById('prev-gfunder').textContent=g.funder||'';
+  document.getElementById('prev-gaward').textContent=g.award||'';
+  document.getElementById('prev-banner').style.borderLeftColor=g.color||'#F59E0B';
+  // Update text
+  document.getElementById('prev-text').textContent=n.text;
+  // Update position
+  document.getElementById('prev-pos').textContent=(i+1)+' of '+prevNarrs.length;
+  // Update TOC highlight
+  document.querySelectorAll('[id^="toc-"]').forEach(function(el,idx){
+    el.style.background=idx===i?'rgba(245,158,11,0.1)':'';
+    el.style.borderLeftColor=idx===i?(prevNarrs[idx].g?prevNarrs[idx].g.color:'#F59E0B'):'transparent';
+    el.style.color=idx===i?'#FCD34D':'#A8C8E4';
+  });
+  // Scroll to top of document area
+  var scroll=document.getElementById('prev-scroll');
+  if(scroll)scroll.scrollTop=0;
+}
+
+function prevDoc(dir){renderPrev(prevIdx+dir);}
+
+function copyCurrentNarr(){
+  var txt=prevNarrs[prevIdx]?prevNarrs[prevIdx].text:'';
+  navigator.clipboard.writeText(txt).then(function(){flashSave('Copied!');}).catch(function(){
+    var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);flashSave('Copied!');
+  });
+}
+</script>
+
+
+</body>
+</html>
