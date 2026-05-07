@@ -1,0 +1,3789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cajares Prompt Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f8f5f0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1c1917;
+  }
+
+  /* ── Header ── */
+  #header {
+    background: linear-gradient(135deg, #1c1917 0%, #44403c 100%);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  #logo {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 20px rgba(245,158,11,.5);
+  }
+  #header-text { flex: 1; }
+  #header-sub  { font-size: 10px; color: #fbbf24; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+  #header-title{ font-size: 22px; color: #fff; font-weight: 900; letter-spacing: .04em; line-height: 1.1; }
+  #live-badge  {
+    background: rgba(134,239,172,.2); border: 1px solid rgba(134,239,172,.5);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; color: #86efac; font-weight: 700; letter-spacing: .1em;
+    white-space: nowrap;
+  }
+
+  /* ── Body ── */
+  #body { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .card-label {
+    font-size: 10px; color: #a8a29e;
+    letter-spacing: .15em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 10px;
+  }
+
+  /* ── Mode pills ── */
+  #mode-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill {
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+    border-width: 1.5px; border-style: solid;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .pill.active { color: #fff !important; }
+
+  /* ── Input card ── */
+  #input-card {
+    background: #fff;
+    border: 2px solid #d97706;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(217,119,6,.15);
+    margin-bottom: 14px;
+  }
+  #input-header {
+    background: linear-gradient(135deg, #92400e, #b45309);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #input-label { font-size: 11px; color: #fde68a; letter-spacing: .15em; font-weight: 700; text-transform: uppercase; }
+  #example-btn {
+    background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4);
+    border-radius: 12px; padding: 4px 14px; color: #fff;
+    font-size: 11px; cursor: pointer; font-weight: 700;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  #example-btn:hover { background: rgba(255,255,255,.32); }
+  #goal-input {
+    width: 100%; min-height: 160px;
+    background: transparent; border: none; outline: none;
+    color: #1c1917; font-size: 15px; line-height: 1.7;
+    padding: 16px; resize: vertical;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  #goal-input::placeholder { color: #b0a090; }
+  #input-footer {
+    padding: 4px 16px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  #input-hint { font-size: 11px; color: #c4b5a0; font-style: italic; }
+  #char-count  { font-size: 11px; color: #a8a29e; }
+
+  /* ── Buttons ── */
+  #btn-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  #generate-btn {
+    flex: 1; padding: 16px 20px;
+    background: linear-gradient(135deg, #d97706, #dc2626);
+    border: none; border-radius: 10px;
+    color: #fff; font-size: 14px; font-weight: 800;
+    letter-spacing: .15em; text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(220,38,38,.35);
+    transition: all .2s;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  #generate-btn:disabled {
+    background: #e5e7eb; color: #9ca3af;
+    box-shadow: none; cursor: not-allowed;
+  }
+  #clear-btn {
+    padding: 16px 20px;
+    background: #fff; border: 2px solid #d1d5db;
+    border-radius: 10px; color: #6b7280;
+    font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 700; font-family: inherit;
+    display: none;
+  }
+
+  /* ── Output card ── */
+  #output-card {
+    background: #fff;
+    border: 2px solid #38bdf8;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(14,165,233,.15);
+    display: none;
+    animation: fadeUp .35s ease-out;
+  }
+  #output-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  #output-mode-info { display: flex; align-items: center; gap: 10px; }
+  #output-icon  { font-size: 20px; }
+  #output-label { font-size: 13px; color: #fff; font-weight: 800; letter-spacing: .05em; }
+  #copy-top-btn {
+    padding: 7px 18px;
+    background: rgba(255,255,255,.25); border: none;
+    border-radius: 20px; color: #fff;
+    font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+  #copy-top-btn.copied { background: rgba(16,185,129,.9); }
+  #prompt-body {
+    padding: 20px; font-size: 13.5px; line-height: 1.9;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 500px; overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    background: #f0f9ff;
+    color: #1e293b;
+  }
+  #output-footer {
+    padding: 14px 20px; background: #fff;
+    border-top: 1px solid #f1f5f9;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  #output-hint  { font-size: 11px; color: #94a3b8; }
+  #copy-bottom-btn {
+    padding: 10px 24px;
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+
+  /* ── Footer ── */
+  #page-footer {
+    text-align: center; margin-top: 40px;
+    font-size: 10px; color: #c4b5a0; letter-spacing: .12em;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #d4b896; border-radius: 3px; }
+
+  /* ── Upload Zone ── */
+  #upload-card {
+    background: #fff;
+    border: 2px dashed #d1c4b0;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color .2s, background .2s;
+  }
+  #upload-card.drag-over {
+    border-color: #d97706;
+    background: #fffbf0;
+  }
+  #upload-header {
+    background: linear-gradient(135deg, #374151, #4b5563);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #upload-label-text { font-size: 11px; color: #d1d5db; letter-spacing: .15em; font-weight: 700; text-transform: uppercase; }
+  #upload-count-badge {
+    font-size: 10px; background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff; padding: 2px 10px; border-radius: 20px;
+    font-weight: 700; display: none;
+  }
+  #drop-zone {
+    padding: 20px 16px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  #drop-icon { font-size: 28px; line-height: 1; }
+  #drop-text { font-size: 13px; color: #78716c; text-align: center; line-height: 1.5; }
+  #drop-text strong { color: #1c1917; }
+  #drop-subtext { font-size: 11px; color: #a8a29e; }
+  #file-input { display: none; }
+  #upload-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #374151, #4b5563);
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .05em;
+    transition: opacity .2s;
+  }
+  #upload-btn:hover { opacity: .85; }
+
+  /* ── File chips ── */
+  #file-chips {
+    padding: 0 14px 14px;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .file-chip {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 10px;
+    border-radius: 8px; border: 1.5px solid #e7e5e4;
+    background: #fafafa; max-width: 100%;
+    animation: fadeUp .2s ease-out;
+  }
+  .file-chip-icon { font-size: 16px; flex-shrink: 0; }
+  .file-chip-info { flex: 1; min-width: 0; }
+  .file-chip-name {
+    font-size: 12px; font-weight: 700; color: #1c1917;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .file-chip-status { font-size: 10px; color: #78716c; }
+  .file-chip-remove {
+    background: none; border: none; cursor: pointer;
+    color: #9ca3af; font-size: 16px; line-height: 1;
+    padding: 0 2px; flex-shrink: 0;
+    transition: color .15s;
+  }
+  .file-chip-remove:hover { color: #ef4444; }
+  .file-chip.processing { border-color: #fcd34d; background: #fffbeb; }
+  .file-chip.ready      { border-color: #6ee7b7; background: #f0fdf4; }
+  .file-chip.image-chip { border-color: #c4b5fd; background: #f5f3ff; }
+  .file-chip.error-chip { border-color: #fca5a5; background: #fef2f2; }
+
+  /* ── Image preview strip ── */
+  #image-previews {
+    padding: 0 14px 14px;
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .img-preview-wrap {
+    position: relative; display: inline-block;
+    border-radius: 8px; overflow: hidden;
+    border: 2px solid #c4b5fd;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    animation: fadeUp .2s ease-out;
+  }
+  .img-preview-wrap img {
+    display: block; width: 90px; height: 90px;
+    object-fit: cover;
+  }
+  .img-remove-btn {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,.6); border: none;
+    color: #fff; border-radius: 50%;
+    width: 20px; height: 20px; font-size: 12px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .img-remove-btn:hover { background: rgba(239,68,68,.85); }
+
+  /* ── Context summary banner ── */
+  #context-banner {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    font-size: 12px; color: #15803d;
+    display: none; align-items: flex-start; gap: 8px;
+    line-height: 1.5;
+  }
+  #context-banner-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="header">
+  <div id="logo">⚡</div>
+  <div id="header-text">
+    <div id="header-sub">Dr. Carlos Cajares · DHSc, MPA, NRP</div>
+    <div id="header-title">PROMPT ENGINE</div>
+  </div>
+  <div id="live-badge">● INSTANT</div>
+</div>
+
+<!-- Body -->
+<div id="body">
+
+  <!-- Mode pills -->
+  <div class="card">
+    <div class="card-label" id="pill-label">11 Available Modes — Auto-detected from your input</div>
+    <div id="mode-pills"></div>
+  </div>
+
+  <!-- Input -->
+  <div id="input-card">
+    <div id="input-header">
+      <span id="input-label">▸ MISSION BRIEFING</span>
+      <button id="example-btn" onclick="fillExample()">Try Example ↺</button>
+    </div>
+    <textarea id="goal-input"
+      placeholder="Describe what you want to build, write, create, or plan...&#10;&#10;Examples:&#10;• A bee &amp; honey educational module with images, videos, and progress notes&#10;• Email to Norfolk Fire-Rescue about a clinical partnership&#10;• MCI scenario for a school campus with 200 students&#10;• Salsa song about my EMS journey from Puerto Rico to Virginia"
+      oninput="onInput()" onkeydown="onKey(event)"></textarea>
+    <div id="input-footer">
+      <span id="input-hint">No internet needed — generates instantly</span>
+      <span id="char-count">0 chars</span>
+    </div>
+  </div>
+
+  <!-- Upload Zone -->
+  <div id="upload-card">
+    <div id="upload-header">
+      <span id="upload-label-text">📎 ATTACH CONTEXT — Documents, Images, Artifacts</span>
+      <span id="upload-count-badge">0 files</span>
+    </div>
+    <div id="drop-zone" onclick="document.getElementById('file-input').click()"
+         ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <div id="drop-icon">📂</div>
+      <div id="drop-text"><strong>Drop files here</strong> or click to browse</div>
+      <div id="drop-subtext">PDF · DOCX · TXT · MD · CSV · PNG · JPG · WEBP · GIF</div>
+      <button id="upload-btn" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+        Choose Files
+      </button>
+    </div>
+    <input type="file" id="file-input" multiple
+      accept=".pdf,.doc,.docx,.txt,.md,.csv,.json,.png,.jpg,.jpeg,.webp,.gif,.html,.htm"
+      onchange="handleFiles(this.files)"/>
+    <div id="image-previews"></div>
+    <div id="file-chips"></div>
+  </div>
+
+  <!-- Context banner -->
+  <div id="context-banner">
+    <span id="context-banner-icon">✅</span>
+    <span id="context-banner-text"></span>
+  </div>
+
+  <!-- Buttons -->
+  <div id="btn-row">
+    <button id="generate-btn" onclick="generate()" disabled>⚡ GENERATE PROMPT</button>
+    <button id="clear-btn" onclick="clearAll()">CLEAR</button>
+  </div>
+
+  <!-- Output -->
+  <div id="output-card">
+    <div id="output-header">
+      <div id="output-mode-info">
+        <span id="output-icon"></span>
+        <span id="output-label"></span>
+      </div>
+      <button id="copy-top-btn" onclick="copyPrompt('top')">⧉ COPY</button>
+    </div>
+    <div id="prompt-body"></div>
+    <div id="output-footer">
+      <span id="output-hint">Paste into ChatGPT · Claude · Gemini · Suno · any AI tool</span>
+      <button id="copy-bottom-btn" onclick="copyPrompt('bottom')">COPY & DEPLOY</button>
+    </div>
+  </div>
+
+  <div id="page-footer">CAJARES PROMPT ENGINE · DHSc, MPA, NRP · CAMP EMS PROGRAM · v5.0 · 20 AGENTS</div>
+</div>
+
+<!-- PDF.js + Mammoth for file parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// ═══════════════════════════════════════════════════════
+//  MODE DEFINITIONS
+// ═══════════════════════════════════════════════════════
+const MODES = [
+  {
+    id: "module", label: "Instructional Module Builder", icon: "📚",
+    bg: "#ede9fe", color: "#5b21b6", border: "#c4b5fd",
+    keywords: [
+      "module",
+      "lesson",
+      "educational",
+      "education",
+      "learn",
+      "course",
+      "training",
+      "workshop",
+      "curriculum",
+      "teach",
+      "student",
+      "class",
+      "bee",
+      "honey",
+      "garden",
+      "picture",
+      "video",
+      "image",
+      "media",
+      "note",
+      "progress",
+      "lita",
+      "benefits"
+    ],
+    priority: [
+      "module",
+      "educational module",
+      "learning module",
+      "bee",
+      "honey",
+      "lita",
+      "garden",
+      "progress notes",
+      "canvas module"
+    ],
+    negative: [
+      "ems program",
+      "paramedic program",
+      "nursing program",
+      "mci",
+      "mass casualty"
+    ],
+    build: g => `Act as an expert instructional designer and web developer specializing in adult learning theory (Malcolm Knowles).
+
+Build a complete interactive educational module on the following topic:
+
+TOPIC: ${g}
+
+MODULE REQUIREMENTS:
+─────────────────────────────────────────
+1. LEARNING OBJECTIVES (Bloom's Taxonomy)
+   - Define 4–6 measurable outcomes using action verbs (identify, explain, apply, analyze, create)
+
+2. CONTENT SECTIONS (Tabbed Layout)
+   - Section 1: Introduction & Background
+   - Section 2: Core Concepts with real-world examples
+   - Section 3: Visual & Media Integration
+     • Suggest relevant images with descriptive captions
+     • Embed or link to appropriate YouTube/video resources
+   - Section 4: Practical Application / Case Study
+   - Section 5: Summary & Key Takeaways
+
+3. PROGRESS NOTES AREA
+   - Student-facing journaling/notes section
+   - Prompts: "What surprised you?", "How will you apply this?", "Questions I still have:"
+
+4. ASSESSMENT
+   - 5–10 knowledge-check questions (multiple choice or short answer)
+   - Include rationale for correct answers
+
+5. ANDRAGOGY ALIGNMENT
+   - Apply all 6 Knowles principles throughout
+   - Connect content to real-life experience and immediate relevance
+
+6. INTERACTIVITY SUGGESTIONS
+   - Discussion prompts, reflection activities, group exercises
+
+OUTPUT FORMAT: Structured, ready for Canvas LMS or standalone HTML module.`
+  },
+  {
+    id: "ems_program", label: "EMS Program Builder", icon: "🏥",
+    bg: "#e0f2fe", color: "#075985", border: "#7dd3fc",
+    keywords: [
+      "ems",
+      "paramedic",
+      "emt",
+      "aemt",
+      "cohort",
+      "coaemsP",
+      "nremt",
+      "vccs"
+    ],
+    priority: [
+      "ems program",
+      "paramedic program",
+      "emt program",
+      "aemt program",
+      "coaemsP",
+      "nremt"
+    ],
+    negative: [
+      "nursing",
+      "nurse",
+      "rn",
+      "lpn",
+      "nclex",
+      "bsn",
+      "adn",
+      "acen",
+      "vbon",
+      "faculty lesson",
+      "lesson plan",
+      "press release",
+      "grant proposal",
+      "job posting",
+      "va claim",
+      "veteran"
+    ],
+    superPriority: [
+      "emt course","emt program plan","paramedic program plan","aemt program","ems program development","coaemsP","paramedic cohort","ems cohort"
+    ],
+    build: g => `Act as an EMS Program Director and accreditation expert (CoAEMSP, NREMT, VCCS).
+
+Design a complete, implementation-ready EMS program solution for a community college setting.
+
+PROGRAM FOCUS: ${g}
+
+DELIVERABLES:
+─────────────────────────────────────────
+1. CURRICULUM STRUCTURE
+   - Aligned to National EMS Education Standards
+   - VCCS course codes and credit hours
+   - Sequence: EMT → AEMT → Paramedic pathway
+
+2. COURSE SEQUENCING
+   - Week-by-week or module-by-module breakdown
+   - Lecture, lab, and clinical hour distribution
+
+3. CLINICAL & FIELD INTEGRATION
+   - Partner agency requirements (ALS/BLS transport, hospital rotations)
+   - Minimum patient contact benchmarks
+   - Clinical coordinator role and workflow
+
+4. FACULTY & RESOURCE NEEDS
+   - Lead instructor qualifications
+   - Adjunct/clinical faculty ratios
+   - Equipment list and simulation lab requirements
+
+5. ACCREDITATION ROADMAP
+   - CoAEMSP self-study checklist
+   - NREMT exam prep integration
+   - Timeline: initial accreditation to full status
+
+6. BUDGET & SCALABILITY
+   - Per-student cost estimates
+   - Revenue model (tuition, grants, agency partnerships)
+   - Expansion pathway for growing cohorts
+
+Make this immediately actionable for a community college EMS Program Director.`
+  },
+  {
+    id: "comms", label: "Professional Communication", icon: "✉️",
+    bg: "#e0f2fe", color: "#0c4a6e", border: "#7dd3fc",
+    keywords: [
+      "email",
+      "letter",
+      "write",
+      "message",
+      "memo",
+      "proposal",
+      "communicate",
+      "partnership",
+      "outreach",
+      "contact",
+      "draft",
+      "send",
+      "request",
+      "invite",
+      "stakeholder",
+      "admin",
+      "dean",
+      "director",
+      "fire",
+      "rescue",
+      "norfolk",
+      "suffolk",
+      "hospital"
+    ],
+    priority: [
+      "email to",
+      "write an email",
+      "draft an email",
+      "write a letter",
+      "draft a letter",
+      "write a memo",
+      "draft a memo",
+      "professional email"
+    ],
+    negative: [
+      "lesson plan",
+      "grant proposal",
+      "press release",
+      "va claim",
+      "nursing program",
+      "mci scenario"
+    ],
+    build: g => `Act as Dr. Carlos Cajares, EMS Program Director — writing in a confident, professional, and charismatic voice.
+
+Write a polished professional communication for the following purpose:
+
+CONTEXT: ${g}
+
+COMMUNICATION REQUIREMENTS:
+─────────────────────────────────────────
+SUBJECT LINE (if email): [Compelling, specific, action-oriented]
+
+OPENING (2–3 sentences):
+- Hook the reader immediately
+- Establish credibility and shared mission
+
+BODY (3–4 paragraphs):
+- Paragraph 1: State the purpose clearly and confidently
+- Paragraph 2: Provide supporting context, data, or rationale
+- Paragraph 3: Describe the mutual benefit / value proposition
+- Paragraph 4 (if needed): Address potential concerns proactively
+
+CALL TO ACTION:
+- Specific, easy next step for the reader
+- Include a deadline or timeframe if appropriate
+
+CLOSING:
+- Warm but professional
+- Signature block: Dr. Carlos Cajares, DHSc, MPA, NRP | EMS Program Director | CAMP Community College
+
+TONE: Confident, inviting, visionary — not bureaucratic.`
+  },
+  {
+    id: "mci", label: "MCI Simulation Engine", icon: "🚨",
+    bg: "#fee2e2", color: "#991b1b", border: "#fca5a5",
+    keywords: [
+      "mci",
+      "mass casualty",
+      "drill",
+      "exercise",
+      "simulation",
+      "tabletop",
+      "scenario",
+      "incident",
+      "disaster",
+      "hseep",
+      "triage",
+      "campus",
+      "school",
+      "explosion",
+      "trauma",
+      "patients",
+      "operation",
+      "functional",
+      "silent"
+    ],
+    priority: [
+      "mci",
+      "mass casualty",
+      "mci scenario",
+      "mci drill",
+      "mass casualty incident",
+      "hseep",
+      "triage scenario",
+      "disaster drill"
+    ],
+    negative: [
+      "nursing",
+      "lesson plan",
+      "press release",
+      "grant",
+      "email",
+      "veteran",
+      "va claim"
+    ],
+    build: g => `Act as a disaster simulation designer and EMS training expert (HSEEP-compliant).
+
+Create a high-fidelity MCI tabletop or functional exercise scenario.
+
+SCENARIO FOCUS: ${g}
+
+SCENARIO PACKAGE:
+─────────────────────────────────────────
+1. INCIDENT OVERVIEW
+   - Type, location, and environmental conditions
+   - Triggering event and initial 911 report
+   - Jurisdiction and responding agencies
+
+2. PATIENT PROFILES (minimum 8–12 patients)
+   - Name/Tag #, Age, Mechanism of injury
+   - START triage category (Immediate/Delayed/Minor/Expectant)
+   - Chief complaint, vitals, and presenting signs
+   - Expected interventions and disposition
+
+3. TIMELINE PROGRESSION (T+0 to T+60 min)
+   - T+0: Initial dispatch and scene arrival
+   - T+10: Situation evolves (additional patients, hazard identified)
+   - T+20: Resource request inject
+   - T+40: Complications inject (patient deterioration, communication failure)
+
+4. INJECTS (5–8 scenario injects)
+   - Media arriving on scene
+   - Hospital diversion notice
+   - Missing/unaccounted person report
+   - Secondary hazard discovered
+
+5. DECISION POINTS & EXPECTED ACTIONS
+   - ICS structure activation
+   - Medical branch director decisions
+   - Resource allocation and mutual aid requests
+
+6. EVALUATION METRICS
+   - Triage accuracy rate
+   - Time to treatment benchmarks
+   - Communication effectiveness
+
+7. DEBRIEF GUIDE
+   - Hot wash questions (3 things done well, 3 to improve)
+   - After Action Report (AAR) template`
+  },
+  {
+    id: "andragogy", label: "Andragogy Master Mode", icon: "🎓",
+    bg: "#ede9fe", color: "#5b21b6", border: "#c4b5fd",
+    keywords: [
+      "andragogy",
+      "adult learning",
+      "knowles",
+      "interactive",
+      "instructional",
+      "bloom",
+      "objective",
+      "assessment",
+      "quiz",
+      "case study",
+      "debrief",
+      "design",
+      "modular"
+    ],
+    priority: [
+      "andragogy",
+      "knowles",
+      "adult learning",
+      "6 principles",
+      "andragogy principles"
+    ],
+    negative: [
+      "ems program",
+      "nursing program",
+      "mci",
+      "press release",
+      "grant",
+      "va claim",
+      "job posting"
+    ],
+    build: g => `Act as an expert in adult learning theory (Malcolm Knowles) and instructional design for healthcare education.
+
+Design a full modular course applying all 6 Andragogy principles.
+
+TOPIC: ${g}
+
+ANDRAGOGY ALIGNMENT:
+─────────────────────────────────────────
+1. Need to Know — Why does the learner need this? State real consequences.
+2. Self-Concept — Position learner as a capable professional, not a passive student.
+3. Prior Experience — Build on what they already know; use case-based bridges.
+4. Readiness to Learn — Tie content to current job role or immediate challenges.
+5. Orientation to Learning — Problem-centered, not subject-centered delivery.
+6. Motivation — Connect to intrinsic rewards (patient outcomes, career growth).
+
+MODULE STRUCTURE:
+─────────────────────────────────────────
+Module 1: Foundation & Real-World Context
+- Scenario hook (open with a patient case or real incident)
+- Learning objectives (Bloom's levels: Remember → Create)
+- Core content delivery
+
+Module 2: Deep Dive & Application
+- Interactive activity (think-pair-share, case analysis, or simulation)
+- Decision-making exercise with branching outcomes
+
+Module 3: Synthesis & Assessment
+- Capstone scenario requiring integration of all concepts
+- Reflection prompts: "How will I use this in my next shift?"
+- 10-question post-assessment with rationale
+
+DELIVERY FORMAT: Canvas LMS compatible, suitable for hybrid or fully online delivery.`
+  },
+  {
+    id: "business", label: "Business & Revenue Growth", icon: "📈",
+    bg: "#ffedd5", color: "#9a3412", border: "#fdba74",
+    keywords: [
+      "business",
+      "revenue",
+      "saas",
+      "monetize",
+      "pricing",
+      "market",
+      "startup",
+      "product",
+      "scale",
+      "growth",
+      "income",
+      "profit",
+      "subscription",
+      "clients",
+      "customers",
+      "sell",
+      "launch",
+      "platform",
+      "mci exercise",
+      "lumio",
+      "calix",
+      "monarch",
+      "anesthesia",
+      "consulting",
+      "grant",
+      "nonprofit",
+      "lita"
+    ],
+    priority: [
+      "business plan",
+      "revenue plan",
+      "saas",
+      "monetize",
+      "startup",
+      "business model",
+      "pricing strategy",
+      "mci exercise hub",
+      "calix",
+      "lumio"
+    ],
+    negative: [
+      "nursing",
+      "ems program",
+      "lesson plan",
+      "press release",
+      "va claim",
+      "clinical rotation"
+    ],
+    build: g => `Act as a business strategist and revenue architect with expertise in EdTech, healthcare, and SaaS.
+
+Develop a comprehensive business and revenue growth plan.
+
+BUSINESS FOCUS: ${g}
+
+BUSINESS PLAN:
+─────────────────────────────────────────
+1. EXECUTIVE SUMMARY
+   - Problem being solved
+   - Solution and unique value proposition
+   - Target market and TAM estimate
+
+2. MARKET ANALYSIS
+   - Primary audience segments
+   - Key competitors and differentiation
+   - Market trends supporting this opportunity
+
+3. REVENUE MODEL
+   - Primary revenue streams (subscription, licensing, consulting, grants)
+   - Pricing tiers with rationale
+   - Revenue projections (Year 1–3)
+
+4. GO-TO-MARKET STRATEGY
+   - Launch sequence (MVP → beta → full release)
+   - Partnership and channel strategy
+   - Marketing and outreach tactics
+
+5. SCALING PLAN
+   - Operational milestones
+   - Team and hiring roadmap
+   - Technology or platform requirements
+
+6. RISK MITIGATION
+   - Top 3 risks and contingency plans
+   - Funding strategy (bootstrap, grants, investors)
+
+Make this actionable for an entrepreneur-operator ready to execute immediately.`
+  },
+  {
+    id: "creative", label: "Creative Mode", icon: "🎵",
+    bg: "#fce7f3", color: "#9d174d", border: "#f9a8d4",
+    keywords: [
+      "song",
+      "music",
+      "salsa",
+      "lyric",
+      "creative",
+      "story",
+      "narrative",
+      "poem",
+      "hook",
+      "chorus",
+      "verse",
+      "suno",
+      "beat",
+      "melody",
+      "spanish",
+      "cali",
+      "nueva york",
+      "reggaeton",
+      "cumbia",
+      "sing",
+      "write a song",
+      "compose"
+    ],
+    priority: [
+      "write a song",
+      "create a song",
+      "salsa song",
+      "suno",
+      "compose a song",
+      "write lyrics",
+      "music lyrics",
+      "song about"
+    ],
+    negative: [
+      "nursing",
+      "ems program",
+      "lesson plan",
+      "grant",
+      "va claim",
+      "job posting",
+      "press release"
+    ],
+    build: g => `Act as a creative director, songwriter, and storytelling expert with deep cultural fluency.
+
+Create a powerful, emotionally resonant creative piece.
+
+CREATIVE REQUEST: ${g}
+
+CREATIVE BRIEF:
+─────────────────────────────────────────
+1. CONCEPT & THEME
+   - Core emotional message and narrative arc
+   - Cultural context and authenticity markers
+   - Target audience and intended impact
+
+2. STRUCTURE (for songs — adapt as needed)
+   - Intro/Hook (8 bars): Set the scene, grab attention immediately
+   - Verse 1: Establish the story — origin, struggle, context
+   - Pre-Chorus: Build emotional tension
+   - Chorus: The anthem moment — memorable, singable, universal
+   - Verse 2: Growth, conflict, or revelation
+   - Bridge: Unexpected turn or emotional peak
+   - Outro: Resolution or call to action
+
+3. SUNO AI PROMPT (if applicable)
+   - Genre tags: [specify]
+   - Style descriptors: [tempo, instrumentation, mood]
+   - Voice type: [male/female, language, accent]
+   - Production feel: [live band, studio polish, raw, orchestral]
+
+4. STANDOUT ELEMENTS
+   - Signature line or hook phrase
+   - Cultural references that add authenticity
+   - Emotional payoff moment
+
+Make it unforgettable.`
+  },
+  {
+    id: "command", label: "Command Mode", icon: "⚡",
+    bg: "#fef3c7", color: "#92400e", border: "#fcd34d",
+    keywords: [
+      "decide",
+      "decision",
+      "strategy",
+      "action",
+      "execute",
+      "recommend",
+      "fix",
+      "solve",
+      "problem",
+      "challenge",
+      "issue",
+      "priority",
+      "urgent",
+      "immediately",
+      "now",
+      "quick",
+      "fast",
+      "what should",
+      "how do i",
+      "help me figure"
+    ],
+    priority: [
+      "what should i do",
+      "how do i decide",
+      "i need a decision",
+      "strategic advice",
+      "give me a recommendation"
+    ],
+    negative: [
+      "lesson plan",
+      "grant proposal",
+      "press release",
+      "job posting",
+      "nursing program",
+      "mci scenario",
+      "song",
+      "lyrics"
+    ],
+    build: g => `Act as a senior EMS Program Director, healthcare executive, and strategic operator.
+
+Provide a decisive, no-fluff strategic response. Zero filler. Maximum execution value.
+
+SITUATION: ${g}
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. SITUATION ASSESSMENT (2–3 sentences)
+   - What is actually happening here?
+   - What is the core problem or opportunity?
+
+2. CLEAR RECOMMENDATION
+   - State the recommended course of action directly
+   - No hedging — commit to a position
+
+3. EXECUTION PLAN (Step-by-step)
+   - Step 1 (Do today):
+   - Step 2 (Do this week):
+   - Step 3 (Do this month):
+
+4. RISKS & MITIGATION
+   - Top 2–3 risks if this path is taken
+   - How to reduce each risk
+
+5. EXPECTED OUTCOMES
+   - Short-term (30 days): What changes?
+   - Long-term (6–12 months): What does success look like?
+
+6. BACKUP PLAN
+   - Alternative if primary approach fails
+
+Make this actionable starting today.`
+  },
+  {
+    id: "truth", label: "Truth Mode", icon: "🎯",
+    bg: "#fefce8", color: "#854d0e", border: "#fde047",
+    keywords: [
+      "honest",
+      "truth",
+      "real talk",
+      "blunt",
+      "gap",
+      "weakness",
+      "problem",
+      "wrong",
+      "failing",
+      "critique",
+      "feedback",
+      "assess",
+      "evaluate",
+      "review",
+      "audit",
+      "blind spot",
+      "sugarcoat"
+    ],
+    priority: [
+      "truth mode",
+      "real talk",
+      "no sugarcoating",
+      "honest assessment",
+      "blind spots",
+      "what am i missing"
+    ],
+    negative: [
+      "lesson plan",
+      "grant proposal",
+      "press release",
+      "nursing program",
+      "mci scenario",
+      "song"
+    ],
+    build: g => `TRUTH MODE ACTIVATED. No filler. No flattery. No sugarcoating.
+
+TOPIC FOR ANALYSIS: ${g}
+
+─────────────────────────────────────────
+GROUND TRUTH ASSESSMENT:
+
+1. WHAT IS ACTUALLY HAPPENING
+   - Strip away assumptions and see the situation clearly
+   - What are the facts vs. the stories being told?
+
+2. BLIND SPOTS
+   - What is being missed or ignored?
+   - What uncomfortable truth needs to be said out loud?
+
+3. GAPS & RISKS
+   - Where are the critical weaknesses?
+   - What could go wrong that hasn't been planned for?
+
+4. LEVERAGE POINTS
+   - What 1–2 moves would create the most impact?
+   - Where is there untapped advantage?
+
+5. DIRECT RECOMMENDATIONS
+   - What must be done immediately?
+   - What must be stopped immediately?
+   - What must be started that hasn't begun yet?
+
+6. THE HARD QUESTION
+   - The one question that must be answered before moving forward.
+
+Respond with the directness of a trusted advisor, not a yes-man.`
+  },
+  {
+    id: "meta", label: "Meta Prompt Engineer", icon: "🔧",
+    bg: "#eef2ff", color: "#3730a3", border: "#a5b4fc",
+    keywords: [
+      "improve",
+      "optimize",
+      "prompt",
+      "rewrite",
+      "better",
+      "upgrade",
+      "refine",
+      "enhance",
+      "meta",
+      "engineer",
+      "structure",
+      "clarity",
+      "output",
+      "make this prompt"
+    ],
+    priority: [
+      "improve this prompt",
+      "optimize this prompt",
+      "make this prompt better",
+      "rewrite this prompt",
+      "meta prompt"
+    ],
+    negative: [
+      "nursing program",
+      "ems program",
+      "mci scenario",
+      "song",
+      "grant",
+      "job posting"
+    ],
+    build: g => `Act as an elite AI Prompt Engineer with expertise in large language model optimization.
+
+Analyze and dramatically improve the following prompt or concept for maximum AI output quality.
+
+INPUT TO IMPROVE: ${g}
+
+PROMPT ENGINEERING ANALYSIS:
+─────────────────────────────────────────
+1. DIAGNOSIS
+   - What is weak or ambiguous in the current prompt/concept?
+   - What is the AI likely to misinterpret?
+   - What context is missing?
+
+2. OPTIMIZATION PRINCIPLES APPLIED
+   - Role assignment: Give the AI a specific expert persona
+   - Context injection: Add all relevant background
+   - Output scaffolding: Define exact format and length
+   - Constraint setting: Tell the AI what NOT to do
+   - Chain-of-thought: Break complex tasks into steps
+
+3. OPTIMIZED PROMPT (Ready to Use)
+   ┌─────────────────────────────────────┐
+   [FULLY REWRITTEN, POWER-CHARGED PROMPT]
+   └─────────────────────────────────────┘
+
+4. WHY THIS VERSION IS BETTER
+   - Specific improvements made and why they matter
+
+5. ADVANCED VARIATIONS
+   - Version A: For detailed, long-form output
+   - Version B: For quick, punchy output
+   - Version C: For structured/tabular output`
+  },
+  {
+    id: "product", label: "AI Product Builder", icon: "⚙️",
+    bg: "#d1fae5", color: "#065f46", border: "#6ee7b7",
+    keywords: [
+      "app",
+      "tool",
+      "platform",
+      "build",
+      "develop",
+      "software",
+      "web",
+      "html",
+      "react",
+      "feature",
+      "dashboard",
+      "portal",
+      "system",
+      "database",
+      "canvas",
+      "lms",
+      "nexus",
+      "hub",
+      "interface",
+      "ui",
+      "ux",
+      "design"
+    ],
+    priority: [
+      "build an app",
+      "create an app",
+      "build a platform",
+      "web application",
+      "software platform",
+      "react app",
+      "html app",
+      "nexus",
+      "mci exercise hub platform"
+    ],
+    negative: [
+      "nursing program",
+      "ems program",
+      "lesson plan",
+      "grant proposal",
+      "press release",
+      "song",
+      "va claim"
+    ],
+    build: g => `Act as a product architect and full-stack AI systems builder.
+
+Design a complete, scalable product or platform.
+
+PRODUCT CONCEPT: ${g}
+
+PRODUCT BLUEPRINT:
+─────────────────────────────────────────
+1. PRODUCT OVERVIEW
+   - Core problem solved
+   - Primary user persona and use case
+   - Key differentiator vs. existing tools
+
+2. CORE FEATURES (MVP)
+   - Feature 1: [Name] — [What it does, why it matters]
+   - Feature 2: [Name] — [What it does, why it matters]
+   - Feature 3: [Name] — [What it does, why it matters]
+   - Feature 4: [Name] — [What it does, why it matters]
+
+3. USER ROLES & PERMISSIONS
+   - Admin: Full access, configuration, reporting
+   - Instructor/Manager: Content creation, monitoring
+   - Student/End User: Consumption, interaction, notes
+
+4. WORKFLOW & UX
+   - Onboarding flow (steps 1–5)
+   - Core user journey (primary use case end-to-end)
+   - Key interaction patterns
+
+5. DATA & ANALYTICS
+   - Key metrics tracked
+   - Dashboard KPIs
+   - Export and reporting capabilities
+
+6. TECH STACK RECOMMENDATION
+   - Frontend / Backend / Database / AI layer / Hosting
+
+7. MONETIZATION STRATEGY
+   - Pricing tiers and rationale
+   - Free vs. paid feature split`
+  },
+  {
+    id: "va", label: "VA Benefits Expert Agent", icon: "🎖️",
+    bg: "#e8f0fe", color: "#1a3a6e", border: "#4a7fd4",
+    keywords: [
+      "va",
+      "veterans affairs",
+      "veteran",
+      "veterans",
+      "service connected",
+      "service-connected",
+      "disability",
+      "disability rating",
+      "disability claim",
+      "compensation",
+      "pension",
+      "claim",
+      "supplemental claim",
+      "higher level review",
+      "hlr",
+      "board of veterans",
+      "bva",
+      "nexus",
+      "nexus letter",
+      "dbq",
+      "disability benefits questionnaire",
+      "c&p exam",
+      "compensation and pension",
+      "appeals",
+      "appeal",
+      "ama",
+      "legacy appeal",
+      "vso",
+      "accredited",
+      "agent orange",
+      "ptsd",
+      "tbi",
+      "mst",
+      "military sexual trauma",
+      "sleep apnea",
+      "tinnitus",
+      "hearing loss",
+      "hypertension",
+      "diabetes",
+      "burn pit",
+      "pact act",
+      "buddy statement",
+      "lay statement",
+      "medical evidence",
+      "IMO",
+      "independent medical opinion",
+      "rating",
+      "cfr",
+      "38 cfr",
+      "38 usc",
+      "effective date",
+      "cue",
+      "clear and unmistakable error",
+      "tdiu",
+      "total disability",
+      "individual unemployability",
+      "caregiver",
+      "vr&e",
+      "vocational rehab",
+      "chapter 31",
+      "chapter 33",
+      "gi bill",
+      "education benefit",
+      "home loan",
+      "va health care",
+      "eligibility",
+      "discharge upgrade",
+      "dd214",
+      "service records",
+      "military records",
+      "national personnel records",
+      "caren",
+      "crna",
+      "anesthesia",
+      "nurse anesthetist",
+      "military service"
+    ],
+    priority: [
+      "va claim",
+      "va disability",
+      "veteran disability",
+      "veterans affairs",
+      "service connected",
+      "nexus letter",
+      "supplemental claim",
+      "higher level review",
+      "c&p exam",
+      "pact act",
+      "tdiu"
+    ],
+    negative: [
+      "nursing program",
+      "ems program",
+      "lesson plan",
+      "press release",
+      "grant proposal",
+      "job posting",
+      "song"
+    ],
+    build: g => `Act as an expert US Department of Veterans Affairs (VA) benefits specialist, accredited claims agent, and veteran advocate with 20+ years of experience navigating VA regulations, CFR Title 38, and the Appeals Modernization Act (AMA).
+
+VETERAN'S REQUEST: ${g}
+
+YOUR ROLE & AUTHORITY:
+─────────────────────────────────────────
+You have deep expertise in:
+- VA disability compensation (38 CFR Part 3 & 4)
+- Service connection: direct, secondary, aggravation, presumptive
+- VA ratings system and combined ratings formula
+- Appeals pathways: Supplemental Claim, Higher-Level Review (HLR), Board of Veterans' Appeals (BVA)
+- PACT Act presumptive conditions (burn pits, toxic exposure)
+- Medical nexus requirements and IMO/IME standards
+- C&P exam preparation and challenges
+- TDIU (Total Disability Individual Unemployability)
+- VA healthcare eligibility and enrollment
+- Surviving spouse/dependent benefits (DIC, Chapter 35)
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. SITUATION ASSESSMENT
+   - Summarize the veteran's/claimant's core issue
+   - Identify the legal basis under 38 CFR or 38 U.S.C.
+   - Flag any time-sensitive deadlines or effective date considerations
+
+2. ELIGIBILITY & SERVICE CONNECTION ANALYSIS
+   - Type of service connection that applies:
+     □ Direct service connection (in-service event + current diagnosis + nexus)
+     □ Secondary service connection (aggravated by service-connected condition)
+     □ Presumptive service connection (PACT Act, Agent Orange, POW, etc.)
+     □ Aggravation of pre-existing condition
+   - Evidence threshold: What is needed to meet the "at least as likely as not" (50%+) standard?
+   - Favorable lay/buddy statement guidance
+
+3. REQUIRED EVIDENCE PACKAGE
+   □ Service records: DD-214, STRs (Service Treatment Records), personnel file
+   □ Medical evidence: Current diagnosis, treatment records, lab results, imaging
+   □ Nexus letter / IMO: Specific language required ("at least as likely as not due to...")
+   □ DBQ (Disability Benefits Questionnaire): Which form applies, who can complete it
+   □ Buddy/lay statements: What to include, format, and who should submit
+   □ Private medical records vs. VA records strategy
+
+4. NEXUS LETTER TEMPLATE (if applicable)
+   Draft the key language a treating provider or IMO physician should include:
+
+   "It is my opinion that [condition] is at least as likely as not (50% or greater probability)
+   related to the Veteran's military service. This opinion is based on: [clinical rationale,
+   service records reviewed, medical literature]. The Veteran's service records document
+   [specific in-service event/exposure]. Current medical evidence shows [diagnosis +
+   supporting findings]. Medical literature supports [causal/aggravation link]."
+
+5. RATING ESTIMATE & COMBINED FORMULA
+   - Probable VA rating range for claimed condition(s) under 38 CFR Part 4
+   - Combined rating calculation if multiple conditions (explain whole person method)
+   - Bilateral factor consideration if applicable
+   - TDIU eligibility if ratings approach 60% (single) or 70% combined with one at 40%+
+
+6. STRATEGIC CLAIMS ROADMAP
+   Step 1 — Gather & Organize Evidence (Timeline: ___ weeks)
+   Step 2 — Submit/File Claim via [VA.gov / VSO / Accredited Agent]
+   Step 3 — C&P Exam Preparation (what to say, what NOT to minimize)
+   Step 4 — Monitor claim status on VA.gov (expected decision window)
+   Step 5 — If denied or under-rated → Choose appeal lane:
+             □ Supplemental Claim (new and relevant evidence)
+             □ Higher-Level Review (no new evidence; error in prior decision)
+             □ Board of Veterans' Appeals (Direct Review / Evidence / Hearing)
+
+7. EFFECTIVE DATE STRATEGY
+   - Earliest possible effective date based on filing history
+   - CUE (Clear and Unmistakable Error) opportunities in prior decisions
+   - Continuous pursuit strategy to protect effective date
+
+8. C&P EXAM COACHING
+   - How to describe symptoms at their WORST (not average) day
+   - Functional impact statements: work, daily activities, relationships
+   - What examiners must document per M21-1 manual
+   - How to challenge an inadequate or unfavorable C&P exam
+
+9. APPEALS LANE RECOMMENDATION (if applicable)
+   - Why this specific lane is best for this situation
+   - Evidence needed for Supplemental Claim
+   - Arguments for HLR: duty to assist errors, clear error of fact or law
+   - BVA hearing prep: what to bring, how to present
+
+10. ADDITIONAL BENEFITS TO EXPLORE
+    □ VA Health Care enrollment (Priority Groups 1–8)
+    □ CHAMPVA for dependents
+    □ Special Monthly Compensation (SMC) for severe disabilities
+    □ Caregiver Support Program (Program of Comprehensive Assistance)
+    □ Vocational Rehabilitation & Employment (VR&E / Chapter 31)
+    □ Home loan guarantee (Certificate of Eligibility)
+    □ Life insurance options (VGLI, SDVI)
+    □ Property tax exemptions (state-specific)
+    □ Discharge upgrade pathway if characterization is an issue
+
+IMPORTANT DISCLAIMERS:
+─────────────────────────────────────────
+• This output is for informational and preparation purposes only.
+• Always verify current regulations at 38 CFR and VA.gov — rules change frequently.
+• For legal representation, work with a VA-accredited attorney, claims agent, or VSO.
+• Free VSO assistance: DAV, VFW, American Legion, AMVETS, PVA (no fees allowed by law).
+• VA benefits are non-taxable and do not affect Social Security income.`
+  },
+  {
+    id: "hospital_admin", label: "Hospital Administrator", icon: "🏨",
+    bg: "#f0fdf4", color: "#14532d", border: "#86efac",
+    keywords: [
+      "hospital",
+      "hospital administrator",
+      "health system",
+      "healthcare administration",
+      "chief medical officer",
+      "cmo",
+      "coo",
+      "ceo hospital",
+      "sentara",
+      "obici",
+      "bon secours",
+      "clinical partnership",
+      "mou",
+      "memorandum",
+      "affiliation agreement",
+      "clinical affiliation",
+      "patient safety",
+      "quality improvement",
+      "performance improvement",
+      "jcaho",
+      "joint commission",
+      "accreditation",
+      "cms",
+      "medicare",
+      "medicaid",
+      "credentialing",
+      "privileging",
+      "medical staff",
+      "bylaws",
+      "policy",
+      "procedure",
+      "budget hospital",
+      "revenue cycle",
+      "billing",
+      "coding",
+      "reimbursement",
+      "staffing",
+      "physician",
+      "provider",
+      "allied health",
+      "ems partnership",
+      "clinical rotation agreement",
+      "hospital contract",
+      "emergency department",
+      "er",
+      "trauma",
+      "stroke",
+      "cath lab",
+      "capacity",
+      "throughput",
+      "length of stay",
+      "los",
+      "readmission",
+      "community benefit",
+      "population health",
+      "charity care"
+    ],
+    priority: [
+      "hospital administrator",
+      "hospital administration",
+      "health system",
+      "affiliation agreement hospital",
+      "joint commission",
+      "hospital board",
+      "hospital ceo",
+      "hospital coo"
+    ],
+    negative: [
+      "nursing program director",
+      "lesson plan",
+      "grant proposal",
+      "song",
+      "va claim",
+      "mci scenario",
+      "job posting for"
+    ],
+    superPriority: [
+      "hospital affiliation agreement","hospital affiliation","affiliation agreement hospital","hospital mou","hospital clinical partnership","hospital ceo","hospital president","health system executive"
+    ],
+    build: g => `Act as a seasoned Hospital Administrator and Healthcare Executive with 20+ years of experience in academic medical centers, community hospitals, and health system leadership.
+
+ADMINISTRATIVE REQUEST: ${g}
+
+YOUR EXECUTIVE PROFILE:
+─────────────────────────────────────────
+You bring expertise in:
+- Hospital operations, capacity management, and throughput optimization
+- Clinical quality, patient safety, and accreditation (Joint Commission, CMS, DNV)
+- Medical staff credentialing, bylaws, and governance
+- Strategic planning, service line development, and community partnerships
+- Revenue cycle management, payer contracting, and financial stewardship
+- Academic/clinical affiliation agreements with EMS, nursing, and allied health programs
+- Regulatory compliance: EMTALA, HIPAA, CMS Conditions of Participation
+- Community benefit reporting and population health strategy
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. EXECUTIVE SITUATION ASSESSMENT
+   - Reframe the request from a C-suite operational lens
+   - Identify key stakeholders (Board, Medical Staff, Nursing, Finance, Legal)
+   - Surface regulatory or compliance implications
+
+2. STRATEGIC RECOMMENDATION
+   - Primary recommended course of action with rationale
+   - Alignment with hospital mission, vision, and strategic plan
+   - Community benefit and population health angle
+
+3. OPERATIONAL EXECUTION PLAN
+   □ Governance: Committees, approvals, and board notification required
+   □ Legal/Compliance: Contract review, credentialing, liability considerations
+   □ Financial: Budget impact, ROI, payer implications, grant opportunities
+   □ Clinical: Quality metrics, patient safety checkpoints, outcomes tracking
+   □ Communications: Internal (staff, medical staff) and external (community, media)
+
+4. PARTNERSHIP AGREEMENT FRAMEWORK (if applicable)
+   - Affiliation agreement key terms:
+     □ Scope of services / roles and responsibilities
+     □ Student/trainee supervision and liability
+     □ HIPAA compliance and data sharing
+     □ Insurance and indemnification
+     □ Term, renewal, and termination clauses
+     □ Performance metrics and review schedule
+
+5. METRICS & ACCOUNTABILITY
+   - Key performance indicators to track success
+   - Reporting cadence (monthly dashboard, quarterly board report)
+   - Quality benchmarks aligned with national standards (Leapfrog, CMS Star Ratings)
+
+6. RISK REGISTER
+   - Regulatory risk: [Identify applicable CMS/TJC standards]
+   - Financial risk: [Budget exposure, unfunded mandate concerns]
+   - Reputational risk: [Community perception, media considerations]
+   - Mitigation strategy for each
+
+7. STAKEHOLDER COMMUNICATION PLAN
+   - Board of Directors: Executive summary talking points
+   - Medical Staff: Clinical rationale and engagement strategy
+   - Community/Media: Press release or community benefit narrative
+
+DELIVERABLE FORMAT: Board-ready executive brief, department memo, or policy document — specify which is needed.`
+  },
+  {
+    id: "college_admin", label: "College President / Administrator", icon: "🎓",
+    bg: "#fef9ec", color: "#713f12", border: "#fcd34d",
+    keywords: [
+      "college president",
+      "president",
+      "provost",
+      "vice president",
+      "vp academic",
+      "vp student",
+      "dean",
+      "associate dean",
+      "department chair",
+      "college administration",
+      "administrator",
+      "vccs",
+      "virginia community college",
+      "sacs",
+      "sacscoc",
+      "accreditation college",
+      "curriculum approval",
+      "course approval",
+      "program approval",
+      "new program",
+      "strategic plan",
+      "college strategic",
+      "enrollment",
+      "retention",
+      "completion",
+      "faculty",
+      "full time",
+      "adjunct",
+      "hiring",
+      "faculty senate",
+      "governance",
+      "budget college",
+      "fte",
+      "headcount",
+      "credit hours",
+      "ftes",
+      "financial aid",
+      "title iv",
+      "pell",
+      "workforce development",
+      "workforce",
+      "dual enrollment",
+      "dual credit",
+      "k-12 partnership",
+      "high school",
+      "college board",
+      "board of visitors",
+      "governing board",
+      "camp community college",
+      "paul d camp",
+      "camp",
+      "memorandum of understanding",
+      "articulation agreement",
+      "transfer",
+      "grant",
+      "title iii",
+      "nsf",
+      "department of education",
+      "student success",
+      "advising",
+      "early alert",
+      "persistence",
+      "professional development",
+      "pd",
+      "continuing education",
+      "ce",
+      "institutional research",
+      "ir",
+      "data",
+      "outcomes assessment",
+      "program review"
+    ],
+    priority: [
+      "college president",
+      "board of visitors",
+      "provost",
+      "vccs system",
+      "sacscoc",
+      "institutional",
+      "college administration",
+      "presidential memo",
+      "vice president academic"
+    ],
+    negative: [
+      "nursing program director",
+      "lesson plan",
+      "song",
+      "va claim",
+      "mci scenario",
+      "hospital administrator"
+    ],
+    build: g => `Act as an experienced Community College President and Higher Education Administrator with deep expertise in VCCS governance, SACSCOC accreditation, workforce development, and institutional leadership.
+
+ADMINISTRATIVE REQUEST: ${g}
+
+YOUR LEADERSHIP PROFILE:
+─────────────────────────────────────────
+You bring expertise in:
+- Community college governance: Board of Visitors, Faculty Senate, Shared Governance
+- VCCS policies, procedures, and system office relationships
+- SACSCOC accreditation standards and quality enhancement plans (QEP)
+- Program development, curriculum approval, and articulation agreements
+- Budget development, FTE/headcount management, and resource allocation
+- Workforce development, employer partnerships, and grant-funded initiatives
+- Student success: enrollment, retention, completion, and equity gaps
+- Federal funding: Title III, Carl D. Perkins, NSF, DOL TAACCCT, TRIO
+- Faculty affairs: hiring, evaluation, tenure/continuing contract, professional development
+- Strategic planning, institutional effectiveness, and outcomes assessment
+- Legislative relations and community/regional stakeholder engagement
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. PRESIDENTIAL SITUATION ANALYSIS
+   - Frame the issue at institutional and system level
+   - Identify VCCS system office implications or approvals needed
+   - Flag SACSCOC or regulatory considerations
+
+2. STRATEGIC RECOMMENDATION
+   - Primary recommendation with institutional rationale
+   - Alignment with college mission and VCCS strategic plan ("Propel")
+   - Connection to regional workforce needs and community benefit
+
+3. GOVERNANCE & APPROVAL PATHWAY
+   □ Board of Visitors: Does this require board action or notification?
+   □ VCCS System Office: Chancellor/System notification, policy compliance
+   □ Faculty Senate / Shared Governance: Consultation required?
+   □ Curriculum Committee: Course/program approval process
+   □ SACSCOC: Substantive change notification? New program approval?
+
+4. OPERATIONAL IMPLEMENTATION PLAN
+   Phase 1 — Foundation (Month 1–2):
+   - Stakeholder identification and engagement
+   - Policy review and compliance check
+   - Resource assessment (personnel, space, budget, equipment)
+
+   Phase 2 — Development (Month 2–4):
+   - Curriculum development or program design
+   - Partnership agreements / MOUs drafted and executed
+   - Faculty/staff hiring or professional development plan
+
+   Phase 3 — Launch & Evaluation (Month 4–6+):
+   - Student recruitment and enrollment marketing
+   - Program launch with quality checkpoints
+   - Outcomes assessment and reporting framework
+
+5. BUDGET & RESOURCE PLAN
+   - Personnel costs (FT faculty, adjunct, staff, coordinators)
+   - Equipment and facility needs
+   - Revenue projections (tuition, fees, contract training, grants)
+   - Grant opportunities aligned to this initiative
+   - ROI timeline and break-even enrollment threshold
+
+6. GRANT & FUNDING STRATEGY
+   - Federal programs applicable: [Carl Perkins / Title III / NSF / DOL]
+   - State funding opportunities: [VCCS workforce, SCHEV, Go Virginia]
+   - Private/foundation grants: [aligned funders]
+   - Reporting and compliance requirements
+
+7. ACCREDITATION & COMPLIANCE CHECKLIST
+   □ SACSCOC Principles of Accreditation: Applicable standards
+   □ VCCS Policy Manual: Relevant sections
+   □ Program-specific accreditation: [CoAEMSP / ACEN / CAAHEP / etc.]
+   □ Federal compliance: Title IX, ADA, Clery Act, Title IV
+
+8. ENROLLMENT & MARKETING STRATEGY
+   - Target student population and recruitment channels
+   - Dual enrollment and K–12 pipeline opportunities
+   - Employer-sponsored cohort model potential
+   - Retention and completion supports built into design
+
+9. BOARD COMMUNICATION BRIEF
+   Executive Summary for Board of Visitors (3–5 sentences):
+   [Concise presidential language suitable for board presentation]
+
+   Key Talking Points:
+   - Mission alignment
+   - Community/workforce impact
+   - Financial sustainability
+   - Risk mitigation
+
+10. EVALUATION & INSTITUTIONAL EFFECTIVENESS
+    - Program-level Student Learning Outcomes (SLOs)
+    - Key Performance Indicators (KPIs) and targets
+    - Annual program review integration
+    - Reporting to VCCS and accreditors
+
+DELIVERABLE FORMAT: Board agenda item, presidential briefing memo, program proposal, or stakeholder presentation — specify which format is needed.`
+  },
+  {
+    id: "grant_writer", label: "Grant Writer / Funding Strategist", icon: "💰",
+    bg: "#f0fdf4", color: "#065f46", border: "#34d399",
+    keywords: [
+      "grant",
+      "funding",
+      "rfp",
+      "request for proposal",
+      "funder",
+      "foundation",
+      "federal grant",
+      "state grant",
+      "private grant",
+      "nsf",
+      "nih",
+      "hrsa",
+      "department of labor",
+      "dol",
+      "department of education",
+      "doe",
+      "carl perkins",
+      "title iii",
+      "workforce",
+      "workforce grant",
+      "go virginia",
+      "schev",
+      "community foundation",
+      "united way",
+      "grant proposal",
+      "grant writing",
+      "narrative",
+      "budget justification",
+      "letters of support",
+      "logic model",
+      "evaluation plan",
+      "sustainability",
+      "needs statement",
+      "problem statement",
+      "goals objectives",
+      "nonprofit",
+      "501c3",
+      "lita's friends",
+      "community garden",
+      "lita",
+      "mci exercise hub",
+      "calix",
+      "lumio",
+      "seed funding",
+      "startup grant",
+      "ems grant",
+      "paramedic grant",
+      "healthcare grant",
+      "education grant",
+      "application",
+      "due date",
+      "deadline",
+      "competition",
+      "award",
+      "matching funds",
+      "cost share",
+      "in-kind",
+      "indirect costs",
+      "fringe"
+    ],
+    priority: [
+      "grant proposal",
+      "grant writing",
+      "grant application",
+      "grant funding",
+      "rfp",
+      "carl perkins",
+      "title iii",
+      "nsf grant",
+      "hrsa",
+      "logic model",
+      "budget justification",
+      "needs statement"
+    ],
+    negative: [
+      "nursing program director",
+      "ems program director",
+      "lesson plan",
+      "song",
+      "va claim",
+      "mci scenario",
+      "press release"
+    ],
+    superPriority: [
+      "carl perkins","perkins grant","title iii grant","write a grant","grant proposal for","grant application for","grant narrative for","budget justification for grant","logic model for grant"
+    ],
+    build: g => `Act as an expert Grant Writer and Funding Strategist with 15+ years of experience securing federal, state, and private foundation funding for healthcare, education, workforce development, and nonprofit organizations.
+
+GRANT REQUEST: ${g}
+
+YOUR EXPERTISE PROFILE:
+─────────────────────────────────────────
+Specializations:
+- Federal grants: NSF, NIH, HRSA, Dept. of Labor (TAACCCT, WIOA), Dept. of Education (Title III, Perkins)
+- State grants: VCCS workforce funds, SCHEV, Go Virginia, VDOE
+- Private/Foundation: Community foundations, healthcare foundations, corporate giving
+- Nonprofit/Community: USDA rural development, community development block grants
+- Healthcare education: CoAEMSP-aligned program grants, simulation funding
+- Nonprofit startup: 501(c)(3) formation, seed grants, capacity-building grants
+
+GRANT DEVELOPMENT FRAMEWORK:
+─────────────────────────────────────────
+1. FUNDING LANDSCAPE ANALYSIS
+   - Most likely grant programs that match this need (name, agency, typical award size)
+   - Current open RFPs or upcoming cycles to target
+   - Funder priorities and strategic alignment
+   - Competitive landscape: Who else is applying?
+
+2. NEEDS STATEMENT / PROBLEM NARRATIVE
+   Draft compelling needs statement (ready to customize):
+   "According to [data source], [target population] in [region] faces [specific problem].
+   This gap results in [consequence]. Without intervention, [projected impact].
+   [Organization] is uniquely positioned to address this because [organizational capacity/track record]."
+   Supporting data points to gather:
+   - Local/regional statistics
+   - National benchmarks for comparison
+   - Community testimony or stakeholder validation
+
+3. PROJECT GOALS & SMART OBJECTIVES
+   Goal 1: [Broad outcome]
+     Objective 1.1: By [date], [measurable action] as measured by [metric]
+     Objective 1.2: By [date], [measurable action] as measured by [metric]
+   Goal 2: [Broad outcome]
+     Objective 2.1: By [date], [measurable action] as measured by [metric]
+
+4. LOGIC MODEL
+   INPUTS → ACTIVITIES → OUTPUTS → SHORT-TERM OUTCOMES → LONG-TERM IMPACT
+   - Inputs: Personnel, partners, facilities, funds, equipment
+   - Activities: Training, curriculum, services, outreach
+   - Outputs: Students trained, services delivered, products created
+   - Outcomes: Knowledge gained, behavior change, employment, revenue
+   - Impact: Community-level change, systemic transformation
+
+5. BUDGET OUTLINE & JUSTIFICATION
+   Personnel:
+   - [Role]: [FTE %] × [Salary] × [Fringe rate] = $[amount] — Justification: [why needed]
+   Fringe Benefits: [rate]% of personnel = $[amount]
+   Contractual/Consultants: $[amount] — [what services]
+   Equipment: $[amount] — [items, why grant-fundable]
+   Supplies: $[amount]
+   Travel: $[amount] — [purpose, destinations]
+   Other Direct Costs: $[amount]
+   Indirect Costs (F&A): [rate]% of [base] = $[amount]
+   TOTAL REQUEST: $[amount]
+   Matching/Cost Share: $[amount] ([source])
+
+6. EVALUATION PLAN
+   Evaluator: [Internal coordinator / External evaluator]
+   Data collection methods:
+   - Pre/post assessments, surveys, enrollment records
+   - Employer feedback, placement tracking, wage data
+   Reporting schedule: Quarterly progress + annual performance report
+   Success metrics aligned to funder priorities
+
+7. SUSTAINABILITY PLAN
+   How will this continue after grant funding ends?
+   - Institutional budget integration: [department line item]
+   - Revenue generation: [tuition, fees, contracts, training]
+   - Additional grants: [follow-on funding sources]
+   - Community ownership: [partner commitments, MOU language]
+
+8. LETTERS OF SUPPORT — KEY PARTNERS TO ENGAGE
+   □ [Partner 1] — Role: [what they contribute/attest to]
+   □ [Partner 2] — Role: [what they contribute/attest to]
+   □ [Partner 3] — Role: [employer, community org, government entity]
+   Template opening line: "It is with great enthusiasm that [Organization] endorses [Project Name]..."
+
+9. EXECUTIVE SUMMARY (Funder-facing, 1 paragraph)
+   [Organization] requests $[amount] from [Funder] to [action verb + project description].
+   This initiative will serve [target population] in [region] by [key activities].
+   Upon completion, [measurable outcomes]. [Organization]'s track record of [proof point]
+   ensures successful stewardship of these funds.
+
+10. SUBMISSION CHECKLIST
+    □ SF-424 or funder application form
+    □ Project narrative (page limit: check RFP)
+    □ Budget and budget justification
+    □ Logic model
+    □ Evaluation plan
+    □ Organizational chart and key personnel bios
+    □ Letters of support (minimum 3–5)
+    □ 501(c)(3) determination letter (if nonprofit)
+    □ Audited financials or most recent 990
+    □ Indirect cost rate agreement (if applicable)`
+  },
+  {
+    id: "hr_workforce", label: "HR / Workforce Development", icon: "👥",
+    bg: "#fff7ed", color: "#9a3412", border: "#fb923c",
+    keywords: [
+      "hire",
+      "hiring",
+      "recruit",
+      "recruitment",
+      "job posting",
+      "job description",
+      "interview",
+      "onboard",
+      "onboarding",
+      "orientation",
+      "employee",
+      "staff",
+      "performance review",
+      "evaluation",
+      "performance improvement plan",
+      "pip",
+      "discipline",
+      "progressive discipline",
+      "termination",
+      "separation",
+      "compensation",
+      "salary",
+      "pay",
+      "benefits",
+      "hr",
+      "human resources",
+      "workforce development",
+      "training plan",
+      "professional development",
+      "succession planning",
+      "talent management",
+      "retention",
+      "turnover",
+      "ada",
+      "fmla",
+      "flsa",
+      "title vii",
+      "eeoc",
+      "labor law",
+      "compliance",
+      "union",
+      "collective bargaining",
+      "grievance",
+      "job offer",
+      "offer letter",
+      "contract employee",
+      "at-will",
+      "adjunct faculty",
+      "faculty hiring",
+      "skills lab instructor",
+      "workforce pipeline",
+      "apprenticeship",
+      "internship",
+      "practicum",
+      "employee handbook",
+      "policy manual",
+      "hr policy",
+      "organizational chart",
+      "org chart",
+      "restructure",
+      "reorganization"
+    ],
+    priority: [
+      "job posting",
+      "job description",
+      "hire a",
+      "hiring a",
+      "recruit for",
+      "write a job",
+      "performance review",
+      "performance improvement plan",
+      "employee handbook"
+    ],
+    negative: [
+      "nursing program director",
+      "ems program director",
+      "lesson plan",
+      "song",
+      "va claim",
+      "grant proposal",
+      "press release",
+      "hospital administrator"
+    ],
+    build: g => `Act as a seasoned Human Resources Director and Workforce Development Strategist with deep expertise in higher education, healthcare, and public sector HR practices.
+
+HR / WORKFORCE REQUEST: ${g}
+
+YOUR EXPERTISE PROFILE:
+─────────────────────────────────────────
+Specializations:
+- Full-cycle recruitment: job analysis, posting, screening, interviewing, selection
+- Onboarding, orientation, and 90-day integration planning
+- Performance management: goal setting, evaluation, coaching, PIPs
+- Employee relations: conflict resolution, progressive discipline, separations
+- Compensation analysis and classification (VCCS pay bands, healthcare grids)
+- Federal/state labor law compliance: ADA, FMLA, FLSA, Title VII, EEOC
+- Workforce development: training plans, succession planning, talent pipelines
+- Faculty affairs in community college settings (continuing contract, adjunct management)
+- Healthcare workforce: credentialing support, scope of practice, licensure tracking
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. HR SITUATION ASSESSMENT
+   - Core HR issue or opportunity identified
+   - Legal/compliance risk level: [Low / Medium / High]
+   - Urgency and recommended timeline
+
+2. POLICY & LEGAL FRAMEWORK
+   - Applicable federal law: [ADA / FMLA / FLSA / Title VII / EEOC / NLRA]
+   - State law: [Virginia Human Rights Act, VA DHRM policies, VCCS policy manual]
+   - Institutional policy: [Employee handbook, faculty contract, board policy]
+   - Required documentation and record retention
+
+3. RECOMMENDED COURSE OF ACTION
+   Option A: [Primary recommendation] — Pros/Cons
+   Option B: [Alternative approach] — Pros/Cons
+   Recommended: Option [A/B] because [rationale]
+
+4. JOB DESCRIPTION TEMPLATE (if hiring-related)
+   Position Title:
+   FLSA Classification: [Exempt / Non-Exempt]
+   Reports To:
+   Salary Range / Pay Band:
+
+   Position Summary (3–4 sentences):
+
+   Essential Functions:
+   1.
+   2.
+   3.
+   4.
+   5.
+
+   Minimum Qualifications:
+   - Education:
+   - Licensure/Certification:
+   - Experience:
+   - Skills:
+
+   Preferred Qualifications:
+
+   Physical Requirements:
+   Work Environment:
+
+5. INTERVIEW GUIDE (if recruitment-related)
+   Structured Interview Questions (behavioral + situational):
+   - "Tell me about a time you [competency]. What was the situation, your action, and the result?"
+   - "If you encountered [scenario], how would you handle it?"
+   - "What draws you to this role at [institution/organization]?"
+   Technical/skills-based questions:
+   - [Role-specific competency questions]
+   Rating rubric: 1–5 scale with anchor descriptors
+
+6. PERFORMANCE MANAGEMENT FRAMEWORK
+   Goal-Setting: SMART objectives tied to department KPIs
+   Review Cycle: [Annual / Semi-annual / Quarterly check-ins]
+   Performance Improvement Plan (PIP) Structure:
+   - Specific performance gap identified
+   - Measurable improvement targets with timeline
+   - Support/resources provided
+   - Consequences if not met
+   - Supervisor and employee signatures
+
+7. WORKFORCE DEVELOPMENT PLAN
+   Current state assessment: Skills gaps identified
+   Training priorities (Top 3):
+   1. [Skill] — Method: [On-the-job / External course / Mentorship] — Timeline: [when]
+   2. [Skill] — Method: — Timeline:
+   3. [Skill] — Method: — Timeline:
+   Succession planning: Key roles and internal candidates to develop
+   Retention strategies: [Compensation, recognition, flexibility, career pathing]
+
+8. COMMUNICATION TEMPLATES
+   □ Job offer letter framework
+   □ Disciplinary notice / written warning template
+   □ PIP initiation memo
+   □ Separation/termination checklist
+   □ Reference check questions
+
+9. DOCUMENTATION CHECKLIST
+   □ Position description (signed and dated)
+   □ Interview notes and scoring rubrics
+   □ Background check authorization and results
+   □ Offer letter (signed)
+   □ I-9 verification
+   □ Benefits enrollment
+   □ Signed handbook acknowledgment
+   □ 90-day check-in notes`
+  },
+  {
+    id: "public_relations", label: "Public Relations / Communications", icon: "📣",
+    bg: "#fdf4ff", color: "#6b21a8", border: "#d8b4fe",
+    keywords: [
+      "press release",
+      "media",
+      "news",
+      "public relations",
+      "communications",
+      "announcement",
+      "statement",
+      "talking points",
+      "media inquiry",
+      "reporter",
+      "journalism",
+      "interview media",
+      "crisis communication",
+      "crisis",
+      "brand",
+      "branding",
+      "marketing",
+      "social media",
+      "facebook",
+      "instagram",
+      "linkedin",
+      "newsletter",
+      "website",
+      "web content",
+      "blog",
+      "article",
+      "op-ed",
+      "community engagement",
+      "stakeholder",
+      "outreach",
+      "awareness",
+      "campaign",
+      "enrollment marketing",
+      "recruitment marketing",
+      "advertising",
+      "graduation",
+      "commencement",
+      "celebration",
+      "award",
+      "recognition",
+      "program launch",
+      "grand opening",
+      "ribbon cutting",
+      "incident",
+      "controversy",
+      "reputation",
+      "damage control",
+      "board communication",
+      "annual report",
+      "impact report",
+      "ems awareness",
+      "national ems week",
+      "first responder",
+      "paramedic awareness"
+    ],
+    priority: [
+      "press release",
+      "write a press release",
+      "social media post",
+      "media statement",
+      "talking points",
+      "crisis communication",
+      "public announcement",
+      "newsletter",
+      "enrollment marketing"
+    ],
+    negative: [
+      "nursing program director",
+      "ems program director",
+      "lesson plan",
+      "grant proposal",
+      "va claim",
+      "mci scenario",
+      "job posting",
+      "song"
+    ],
+    superPriority: [
+      "write a press release","draft a press release","press release for","press release about","write a social media","draft social media posts","media statement for","public announcement for"
+    ],
+    build: g => `Act as a seasoned Public Relations Director and Strategic Communications expert with experience in healthcare, higher education, government, and nonprofit sectors.
+
+COMMUNICATIONS REQUEST: ${g}
+
+YOUR EXPERTISE PROFILE:
+─────────────────────────────────────────
+Specializations:
+- Media relations: press releases, pitching, interview preparation, crisis response
+- Strategic messaging: brand voice, key messages, audience segmentation
+- Digital communications: social media strategy, email campaigns, website content
+- Internal communications: employee/faculty/student messaging, change management
+- Crisis communications: incident response, reputation management, spokesperson prep
+- Community engagement: public events, stakeholder outreach, community listening sessions
+- Campaign development: enrollment marketing, program awareness, fundraising narratives
+- Healthcare/EMS public communications: National EMS Week, safety campaigns, clinical partnerships
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. COMMUNICATIONS SITUATION ASSESSMENT
+   - Audience(s): Primary, secondary, internal vs. external
+   - Goal: Inform / Persuade / Celebrate / Respond / Build Awareness
+   - Tone: Formal / Conversational / Urgent / Inspiring / Empathetic
+   - Channel(s): Press release / Social / Email / Website / In-person / All
+
+2. KEY MESSAGES (3–5 core messages)
+   Primary Message: [The single most important thing audiences must take away]
+   Supporting Messages:
+   - [Message 2 — proof point or benefit]
+   - [Message 3 — human story or impact]
+   - [Message 4 — call to action]
+   Messages to AVOID: [Potential landmines or off-message topics]
+
+3. PRESS RELEASE (if media-facing)
+   FOR IMMEDIATE RELEASE
+
+   [COMPELLING HEADLINE IN TITLE CASE — MAX 12 WORDS]
+
+   [City, State] — [Date] — [Lead paragraph: who, what, when, where, why in 2–3 sentences. Most newsworthy fact first.]
+
+   [Body paragraph 1: Supporting context, statistics, background]
+
+   [Quote from organizational leader — specific, not generic]:
+   "[Name], [Title] at [Organization], said, '[Compelling quote that adds value, not just filler].'"
+
+   [Body paragraph 2: Community impact, beneficiaries, partnership details]
+
+   [Quote from partner or community stakeholder]:
+   "[Name], [Title], added, '[Quote that reinforces key message from external voice].'"
+
+   [Closing paragraph: Next steps, where to learn more, registration info]
+
+   ###
+
+   MEDIA CONTACT:
+   [Name] | [Title] | [Phone] | [Email]
+   [Organization] | [Website]
+
+4. SOCIAL MEDIA CONTENT PACK
+   LinkedIn (professional, 150–200 words):
+   [Draft — authoritative, milestone-focused, tag partners]
+
+   Facebook (community-facing, 80–120 words):
+   [Draft — warm, inclusive, use emojis sparingly, include CTA]
+
+   Instagram Caption (60–80 words + hashtags):
+   [Draft — visual-first, punchy opening, 5–8 relevant hashtags]
+   Hashtags: #[relevant] #[local] #[sector] #[brand]
+
+   X/Twitter (max 280 characters):
+   [Draft — lead with the hook, include link]
+
+5. TALKING POINTS (for spokesperson/interview prep)
+   Opening statement (30 seconds):
+   "[Name/Organization] is [key message in 1–2 sentences]."
+
+   Q&A Preparation:
+   Q: [Likely tough question]
+   A: [Bridged answer that returns to key message]
+
+   Q: [Follow-up probe]
+   A: [Factual, confident, empathetic response]
+
+   Phrases to USE: [Specific, empowering language]
+   Phrases to AVOID: [Jargon, negative framings, speculation]
+
+6. CRISIS COMMUNICATIONS PROTOCOL (if applicable)
+   First 1 hour: Gather facts, convene communications team, draft initial holding statement
+   Holding Statement Template:
+   "We are aware of [situation]. The safety and well-being of [stakeholders] is our top priority.
+   We are actively [action being taken] and will provide an update by [time]. For information,
+   contact [spokesperson name] at [contact]."
+   Follow-up timeline: [2-hour / 4-hour / 24-hour update schedule]
+   Do NOT: Speculate, assign blame, say "no comment," go silent
+
+7. EMAIL / NEWSLETTER DRAFT
+   Subject Line (A/B test options):
+   Option A: [Direct, benefit-focused]
+   Option B: [Curiosity-driven or urgency-based]
+   Preview text: [25–50 characters that complement subject line]
+   Body: [Opening hook → Context → Key message → CTA → Closing]
+   CTA Button text: [Action verb + specific outcome, e.g., "Register Now" / "Learn More"]
+
+8. MEASUREMENT & EVALUATION
+   Media: Impressions, pickup rate, sentiment analysis, share of voice
+   Social: Reach, engagement rate, click-through, follower growth
+   Email: Open rate (benchmark 20–25%), click rate (benchmark 2–3%), unsubscribes
+   Community: Event attendance, survey feedback, stakeholder response rate`
+  },
+  {
+    id: "nursing_director", label: "Nursing Program Director", icon: "🩺",
+    bg: "#fff1f2", color: "#9f1239", border: "#fda4af",
+    keywords: [
+      "nursing",
+      "nursing program",
+      "nursing director",
+      "rn",
+      "lpn",
+      "bsn",
+      "adn",
+      "msn",
+      "nurse",
+      "registered nurse",
+      "licensed practical",
+      "nursing education",
+      "acen",
+      "nlnac",
+      "nlnex",
+      "ccne",
+      "nursing accreditation",
+      "nursing standards",
+      "nclex",
+      "nursing board",
+      "state board of nursing",
+      "vbon",
+      "virginia board of nursing",
+      "nursing curriculum",
+      "nursing course",
+      "nursing syllabus",
+      "nursing clinical",
+      "simulation nursing",
+      "sim lab nursing",
+      "nursing lab",
+      "skills lab nursing",
+      "nursing faculty",
+      "clinical faculty nursing",
+      "preceptor",
+      "preceptorship",
+      "clinical placement nursing",
+      "clinical hours nursing",
+      "clinical rotation nursing",
+      "nursing capstone",
+      "nursing practicum",
+      "senior practicum",
+      "rn to paramedic",
+      "paramedic to rn",
+      "bridge program",
+      "rn bridge",
+      "lpn to rn",
+      "caren",
+      "crna",
+      "nurse anesthetist",
+      "anesthesia nursing",
+      "anesthesia program",
+      "nursing shortage",
+      "nurse retention",
+      "nurse burnout",
+      "staffing nursing",
+      "nursing student",
+      "cohort nursing",
+      "nursing admission",
+      "nursing selection",
+      "pharmacology",
+      "pathophysiology",
+      "med-surg",
+      "obstetrics nursing",
+      "pediatrics nursing",
+      "community health",
+      "mental health nursing",
+      "psychiatric nursing",
+      "nursing philosophy",
+      "caring theory",
+      "nursing theory",
+      "jean watson"
+    ],
+    priority: [
+      "nursing program",
+      "nursing director",
+      "nursing curriculum",
+      "nclex",
+      "acen",
+      "vbon",
+      "virginia board of nursing",
+      "nursing accreditation",
+      "rn program",
+      "lpn program",
+      "adn program",
+      "bsn program",
+      "nursing faculty",
+      "nursing clinical",
+      "nurse educator",
+      "nursing education"
+    ],
+    negative: [
+      "ems program",
+      "paramedic program",
+      "emt program",
+      "mci",
+      "mass casualty",
+      "press release",
+      "song",
+      "va claim",
+      "job posting for ems",
+      "paramedic curriculum"
+    ],
+    superPriority: [
+      "nclex prep","nclex strategy","acen accreditation","vbon approval","nursing program accreditation","adn program","lpn program","rn program","nursing program curriculum","nursing curriculum map"
+    ],
+    build: g => `Act as an experienced Nursing Program Director and Nursing Education expert with deep knowledge of ACEN/CCNE accreditation standards, Virginia Board of Nursing (VBON) regulations, NCLEX outcomes, and community college nursing program administration.
+
+NURSING REQUEST: ${g}
+
+YOUR LEADERSHIP PROFILE:
+─────────────────────────────────────────
+Areas of expertise:
+- Nursing program administration: ADN, LPN, RN-to-BSN, bridge programs
+- Accreditation: ACEN Standards (2023), CCNE Standards, NLNEX, SACS substantive change
+- Virginia Board of Nursing (VBON): approval requirements, program rules, clinical hour standards
+- NCLEX-RN/PN: exam prep strategies, first-time pass rate improvement, remediation
+- Nursing curriculum design: concept-based curriculum, competency-based progression
+- Clinical education: placement coordination, preceptor development, affiliation agreements
+- Simulation: NLN SIRC standards, high-fidelity simulation integration, debriefing
+- Bridge programs: RN-to-Paramedic, Paramedic-to-RN, LPN-to-RN articulation
+- Faculty development: clinical faculty orientation, peer evaluation, teaching strategies
+- Student success: retention, remediation, progression policies, academic advising
+- Workforce alignment: regional healthcare employer partnerships, graduate employment tracking
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. PROGRAM SITUATION ANALYSIS
+   - Core nursing education challenge or opportunity
+   - Regulatory implications: VBON, ACEN/CCNE, SACSCOC
+   - NCLEX impact assessment (if relevant)
+   - Timeline and urgency
+
+2. ACCREDITATION & REGULATORY ALIGNMENT
+   □ ACEN Standards addressed: [1-Missions/Administrative Capacity | 2-Faculty | 3-Students | 4-Curriculum | 5-Resources | 6-Outcomes]
+   □ CCNE Standards addressed (if applicable): [I-IV]
+   □ VBON Rules: [18VAC90-27, program approval, clinical ratio requirements]
+   □ SACSCOC: Substantive change notification required? (new program, new delivery mode)
+   □ Clinical hour minimums: RN (500 hrs), LPN (400 hrs), NCLEX competency mapping
+
+3. CURRICULUM RECOMMENDATION
+   - Concept-based vs. traditional curriculum approach
+   - Course sequencing rationale: [foundational → complex → synthesis]
+   - NCLEX Next Generation (NGN) alignment:
+     □ Clinical Judgment Measurement Model (CJMM) integration
+     □ Case studies and unfolding cases
+     □ Matrix-style test items embedded in coursework
+   - Pharmacology thread: [standalone course vs. integrated approach]
+   - Simulation replacement of clinical hours: [per VBON 25% allowance]
+
+4. CLINICAL EDUCATION PLAN
+   Clinical Placement Strategy:
+   - Partner facilities required (by specialty area):
+     □ Med-Surg (acute care, minimum ___ beds)
+     □ OB/Maternal-Newborn
+     □ Pediatrics
+     □ Psychiatric/Mental Health
+     □ Community/Public Health
+     □ Critical Care (for advanced students)
+   - Student-to-faculty ratio: [per VBON: max 10:1 clinical, 8:1 in complex settings]
+   - Preceptor qualifications and training plan
+   - Clinical affiliation agreement key terms (see Hospital Administrator mode for full template)
+   - Clinical evaluation tools: [Preceptor forms, clinical competency checklists, OSCE rubrics]
+
+5. SIMULATION INTEGRATION PLAN
+   - Lab setup: High-fidelity manikins, task trainers, EHR simulation
+   - NLN SIRC framework: [Prebriefing → Simulation → Debriefing]
+   - Scenario library: [NLN Advancing Care Excellence scenarios + custom-built]
+   - VBON clinical substitution documentation: [approval process, tracking]
+   - Debriefing model: [Structured Debriefing for Meaningful Learning / PEARL / Plus-Delta]
+
+6. NCLEX PREPARATION STRATEGY
+   - Benchmark: [Target first-time pass rate: VBON minimum 80%, national avg ~90%]
+   - Integrated NCLEX prep: ATI, HESI, UWorld embedded in curriculum
+   - Early identification system: [NCLEX readiness benchmarks by semester]
+   - Remediation protocol: [Mandatory tutoring, content review, test-taking strategy modules]
+   - NGN readiness: Clinical Judgment case studies, bowtie and trend items
+   - Exit exam policy and NCLEX predictor score thresholds
+
+7. BRIDGE PROGRAM DESIGN (RN↔Paramedic, LPN-to-RN)
+   Paramedic-to-RN Bridge:
+   - Credit for prior learning (CPL): EMS competencies mapped to nursing courses
+   - Advanced placement testing: Pharmacology, A&P, pathophysiology
+   - Clinical gap analysis: OB, Peds, Psych rotations required
+   - VBON approval pathway for articulation agreements
+
+   RN-to-Paramedic Bridge:
+   - NREMT competency mapping against RN licensure
+   - EMS-specific gap training: Prehospital protocols, scope alignment
+   - Clinical rotations: EMS field internship, ALS ride-along hours
+
+8. FACULTY STAFFING PLAN
+   Lead Faculty Requirements:
+   - MSN minimum (DNP or PhD preferred for program director)
+   - Current RN license (Virginia)
+   - 2+ years recent clinical experience in teaching specialty
+   - Teaching experience or pedagogy training
+
+   Adjunct/Clinical Faculty:
+   - BSN minimum, current RN license
+   - 1+ year recent clinical experience in assigned area
+   - Clinical faculty orientation: [simulation, evaluation tools, VBON requirements]
+
+   Faculty-to-Student Ratios:
+   - Classroom: [1:30 max]
+   - Clinical: [1:10 max; 1:8 in complex/critical care settings]
+   - Simulation: [1:6 to 1:8 recommended]
+
+9. STUDENT SUCCESS & RETENTION PLAN
+   - Admission criteria: TEAS score, prerequisite GPA, healthcare experience
+   - Progression policy: [Minimum grade of C/75%, NCLEX predictor thresholds]
+   - Academic advising: mandatory monthly meetings for at-risk students
+   - Tutoring: embedded supplemental instruction, peer tutoring, faculty office hours
+   - Mental health support: nursing student burnout prevention resources
+
+10. PROGRAM OUTCOMES DASHBOARD
+    Annual Reporting Metrics (ACEN Standard 6):
+    □ NCLEX first-time pass rate: Target ≥ 80% (VBON) / ≥ 90% (program goal)
+    □ Program completion rate: Target ≥ 70%
+    □ Graduate employment rate: Target ≥ 80% within 12 months
+    □ Graduate satisfaction: Survey score ≥ 3.5/5.0
+    □ Employer satisfaction: Survey score ≥ 3.5/5.0
+    □ Faculty credentials: 100% meet VBON/ACEN requirements
+    □ Clinical placement sufficiency: All required hours secured
+
+DELIVERABLE: Specify whether you need a curriculum map, program proposal, VBON approval packet, ACEN self-study narrative, or accreditation action plan.`
+  },
+  {
+    id: "clinical_director", label: "Clinical Director / Coordinator", icon: "🏥",
+    bg: "#ecfdf5", color: "#065f46", border: "#6ee7b7",
+    keywords: [
+      "clinical director",
+      "clinical coordinator",
+      "clinical education",
+      "clinical placement",
+      "clinical rotation",
+      "clinical site",
+      "clinical affiliation",
+      "affiliation agreement",
+      "clinical supervisor",
+      "site supervisor",
+      "preceptor",
+      "preceptorship",
+      "clinical hours",
+      "clinical log",
+      "patient contact",
+      "patient encounters",
+      "clinical competency",
+      "clinical evaluation",
+      "clinical performance",
+      "skills validation",
+      "skills checkoff",
+      "competency checkoff",
+      "skills assessment",
+      "clinical schedule",
+      "rotation schedule",
+      "placement schedule",
+      "hospital rotation",
+      "ems rotation",
+      "fire rescue rotation",
+      "clinical partner",
+      "clinical partner meeting",
+      "site visit",
+      "remediation clinical",
+      "clinical failure",
+      "CoAEMSP clinical",
+      "clinical requirements CoAEMSP",
+      "paramedic clinical",
+      "EMT clinical",
+      "AEMT clinical",
+      "ems field internship",
+      "field internship",
+      "clinical tracking",
+      "fisdap",
+      "platinum planner",
+      "trajecsys",
+      "exxat",
+      "calipso",
+      "student clinical",
+      "clinical student",
+      "clinical documentation",
+      "ALS ride",
+      "BLS ride",
+      "hospital clinical",
+      "ob rotation",
+      "peds rotation",
+      "psych rotation",
+      "icu rotation",
+      "ed rotation",
+      "trauma clinical",
+      "clinical policy",
+      "clinical manual",
+      "clinical handbook",
+      "incident report clinical",
+      "clinical incident",
+      "clinical concern",
+      "student progress clinical",
+      "clinical progress note"
+    ],
+    priority: [
+      "clinical director",
+      "clinical coordinator",
+      "clinical placement",
+      "affiliation agreement",
+      "preceptor",
+      "clinical rotation plan",
+      "clinical site",
+      "fisdap",
+      "platinum planner",
+      "trajecsys",
+      "clinical hours tracking",
+      "clinical evaluation"
+    ],
+    negative: [
+      "nursing program director",
+      "ems program director",
+      "press release",
+      "song",
+      "va claim",
+      "grant proposal",
+      "job posting"
+    ],
+    superPriority: [
+      "clinical affiliation agreement","affiliation agreement for students","clinical placement plan for","preceptor training program","clinical site agreement","clinical rotation agreement","clinical partner agreement"
+    ],
+    build: g => `Act as a seasoned Clinical Director and Healthcare Education Clinical Coordinator with expertise in managing clinical education programs across EMS, nursing, allied health, and healthcare professional programs at the community college level.
+
+CLINICAL REQUEST: ${g}
+
+YOUR EXPERTISE PROFILE:
+─────────────────────────────────────────
+Specializations:
+- Clinical placement management: hospital, EMS, fire/rescue, specialty rotations
+- Clinical affiliation agreements and MOU negotiation
+- CoAEMSP, ACEN, CAAHEP, and VBON clinical hour standards and documentation
+- Preceptor recruitment, training, and evaluation
+- Student clinical performance evaluation and remediation
+- Clinical tracking platforms: FISDAP, Platinum Planner, Trajecsys, Exxat, Calipso
+- Clinical policy development: progression, incident reporting, professional conduct
+- Patient contact benchmarking and NREMT/NCLEX competency alignment
+- Inter-professional collaboration: hospital education departments, EMS agencies, HR
+- Clinical site visits, quality assurance, and partner relationship management
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. CLINICAL SITUATION ASSESSMENT
+   - Nature of the clinical challenge or need
+   - Accreditor/regulatory standard at stake (CoAEMSP, ACEN, VBON, CAAHEP)
+   - Risk level: [Student Safety | Accreditation | Partner Relationship | Compliance]
+   - Immediate action required vs. strategic planning needed
+
+2. CLINICAL PLACEMENT PLAN
+   Program: [EMS Paramedic / AEMT / EMT / Nursing ADN / LPN / Allied Health]
+   Required rotations and minimum hour thresholds:
+   ┌─────────────────────┬──────────────┬─────────────────────┬──────────────┐
+   │ Rotation Type       │ Min Hours    │ Approved Sites      │ Status       │
+   ├─────────────────────┼──────────────┼─────────────────────┼──────────────┤
+   │ Hospital ED         │ ___ hrs      │                     │              │
+   │ ALS/BLS Field       │ ___ hrs      │                     │              │
+   │ OB/Labor & Delivery │ ___ hrs      │                     │              │
+   │ Pediatrics          │ ___ hrs      │                     │              │
+   │ Psychiatric/BH      │ ___ hrs      │                     │              │
+   │ ICU/Critical Care   │ ___ hrs      │                     │              │
+   │ OR/Anesthesia       │ ___ hrs      │                     │              │
+   └─────────────────────┴──────────────┴─────────────────────┴──────────────┘
+
+3. CLINICAL AFFILIATION AGREEMENT FRAMEWORK
+   Key Terms to Negotiate:
+   □ Scope of student activities and permitted procedures
+   □ Supervision ratios and preceptor qualifications
+   □ Student health requirements: immunizations, TB, BLS, drug screen, background
+   □ HIPAA training and data privacy compliance
+   □ Liability and malpractice: who covers students (school policy / site policy)
+   □ Dress code, professional conduct standards
+   □ Incident reporting: to whom, in what timeframe, using what forms
+   □ Clinical termination rights: both parties
+   □ Review and renewal: annual review recommended
+   □ Point of contact on both sides
+
+4. PRECEPTOR DEVELOPMENT PLAN
+   Recruitment:
+   - Minimum qualifications: [Credentials, licensure, experience, site approval]
+   - Sourcing strategy: [Partner HR, clinical educator, word of mouth, alumni]
+
+   Orientation Curriculum:
+   - Program overview: curriculum, competencies, NREMT/NCLEX alignment
+   - Adult learning principles (brief andragogy overview for clinical setting)
+   - Clinical evaluation tools: walkthrough and practice scoring
+   - Feedback techniques: structured, timely, competency-focused
+   - Documentation: FISDAP/Platinum Planner/Trajecsys entry standards
+   - Student issues: how to report concerns, what constitutes a clinical incident
+
+   Ongoing Support:
+   - Preceptor newsletter / quarterly update email
+   - Annual preceptor appreciation event
+   - CE credit for preceptor training (where available)
+   - Site visit schedule: [minimum 1x/semester per active site]
+
+5. STUDENT CLINICAL PERFORMANCE EVALUATION SYSTEM
+   Formative Evaluation (during rotation):
+   - Midpoint check-in: preceptor + student self-assessment
+   - Skill competency checkoffs: [list key skills by rotation]
+   - Patient contact log: minimum contacts per category
+
+   Summative Evaluation (end of rotation):
+   - Preceptor final evaluation form (1–5 scale with narrative)
+   - Student self-evaluation with reflective practice prompts
+   - Clinical coordinator review and signature
+   - Integration into overall clinical grade
+
+   Clinical Progression Policy:
+   - Satisfactory: Advance to next rotation
+   - Needs Improvement: Remediation plan → repeat evaluation
+   - Unsatisfactory / Clinical Failure: [Program progression policy consequences]
+
+6. CLINICAL REMEDIATION PROTOCOL
+   Trigger: [Preceptor concern / Evaluation score below threshold / Incident / Safety issue]
+
+   Step 1 — Identification and Documentation (within 24–48 hours)
+   Step 2 — Meeting: student + clinical coordinator (± faculty)
+   Step 3 — Written remediation plan:
+     - Specific competency gap identified
+     - Corrective activities (sim lab review, return demonstration, readings)
+     - Timeline for re-evaluation
+     - Consequences if not met
+   Step 4 — Follow-up site visit or supervised return to clinical
+   Step 5 — Final determination: cleared / extended / program dismissal
+
+7. CLINICAL INCIDENT RESPONSE PROTOCOL
+   Types: Patient safety event | Student injury | HIPAA breach | Unprofessional conduct | Clinical site conflict
+
+   Immediate Actions (within 1–4 hours):
+   □ Ensure student/patient safety
+   □ Notify clinical site supervisor
+   □ Notify program director / clinical director
+   □ Document using incident report form
+   □ Student removed from clinical pending review (if safety risk)
+
+   Investigation:
+   □ Gather accounts from student, preceptor, site staff
+   □ Review clinical logs and documentation
+   □ Consult legal/HR as needed
+
+   Resolution:
+   □ Student: [Counseling / Remediation / Suspension / Dismissal]
+   □ Site: [Additional training / Preceptor replacement / Site suspension]
+   □ Reporting: [Accreditor notification if required]
+
+8. CLINICAL TRACKING & DOCUMENTATION SYSTEM
+   Platform Recommendation: [FISDAP / Platinum Planner / Trajecsys — based on program type]
+   Required documentation per student:
+   □ Clinical hours log (date, site, supervisor, hours)
+   □ Patient contact entries (chief complaint, interventions, outcomes)
+   □ Skill performance entries (with preceptor e-signature)
+   □ Preceptor evaluation forms (mid + final)
+   □ Student self-evaluations
+   □ Incident reports (if applicable)
+
+   Reporting for Accreditation:
+   - CoAEMSP: Annual report — clinical hour totals, patient contact benchmarks
+   - ACEN/VBON: Clinical hour verification per student record
+   - SACSCOC: Outcomes assessment data for program review
+
+9. CLINICAL PARTNER RELATIONSHIP MANAGEMENT
+   Communication cadence:
+   - Monthly: Email update to all active site coordinators
+   - Quarterly: Site coordinator meeting or conference call
+   - Annually: Formal site review, MOU renewal, preceptor appreciation
+   - As needed: Site visit, issue resolution, new student orientation at site
+
+   Partner appreciation strategy:
+   - Preceptor recognition letters and certificates
+   - Invitation to program graduation / pinning
+   - Advisory board membership for key partners
+   - CE credit sponsorship for preceptors
+
+10. CLINICAL OPERATIONS DASHBOARD (Semester Snapshot)
+    □ Total active clinical sites: ___
+    □ Active clinical partners / preceptors: ___
+    □ Students currently in clinical: ___
+    □ Total clinical hours completed (cohort): ___ / required ___
+    □ Patient contacts logged: ___ / benchmark ___
+    □ Pending remediation cases: ___
+    □ MOUs expiring within 90 days: ___
+    □ Upcoming site visits scheduled: ___`
+  },
+  {
+    id: "faculty", label: "Faculty / Educator Agent", icon: "🖊️",
+    bg: "#fffbeb", color: "#78350f", border: "#fbbf24",
+    keywords: [
+      "faculty",
+      "instructor",
+      "professor",
+      "lecturer",
+      "adjunct",
+      "educator",
+      "teacher",
+      "teach",
+      "teaching",
+      "classroom",
+      "lecture",
+      "lesson plan",
+      "lesson",
+      "unit plan",
+      "syllabus",
+      "course outline",
+      "course design",
+      "course development",
+      "learning objective",
+      "student outcome",
+      "bloom",
+      "bloom's taxonomy",
+      "rubric",
+      "grading",
+      "assessment",
+      "quiz",
+      "exam",
+      "test",
+      "test bank",
+      "powerpoint",
+      "slide deck",
+      "presentation lecture",
+      "handout",
+      "worksheet",
+      "discussion",
+      "discussion board",
+      "canvas",
+      "lms",
+      "moodle",
+      "blackboard",
+      "hybrid",
+      "online",
+      "face to face",
+      "synchronous",
+      "asynchronous",
+      "hyflex",
+      "student engagement",
+      "active learning",
+      "flipped classroom",
+      "think pair share",
+      "differentiated instruction",
+      "scaffolding",
+      "accommodation",
+      "disability services",
+      "struggling student",
+      "at-risk student",
+      "early alert",
+      "academic support",
+      "feedback",
+      "written feedback",
+      "formative",
+      "summative",
+      "peer review",
+      "professional development faculty",
+      "teaching portfolio",
+      "peer observation",
+      "continuing contract",
+      "tenure",
+      "faculty evaluation",
+      "faculty load",
+      "course load",
+      "overload",
+      "dual enrollment",
+      "dual credit faculty",
+      "paramedic instructor",
+      "ems instructor",
+      "ems educator",
+      "nremt exam prep",
+      "case study",
+      "patient scenario",
+      "clinical case",
+      "vignette",
+      "debrief",
+      "lecture notes",
+      "study guide",
+      "review sheet"
+    ],
+    priority: [
+      "lesson plan",
+      "create a lesson",
+      "write a lesson",
+      "course design",
+      "syllabus template",
+      "quiz bank",
+      "test bank",
+      "rubric",
+      "canvas lms",
+      "learning objective",
+      "bloom",
+      "case study for class",
+      "lecture",
+      "teaching strategy",
+      "educator",
+      "instructor guide",
+      "write a quiz","quiz for","lesson on","canvas module","course syllabus","create a quiz","lesson about"
+    ],
+    negative: [
+      "ems program director",
+      "nursing program director",
+      "press release",
+      "grant proposal",
+      "va claim",
+      "job posting",
+      "mci scenario",
+      "song"
+    ],
+    superPriority: [
+      "lesson plan on","write a lesson plan","create a lesson plan","quiz bank for","write a quiz bank","write a quiz for","canvas lms module for","build a canvas","design a syllabus for","syllabus for ems","syllabus for nursing","rubric for","lecture on","teaching plan","course outline for"
+    ],
+    build: g => `Act as an expert Healthcare Educator and Faculty Development Specialist with deep experience in community college teaching, EMS/nursing/allied health instruction, Canvas LMS, andragogy-aligned course design, and NREMT/NCLEX competency alignment.
+
+FACULTY / EDUCATOR REQUEST: ${g}
+
+YOUR TEACHING EXPERTISE:
+─────────────────────────────────────────
+Specializations:
+- Course design: competency-based, concept-based, and traditional curriculum models
+- Adult learning (Andragogy): Knowles' 6 principles applied to healthcare education
+- Bloom's Taxonomy: cognitive, psychomotor, and affective domain objectives
+- Active learning strategies: case studies, simulation, team-based learning, Socratic method
+- Canvas LMS: module design, discussion boards, quiz banks, rubrics, SpeedGrader
+- Assessment design: formative/summative, NREMT/NCLEX item-style questions, OSCEs
+- Hybrid/online/HyFlex instruction: synchronous/asynchronous best practices
+- Student support: early alert systems, academic coaching, accommodation plans (ADA)
+- Faculty professional development: peer observation, teaching portfolios, instructional coaching
+- Dual enrollment and high school bridge instruction
+
+RESPONSE FRAMEWORK:
+─────────────────────────────────────────
+1. EDUCATOR SITUATION ANALYSIS
+   - Teaching challenge, opportunity, or resource needed
+   - Course level: [Introductory / Intermediate / Advanced / Capstone]
+   - Student audience: [EMT / AEMT / Paramedic / Nursing / Allied Health / General]
+   - Delivery mode: [Face-to-face / Online / Hybrid / HyFlex]
+
+2. LESSON / MODULE DESIGN
+   Course / Unit Title:
+   Estimated Time: [50-min lecture / 2-hr lab / 3-hr hybrid session]
+
+   LEARNING OBJECTIVES (Bloom's Taxonomy):
+   By the end of this [lesson/module], the student will be able to:
+   □ [Remember] — Define / List / Recall: [specific content]
+   □ [Understand] — Explain / Summarize / Describe: [concept]
+   □ [Apply] — Demonstrate / Calculate / Perform: [skill/procedure]
+   □ [Analyze] — Differentiate / Compare / Interpret: [clinical data]
+   □ [Evaluate] — Justify / Critique / Appraise: [decision/outcome]
+   □ [Create] — Develop / Design / Construct: [plan/protocol/product]
+
+3. LESSON PLAN TEMPLATE
+   ┌─────────────────────────────────────────────────────────┐
+   │ PHASE        │ ACTIVITY                │ TIME   │ MODE  │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ OPEN (Hook)  │ Case scenario / video / │ 5 min  │ Any   │
+   │              │ provocative question     │        │       │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ ACTIVATE     │ Pre-assessment / poll /  │ 5 min  │ Any   │
+   │ PRIOR KNOW.  │ KWL chart / think-pair  │        │       │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ CONTENT      │ Lecture / demo / reading │ 20 min │ Any   │
+   │ DELIVERY     │ with embedded questions  │        │       │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ ACTIVE       │ Case study / simulation /│ 15 min │ Any   │
+   │ LEARNING     │ group activity / lab     │        │       │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ CHECK FOR    │ Exit ticket / quiz /     │ 5 min  │ Any   │
+   │ UNDERSTAND.  │ muddiest point / poll    │        │       │
+   ├──────────────┼─────────────────────────┼────────┼───────┤
+   │ CLOSE        │ Summary / preview next  │ 5 min  │ Any   │
+   │              │ session / reflection     │        │       │
+   └─────────────────────────────────────────────────────────┘
+
+4. CASE STUDY / PATIENT SCENARIO
+   [Designed to drive clinical thinking, not just knowledge recall]
+
+   DISPATCH / SCENARIO OPENER:
+   "[Vivid, realistic clinical situation that immediately engages students]"
+
+   PATIENT PRESENTATION:
+   - Chief Complaint:
+   - History: [relevant PMH, meds, allergies, social history]
+   - Scene/Environment:
+   - Initial Vitals: BP ___ | HR ___ | RR ___ | SpO2 ___ | GCS ___ | Temp ___
+
+   DISCUSSION QUESTIONS (Bloom's-aligned):
+   1. [Remember] What is the most likely differential diagnosis?
+   2. [Apply] What is your immediate intervention priority?
+   3. [Analyze] How do the vitals change your management plan?
+   4. [Evaluate] If the patient deteriorates, what is your next step and why?
+   5. [Create] Design a 10-minute treatment plan for this patient.
+
+   TEACHING POINTS:
+   - [Key clinical pearl #1]
+   - [Key clinical pearl #2]
+   - [Common error students make and how to avoid it]
+
+   NREMT/NCLEX ALIGNMENT:
+   - Cognitive level: [Application / Analysis / Synthesis]
+   - Domain: [Medical / Trauma / OB / Peds / Operations]
+
+5. ASSESSMENT BANK (NREMT / NCLEX STYLE)
+   [5–10 questions at appropriate cognitive level]
+
+   Q1. [Scenario stem — 2–3 sentences of patient context]
+   A. [Plausible distractor]
+   B. [Correct answer — best response]
+   C. [Plausible distractor]
+   D. [Plausible distractor]
+   Correct: B | Rationale: [Clinical explanation of why B is correct and others are wrong]
+   Cognitive Level: Application | Domain: [Medical/Trauma/etc.]
+
+   [Repeat for Q2–Q10]
+
+6. CANVAS LMS MODULE STRUCTURE
+   Module Title: [Topic]
+   □ Page 1: Learning Objectives + Welcome Video (2–3 min instructor intro)
+   □ Page 2: Required Reading / Resource Links
+   □ Page 3: Lecture Content (embedded slides or narrated video)
+   □ Discussion Board: [Prompt that requires clinical reasoning, not just recall]
+      "After reviewing [topic], describe a scenario from clinical or work where you encountered [concept]. How did it resolve? What would you do differently using what you learned?"
+   □ Quiz: [10-question NREMT/NCLEX-style formative check — not graded for score, graded for completion]
+   □ Assignment: [Case study response, simulation debrief reflection, or skills log entry]
+   □ Module Summary Page: Key takeaways + preview of next module
+
+7. RUBRIC DESIGN
+   Assignment: [Name]
+   Total Points: ___
+
+   ┌────────────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+   │ Criterion          │ Excellent    │ Proficient   │ Developing   │ Beginning    │
+   │                    │ (4 pts)      │ (3 pts)      │ (2 pts)      │ (1 pt)       │
+   ├────────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+   │ Clinical Accuracy  │              │              │              │              │
+   ├────────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+   │ Critical Thinking  │              │              │              │              │
+   ├────────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+   │ Communication      │              │              │              │              │
+   ├────────────────────┼──────────────┼──────────────┼──────────────┼──────────────┤
+   │ Professionalism    │              │              │              │              │
+   └────────────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+
+8. STUDENT SUPPORT STRATEGIES
+   Early Alert Triggers:
+   - Missing 2+ assignments | Quiz average below 70% | No Canvas logins in 1 week | Concerning comments
+
+   Intervention Steps:
+   □ Step 1: Instructor outreach (email + Canvas message) within 24 hours of trigger
+   □ Step 2: Required 1:1 meeting — identify barrier (personal, academic, technical)
+   □ Step 3: Referral: [tutoring / advising / disability services / counseling]
+   □ Step 4: Modified plan if warranted (extension, incomplete, schedule change)
+   □ Step 5: Documentation in early alert system (EAB Navigate / Starfish / Civitas)
+
+   Accommodation Planning (ADA/504):
+   - Review official accommodation letter from disability services
+   - Implement: [extended time / alternative testing / closed captioning / reduced distraction]
+   - Document compliance in gradebook notes
+
+9. PROFESSIONAL DEVELOPMENT PLAN FOR EDUCATORS
+   Teaching Portfolio Components:
+   □ Teaching philosophy statement (1–2 pages)
+   □ Sample syllabi demonstrating course design
+   □ Evidence of student learning outcomes
+   □ Peer observation report (observer + reflective response)
+   □ Professional development activities (conferences, workshops, certifications)
+   □ Student evaluations summary with reflective response
+
+   High-Impact PD Opportunities:
+   - NLN Simulation Leader certification
+   - Certified Healthcare Simulation Educator (CHSE) — SSH
+   - NAEMSE EMS Educator certification
+   - Canvas LMS certification (Instructure Academy)
+   - Quality Matters (QM) online course design certification
+
+10. SYLLABUS COMPONENTS CHECKLIST
+    □ Course title, number, credit hours, prerequisite
+    □ Instructor contact info and office hours
+    □ Course description (from catalog)
+    □ Learning outcomes (Bloom's-aligned, measurable)
+    □ Required textbooks / materials / technology
+    □ Course schedule (week-by-week topic and assignment calendar)
+    □ Grading breakdown (weighted categories, grading scale)
+    □ Attendance and late work policy
+    □ Academic integrity / AI use policy
+    □ Accessibility / disability accommodation statement
+    □ Title IX / non-discrimination statement
+    □ Emergency / safety procedures
+    □ Institutional add/drop and withdrawal dates`
+  }
+];
+
+const EXAMPLES = [
+  "A bee and honey human benefits educational module with pictures, videos, and a progress notes section",
+  "Email to Norfolk Fire-Rescue proposing a new clinical rotation partnership for our paramedic students",
+  "MCI drill scenario for a school campus with 200 students and multiple trauma injuries",
+  "A salsa song about my journey from EMS in Puerto Rico to EMS Program Director in Virginia",
+  "Scale MCI Exercise HUB into a full SaaS platform with subscription pricing tiers",
+  "Create a paramedic curriculum plan for our Fall 2026 cohort at CAMP Community College",
+  "Build a web app that lets students track their clinical hours and patient contacts",
+  "Help me file a VA supplemental claim for service-connected hypertension with a nexus letter",
+  "What evidence do I need to win a VA disability appeal for sleep apnea related to military service",
+  "Explain PACT Act presumptive conditions and how to file a toxic exposure VA claim",
+  "Write a hospital affiliation agreement proposal for Sentara Obici for EMS clinical rotations",
+  "Draft a board of visitors presentation for a new paramedic program at CAMP Community College",
+  "Write a Carl Perkins grant proposal for EMS simulation lab equipment",
+  "Create a job posting for an EMS Skills Lab Instructor position at a community college",
+  "Write a press release announcing the launch of a new Paramedic program at CAMP Community College",
+  "Draft a community college presidential memo about a new Norfolk Fire-Rescue cohort partnership",
+  "Design a nursing program NCLEX prep strategy and remediation plan for our ADN students",
+  "Create a clinical affiliation agreement framework for hospital EMS rotations",
+  "Write a lesson plan and case study for teaching septic shock to paramedic students",
+  "Build a Canvas LMS module structure for a Paramedic pharmacology unit",
+  "Design a preceptor orientation program for new EMS clinical sites",
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentMode   = null;
+let currentPrompt = "";
+let copyTimer     = null;
+let uploadedFiles = []; // {id, name, type, icon, size, content, isImage, dataUrl}
+let fileIdCounter = 0;
+
+// ═══════════════════════════════════════════════════════
+//  FILE TYPE HELPERS
+// ═══════════════════════════════════════════════════════
+function fileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  const map = {
+    pdf:'📄', doc:'📝', docx:'📝', txt:'📃', md:'📃',
+    csv:'📊', json:'🔧', html:'🌐', htm:'🌐',
+    png:'🖼️', jpg:'🖼️', jpeg:'🖼️', webp:'🖼️', gif:'🖼️',
+  };
+  return map[ext] || '📎';
+}
+function isImage(name) {
+  return /\.(png|jpe?g|webp|gif)$/i.test(name);
+}
+function isText(name) {
+  return /\.(txt|md|csv|json|html?|js|css)$/i.test(name);
+}
+function fmtSize(bytes) {
+  if (bytes < 1024)       return bytes + ' B';
+  if (bytes < 1024*1024)  return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+// ═══════════════════════════════════════════════════════
+//  DRAG & DROP
+// ═══════════════════════════════════════════════════════
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-card').classList.add('drag-over');
+}
+function onDragLeave(e) {
+  document.getElementById('upload-card').classList.remove('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-card').classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+}
+
+// ═══════════════════════════════════════════════════════
+//  FILE PROCESSING
+// ═══════════════════════════════════════════════════════
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    const id = ++fileIdCounter;
+    const entry = {
+      id, name: file.name, size: fmtSize(file.size),
+      icon: fileIcon(file.name),
+      isImage: isImage(file.name),
+      content: '', dataUrl: '', status: 'processing'
+    };
+    uploadedFiles.push(entry);
+    renderChip(entry);
+
+    if (isImage(file.name)) {
+      const fr = new FileReader();
+      fr.onload = e => {
+        entry.dataUrl = e.target.result;
+        entry.status  = 'ready';
+        renderImagePreview(entry);
+        updateChipStatus(id, 'ready', '✅ Image attached');
+        updateContextBanner();
+      };
+      fr.readAsDataURL(file);
+    } else if (/\.pdf$/i.test(file.name)) {
+      // ── PDF via PDF.js ──────────────────────────────
+      const fr = new FileReader();
+      fr.onload = async e => {
+        try {
+          if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js not loaded');
+          const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(e.target.result) }).promise;
+          let text = '';
+          for (let p = 1; p <= Math.min(pdf.numPages, 40); p++) {
+            const page    = await pdf.getPage(p);
+            const content = await page.getTextContent();
+            text += content.items.map(s => s.str).join(' ') + '\n';
+          }
+          entry.content = text.trim().slice(0, 14000);
+          entry.status  = 'ready';
+          const lines = entry.content.split('\n').filter(l => l.trim()).length;
+          updateChipStatus(id, 'ready', '✅ PDF extracted · ' + pdf.numPages + ' pages · ' + lines + ' lines');
+          updateContextBanner();
+        } catch (err) {
+          entry.status  = 'error';
+          updateChipStatus(id, 'error', '⚠ PDF parse failed: ' + err.message);
+        }
+      };
+      fr.onerror = () => { entry.status = 'error'; updateChipStatus(id, 'error', '⚠ Could not read PDF'); };
+      fr.readAsArrayBuffer(file);
+    } else if (/\.docx?$/i.test(file.name)) {
+      // ── DOCX via mammoth ────────────────────────────
+      const fr = new FileReader();
+      fr.onload = async e => {
+        try {
+          if (typeof mammoth === 'undefined') throw new Error('Mammoth not loaded');
+          const result  = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+          entry.content = result.value.trim().slice(0, 14000);
+          entry.status  = 'ready';
+          const words   = entry.content.split(/\s+/).length;
+          updateChipStatus(id, 'ready', '✅ DOCX extracted · ~' + words.toLocaleString() + ' words');
+          updateContextBanner();
+        } catch (err) {
+          entry.status  = 'error';
+          updateChipStatus(id, 'error', '⚠ DOCX parse failed: ' + err.message);
+        }
+      };
+      fr.onerror = () => { entry.status = 'error'; updateChipStatus(id, 'error', '⚠ Could not read DOCX'); };
+      fr.readAsArrayBuffer(file);
+    } else if (isText(file.name)) {
+      const fr = new FileReader();
+      fr.onload = e => {
+        entry.content = e.target.result.slice(0, 8000); // cap at ~8k chars
+        entry.status  = 'ready';
+        updateChipStatus(id, 'ready', '✅ Text extracted · ' + entry.content.split('\n').length + ' lines');
+        updateContextBanner();
+      };
+      fr.onerror = () => {
+        entry.status = 'error';
+        updateChipStatus(id, 'error', '⚠ Could not read file');
+      };
+      fr.readAsText(file);
+    } else {
+      // Unknown binary — note filename + type only
+      entry.status  = 'ready';
+      entry.content = '[Attached file: ' + file.name + ' — ' + file.name.split('.').pop().toUpperCase() + ' format. Use filename and type as context.]';
+      updateChipStatus(id, 'ready', '✅ Filename & type noted');
+      updateContextBanner();
+    }
+  });
+  // Reset file input so same file can be re-added
+  document.getElementById('file-input').value = '';
+  updateUploadCountBadge();
+}
+
+// ── Render a chip ──────────────────────────────────────
+function renderChip(entry) {
+  const chips = document.getElementById('file-chips');
+  const chip  = document.createElement('div');
+  chip.className = 'file-chip processing';
+  chip.id = 'chip-' + entry.id;
+  chip.innerHTML = `
+    <span class="file-chip-icon">${entry.icon}</span>
+    <div class="file-chip-info">
+      <div class="file-chip-name" title="${entry.name}">${entry.name}</div>
+      <div class="file-chip-status" id="chip-status-${entry.id}">Reading… · ${entry.size}</div>
+    </div>
+    <button class="file-chip-remove" onclick="removeFile(${entry.id})" title="Remove">✕</button>`;
+  chips.appendChild(chip);
+}
+
+function updateChipStatus(id, cls, msg) {
+  const chip = document.getElementById('chip-' + id);
+  const stat = document.getElementById('chip-status-' + id);
+  if (!chip) return;
+  chip.className = 'file-chip ' + (cls === 'ready' ? 'ready' : cls === 'error' ? 'error-chip' : 'processing');
+  if (stat) stat.textContent = msg;
+}
+
+// ── Render image thumbnail ─────────────────────────────
+function renderImagePreview(entry) {
+  const strip = document.getElementById('image-previews');
+  const wrap  = document.createElement('div');
+  wrap.className = 'img-preview-wrap';
+  wrap.id = 'imgwrap-' + entry.id;
+  wrap.innerHTML = `
+    <img src="${entry.dataUrl}" alt="${entry.name}" title="${entry.name}"/>
+    <button class="img-remove-btn" onclick="removeFile(${entry.id})" title="Remove">✕</button>`;
+  strip.appendChild(wrap);
+}
+
+// ── Remove a file ──────────────────────────────────────
+function removeFile(id) {
+  uploadedFiles = uploadedFiles.filter(f => f.id !== id);
+  const chip = document.getElementById('chip-' + id);
+  if (chip) chip.remove();
+  const img  = document.getElementById('imgwrap-' + id);
+  if (img)  img.remove();
+  updateUploadCountBadge();
+  updateContextBanner();
+}
+
+// ── Badge & banner ─────────────────────────────────────
+function updateUploadCountBadge() {
+  const badge = document.getElementById('upload-count-badge');
+  const n = uploadedFiles.length;
+  badge.textContent = n + (n === 1 ? ' file' : ' files');
+  badge.style.display = n > 0 ? 'inline-block' : 'none';
+}
+
+function updateContextBanner() {
+  const banner = document.getElementById('context-banner');
+  const text   = document.getElementById('context-banner-text');
+  const ready  = uploadedFiles.filter(f => f.status === 'ready');
+  if (ready.length === 0) { banner.style.display = 'none'; return; }
+  const imgs  = ready.filter(f => f.isImage).length;
+  const docs  = ready.filter(f => !f.isImage && isText(f.name)).length;
+  const bins  = ready.filter(f => !f.isImage && !isText(f.name)).length;
+  const parts = [];
+  if (imgs) parts.push(imgs + ' image' + (imgs > 1 ? 's' : ''));
+  if (docs) parts.push(docs + ' text doc' + (docs > 1 ? 's' : '') + ' (content extracted)');
+  if (bins) parts.push(bins + ' binary file' + (bins > 1 ? 's' : '') + ' (filename/type noted)');
+  text.textContent = '✅ Context loaded: ' + parts.join(', ') + ' — this will be appended to your generated prompt.';
+  banner.style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD FILE CONTEXT BLOCK (appended to prompt)
+// ═══════════════════════════════════════════════════════
+function buildFileContext() {
+  const ready = uploadedFiles.filter(f => f.status === 'ready');
+  if (ready.length === 0) return '';
+
+  let block = `
+
+══════════════════════════════════════════
+ATTACHED CONTEXT FILES (${ready.length} item${ready.length > 1 ? 's' : ''})
+══════════════════════════════════════════`;
+
+  ready.forEach((f, i) => {
+    block += `\n\n[FILE ${i+1}] ${f.name} (${f.size})`;
+    if (f.isImage) {
+      block += `\nType: Image
+Description: [The user has attached an image named "${f.name}". Reference this image when relevant — it may contain diagrams, forms, screenshots, photos, or reference material related to the request above.]`;
+    } else if (f.content && f.content !== '[Binary file — see filename/type for context]') {
+      block += `\nType: ${f.name.split('.').pop().toUpperCase()} document
+─────────────── CONTENT START ───────────────
+${f.content}
+─────────────── CONTENT END ─────────────────`;
+    } else {
+      block += `\nType: Document (${f.name.split('.').pop().toUpperCase()})
+Note: Binary file — use filename and file type as context for the request above.`;
+    }
+  });
+
+  block += `\n\n══════════════════════════════════════════
+Use the above files as full context when generating your response. Reference specific details from the attached documents, images, or artifacts where relevant.
+══════════════════════════════════════════`;
+
+  return block;
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT — render pills
+// ═══════════════════════════════════════════════════════
+(function init() {
+  const container = document.getElementById("mode-pills");
+  MODES.forEach(m => {
+    const el = document.createElement("span");
+    el.className = "pill";
+    el.id = "pill-" + m.id;
+    el.textContent = m.icon + " " + m.label;
+    el.style.color = m.color;
+    el.style.background = m.bg;
+    el.style.borderColor = m.border;
+    container.appendChild(el);
+  });
+  document.getElementById("pill-label").textContent =
+    MODES.length + " Available Modes — Auto-detected from your input";
+})();
+
+// ═══════════════════════════════════════════════════════
+//  INPUT HANDLING
+// ═══════════════════════════════════════════════════════
+function onInput() {
+  const val = document.getElementById("goal-input").value;
+  document.getElementById("char-count").textContent = val.length + " chars";
+  const btn = document.getElementById("generate-btn");
+  btn.disabled = !val.trim();
+  document.getElementById("clear-btn").style.display = val ? "block" : "none";
+}
+
+function onKey(e) {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate();
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXAMPLE FILL
+// ═══════════════════════════════════════════════════════
+function fillExample() {
+  const ex = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+  document.getElementById("goal-input").value = ex;
+  onInput();
+  clearOutput();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODE DETECTION
+// ═══════════════════════════════════════════════════════
+function detectMode(input) {
+  const lower = input.toLowerCase();
+
+  // Word-boundary aware match — prevents "pr" hitting "program", "ed" hitting "education"
+  function kwMatch(text, kw) {
+    if (kw.includes(' ')) return text.includes(kw); // multi-word: substring is fine (already specific)
+    try {
+      return new RegExp('\\b' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(text);
+    } catch(e) { return text.includes(kw); }
+  }
+
+  let best = MODES[0], bestScore = -Infinity;
+
+  for (const mode of MODES) {
+    let score = 0;
+
+    // Regular keywords = 1pt each (word-boundary matched)
+    for (const kw of (mode.keywords || [])) {
+      if (kwMatch(lower, kw)) score += 1;
+    }
+    // Priority keywords = 4pts each (strong mode signals)
+    for (const kw of (mode.priority || [])) {
+      if (kwMatch(lower, kw)) score += 4;
+    }
+    // Super-priority keywords = 8pts each (crystal-clear unambiguous signals)
+    for (const kw of (mode.superPriority || [])) {
+      if (kwMatch(lower, kw)) score += 8;
+    }
+    // Negative keywords = -3pts each (prevent false positives)
+    for (const kw of (mode.negative || [])) {
+      if (kwMatch(lower, kw)) score -= 3;
+    }
+
+    if (score > bestScore) { bestScore = score; best = mode; }
+  }
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════
+//  GOAL CONTEXT PARSER — extracts entities from user input
+// ═══════════════════════════════════════════════════════
+function parseGoal(goal) {
+  const g = goal.toLowerCase();
+  const ctx = { raw: goal, entities: {} };
+
+  // Dates / semesters
+  const semMatch = goal.match(/\b(fall|spring|summer|winter)\s*(20\d\d)/i);
+  if (semMatch) ctx.entities.semester = semMatch[0];
+  const yearMatch = goal.match(/\b(20\d\d)\b/);
+  if (yearMatch) ctx.entities.year = yearMatch[1];
+
+  // Numbers / cohort size
+  const numMatch = goal.match(/\b(\d+)\s*(students?|cohort|seats?|slots?|learners?|participants?)/i);
+  if (numMatch) ctx.entities.cohortSize = numMatch[1] + ' ' + numMatch[2];
+
+  // Program type
+  if (/\badn\b/i.test(goal))       ctx.entities.programType = 'ADN (Associate Degree in Nursing)';
+  else if (/\blpn\b/i.test(goal))  ctx.entities.programType = 'LPN (Licensed Practical Nursing)';
+  else if (/\bbsn\b/i.test(goal))  ctx.entities.programType = 'BSN (Bachelor of Science in Nursing)';
+  else if (/paramedic/i.test(goal)) ctx.entities.programType = 'Paramedic';
+  else if (/\bemt\b/i.test(goal))   ctx.entities.programType = 'EMT';
+  else if (/\baemt\b/i.test(goal))  ctx.entities.programType = 'AEMT';
+
+  // Institution / partner names
+  const orgs = [];
+  ['norfolk fire','sentara','obici','bon secours','riverside','vdh','vccs','camp',
+   'suffolk','franklin','smithfield','chesapeake','hampton roads'].forEach(org => {
+    if (g.includes(org)) orgs.push(org.split(' ').map(w=>w[0].toUpperCase()+w.slice(1)).join(' '));
+  });
+  if (orgs.length) ctx.entities.partners = orgs.join(', ');
+
+  // Accreditation bodies mentioned
+  const accred = [];
+  ['acen','ccne','coaemsP','vbon','sacscoc','nremt','nclex','joint commission'].forEach(a => {
+    if (g.includes(a.toLowerCase())) accred.push(a.toUpperCase());
+  });
+  if (accred.length) ctx.entities.accreditors = accred.join(', ');
+
+  // Delivery mode
+  if (/online|asynchronous/i.test(goal))      ctx.entities.delivery = 'online/asynchronous';
+  else if (/hybrid/i.test(goal))               ctx.entities.delivery = 'hybrid';
+  else if (/hyflex/i.test(goal))               ctx.entities.delivery = 'HyFlex';
+  else if (/in.person|face.to.face/i.test(goal)) ctx.entities.delivery = 'in-person';
+
+  // Specific topics / subjects
+  const topics = [];
+  ['pharmacology','cardiac','cardiology','trauma','respiratory','pediatrics','obstetrics',
+   'neurology','toxicology','shock','sepsis','airway','ECG','12-lead','simulation',
+   'clinical judgment','pathophysiology','med-surg','mental health','community health'].forEach(t => {
+    if (g.includes(t.toLowerCase())) topics.push(t);
+  });
+  if (topics.length) ctx.entities.topics = topics.join(', ');
+
+  // Budget / funding
+  const budgetMatch = goal.match(/\$[\d,]+|\b(\d+)\s*(thousand|million|k\b)/i);
+  if (budgetMatch) ctx.entities.budget = budgetMatch[0];
+
+  // Timeline / duration
+  const durMatch = goal.match(/\b(\d+)[- ](week|month|year|day|semester|credit)/i);
+  if (durMatch) ctx.entities.duration = durMatch[0];
+
+  // VA-specific
+  if (/sleep apnea/i.test(goal))    ctx.entities.condition = 'Obstructive Sleep Apnea';
+  if (/ptsd/i.test(goal))           ctx.entities.condition = 'PTSD';
+  if (/tinnitus/i.test(goal))       ctx.entities.condition = 'Tinnitus/Hearing Loss';
+  if (/hypertension/i.test(goal))   ctx.entities.condition = 'Hypertension';
+  if (/tbi/i.test(goal))            ctx.entities.condition = 'TBI (Traumatic Brain Injury)';
+  if (/pact act/i.test(goal))       ctx.entities.vaProg = 'PACT Act Toxic Exposure';
+
+  return ctx;
+}
+
+// Build a rich context block to append inside every generated prompt
+function buildGoalContextBlock(ctx) {
+  const e = ctx.entities;
+  const lines = [];
+
+  lines.push('');
+  lines.push('══════════════════════════════════════════');
+  lines.push('SPECIFIC DETAILS FROM YOUR REQUEST');
+  lines.push('══════════════════════════════════════════');
+  lines.push('Full briefing: ' + ctx.raw);
+
+  if (e.programType)  lines.push('Program type: ' + e.programType);
+  if (e.cohortSize)   lines.push('Cohort / enrollment: ' + e.cohortSize);
+  if (e.semester)     lines.push('Target start: ' + e.semester);
+  if (e.year)         lines.push('Target year: ' + e.year);
+  if (e.duration)     lines.push('Duration: ' + e.duration);
+  if (e.delivery)     lines.push('Delivery mode: ' + e.delivery);
+  if (e.partners)     lines.push('Partners / institutions: ' + e.partners);
+  if (e.accreditors)  lines.push('Accreditation standards: ' + e.accreditors);
+  if (e.topics)       lines.push('Subject areas / topics: ' + e.topics);
+  if (e.budget)       lines.push('Budget / funding: ' + e.budget);
+  if (e.condition)    lines.push('Condition / diagnosis: ' + e.condition);
+  if (e.vaProg)       lines.push('VA program: ' + e.vaProg);
+
+  lines.push('');
+  lines.push('⚠ CRITICAL INSTRUCTION: Use ALL of the specific details above throughout');
+  lines.push('your response. Do NOT give generic advice — tailor every section,');
+  lines.push('recommendation, timeline, and example directly to this exact request.');
+  lines.push('Reference the specific program type, cohort size, dates, partners, and');
+  lines.push('accreditation bodies listed above wherever relevant.');
+  lines.push('══════════════════════════════════════════');
+
+  return lines.join('\n');
+}
+
+// ═══════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════
+function generate() {
+  const goal = document.getElementById("goal-input").value.trim();
+  const readyFiles = uploadedFiles.filter(f => f.status === 'ready');
+  if (!goal && readyFiles.length === 0) return;
+
+  // Parse goal for specific entities
+  const ctx = parseGoal(goal);
+
+  // Use file names + goal together for mode detection
+  const fileNames = readyFiles.map(f => f.name).join(' ');
+  const detectInput = (goal + ' ' + fileNames).trim();
+  currentMode = detectMode(detectInput);
+
+  // Build prompt: mode template + parsed context block + file context
+  const goalCtxBlock = buildGoalContextBlock(ctx);
+  const fileCtx = buildFileContext();
+  currentPrompt = currentMode.build(goal) + goalCtxBlock + fileCtx;
+
+  // Highlight active pill
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    if (m.id === currentMode.id) {
+      el.classList.add("active");
+      el.style.background = m.color;
+      el.style.color = "#fff";
+      el.style.borderColor = m.color;
+      el.style.boxShadow = "0 2px 10px " + m.border;
+    } else {
+      el.classList.remove("active");
+      el.style.background = m.bg;
+      el.style.color = m.color;
+      el.style.borderColor = m.border;
+      el.style.boxShadow = "none";
+    }
+  });
+
+  // Populate output card
+  document.getElementById("output-icon").textContent  = currentMode.icon;
+  document.getElementById("output-label").textContent = currentMode.label;
+  document.getElementById("prompt-body").textContent  = currentPrompt;
+
+  const oh = document.getElementById("output-header");
+  oh.style.background = "linear-gradient(135deg, " + currentMode.color + ", " + currentMode.border + ")";
+
+  const oc = document.getElementById("output-card");
+  oc.style.borderColor = currentMode.border;
+  oc.style.boxShadow  = "0 4px 24px " + currentMode.border + "60";
+  oc.style.display    = "block";
+
+  document.getElementById("prompt-body").style.background = currentMode.bg;
+
+  const cbb = document.getElementById("copy-bottom-btn");
+  cbb.style.background = "linear-gradient(135deg, " + currentMode.color + ", #7c3aed)";
+  cbb.style.boxShadow  = "0 4px 14px " + currentMode.border + "90";
+
+  resetCopyBtns();
+  document.getElementById("clear-btn").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("output-card").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+}
+
+// ═══════════════════════════════════════════════════════
+//  COPY
+// ═══════════════════════════════════════════════════════
+function copyPrompt(which) {
+  if (!currentPrompt) return;
+  navigator.clipboard.writeText(currentPrompt).then(() => {
+    document.getElementById("copy-top-btn").textContent    = "✓ COPIED!";
+    document.getElementById("copy-top-btn").classList.add("copied");
+    document.getElementById("copy-bottom-btn").textContent = "✓ COPIED!";
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(resetCopyBtns, 2500);
+  });
+}
+
+function resetCopyBtns() {
+  document.getElementById("copy-top-btn").textContent    = "⧉ COPY";
+  document.getElementById("copy-top-btn").classList.remove("copied");
+  document.getElementById("copy-bottom-btn").textContent = "COPY & DEPLOY";
+}
+
+// ═══════════════════════════════════════════════════════
+//  CLEAR
+// ═══════════════════════════════════════════════════════
+function clearOutput() {
+  document.getElementById("output-card").style.display = "none";
+  currentMode = null; currentPrompt = "";
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    el.classList.remove("active");
+    el.style.background = m.bg;
+    el.style.color = m.color;
+    el.style.borderColor = m.border;
+    el.style.boxShadow = "none";
+  });
+}
+
+function clearAll() {
+  document.getElementById("goal-input").value = "";
+  document.getElementById("char-count").textContent = "0 chars";
+  document.getElementById("generate-btn").disabled = true;
+  document.getElementById("clear-btn").style.display = "none";
+  // Clear files
+  uploadedFiles = []; fileIdCounter = 0;
+  document.getElementById("file-chips").innerHTML    = "";
+  document.getElementById("image-previews").innerHTML= "";
+  document.getElementById("upload-count-badge").style.display = "none";
+  document.getElementById("context-banner").style.display     = "none";
+  clearOutput();
+}
+</script>
+</body>
+</html>
