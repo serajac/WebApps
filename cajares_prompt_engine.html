@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cajares Prompt Engine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #f8f5f0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #1c1917;
+  }
+
+  /* ── Header ── */
+  #header {
+    background: linear-gradient(135deg, #1c1917 0%, #44403c 100%);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  #logo {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 20px rgba(245,158,11,.5);
+  }
+  #header-text { flex: 1; }
+  #header-sub  { font-size: 10px; color: #fbbf24; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; }
+  #header-title{ font-size: 22px; color: #fff; font-weight: 900; letter-spacing: .04em; line-height: 1.1; }
+  #live-badge  {
+    background: rgba(134,239,172,.2); border: 1px solid rgba(134,239,172,.5);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 10px; color: #86efac; font-weight: 700; letter-spacing: .1em;
+    white-space: nowrap;
+  }
+
+  /* ── Body ── */
+  #body { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1.5px solid #e7e5e4;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+  }
+  .card-label {
+    font-size: 10px; color: #a8a29e;
+    letter-spacing: .15em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 10px;
+  }
+
+  /* ── Mode pills ── */
+  #mode-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pill {
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+    border-width: 1.5px; border-style: solid;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .pill.active { color: #fff !important; }
+
+  /* ── Input card ── */
+  #input-card {
+    background: #fff;
+    border: 2px solid #d97706;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(217,119,6,.15);
+    margin-bottom: 14px;
+  }
+  #input-header {
+    background: linear-gradient(135deg, #92400e, #b45309);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #input-label { font-size: 11px; color: #fde68a; letter-spacing: .15em; font-weight: 700; text-transform: uppercase; }
+  #example-btn {
+    background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4);
+    border-radius: 12px; padding: 4px 14px; color: #fff;
+    font-size: 11px; cursor: pointer; font-weight: 700;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  #example-btn:hover { background: rgba(255,255,255,.32); }
+  #goal-input {
+    width: 100%; min-height: 160px;
+    background: transparent; border: none; outline: none;
+    color: #1c1917; font-size: 15px; line-height: 1.7;
+    padding: 16px; resize: vertical;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  #goal-input::placeholder { color: #b0a090; }
+  #input-footer {
+    padding: 4px 16px 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  #input-hint { font-size: 11px; color: #c4b5a0; font-style: italic; }
+  #char-count  { font-size: 11px; color: #a8a29e; }
+
+  /* ── Buttons ── */
+  #btn-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  #generate-btn {
+    flex: 1; padding: 16px 20px;
+    background: linear-gradient(135deg, #d97706, #dc2626);
+    border: none; border-radius: 10px;
+    color: #fff; font-size: 14px; font-weight: 800;
+    letter-spacing: .15em; text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(220,38,38,.35);
+    transition: all .2s;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  #generate-btn:disabled {
+    background: #e5e7eb; color: #9ca3af;
+    box-shadow: none; cursor: not-allowed;
+  }
+  #clear-btn {
+    padding: 16px 20px;
+    background: #fff; border: 2px solid #d1d5db;
+    border-radius: 10px; color: #6b7280;
+    font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 700; font-family: inherit;
+    display: none;
+  }
+
+  /* ── Output card ── */
+  #output-card {
+    background: #fff;
+    border: 2px solid #38bdf8;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(14,165,233,.15);
+    display: none;
+    animation: fadeUp .35s ease-out;
+  }
+  #output-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  #output-mode-info { display: flex; align-items: center; gap: 10px; }
+  #output-icon  { font-size: 20px; }
+  #output-label { font-size: 13px; color: #fff; font-weight: 800; letter-spacing: .05em; }
+  #copy-top-btn {
+    padding: 7px 18px;
+    background: rgba(255,255,255,.25); border: none;
+    border-radius: 20px; color: #fff;
+    font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+  #copy-top-btn.copied { background: rgba(16,185,129,.9); }
+  #prompt-body {
+    padding: 20px; font-size: 13.5px; line-height: 1.9;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 500px; overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    background: #f0f9ff;
+    color: #1e293b;
+  }
+  #output-footer {
+    padding: 14px 20px; background: #fff;
+    border-top: 1px solid #f1f5f9;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  #output-hint  { font-size: 11px; color: #94a3b8; }
+  #copy-bottom-btn {
+    padding: 10px 24px;
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 12px; letter-spacing: .12em;
+    text-transform: uppercase; cursor: pointer;
+    font-weight: 800; transition: all .2s;
+    font-family: inherit;
+  }
+
+  /* ── Footer ── */
+  #page-footer {
+    text-align: center; margin-top: 40px;
+    font-size: 10px; color: #c4b5a0; letter-spacing: .12em;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #d4b896; border-radius: 3px; }
+
+  /* ── Upload Zone ── */
+  #upload-card {
+    background: #fff;
+    border: 2px dashed #d1c4b0;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color .2s, background .2s;
+  }
+  #upload-card.drag-over {
+    border-color: #d97706;
+    background: #fffbf0;
+  }
+  #upload-header {
+    background: linear-gradient(135deg, #374151, #4b5563);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #upload-label-text { font-size: 11px; color: #d1d5db; letter-spacing: .15em; font-weight: 700; text-transform: uppercase; }
+  #upload-count-badge {
+    font-size: 10px; background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff; padding: 2px 10px; border-radius: 20px;
+    font-weight: 700; display: none;
+  }
+  #drop-zone {
+    padding: 20px 16px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+  #drop-icon { font-size: 28px; line-height: 1; }
+  #drop-text { font-size: 13px; color: #78716c; text-align: center; line-height: 1.5; }
+  #drop-text strong { color: #1c1917; }
+  #drop-subtext { font-size: 11px; color: #a8a29e; }
+  #file-input { display: none; }
+  #upload-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #374151, #4b5563);
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .05em;
+    transition: opacity .2s;
+  }
+  #upload-btn:hover { opacity: .85; }
+
+  /* ── File chips ── */
+  #file-chips {
+    padding: 0 14px 14px;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .file-chip {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 10px;
+    border-radius: 8px; border: 1.5px solid #e7e5e4;
+    background: #fafafa; max-width: 100%;
+    animation: fadeUp .2s ease-out;
+  }
+  .file-chip-icon { font-size: 16px; flex-shrink: 0; }
+  .file-chip-info { flex: 1; min-width: 0; }
+  .file-chip-name {
+    font-size: 12px; font-weight: 700; color: #1c1917;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .file-chip-status { font-size: 10px; color: #78716c; }
+  .file-chip-remove {
+    background: none; border: none; cursor: pointer;
+    color: #9ca3af; font-size: 16px; line-height: 1;
+    padding: 0 2px; flex-shrink: 0;
+    transition: color .15s;
+  }
+  .file-chip-remove:hover { color: #ef4444; }
+  .file-chip.processing { border-color: #fcd34d; background: #fffbeb; }
+  .file-chip.ready      { border-color: #6ee7b7; background: #f0fdf4; }
+  .file-chip.image-chip { border-color: #c4b5fd; background: #f5f3ff; }
+  .file-chip.error-chip { border-color: #fca5a5; background: #fef2f2; }
+
+  /* ── Image preview strip ── */
+  #image-previews {
+    padding: 0 14px 14px;
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .img-preview-wrap {
+    position: relative; display: inline-block;
+    border-radius: 8px; overflow: hidden;
+    border: 2px solid #c4b5fd;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    animation: fadeUp .2s ease-out;
+  }
+  .img-preview-wrap img {
+    display: block; width: 90px; height: 90px;
+    object-fit: cover;
+  }
+  .img-remove-btn {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,.6); border: none;
+    color: #fff; border-radius: 50%;
+    width: 20px; height: 20px; font-size: 12px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .img-remove-btn:hover { background: rgba(239,68,68,.85); }
+
+  /* ── Context summary banner ── */
+  #context-banner {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    font-size: 12px; color: #15803d;
+    display: none; align-items: flex-start; gap: 8px;
+    line-height: 1.5;
+  }
+  #context-banner-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="header">
+  <div id="logo">⚡</div>
+  <div id="header-text">
+    <div id="header-sub">Dr. Carlos Cajares · DHSc, MPA, NRP</div>
+    <div id="header-title">PROMPT ENGINE</div>
+  </div>
+  <div id="live-badge">● INSTANT</div>
+</div>
+
+<!-- Body -->
+<div id="body">
+
+  <!-- Mode pills -->
+  <div class="card">
+    <div class="card-label" id="pill-label">11 Available Modes — Auto-detected from your input</div>
+    <div id="mode-pills"></div>
+  </div>
+
+  <!-- Input -->
+  <div id="input-card">
+    <div id="input-header">
+      <span id="input-label">▸ MISSION BRIEFING</span>
+      <button id="example-btn" onclick="fillExample()">Try Example ↺</button>
+    </div>
+    <textarea id="goal-input"
+      placeholder="Describe what you want to build, write, create, or plan...&#10;&#10;Examples:&#10;• A bee &amp; honey educational module with images, videos, and progress notes&#10;• Email to Norfolk Fire-Rescue about a clinical partnership&#10;• MCI scenario for a school campus with 200 students&#10;• Salsa song about my EMS journey from Puerto Rico to Virginia"
+      oninput="onInput()" onkeydown="onKey(event)"></textarea>
+    <div id="input-footer">
+      <span id="input-hint">No internet needed — generates instantly</span>
+      <span id="char-count">0 chars</span>
+    </div>
+  </div>
+
+  <!-- Upload Zone -->
+  <div id="upload-card">
+    <div id="upload-header">
+      <span id="upload-label-text">📎 ATTACH CONTEXT — Documents, Images, Artifacts</span>
+      <span id="upload-count-badge">0 files</span>
+    </div>
+    <div id="drop-zone" onclick="document.getElementById('file-input').click()"
+         ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <div id="drop-icon">📂</div>
+      <div id="drop-text"><strong>Drop files here</strong> or click to browse</div>
+      <div id="drop-subtext">PDF · DOCX · TXT · MD · CSV · PNG · JPG · WEBP · GIF</div>
+      <button id="upload-btn" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+        Choose Files
+      </button>
+    </div>
+    <input type="file" id="file-input" multiple
+      accept=".pdf,.doc,.docx,.txt,.md,.csv,.json,.png,.jpg,.jpeg,.webp,.gif,.html,.htm"
+      onchange="handleFiles(this.files)"/>
+    <div id="image-previews"></div>
+    <div id="file-chips"></div>
+  </div>
+
+  <!-- Context banner -->
+  <div id="context-banner">
+    <span id="context-banner-icon">✅</span>
+    <span id="context-banner-text"></span>
+  </div>
+
+  <!-- Buttons -->
+  <div id="btn-row">
+    <button id="generate-btn" onclick="generate()" disabled>⚡ GENERATE PROMPT</button>
+    <button id="clear-btn" onclick="clearAll()">CLEAR</button>
+  </div>
+
+  <!-- Output -->
+  <div id="output-card">
+    <div id="output-header">
+      <div id="output-mode-info">
+        <span id="output-icon"></span>
+        <span id="output-label"></span>
+      </div>
+      <button id="copy-top-btn" onclick="copyPrompt('top')">⧉ COPY</button>
+    </div>
+    <div id="prompt-body"></div>
+    <div id="output-footer">
+      <span id="output-hint">Paste into ChatGPT · Claude · Gemini · Suno · any AI tool</span>
+      <button id="copy-bottom-btn" onclick="copyPrompt('bottom')">COPY & DEPLOY</button>
+    </div>
+  </div>
+
+  <div id="page-footer">CAJARES PROMPT ENGINE · DHSc, MPA, NRP · CAMP EMS PROGRAM · v5.0 · 20 AGENTS</div>
+</div>
+
+<!-- PDF.js + Mammoth for file parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// ═══════════════════════════════════════════════════════
+//  MODE DEFINITIONS
+// ═══════════════════════════════════════════════════════
+const MODES = [
+  { id:"module",         label:"Instructional Module Builder",    icon:"📚", bg:"#ede9fe", color:"#5b21b6", border:"#c4b5fd",
+    role:"an expert instructional designer and web developer specializing in adult learning theory",
+    task:"Design a complete interactive educational module",
+    focus:["learning objectives (Bloom's taxonomy)","tabbed content with image/video suggestions","scenario-based cases","student progress notes section","knowledge-check assessment","Canvas LMS-ready structure"],
+    keywords:["module","lesson","educational","education","learn","course","training","workshop","curriculum","teach","student","class","bee","honey","garden","picture","video","image","media","note","progress","lita","benefits"],
+    priority:["module","educational module","learning module","bee","honey","lita","garden","progress notes","canvas module"],
+    negative:["ems program","paramedic program","nursing program","mci","mass casualty"]
+  },
+  { id:"ems_program",    label:"EMS Program Builder",             icon:"🏥", bg:"#e0f2fe", color:"#075985", border:"#7dd3fc",
+    role:"an EMS Program Director and accreditation expert (CoAEMSP, NREMT, VCCS)",
+    task:"Design a complete, implementation-ready EMS program for a community college",
+    focus:["curriculum structure aligned to National EMS Education Standards","course sequencing and credit hours","clinical/field integration plan","faculty and resource requirements","CoAEMSP accreditation roadmap","budget and scalability"],
+    keywords:["ems","paramedic","emt","aemt","program","cohort","accreditation","clinical","rotation","camp","schedule","coaemsP","nremt","vccs"],
+    priority:["ems program","paramedic program","emt program","aemt program","coaemsP","nremt"],
+    superPriority:["emt course","emt program plan","paramedic program plan","aemt program","ems program development","paramedic cohort","ems cohort"],
+    negative:["nursing","nurse","rn","lpn","nclex","bsn","adn","acen","vbon","lesson plan","press release","grant proposal","va claim","veteran","quiz bank","canvas lms","rubric"]
+  },
+  { id:"comms",          label:"Professional Communication",      icon:"✉️", bg:"#e0f2fe", color:"#0c4a6e", border:"#7dd3fc",
+    role:"Dr. Carlos Cajares, EMS Program Director — confident, professional, and charismatic",
+    task:"Write a polished professional communication",
+    focus:["compelling subject line","strong authoritative opening","clear strategic message body","mutual benefit / value proposition","specific call to action with timeline","professional signature block"],
+    keywords:["email","letter","write","message","memo","proposal","communicate","partnership","outreach","contact","draft","send","request","invite","stakeholder","admin","dean","director","fire","rescue","norfolk","suffolk"],
+    priority:["email to","write an email","draft an email","write a letter","draft a letter","write a memo","professional email"],
+    negative:["lesson plan","grant proposal","press release","va claim","nursing program","mci scenario"]
+  },
+  { id:"mci",            label:"MCI Simulation Engine",           icon:"🚨", bg:"#fee2e2", color:"#991b1b", border:"#fca5a5",
+    role:"a disaster simulation designer and EMS training expert (HSEEP-compliant)",
+    task:"Create a high-fidelity MCI tabletop or functional exercise scenario",
+    focus:["incident overview and environment","patient profiles with START triage categories","T+0 to T+60 timeline progression","scenario injects (5-8 realistic complications)","decision points and expected ICS actions","debrief guide and AAR template"],
+    keywords:["mci","mass casualty","drill","exercise","simulation","tabletop","scenario","incident","disaster","hseep","triage","campus","explosion","trauma","patients","operation"],
+    priority:["mci","mass casualty","mci scenario","mci drill","mass casualty incident","hseep","triage scenario","disaster drill"],
+    negative:["nursing","lesson plan","press release","grant","email","veteran","va claim"]
+  },
+  { id:"andragogy",      label:"Andragogy Master Mode",           icon:"🎓", bg:"#ede9fe", color:"#5b21b6", border:"#c4b5fd",
+    role:"an expert in adult learning theory (Malcolm Knowles) and healthcare instructional design",
+    task:"Design a full modular course applying all 6 Andragogy principles",
+    focus:["Need to Know — real consequences for learners","Self-Concept — position learners as capable professionals","Prior Experience — case-based bridges to existing knowledge","Readiness to Learn — tie to current job role","Orientation to Learning — problem-centered delivery","Motivation — connect to intrinsic rewards"],
+    keywords:["andragogy","adult learning","knowles","interactive","instructional","bloom","objective","assessment","case study","debrief","design","modular"],
+    priority:["andragogy","knowles","adult learning","6 principles","andragogy principles"],
+    negative:["ems program","nursing program","mci","press release","grant","va claim","job posting"]
+  },
+  { id:"business",       label:"Business & Revenue Growth",       icon:"📈", bg:"#ffedd5", color:"#9a3412", border:"#fdba74",
+    role:"a business strategist and revenue architect with expertise in EdTech, healthcare, and SaaS",
+    task:"Develop a comprehensive business and revenue growth plan",
+    focus:["executive summary and unique value proposition","market analysis and competitive differentiation","revenue model with pricing tiers","go-to-market strategy and launch sequence","scaling milestones and hiring roadmap","risk register and funding strategy"],
+    keywords:["business","revenue","saas","monetize","pricing","market","startup","product","scale","growth","income","profit","subscription","clients","sell","launch","platform","mci exercise","lumio","calix","monarch","anesthesia","consulting"],
+    priority:["business plan","revenue plan","saas","monetize","startup","business model","pricing strategy","mci exercise hub","calix","lumio"],
+    negative:["nursing","ems program","lesson plan","press release","va claim","clinical rotation"]
+  },
+  { id:"creative",       label:"Creative Mode",                   icon:"🎵", bg:"#fce7f3", color:"#9d174d", border:"#f9a8d4",
+    role:"a creative director, songwriter, and storytelling expert with deep cultural fluency",
+    task:"Create a powerful, emotionally resonant creative piece",
+    focus:["concept and emotional arc","culturally authentic references","song structure (intro/verse/chorus/bridge/outro) if applicable","Suno AI prompt tags (genre, mood, instruments, voice)","signature hook or memorable line","emotional payoff moment"],
+    keywords:["song","music","salsa","lyric","creative","story","narrative","poem","hook","chorus","verse","suno","beat","melody","spanish","reggaeton","cumbia"],
+    priority:["write a song","create a song","salsa song","suno","compose a song","write lyrics","music lyrics","song about"],
+    negative:["nursing","ems program","lesson plan","grant","va claim","job posting","press release"]
+  },
+  { id:"command",        label:"Command Mode",                    icon:"⚡", bg:"#fef3c7", color:"#92400e", border:"#fcd34d",
+    role:"a senior EMS Program Director, healthcare executive, and strategic operator",
+    task:"Provide a decisive, no-fluff strategic response with immediate execution value",
+    focus:["situation assessment in 2-3 sentences","clear unhedged recommendation","step-by-step execution plan (today / this week / this month)","top 2-3 risks and mitigation","expected outcomes at 30 days and 6-12 months","backup plan B"],
+    keywords:["decide","decision","strategy","action","execute","recommend","fix","solve","problem","challenge","issue","priority","urgent","immediately","now","quick","fast"],
+    priority:["what should i do","how do i decide","strategic advice","give me a recommendation"],
+    negative:["lesson plan","grant proposal","press release","job posting","nursing program","mci scenario","song","lyrics"]
+  },
+  { id:"truth",          label:"Truth Mode",                      icon:"🎯", bg:"#fefce8", color:"#854d0e", border:"#fde047",
+    role:"a brutally honest trusted advisor — zero filler, zero flattery",
+    task:"Deliver a ground-truth assessment with direct strategic recommendations",
+    focus:["what is actually happening (facts vs stories)","blind spots being ignored","critical gaps and risks","top 1-2 leverage points for maximum impact","what to do / stop / start immediately","the one hard question that must be answered"],
+    keywords:["honest","truth","real talk","blunt","gap","weakness","problem","wrong","failing","critique","feedback","assess","evaluate","review","audit","blind spot"],
+    priority:["truth mode","real talk","no sugarcoating","honest assessment","blind spots","what am i missing"],
+    negative:["lesson plan","grant proposal","press release","nursing program","mci scenario","song"]
+  },
+  { id:"meta",           label:"Meta Prompt Engineer",            icon:"🔧", bg:"#eef2ff", color:"#3730a3", border:"#a5b4fc",
+    role:"an elite AI Prompt Engineer specializing in large language model optimization",
+    task:"Analyze and dramatically improve the given prompt for maximum AI output quality",
+    focus:["diagnosis of what is weak or ambiguous","role assignment for clear expert persona","context injection for missing background","output scaffolding for exact format","constraint setting for what NOT to do","3 optimized versions: detailed / punchy / structured"],
+    keywords:["improve","optimize","prompt","rewrite","better","upgrade","refine","enhance","meta","engineer","structure","clarity","output"],
+    priority:["improve this prompt","optimize this prompt","make this prompt better","rewrite this prompt","meta prompt"],
+    negative:["nursing program","ems program","mci scenario","song","grant","job posting"]
+  },
+  { id:"product",        label:"AI Product Builder",              icon:"⚙️", bg:"#d1fae5", color:"#065f46", border:"#6ee7b7",
+    role:"a product architect and full-stack AI systems builder",
+    task:"Design a complete, scalable product or platform blueprint",
+    focus:["core problem solved and unique differentiator","MVP feature list with rationale","user roles and permission levels","end-to-end user workflow and UX","data tracking and analytics KPIs","tech stack recommendation and monetization strategy"],
+    keywords:["app","tool","platform","build","develop","software","web","html","react","feature","dashboard","portal","system","database","canvas","lms","nexus","hub","interface","ui","ux","design"],
+    priority:["build an app","create an app","build a platform","web application","software platform","react app","html app","nexus","mci exercise hub platform"],
+    negative:["nursing program","ems program","lesson plan","grant proposal","press release","song","va claim","quiz bank","rubric","bloom","learning objective","canvas lms","course syllabus","lesson about","write a lesson"]
+  },
+  { id:"va",             label:"VA Benefits Expert Agent",        icon:"🎖️", bg:"#e8f0fe", color:"#1a3a6e", border:"#4a7fd4",
+    role:"an expert US Department of Veterans Affairs benefits specialist and accredited claims agent with 20+ years experience",
+    task:"Provide a complete VA benefits strategy and action plan",
+    focus:["service connection analysis (direct/secondary/presumptive/aggravation)","evidence package checklist (DD-214, STRs, nexus letter, DBQ, buddy statements)","ready-to-use nexus letter language with clinical rationale","VA rating estimate using 38 CFR Part 4","step-by-step claims roadmap with deadlines","C&P exam coaching and appeals lane recommendation"],
+    keywords:["va","veterans affairs","veteran","service connected","disability","disability rating","claim","supplemental claim","higher level review","hlr","bva","nexus","nexus letter","dbq","c&p exam","appeals","pact act","buddy statement","tdiu","sleep apnea","tinnitus","ptsd","tbi","hypertension","burn pit","dd214"],
+    priority:["va claim","va disability","veteran disability","veterans affairs","service connected","nexus letter","supplemental claim","higher level review","c&p exam","pact act","tdiu"],
+    negative:["nursing program","ems program","lesson plan","press release","grant proposal","job posting","song"]
+  },
+  { id:"hospital_admin", label:"Hospital Administrator",          icon:"🏨", bg:"#f0fdf4", color:"#14532d", border:"#86efac",
+    role:"a seasoned Hospital Administrator and Healthcare Executive with 20+ years in health system leadership",
+    task:"Develop a hospital-level strategic or operational response",
+    focus:["C-suite situation framing with stakeholder identification","regulatory and compliance implications (Joint Commission, CMS, EMTALA)","governance pathway (board, medical staff, legal, finance approvals)","partnership agreement key terms and MOU framework","performance metrics and accountability dashboard","risk register with mitigation strategy"],
+    keywords:["hospital","hospital administrator","health system","chief medical officer","cmo","coo","sentara","obici","bon secours","mou","affiliation agreement","clinical affiliation","joint commission","cms","credentialing","revenue cycle","emergency department","ed","trauma"],
+    priority:["hospital administrator","hospital administration","health system","joint commission","hospital board","hospital ceo","hospital coo"],
+    superPriority:["hospital affiliation agreement","hospital affiliation","affiliation agreement hospital","hospital mou","hospital clinical partnership","hospital ceo","hospital president"],
+    negative:["nursing program director","lesson plan","grant proposal","song","va claim","mci scenario","job posting for","clinical coordinator","clinical director","clinical placement plan","preceptor program"]
+  },
+  { id:"college_admin",  label:"College President / Administrator",icon:"🎓", bg:"#fef9ec", color:"#713f12", border:"#fcd34d",
+    role:"an experienced Community College President and Higher Education Administrator with deep VCCS and SACSCOC expertise",
+    task:"Develop an institutional strategy, governance action plan, or presidential communication",
+    focus:["VCCS system office and Board of Visitors implications","SACSCOC accreditation and substantive change considerations","governance approval pathway (board action, faculty senate, curriculum committee)","budget and FTE impact analysis","grant and external funding alignment","board communication brief (3-5 sentence executive summary)"],
+    keywords:["college president","president","provost","vice president","dean","college administration","vccs","virginia community college","sacscoc","curriculum approval","strategic plan","enrollment","faculty","budget college","fte","dual enrollment","board of visitors","governing board","camp community college"],
+    priority:["college president","board of visitors","provost","vccs system","sacscoc","college administration","presidential memo","vice president academic"],
+    negative:["nursing program director","lesson plan","song","va claim","mci scenario","hospital administrator","grant proposal","grant writing","press release","write a press","carl perkins"]
+  },
+  { id:"grant_writer",   label:"Grant Writer / Funding Strategist",icon:"💰", bg:"#f0fdf4", color:"#065f46", border:"#34d399",
+    role:"an expert Grant Writer and Funding Strategist with 15+ years securing federal, state, and foundation funding",
+    task:"Develop a complete grant proposal framework and funding strategy",
+    focus:["most likely grant programs with award size estimates","compelling needs statement with data points","SMART goals and measurable objectives","logic model (inputs→activities→outputs→outcomes→impact)","detailed budget outline with justification","sustainability plan and letters of support guidance"],
+    keywords:["grant","funding","rfp","funder","foundation","federal grant","state grant","nsf","nih","hrsa","department of labor","dol","carl perkins","title iii","workforce","logic model","evaluation plan","sustainability","needs statement","nonprofit","lita","mci exercise hub","seed funding"],
+    priority:["grant proposal","grant writing","grant application","grant funding","rfp","carl perkins","title iii","nsf grant","hrsa","logic model","budget justification","needs statement"],
+    superPriority:["carl perkins","perkins grant","title iii grant","write a grant","grant proposal for","grant application for","grant narrative for"],
+    negative:["nursing program director","ems program director","lesson plan","song","va claim","mci scenario","press release"]
+  },
+  { id:"hr_workforce",   label:"HR / Workforce Development",      icon:"👥", bg:"#fff7ed", color:"#9a3412", border:"#fb923c",
+    role:"a seasoned Human Resources Director and Workforce Development Strategist",
+    task:"Develop an HR strategy, job description, or workforce plan",
+    focus:["legal/compliance framework (ADA, FMLA, FLSA, Title VII, VCCS policy)","full job description with essential functions and qualifications","structured behavioral interview guide with scoring rubric","performance management framework and PIP structure","workforce development and training plan","documentation checklist and required forms"],
+    keywords:["hire","hiring","recruit","recruitment","job posting","job description","interview","onboard","employee","staff","performance review","evaluation","pip","discipline","compensation","salary","hr","human resources","workforce development","adjunct faculty","faculty hiring","skills lab instructor"],
+    priority:["job posting","job description","hire a","hiring a","recruit for","write a job","performance review","performance improvement plan","employee handbook"],
+    negative:["nursing program director","ems program director","lesson plan","song","va claim","grant proposal","press release","hospital administrator"]
+  },
+  { id:"public_relations",label:"Public Relations / Communications",icon:"📣", bg:"#fdf4ff", color:"#6b21a8", border:"#d8b4fe",
+    role:"a seasoned Public Relations Director and Strategic Communications expert",
+    task:"Create a complete communications package for maximum impact",
+    focus:["3-5 key messages with primary takeaway","full press release (headline, lead, quotes, boilerplate, media contact)","social media content pack (LinkedIn / Facebook / Instagram / X)","spokesperson talking points with Q&A prep","crisis holding statement template if needed","email/newsletter draft with subject line A/B options"],
+    keywords:["press release","media","news","public relations","communications","announcement","statement","talking points","media inquiry","brand","marketing","social media","newsletter","campaign","enrollment marketing","ems awareness","national ems week"],
+    priority:["press release","write a press release","social media post","media statement","talking points","crisis communication","public announcement","newsletter"],
+    superPriority:["write a press release","draft a press release","press release for","press release about","write a social media","media statement for"],
+    negative:["nursing program director","ems program director","lesson plan","grant proposal","va claim","mci scenario","job posting","song"]
+  },
+  { id:"nursing_director",label:"Nursing Program Director",       icon:"🩺", bg:"#fff1f2", color:"#9f1239", border:"#fda4af",
+    role:"an experienced Nursing Program Director with deep ACEN/CCNE/VBON expertise and community college administration knowledge",
+    task:"Design, develop, or improve a nursing education program or initiative",
+    focus:["ACEN/CCNE standards alignment and VBON approval pathway","NCLEX Next Generation (NGN) curriculum integration with CJMM","clinical placement by specialty (med-surg, OB, peds, psych, community)","simulation integration per NLN SIRC standards (VBON 25% substitution)","faculty credentialing requirements and student-faculty ratios","NCLEX remediation protocol and outcomes dashboard"],
+    keywords:["nursing","nursing program","nursing director","rn","lpn","bsn","adn","msn","nurse","registered nurse","nursing education","acen","nlnac","ccne","nclex","nursing board","vbon","virginia board of nursing","nursing curriculum","nursing clinical","simulation nursing","nursing faculty","preceptor","rn to paramedic","paramedic to rn","bridge program","nursing shortage"],
+    priority:["nursing program","nursing director","nursing curriculum","nclex","acen","vbon","virginia board of nursing","nursing accreditation","rn program","lpn program","adn program","bsn program","nursing faculty","nursing clinical","nurse educator","nursing education"],
+    superPriority:["nclex prep","nclex strategy","acen accreditation","vbon approval","nursing program accreditation","adn program","lpn program","rn program","nursing program curriculum","nursing curriculum map"],
+    negative:["ems program","paramedic program","emt program","mci","mass casualty","press release","song","va claim","job posting for ems","paramedic curriculum","lesson plan","write a lesson","create a lesson","quiz bank","write a quiz","canvas lms","rubric"]
+  },
+  { id:"clinical_director",label:"Clinical Director / Coordinator",icon:"🏥", bg:"#ecfdf5", color:"#065f46", border:"#6ee7b7",
+    role:"a seasoned Clinical Director and Healthcare Education Clinical Coordinator",
+    task:"Design or manage clinical education operations across healthcare programs",
+    focus:["clinical placement grid by specialty with hour requirements","affiliation agreement key terms and negotiation points","preceptor recruitment, orientation, and evaluation system","student clinical performance evaluation (formative + summative)","clinical incident response and remediation protocol","clinical tracking platform guidance (FISDAP/Platinum Planner/Trajecsys)"],
+    keywords:["clinical director","clinical coordinator","clinical education","clinical placement","clinical rotation","clinical site","clinical affiliation","affiliation agreement","clinical supervisor","preceptor","preceptorship","clinical hours","patient contact","clinical competency","clinical evaluation","skills validation","competency checkoff","clinical schedule","fisdap","platinum planner","trajecsys"],
+    priority:["clinical director","clinical coordinator","clinical placement","affiliation agreement","preceptor","clinical rotation plan","clinical site","fisdap","platinum planner","trajecsys","clinical hours tracking","clinical evaluation"],
+    superPriority:["clinical affiliation agreement","affiliation agreement for students","clinical placement plan for","preceptor training program","clinical site agreement","clinical rotation agreement","clinical partner agreement"],
+    negative:["nursing program director","ems program director","press release","song","va claim","grant proposal","job posting"]
+  },
+  { id:"faculty",        label:"Faculty / Educator Agent",        icon:"🖊️", bg:"#fffbeb", color:"#78350f", border:"#fbbf24",
+    role:"an expert Healthcare Educator and Faculty Development Specialist in community college EMS/nursing/allied health instruction",
+    task:"Design teaching materials, assessments, or a complete course component",
+    focus:["Bloom's taxonomy learning objectives (Remember through Create)","timed lesson plan (hook / activate / content / active learning / check / close)","NREMT/NCLEX-style case study with clinical reasoning questions","10-question assessment with answers and rationale","Canvas LMS module structure with discussion prompt","early alert triggers and student support strategy"],
+    keywords:["faculty","instructor","professor","lecturer","adjunct","educator","teacher","teach","teaching","classroom","lecture","lesson plan","lesson","unit plan","syllabus","course outline","course design","learning objective","student outcome","bloom","rubric","grading","assessment","quiz","exam","test","test bank","powerpoint","slide deck","handout","canvas","lms","hybrid","online","case study","patient scenario","clinical case"],
+    priority:["lesson plan","create a lesson","write a lesson","course design","syllabus template","quiz bank","test bank","rubric","canvas lms","learning objective","bloom","case study for class","lecture","teaching strategy","educator","instructor guide"],
+    superPriority:["lesson plan on","write a lesson plan","create a lesson plan","quiz bank for","write a quiz bank","write a quiz for","canvas lms module for","build a canvas","design a syllabus for","syllabus for ems","syllabus for nursing","rubric for","lecture on","teaching plan","course outline for"],
+    negative:["ems program director","nursing program director","press release","grant proposal","va claim","job posting","mci scenario","song","nursing accreditation","nclex","acen","vbon"]
+  }
+];
+
+const EXAMPLES = [
+  "A bee and honey educational module with images, videos, and a student progress notes section",
+  "Email to Norfolk Fire-Rescue proposing a new clinical rotation partnership for our paramedic students",
+  "MCI drill scenario for a school campus with 200 students and multiple trauma injuries",
+  "A salsa song about my EMS journey from Puerto Rico to becoming Program Director in Virginia",
+  "Scale MCI Exercise HUB into a full SaaS platform with subscription pricing tiers",
+  "Create an ADN nursing program for 20 students starting Fall 2026 with ACEN accreditation",
+  "Carl Perkins grant proposal for simulation lab equipment for our EMS program",
+  "Job posting for an EMS Skills Lab Instructor at a community college",
+  "Press release announcing our new Paramedic program at CAMP Community College",
+  "VA disability claim for sleep apnea — veteran with 8 years Army service and burn pit exposure",
+  "Write a lesson plan for teaching septic shock to paramedic students — 90-minute hybrid session",
+  "Clinical affiliation agreement framework for hospital EMS rotations",
+];
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentMode   = null;
+let currentPrompt = "";
+let copyTimer     = null;
+let uploadedFiles = []; // {id, name, type, icon, size, content, isImage, dataUrl}
+let fileIdCounter = 0;
+
+// ═══════════════════════════════════════════════════════
+//  FILE TYPE HELPERS
+// ═══════════════════════════════════════════════════════
+function fileIcon(name) {
+  const ext = name.split('.').pop().toLowerCase();
+  const map = {
+    pdf:'📄', doc:'📝', docx:'📝', txt:'📃', md:'📃',
+    csv:'📊', json:'🔧', html:'🌐', htm:'🌐',
+    png:'🖼️', jpg:'🖼️', jpeg:'🖼️', webp:'🖼️', gif:'🖼️',
+  };
+  return map[ext] || '📎';
+}
+function isImage(name) {
+  return /\.(png|jpe?g|webp|gif)$/i.test(name);
+}
+function isText(name) {
+  return /\.(txt|md|csv|json|html?|js|css)$/i.test(name);
+}
+function fmtSize(bytes) {
+  if (bytes < 1024)       return bytes + ' B';
+  if (bytes < 1024*1024)  return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+
+// ═══════════════════════════════════════════════════════
+//  DRAG & DROP
+// ═══════════════════════════════════════════════════════
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('upload-card').classList.add('drag-over');
+}
+function onDragLeave(e) {
+  document.getElementById('upload-card').classList.remove('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-card').classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+}
+
+// ═══════════════════════════════════════════════════════
+//  FILE PROCESSING
+// ═══════════════════════════════════════════════════════
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    const id = ++fileIdCounter;
+    const entry = {
+      id, name: file.name, size: fmtSize(file.size),
+      icon: fileIcon(file.name),
+      isImage: isImage(file.name),
+      content: '', dataUrl: '', status: 'processing'
+    };
+    uploadedFiles.push(entry);
+    renderChip(entry);
+
+    if (isImage(file.name)) {
+      const fr = new FileReader();
+      fr.onload = e => {
+        entry.dataUrl = e.target.result;
+        entry.status  = 'ready';
+        renderImagePreview(entry);
+        updateChipStatus(id, 'ready', '✅ Image attached');
+        updateContextBanner();
+      };
+      fr.readAsDataURL(file);
+    } else if (/\.pdf$/i.test(file.name)) {
+      // ── PDF via PDF.js ──────────────────────────────
+      const fr = new FileReader();
+      fr.onload = async e => {
+        try {
+          if (typeof pdfjsLib === 'undefined') throw new Error('PDF.js not loaded');
+          const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(e.target.result) }).promise;
+          let text = '';
+          for (let p = 1; p <= Math.min(pdf.numPages, 40); p++) {
+            const page    = await pdf.getPage(p);
+            const content = await page.getTextContent();
+            text += content.items.map(s => s.str).join(' ') + '\n';
+          }
+          entry.content = text.trim().slice(0, 14000);
+          entry.status  = 'ready';
+          const lines = entry.content.split('\n').filter(l => l.trim()).length;
+          updateChipStatus(id, 'ready', '✅ PDF extracted · ' + pdf.numPages + ' pages · ' + lines + ' lines');
+          updateContextBanner();
+        } catch (err) {
+          entry.status  = 'error';
+          updateChipStatus(id, 'error', '⚠ PDF parse failed: ' + err.message);
+        }
+      };
+      fr.onerror = () => { entry.status = 'error'; updateChipStatus(id, 'error', '⚠ Could not read PDF'); };
+      fr.readAsArrayBuffer(file);
+    } else if (/\.docx?$/i.test(file.name)) {
+      // ── DOCX via mammoth ────────────────────────────
+      const fr = new FileReader();
+      fr.onload = async e => {
+        try {
+          if (typeof mammoth === 'undefined') throw new Error('Mammoth not loaded');
+          const result  = await mammoth.extractRawText({ arrayBuffer: e.target.result });
+          entry.content = result.value.trim().slice(0, 14000);
+          entry.status  = 'ready';
+          const words   = entry.content.split(/\s+/).length;
+          updateChipStatus(id, 'ready', '✅ DOCX extracted · ~' + words.toLocaleString() + ' words');
+          updateContextBanner();
+        } catch (err) {
+          entry.status  = 'error';
+          updateChipStatus(id, 'error', '⚠ DOCX parse failed: ' + err.message);
+        }
+      };
+      fr.onerror = () => { entry.status = 'error'; updateChipStatus(id, 'error', '⚠ Could not read DOCX'); };
+      fr.readAsArrayBuffer(file);
+    } else if (isText(file.name)) {
+      const fr = new FileReader();
+      fr.onload = e => {
+        entry.content = e.target.result.slice(0, 8000); // cap at ~8k chars
+        entry.status  = 'ready';
+        updateChipStatus(id, 'ready', '✅ Text extracted · ' + entry.content.split('\n').length + ' lines');
+        updateContextBanner();
+      };
+      fr.onerror = () => {
+        entry.status = 'error';
+        updateChipStatus(id, 'error', '⚠ Could not read file');
+      };
+      fr.readAsText(file);
+    } else {
+      // Unknown binary — note filename + type only
+      entry.status  = 'ready';
+      entry.content = '[Attached file: ' + file.name + ' — ' + file.name.split('.').pop().toUpperCase() + ' format. Use filename and type as context.]';
+      updateChipStatus(id, 'ready', '✅ Filename & type noted');
+      updateContextBanner();
+    }
+  });
+  // Reset file input so same file can be re-added
+  document.getElementById('file-input').value = '';
+  updateUploadCountBadge();
+}
+
+// ── Render a chip ──────────────────────────────────────
+function renderChip(entry) {
+  const chips = document.getElementById('file-chips');
+  const chip  = document.createElement('div');
+  chip.className = 'file-chip processing';
+  chip.id = 'chip-' + entry.id;
+  chip.innerHTML = `
+    <span class="file-chip-icon">${entry.icon}</span>
+    <div class="file-chip-info">
+      <div class="file-chip-name" title="${entry.name}">${entry.name}</div>
+      <div class="file-chip-status" id="chip-status-${entry.id}">Reading… · ${entry.size}</div>
+    </div>
+    <button class="file-chip-remove" onclick="removeFile(${entry.id})" title="Remove">✕</button>`;
+  chips.appendChild(chip);
+}
+
+function updateChipStatus(id, cls, msg) {
+  const chip = document.getElementById('chip-' + id);
+  const stat = document.getElementById('chip-status-' + id);
+  if (!chip) return;
+  chip.className = 'file-chip ' + (cls === 'ready' ? 'ready' : cls === 'error' ? 'error-chip' : 'processing');
+  if (stat) stat.textContent = msg;
+}
+
+// ── Render image thumbnail ─────────────────────────────
+function renderImagePreview(entry) {
+  const strip = document.getElementById('image-previews');
+  const wrap  = document.createElement('div');
+  wrap.className = 'img-preview-wrap';
+  wrap.id = 'imgwrap-' + entry.id;
+  wrap.innerHTML = `
+    <img src="${entry.dataUrl}" alt="${entry.name}" title="${entry.name}"/>
+    <button class="img-remove-btn" onclick="removeFile(${entry.id})" title="Remove">✕</button>`;
+  strip.appendChild(wrap);
+}
+
+// ── Remove a file ──────────────────────────────────────
+function removeFile(id) {
+  uploadedFiles = uploadedFiles.filter(f => f.id !== id);
+  const chip = document.getElementById('chip-' + id);
+  if (chip) chip.remove();
+  const img  = document.getElementById('imgwrap-' + id);
+  if (img)  img.remove();
+  updateUploadCountBadge();
+  updateContextBanner();
+}
+
+// ── Badge & banner ─────────────────────────────────────
+function updateUploadCountBadge() {
+  const badge = document.getElementById('upload-count-badge');
+  const n = uploadedFiles.length;
+  badge.textContent = n + (n === 1 ? ' file' : ' files');
+  badge.style.display = n > 0 ? 'inline-block' : 'none';
+}
+
+function updateContextBanner() {
+  const banner = document.getElementById('context-banner');
+  const text   = document.getElementById('context-banner-text');
+  const ready  = uploadedFiles.filter(f => f.status === 'ready');
+  if (ready.length === 0) { banner.style.display = 'none'; return; }
+  const imgs  = ready.filter(f => f.isImage).length;
+  const docs  = ready.filter(f => !f.isImage && isText(f.name)).length;
+  const bins  = ready.filter(f => !f.isImage && !isText(f.name)).length;
+  const parts = [];
+  if (imgs) parts.push(imgs + ' image' + (imgs > 1 ? 's' : ''));
+  if (docs) parts.push(docs + ' text doc' + (docs > 1 ? 's' : '') + ' (content extracted)');
+  if (bins) parts.push(bins + ' binary file' + (bins > 1 ? 's' : '') + ' (filename/type noted)');
+  text.textContent = '✅ Context loaded: ' + parts.join(', ') + ' — this will be appended to your generated prompt.';
+  banner.style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD FILE CONTEXT BLOCK (appended to prompt)
+// ═══════════════════════════════════════════════════════
+function buildFileContext() {
+  const ready = uploadedFiles.filter(f => f.status === 'ready');
+  if (ready.length === 0) return '';
+
+  let block = `
+
+══════════════════════════════════════════
+ATTACHED CONTEXT FILES (${ready.length} item${ready.length > 1 ? 's' : ''})
+══════════════════════════════════════════`;
+
+  ready.forEach((f, i) => {
+    block += `\n\n[FILE ${i+1}] ${f.name} (${f.size})`;
+    if (f.isImage) {
+      block += `\nType: Image
+Description: [The user has attached an image named "${f.name}". Reference this image when relevant — it may contain diagrams, forms, screenshots, photos, or reference material related to the request above.]`;
+    } else if (f.content && f.content !== '[Binary file — see filename/type for context]') {
+      block += `\nType: ${f.name.split('.').pop().toUpperCase()} document
+─────────────── CONTENT START ───────────────
+${f.content}
+─────────────── CONTENT END ─────────────────`;
+    } else {
+      block += `\nType: Document (${f.name.split('.').pop().toUpperCase()})
+Note: Binary file — use filename and file type as context for the request above.`;
+    }
+  });
+
+  block += `\n\n══════════════════════════════════════════
+Use the above files as full context when generating your response. Reference specific details from the attached documents, images, or artifacts where relevant.
+══════════════════════════════════════════`;
+
+  return block;
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT — render pills
+// ═══════════════════════════════════════════════════════
+(function init() {
+  const container = document.getElementById("mode-pills");
+  MODES.forEach(m => {
+    const el = document.createElement("span");
+    el.className = "pill";
+    el.id = "pill-" + m.id;
+    el.textContent = m.icon + " " + m.label;
+    el.style.color = m.color;
+    el.style.background = m.bg;
+    el.style.borderColor = m.border;
+    container.appendChild(el);
+  });
+  document.getElementById("pill-label").textContent =
+    MODES.length + " Available Modes — Auto-detected from your input";
+})();
+
+// ═══════════════════════════════════════════════════════
+//  INPUT HANDLING
+// ═══════════════════════════════════════════════════════
+function onInput() {
+  const val = document.getElementById("goal-input").value;
+  document.getElementById("char-count").textContent = val.length + " chars";
+  const btn = document.getElementById("generate-btn");
+  btn.disabled = !val.trim();
+  document.getElementById("clear-btn").style.display = val ? "block" : "none";
+}
+
+function onKey(e) {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate();
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXAMPLE FILL
+// ═══════════════════════════════════════════════════════
+function fillExample() {
+  const ex = EXAMPLES[Math.floor(Math.random() * EXAMPLES.length)];
+  document.getElementById("goal-input").value = ex;
+  onInput();
+  clearOutput();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODE DETECTION
+// ═══════════════════════════════════════════════════════
+function detectMode(input) {
+  const lower = input.toLowerCase();
+
+  // Word-boundary aware match — prevents "pr" hitting "program", "ed" hitting "education"
+  function kwMatch(text, kw) {
+    if (kw.includes(' ')) return text.includes(kw); // multi-word: substring is fine (already specific)
+    try {
+      return new RegExp('\\b' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(text);
+    } catch(e) { return text.includes(kw); }
+  }
+
+  let best = MODES[0], bestScore = -Infinity;
+
+  for (const mode of MODES) {
+    let score = 0;
+
+    // Regular keywords = 1pt each (word-boundary matched)
+    for (const kw of (mode.keywords || [])) {
+      if (kwMatch(lower, kw)) score += 1;
+    }
+    // Priority keywords = 4pts each (strong mode signals)
+    for (const kw of (mode.priority || [])) {
+      if (kwMatch(lower, kw)) score += 4;
+    }
+    // Super-priority keywords = 8pts each (crystal-clear unambiguous signals)
+    for (const kw of (mode.superPriority || [])) {
+      if (kwMatch(lower, kw)) score += 8;
+    }
+    // Negative keywords = -3pts each (prevent false positives)
+    for (const kw of (mode.negative || [])) {
+      if (kwMatch(lower, kw)) score -= 3;
+    }
+
+    if (score > bestScore) { bestScore = score; best = mode; }
+  }
+  return best;
+}
+
+// ═══════════════════════════════════════════════════════
+//  SMART DYNAMIC PROMPT BUILDER
+// ═══════════════════════════════════════════════════════
+
+// Extract structured entities from the user's raw input
+function parseGoal(raw) {
+  const g = raw.toLowerCase();
+  const e = {};
+
+  // Semester / year
+  const sem = raw.match(/\b(Fall|Spring|Summer|Winter)\s*(20\d\d)/i);
+  if (sem) e.semester = sem[0];
+  const yr = raw.match(/\b(20\d\d)\b/);
+  if (yr && !e.semester) e.year = yr[1];
+
+  // Cohort / enrollment size
+  const num = raw.match(/\b(\d+)\s*(students?|people|participants?|cohort|seats?|slots?|learners?)/i);
+  if (num) e.cohortSize = num[0];
+
+  // Program type
+  if (/\badn\b/i.test(raw))       e.programType = 'ADN';
+  else if (/\blpn\b/i.test(raw))  e.programType = 'LPN';
+  else if (/\bbsn\b/i.test(raw))  e.programType = 'BSN';
+  else if (/paramedic/i.test(raw)) e.programType = 'Paramedic';
+  else if (/\baemt\b/i.test(raw)) e.programType = 'AEMT';
+  else if (/\bemt\b/i.test(raw))  e.programType = 'EMT';
+
+  // Duration
+  const dur = raw.match(/\b(\d+)[- ](week|month|year|day|semester|credit)[s]?\b/i);
+  if (dur) e.duration = dur[0];
+
+  // Delivery mode
+  if (/online|asynchronous/i.test(raw))       e.delivery = 'online/asynchronous';
+  else if (/hyflex/i.test(raw))               e.delivery = 'HyFlex';
+  else if (/hybrid/i.test(raw))               e.delivery = 'hybrid';
+  else if (/in.person|face.to.face/i.test(raw)) e.delivery = 'in-person/face-to-face';
+
+  // Budget
+  const bud = raw.match(/\$[\d,]+(?:\.\d+)?(?:\s*(?:thousand|million|k\b))?|\b\d+(?:,\d+)*\s*(?:thousand|million)\s*dollars?\b/i);
+  if (bud) e.budget = bud[0];
+
+  // Partners / institutions
+  const partnerMap = {
+    'norfolk fire':'Norfolk Fire-Rescue','sentara':'Sentara Healthcare',
+    'obici':'Sentara Obici Hospital','bon secours':'Bon Secours',
+    'riverside':'Riverside Health','suffolk fire':'Suffolk Fire & Rescue',
+    'chesapeake':'Chesapeake Regional','vdh':'Virginia Department of Health',
+    'vccs':'VCCS','camp community':'CAMP Community College',
+    'paul d camp':'Paul D. Camp Community College'
+  };
+  const found = [];
+  for (const [k,v] of Object.entries(partnerMap)) {
+    if (g.includes(k)) found.push(v);
+  }
+  if (found.length) e.partners = found.join(', ');
+
+  // Accreditors
+  const accredMap = {'acen':'ACEN','ccne':'CCNE','coaemsP':'CoAEMSP','vbon':'VBON',
+                      'sacscoc':'SACSCOC','nremt':'NREMT','nclex':'NCLEX',
+                      'joint commission':'Joint Commission','caahep':'CAAHEP'};
+  const accred = [];
+  for (const [k,v] of Object.entries(accredMap)) {
+    if (g.includes(k)) accred.push(v);
+  }
+  if (accred.length) e.accreditors = accred.join(', ');
+
+  // Clinical specialties / topics
+  const topicList = ['pharmacology','cardiac','cardiology','12-lead','ECG','trauma',
+    'respiratory','pediatrics','obstetrics','neurology','toxicology','shock','sepsis',
+    'airway','simulation','pathophysiology','med-surg','mental health','community health',
+    'burns','spinal','hemorrhage','airway management','anaphylaxis'];
+  const topics = topicList.filter(t => g.includes(t.toLowerCase()));
+  if (topics.length) e.topics = topics.join(', ');
+
+  // VA-specific
+  const condMap = {'sleep apnea':'Obstructive Sleep Apnea','ptsd':'PTSD',
+    'tinnitus':'Tinnitus','hearing loss':'Hearing Loss','hypertension':'Hypertension',
+    'tbi':'Traumatic Brain Injury (TBI)','diabetes':'Diabetes Mellitus',
+    'agent orange':'Agent Orange exposure','burn pit':'Burn Pit/Toxic Exposure (PACT Act)'};
+  for (const [k,v] of Object.entries(condMap)) {
+    if (g.includes(k)) { e.vaCondition = v; break; }
+  }
+  const branchMatch = raw.match(/\b(Army|Navy|Marines?|Air Force|Coast Guard|National Guard)\b/i);
+  if (branchMatch) e.branch = branchMatch[1];
+  const serviceYrs = raw.match(/(\d{4})\s*[-–to]+\s*(\d{4})/);
+  if (serviceYrs) e.serviceYears = serviceYrs[0];
+
+  return { raw, e };
+}
+
+// Build the fully tailored prompt from mode + parsed context
+function buildSmartPrompt(mode, ctx) {
+  const { raw, e } = ctx;
+  const lines = [];
+
+  // ── 1. Role ────────────────────────────────────────────
+  lines.push(`Act as ${mode.role}.`);
+  lines.push('');
+
+  // ── 2. Direct task — user's exact words drive this ────
+  lines.push(`YOUR SPECIFIC REQUEST:`);
+  lines.push(`"${raw}"`);
+  lines.push('');
+
+  // ── 3. Build a SPECIFIC instruction set from the raw text ──
+  // Strip generic verbs and turn the request into direct instructions
+  const stripped = raw
+    .replace(/^(i want to|i need to|i need|can you|please|help me|create|build|write|make|design|develop|generate|draft|give me|provide)\s+/i, '')
+    .trim();
+
+  lines.push(`WHAT TO PRODUCE:`);
+  // Remove leading article if any to avoid "usable a ..."
+  const strippedClean = stripped.replace(/^(a|an|the)\s+/i, '');
+  lines.push(`Produce a complete, detailed, immediately usable ${strippedClean}.`);
+  lines.push('');
+
+  // ── 4. Extracted specifics — woven into instructions ──
+  const hasContext = e.programType || e.cohortSize || e.semester || e.duration ||
+                     e.delivery || e.partners || e.accreditors || e.topics ||
+                     e.budget || e.vaCondition || e.branch || e.serviceYears;
+
+  if (hasContext) {
+    lines.push(`CRITICAL — USE THESE SPECIFIC DETAILS THROUGHOUT:`);
+    if (e.programType)  lines.push(`• Program: ${e.programType}`);
+    if (e.cohortSize)   lines.push(`• Cohort size: ${e.cohortSize}`);
+    if (e.semester)     lines.push(`• Start date: ${e.semester}`);
+    else if (e.year)    lines.push(`• Year: ${e.year}`);
+    if (e.duration)     lines.push(`• Duration: ${e.duration}`);
+    if (e.delivery)     lines.push(`• Delivery mode: ${e.delivery}`);
+    if (e.partners)     lines.push(`• Specific partners: ${e.partners}`);
+    if (e.accreditors)  lines.push(`• Accreditation standards: ${e.accreditors}`);
+    if (e.topics)       lines.push(`• Topics/subject matter: ${e.topics}`);
+    if (e.budget)       lines.push(`• Budget/funding: ${e.budget}`);
+    if (e.vaCondition)  lines.push(`• Claimed condition: ${e.vaCondition}`);
+    if (e.branch)       lines.push(`• Branch of service: ${e.branch}`);
+    if (e.serviceYears) lines.push(`• Service period: ${e.serviceYears}`);
+    lines.push('');
+  }
+
+  // ── 5. Dynamic required sections — driven by mode + parsed context ──
+  lines.push(`YOUR RESPONSE MUST INCLUDE ALL OF THE FOLLOWING:`);
+
+  // Build dynamic section list tailored to what was actually requested
+  const sections = buildDynamicSections(mode, e, raw);
+  sections.forEach((s, i) => lines.push(`${i + 1}. ${s}`));
+  lines.push('');
+
+  // ── 6. Hard quality rules ──────────────────────────────
+  lines.push(`NON-NEGOTIABLE QUALITY RULES:`);
+  lines.push(`• Every section must directly address: "${raw.slice(0, 80)}${raw.length > 80 ? '...' : ''}"`);
+  lines.push(`• Zero generic placeholders — fill in every specific detail`);
+  lines.push(`• Zero filler — every sentence must add actionable value`);
+  lines.push(`• Make it immediately usable without any additional editing`);
+
+  if (hasContext) {
+    const tailorParts = [];
+    if (e.cohortSize)  tailorParts.push(`${e.cohortSize} cohort`);
+    if (e.semester)    tailorParts.push(`${e.semester} start`);
+    if (e.programType) tailorParts.push(`${e.programType} program`);
+    if (e.delivery)    tailorParts.push(`${e.delivery} delivery`);
+    if (e.partners)    tailorParts.push(e.partners);
+    if (e.accreditors) tailorParts.push(`${e.accreditors} standards`);
+    if (tailorParts.length)
+      lines.push(`• Calibrate ALL timelines, numbers, and recommendations specifically to: ${tailorParts.join(' | ')}`);
+  }
+
+  return lines.join('\n');
+}
+
+// Builds a tailored section list based on mode + what was actually in the user's input
+function buildDynamicSections(mode, e, raw) {
+  const r = raw.toLowerCase();
+  const sections = [];
+
+  switch (mode.id) {
+
+    case 'faculty':
+      sections.push(`Learning objectives using Bloom's taxonomy — specific to ${e.topics || 'this topic'} at the ${e.programType || 'healthcare'} student level`);
+      sections.push(`Complete timed lesson plan: Hook (5 min) → Prior knowledge activation (5 min) → Core content delivery${e.delivery ? ' ['+e.delivery+']' : ''} (${r.includes('90') ? '60' : r.includes('60') ? '30' : '20'} min) → Active learning activity (15 min) → Knowledge check & close (5 min)`);
+      sections.push(`Realistic patient case study or scenario featuring ${e.topics || 'the core content'} — include patient presentation, vitals, clinical questions at Bloom's Apply and Analyze levels`);
+      sections.push(`10 NREMT/NCLEX-style assessment questions with correct answers and rationale — no generic questions, every question must test ${e.topics || 'the content above'} specifically`);
+      if (r.includes('canvas') || r.includes('lms') || r.includes('online') || r.includes('module'))
+        sections.push(`Canvas LMS module structure: page titles, discussion board prompt, quiz setup, assignment instructions`);
+      sections.push(`Student engagement strategies and early alert triggers for this specific content area`);
+      break;
+
+    case 'nursing_director':
+      sections.push(`${e.programType || 'Nursing'} program structure: credit hours, course sequence semester-by-semester${e.semester ? ' starting '+e.semester : ''}${e.cohortSize ? ' for '+e.cohortSize : ''}`);
+      sections.push(`${e.accreditors || 'ACEN/CCNE'} accreditation compliance checklist: applicable standards, self-study components, timeline to initial and full approval`);
+      sections.push(`VBON approval pathway: 18VAC90-27 requirements, clinical hour minimums by specialty, simulation substitution documentation`);
+      sections.push(`NCLEX preparation strategy: NGN/CJMM integration, benchmark scores, remediation protocol with specific ATI/HESI/UWorld touchpoints`);
+      sections.push(`Clinical placement plan by specialty (med-surg, OB, peds, psych, community) with minimum hours per rotation${e.partners ? ' — reference '+e.partners : ''}`);
+      sections.push(`Faculty staffing plan: credentials, ratios, hiring timeline, and professional development requirements`);
+      sections.push(`Program outcomes dashboard: NCLEX pass rate target, completion rate, employment rate, accreditor reporting schedule`);
+      break;
+
+    case 'ems_program':
+      sections.push(`${e.programType || 'EMS'} curriculum structure aligned to National EMS Education Standards: module list, credit hours, lecture/lab/clinical hours${e.semester ? ' — start '+e.semester : ''}${e.cohortSize ? ' for '+e.cohortSize : ''}`);
+      sections.push(`Course sequencing: week-by-week or module-by-module breakdown with prerequisite logic`);
+      sections.push(`CoAEMSP accreditation roadmap: Letter of Review → Initial Accreditation timeline, self-study checklist, NREMT outcome targets`);
+      sections.push(`Clinical and field internship plan: ALS/BLS transport hours, hospital rotation requirements, patient contact benchmarks`);
+      sections.push(`Faculty and resource requirements: lead instructor qualifications, equipment list, simulation lab setup${e.partners ? ' — partnership plan with '+e.partners : ''}`);
+      sections.push(`Budget and revenue model: per-student costs, tuition revenue, agency-sponsored cohort pricing${e.budget ? ' — work within '+e.budget+' budget' : ''}`);
+      break;
+
+    case 'clinical_director':
+      sections.push(`Clinical placement grid by specialty with minimum hour requirements${e.programType ? ' for '+e.programType+' program' : ''}${e.partners ? ' — approved sites including '+e.partners : ''}`);
+      sections.push(`Affiliation agreement key terms: student scope of practice, supervision ratios, HIPAA compliance, liability, incident reporting, renewal schedule`);
+      sections.push(`Preceptor recruitment and orientation program: qualifications, training curriculum, evaluation tools, continuing engagement`);
+      sections.push(`Student clinical performance evaluation system: formative check-ins, summative evaluation rubric, competency checkoff lists`);
+      sections.push(`Clinical remediation protocol: trigger criteria, step-by-step process, documentation requirements, return-to-clinical criteria`);
+      sections.push(`Clinical tracking system setup${r.includes('fisdap') ? ' (FISDAP)' : r.includes('trajecsys') ? ' (Trajecsys)' : r.includes('platinum') ? ' (Platinum Planner)' : ''}: required student documentation, preceptor e-signature workflow, accreditor reporting outputs`);
+      break;
+
+    case 'comms':
+      const recipient = e.partners || (r.includes('norfolk') ? 'Norfolk Fire-Rescue' : r.includes('hospital') ? 'hospital administration' : r.includes('dean') ? 'the dean' : 'the recipient');
+      sections.push(`Subject line: 3 options — direct, benefit-focused, and curiosity-driving`);
+      sections.push(`Opening (2-3 sentences): hook that immediately establishes shared mission with ${recipient}`);
+      sections.push(`Body (3 paragraphs): purpose → supporting rationale/data → mutual benefit and value proposition`);
+      sections.push(`Call to action: specific, low-friction next step with a proposed timeline`);
+      sections.push(`Professional closing with full signature block`);
+      sections.push(`Optional P.S. line for emphasis — 1 sentence that reinforces the key ask`);
+      break;
+
+    case 'mci':
+      sections.push(`Incident overview: type, location, triggering event, initial 911 call transcript${e.cohortSize ? ' — scale scenario for '+e.cohortSize+' patients/participants' : ''}`);
+      sections.push(`Patient profiles (minimum 8-12): name/tag, age, MOI, START triage category, chief complaint, initial vitals, expected interventions`);
+      sections.push(`Timeline progression T+0 to T+60 min with specific events at T+0, T+10, T+20, T+40`);
+      sections.push(`6-8 scenario injects: media arrival, hospital diversion, missing person, secondary hazard, resource failure, communication breakdown`);
+      sections.push(`ICS structure expected actions and decision points for Medical Branch Director`);
+      sections.push(`Evaluation metrics and debrief hot-wash guide with AAR template`);
+      break;
+
+    case 'grant_writer':
+      const grantType = r.includes('perkins') ? 'Carl D. Perkins' : r.includes('title iii') ? 'Title III' : r.includes('nsf') ? 'NSF' : r.includes('hrsa') ? 'HRSA' : 'targeted grant';
+      sections.push(`${grantType} grant narrative: compelling needs statement with local/regional data, problem framing, organizational capacity proof`);
+      sections.push(`SMART goals and measurable objectives with specific targets and measurement methods${e.semester ? ' — aligned to '+e.semester+' timeline' : ''}`);
+      sections.push(`Logic model: Inputs → Activities → Outputs → Short-term Outcomes → Long-term Impact${e.programType ? ' for '+e.programType+' program' : ''}`);
+      sections.push(`Detailed budget breakdown with line-item justifications${e.budget ? ' — total request: '+e.budget : ''}: personnel, fringe, equipment, supplies, travel, indirect costs`);
+      sections.push(`Evaluation plan: data collection methods, responsible parties, reporting schedule, success metrics`);
+      sections.push(`Sustainability narrative: how program continues post-grant + letters of support guide (who to ask, what to say)`);
+      break;
+
+    case 'va':
+      const cond = e.vaCondition || 'claimed condition';
+      sections.push(`Service connection analysis for ${cond}: type (direct/secondary/presumptive/aggravation)${e.branch ? ' — '+e.branch+' service' : ''}${e.serviceYears ? ' '+e.serviceYears : ''}`);
+      sections.push(`Complete evidence package checklist: DD-214, STRs, current diagnosis, treatment records, buddy statement guidance`);
+      sections.push(`Nexus letter template: exact "at least as likely as not" language a physician can sign — specific to ${cond}, citing relevant medical literature and in-service event`);
+      sections.push(`VA rating estimate under 38 CFR Part 4 diagnostic codes applicable to ${cond} — combined ratings formula if multiple conditions`);
+      sections.push(`C&P exam coaching: how to describe ${cond} symptoms at worst-day severity, functional impact statements, what examiner must document per M21-1`);
+      sections.push(`Appeals lane recommendation (Supplemental Claim / HLR / BVA) with effective date strategy and CUE opportunities`);
+      sections.push(`Additional benefits to explore: SMC, TDIU, CHAMPVA, caregiver program, state-specific property tax exemptions`);
+      break;
+
+    case 'business':
+      sections.push(`Executive summary: problem, solution, unique value proposition${r.includes('saas') ? ' — SaaS model' : r.includes('nonprofit') ? ' — nonprofit model' : ''}`);
+      sections.push(`Market analysis: target segments, TAM estimate, top 3 competitors and differentiation${r.includes('mci') || r.includes('hub') ? ' — EMS simulation/exercise management space' : ''}`);
+      sections.push(`Revenue model with specific pricing tiers, rationale, and Year 1-3 projections${e.budget ? ' — startup budget '+e.budget : ''}`);
+      sections.push(`Go-to-market strategy: launch sequence (MVP → beta → full release), channel strategy, first 10 customer acquisition plan`);
+      sections.push(`90-day execution roadmap: week-by-week milestones, key hires, product development checkpoints`);
+      sections.push(`Risk register: top 3 risks with probability, impact, and mitigation plan`);
+      break;
+
+    case 'hospital_admin':
+      sections.push(`C-suite situation framing: stakeholders (Board, Medical Staff, Finance, Legal, Compliance), regulatory implications (TJC, CMS, EMTALA, HIPAA)`);
+      sections.push(`Strategic recommendation with alignment to hospital mission and community benefit narrative${e.partners ? ' — specific to '+e.partners : ''}`);
+      sections.push(`Governance approval pathway: board action required? Medical staff credentialing? Legal review? Committee structure?`);
+      if (r.includes('affiliation') || r.includes('partnership') || r.includes('agreement'))
+        sections.push(`Affiliation/MOU key terms: student scope, supervision ratios, liability/malpractice, HIPAA, incident reporting, renewal, termination rights`);
+      sections.push(`Performance metrics and accountability dashboard: KPIs, reporting cadence, quality benchmarks`);
+      sections.push(`Risk register: regulatory, financial, reputational risks with mitigation strategies`);
+      sections.push(`Board communication brief: 3-5 sentence executive summary with talking points`);
+      break;
+
+    case 'college_admin':
+      sections.push(`Presidential situation analysis: VCCS system office implications, SACSCOC substantive change considerations${e.programType ? ' for '+e.programType+' program' : ''}`);
+      sections.push(`Governance approval pathway: Board of Visitors action? Faculty Senate consultation? VCCS Chancellor notification? Curriculum committee?`);
+      sections.push(`Operational implementation phases with specific milestones${e.semester ? ' — target launch '+e.semester : ''}`);
+      sections.push(`Budget and FTE impact: personnel costs, equipment, revenue projections, break-even enrollment threshold${e.cohortSize ? ' at '+e.cohortSize+' students' : ''}`);
+      sections.push(`Grant and external funding alignment${e.partners ? ' — including '+e.partners+' partnership' : ''}`);
+      sections.push(`Board of Visitors communication brief: executive summary, talking points, mission alignment statement`);
+      break;
+
+    case 'hr_workforce':
+      if (r.includes('job') || r.includes('hire') || r.includes('recruit') || r.includes('posting')) {
+        sections.push(`Complete job description: position title, FLSA classification, salary band, 5-7 essential functions, minimum and preferred qualifications`);
+        sections.push(`Structured behavioral interview guide: 8-10 questions (behavioral + situational + technical), 1-5 scoring rubric with anchor descriptors`);
+        sections.push(`Onboarding plan: Day 1, Week 1, 30-day, 60-day, 90-day milestones`);
+      } else {
+        sections.push(`HR policy or action plan framework: legal basis, applicable federal/state law, documentation requirements`);
+        sections.push(`Step-by-step process with timeline, responsible parties, and required forms`);
+        sections.push(`Communication templates: employee notification, supervisor guidance, HR documentation`);
+      }
+      sections.push(`Compliance checklist: VCCS policy manual, federal law (ADA/FMLA/FLSA/Title VII), required documentation and retention schedule`);
+      sections.push(`Risk assessment: legal exposure, liability mitigation, recommended HR/legal consultation triggers`);
+      break;
+
+    case 'public_relations':
+      sections.push(`Primary message architecture: 1 core message + 3 supporting messages + messages to avoid${r.includes('nursing') ? ' — nursing program launch framing' : r.includes('ems') || r.includes('paramedic') ? ' — EMS/paramedic program launch framing' : ''}`);
+      sections.push(`Full press release: headline (max 12 words) → lead paragraph → body (2-3 paragraphs) → 2 attributed quotes → boilerplate → media contact`);
+      sections.push(`Social media content pack:\n   LinkedIn (150 words, professional tone)\n   Facebook (100 words, community-facing)\n   Instagram caption (60 words + 6-8 hashtags)\n   X/Twitter (280 chars max)`);
+      sections.push(`Spokesperson talking points: 30-second opening statement + Q&A prep with 5 likely tough questions and bridged answers`);
+      sections.push(`Email/newsletter version: subject line (3 options) + body draft with call to action`);
+      sections.push(`Success metrics: impressions, engagement rate benchmarks, suggested tracking cadence`);
+      break;
+
+    case 'module':
+      sections.push(`Learning objectives (4-6): Bloom's action verbs at appropriate level — specific to ${e.topics || raw.replace(/^.*?(module|lesson|course|unit)\s*(on|about|for)?\s*/i,'').slice(0,50) || 'this topic'}`);
+      sections.push(`Tabbed content layout: Introduction → Core Concepts → ${r.includes('image') || r.includes('picture') || r.includes('photo') ? 'Images & Visual Media' : 'Visual Content Suggestions'} → ${r.includes('video') ? 'Video Resources (YouTube links + descriptions)' : 'Interactive Content'} → Practical Application`);
+      sections.push(`Student Progress Notes section: 3 structured reflection prompts specific to the content, open journaling area, "My Action Plan" field`);
+      sections.push(`Knowledge assessment: 8-10 questions matching the learning objectives — mix of multiple choice, scenario-based, and short answer`);
+      sections.push(`Instructor facilitation guide: how to use the module, discussion facilitation tips, common student misconceptions to address`);
+      sections.push(`Canvas LMS integration notes: module settings, discussion board prompt, grading setup`);
+      break;
+
+    case 'creative':
+      const genre = r.includes('salsa') ? 'salsa' : r.includes('latin jazz') ? 'Latin jazz' : r.includes('reggaeton') ? 'reggaeton' : r.includes('pop') ? 'pop' : 'the requested genre';
+      sections.push(`Full song structure: Intro (4 bars) → Verse 1 (8-16 bars) → Pre-Chorus → Chorus (hook) → Verse 2 → Bridge → Outro — with complete lyrics for each section`);
+      sections.push(`Signature hook: the single most memorable line that captures the entire emotional message in one phrase`);
+      sections.push(`Suno AI prompt: genre tags, style descriptors, tempo (BPM), key instruments, voice type, production feel, mood tags`);
+      sections.push(`Cultural authenticity notes: specific ${genre} elements, instrumentation, linguistic choices (Spanish/English/Spanglish), regional references`);
+      sections.push(`Emotional arc breakdown: what the listener should feel at intro, peak, and outro`);
+      break;
+
+    case 'command':
+      sections.push(`Situation assessment (3 sentences max): what is actually happening, what is the core problem or leverage point`);
+      sections.push(`Clear, unhedged recommendation — commit to one path`);
+      sections.push(`Execution plan: what to do TODAY → THIS WEEK → THIS MONTH, with owner for each step`);
+      sections.push(`Top 3 risks and mitigation for each`);
+      sections.push(`Expected outcomes: 30-day changes and 6-12 month success picture`);
+      sections.push(`Backup plan B if primary approach fails`);
+      break;
+
+    case 'truth':
+      sections.push(`What is ACTUALLY happening — strip the assumptions, state the facts`);
+      sections.push(`Blind spots: what is being ignored or minimized that matters most`);
+      sections.push(`Critical gaps and risks: what could go wrong that hasn't been planned for`);
+      sections.push(`Top 2 leverage points: the moves that would create maximum impact with minimum effort`);
+      sections.push(`Direct recommendations: what to DO, STOP, and START — no hedging`);
+      sections.push(`The one hard question that must be answered before moving forward`);
+      break;
+
+    case 'andragogy':
+      sections.push(`All 6 Knowles principles applied explicitly to ${e.topics || 'this topic'} — show HOW each principle is embedded, not just what it is`);
+      sections.push(`Module 1 — Foundation: real-world hook scenario → learning objectives → core content`);
+      sections.push(`Module 2 — Application: interactive case study → branching decision exercise → peer discussion`);
+      sections.push(`Module 3 — Synthesis: capstone scenario requiring integration of all concepts → reflection prompts → post-assessment`);
+      sections.push(`Adult learner engagement strategies specific to ${e.programType || 'healthcare'} professionals`);
+      sections.push(`Assessment design: competency-based, not knowledge-recall — measure application and judgment`);
+      break;
+
+    case 'meta':
+      sections.push(`Diagnosis: list every weakness in the original prompt — ambiguity, missing context, vague output format`);
+      sections.push(`Optimized Version A — Comprehensive: fully rewritten prompt for detailed, expert-level output`);
+      sections.push(`Optimized Version B — Concise: rewritten for fast, punchy, high-signal output`);
+      sections.push(`Optimized Version C — Structured: rewritten for tabular, organized, scannable output`);
+      sections.push(`Explanation: what was changed in each version and why it increases output quality`);
+      sections.push(`Pro tip: how to further refine with follow-up prompts`);
+      break;
+
+    case 'product':
+      sections.push(`Product overview: problem solved, primary user persona, key differentiator vs existing tools`);
+      sections.push(`MVP feature list (5-7 features) with user story format: "As a [user], I want to [action] so that [outcome]"`);
+      sections.push(`User roles and permission matrix (Admin / Manager / End User)`);
+      sections.push(`End-to-end user workflow: onboarding → core task → reporting — with UX notes on each step`);
+      sections.push(`Tech stack recommendation: frontend, backend, database, AI integrations, hosting — with rationale${e.budget ? ' — calibrate to '+e.budget+' budget' : ''}`);
+      sections.push(`Monetization model: pricing tiers, free vs paid feature split, revenue projection Year 1`);
+      break;
+
+    default:
+      mode.focus.forEach(f => sections.push(f));
+  }
+
+  return sections;
+}
+  const { raw, e } = ctx;
+
+  // ── Role line ──────────────────────────────────────────
+  let prompt = `Act as ${mode.role}.\n\n`;
+
+  // ── Specific task ──────────────────────────────────────
+  prompt += `YOUR TASK:\n${mode.task} for the following request:\n\n"${raw}"\n\n`;
+
+  // ── Extracted specifics block ──────────────────────────
+  const specifics = [];
+  if (e.programType)   specifics.push(`Program Type: ${e.programType}`);
+  if (e.cohortSize)    specifics.push(`Cohort Size / Enrollment: ${e.cohortSize}`);
+  if (e.semester)      specifics.push(`Target Start: ${e.semester}`);
+  else if (e.year)     specifics.push(`Target Year: ${e.year}`);
+  if (e.duration)      specifics.push(`Duration: ${e.duration}`);
+  if (e.delivery)      specifics.push(`Delivery Mode: ${e.delivery}`);
+  if (e.partners)      specifics.push(`Partner Organizations: ${e.partners}`);
+  if (e.accreditors)   specifics.push(`Accreditation Standards: ${e.accreditors}`);
+  if (e.topics)        specifics.push(`Subject Areas / Topics: ${e.topics}`);
+  if (e.budget)        specifics.push(`Budget / Funding: ${e.budget}`);
+  if (e.vaCondition)   specifics.push(`Claimed Condition: ${e.vaCondition}`);
+  if (e.branch)        specifics.push(`Branch of Service: ${e.branch}`);
+  if (e.serviceYears)  specifics.push(`Service Period: ${e.serviceYears}`);
+
+  if (specifics.length > 0) {
+    prompt += `SPECIFIC DETAILS EXTRACTED FROM YOUR REQUEST:\n`;
+    specifics.forEach(s => prompt += `• ${s}\n`);
+    prompt += `\n⚠ Use these specific details throughout every section of your response.\n`;
+    prompt += `Do NOT give generic advice. Reference the actual program type, dates,\n`;
+    prompt += `cohort size, partners, and standards listed above wherever relevant.\n\n`;
+  }
+
+  // ── What to include ────────────────────────────────────
+  prompt += `YOUR RESPONSE MUST INCLUDE:\n`;
+  mode.focus.forEach((f, i) => {
+    prompt += `${i+1}. ${f}\n`;
+  });
+
+// ═══════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════
+function generate() {
+  const goal = document.getElementById("goal-input").value.trim();
+  const readyFiles = uploadedFiles.filter(f => f.status === 'ready');
+  if (!goal && readyFiles.length === 0) return;
+
+  // Parse goal for specific entities
+  const ctx = parseGoal(goal);
+
+  // Detect mode using goal + filenames
+  const fileNames = readyFiles.map(f => f.name).join(' ');
+  currentMode = detectMode((goal + ' ' + fileNames).trim());
+
+  // Build fully tailored dynamic prompt
+  const smartPrompt = buildSmartPrompt(currentMode, ctx);
+
+  // Append file context if any uploads
+  const fileCtx = buildFileContext();
+  currentPrompt = smartPrompt + fileCtx;
+
+  // ── Highlight active pill ──────────────────────────────
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    if (m.id === currentMode.id) {
+      el.classList.add("active");
+      el.style.background = m.color;
+      el.style.color = "#fff";
+      el.style.borderColor = m.color;
+      el.style.boxShadow = "0 2px 10px " + m.border;
+    } else {
+      el.classList.remove("active");
+      el.style.background = m.bg;
+      el.style.color = m.color;
+      el.style.borderColor = m.border;
+      el.style.boxShadow = "none";
+    }
+  });
+
+  // ── Populate output card ───────────────────────────────
+  document.getElementById("output-icon").textContent  = currentMode.icon;
+  document.getElementById("output-label").textContent = currentMode.label;
+  document.getElementById("prompt-body").textContent  = currentPrompt;
+
+  const oh = document.getElementById("output-header");
+  oh.style.background = "linear-gradient(135deg, " + currentMode.color + ", " + currentMode.border + ")";
+
+  const oc = document.getElementById("output-card");
+  oc.style.borderColor = currentMode.border;
+  oc.style.boxShadow  = "0 4px 24px " + currentMode.border + "60";
+  oc.style.display    = "block";
+
+  document.getElementById("prompt-body").style.background = currentMode.bg;
+
+  const cbb = document.getElementById("copy-bottom-btn");
+  cbb.style.background = "linear-gradient(135deg, " + currentMode.color + ", #7c3aed)";
+  cbb.style.boxShadow  = "0 4px 14px " + currentMode.border + "90";
+
+  resetCopyBtns();
+  document.getElementById("clear-btn").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("output-card").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
+}
+// ═══════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════
+//  COPY
+// ═══════════════════════════════════════════════════════
+function copyPrompt(which) {
+  if (!currentPrompt) return;
+  navigator.clipboard.writeText(currentPrompt).then(() => {
+    document.getElementById("copy-top-btn").textContent    = "✓ COPIED!";
+    document.getElementById("copy-top-btn").classList.add("copied");
+    document.getElementById("copy-bottom-btn").textContent = "✓ COPIED!";
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(resetCopyBtns, 2500);
+  });
+}
+
+function resetCopyBtns() {
+  document.getElementById("copy-top-btn").textContent    = "⧉ COPY";
+  document.getElementById("copy-top-btn").classList.remove("copied");
+  document.getElementById("copy-bottom-btn").textContent = "COPY & DEPLOY";
+}
+
+// ═══════════════════════════════════════════════════════
+//  CLEAR
+// ═══════════════════════════════════════════════════════
+function clearOutput() {
+  document.getElementById("output-card").style.display = "none";
+  currentMode = null; currentPrompt = "";
+  MODES.forEach(m => {
+    const el = document.getElementById("pill-" + m.id);
+    el.classList.remove("active");
+    el.style.background = m.bg;
+    el.style.color = m.color;
+    el.style.borderColor = m.border;
+    el.style.boxShadow = "none";
+  });
+}
+
+function clearAll() {
+  document.getElementById("goal-input").value = "";
+  document.getElementById("char-count").textContent = "0 chars";
+  document.getElementById("generate-btn").disabled = true;
+  document.getElementById("clear-btn").style.display = "none";
+  // Clear files
+  uploadedFiles = []; fileIdCounter = 0;
+  document.getElementById("file-chips").innerHTML    = "";
+  document.getElementById("image-previews").innerHTML= "";
+  document.getElementById("upload-count-badge").style.display = "none";
+  document.getElementById("context-banner").style.display     = "none";
+  clearOutput();
+}
+</script>
+</body>
+</html>
