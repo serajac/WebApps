@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Incident Response — Leadership Training | Camp Community College</title>
+<style>
+  :root{
+    color-scheme: light;
+    --navy:#0b2e4f;--navy2:#123a63;--blue:#1f6fb2;--sky:#e8f1f9;--gold:#c9992b;--gold-soft:#fbf3dd;
+    --green:#2e7d4f;--green-soft:#e5f3ea;--red:#b3261e;--red-soft:#fbe9e7;--ink:#16202b;--muted:#4a5765;
+    --line:#d5dde6;--bg:#ffffff;--card:#ffffff;--shadow:0 1px 3px rgba(11,46,79,.12),0 6px 20px rgba(11,46,79,.06);
+    --radius:14px;--focus:#0a58ca;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;font-size:17px;}
+  .skip{position:absolute;left:-999px;top:auto;background:var(--navy);color:#fff;padding:.6rem 1rem;border-radius:8px;z-index:100}
+  .skip:focus{left:12px;top:12px}
+  a{color:var(--blue)}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+  header.hero{background:linear-gradient(135deg,var(--navy),var(--navy2) 60%,var(--blue));color:#fff;padding:2.4rem 1.4rem 2rem;}
+  .wrap{max-width:960px;margin:0 auto}
+  .eyebrow{letter-spacing:.14em;text-transform:uppercase;font-size:.72rem;font-weight:700;color:var(--gold);margin:0 0 .5rem}
+  header.hero h1{margin:.1rem 0 .5rem;font-size:2rem;line-height:1.2}
+  header.hero p{margin:.3rem 0;color:#dce8f4;max-width:66ch}
+  .badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+  .badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:.74rem;font-weight:600;padding:.3rem .6rem;border-radius:999px}
+  .progresswrap{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line);padding:.55rem 1.4rem}
+  .progressbar{height:9px;background:var(--sky);border-radius:999px;overflow:hidden;max-width:960px;margin:0 auto}
+  .progressfill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .4s ease}
+  .progresslabel{max-width:960px;margin:.35rem auto 0;font-size:.76rem;color:var(--muted);text-align:right}
+  @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  nav.toc{max-width:960px;margin:1.2rem auto 0;padding:0 1.4rem}
+  nav.toc ol{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0;margin:0}
+  nav.toc a{display:inline-block;text-decoration:none;color:var(--navy);background:var(--sky);border:1px solid var(--line);padding:.4rem .7rem;border-radius:999px;font-size:.82rem;font-weight:600}
+  nav.toc a:hover{background:#dbe9f6}
+  main{max-width:960px;margin:0 auto;padding:1.4rem}
+  section.module{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem 1.5rem 1.7rem;margin:1.3rem 0;scroll-margin-top:80px}
+  .modtag{display:inline-flex;align-items:center;gap:.5rem;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);background:var(--sky);padding:.25rem .6rem;border-radius:999px}
+  section.module h2{font-size:1.5rem;margin:.7rem 0 .3rem;color:var(--navy);line-height:1.25}
+  section.module h3{font-size:1.13rem;color:var(--navy2);margin:1.3rem 0 .4rem}
+  p{margin:.55rem 0}
+  .analogy{border-left:5px solid var(--gold);background:var(--gold-soft);border-radius:0 12px 12px 0;padding:.85rem 1rem;margin:1rem 0}
+  .analogy .lead{font-weight:700;display:block;margin-bottom:.15rem;color:#7a5e10}
+  .callout{border-radius:12px;padding:.9rem 1rem;margin:1rem 0;border:1px solid var(--line)}
+  .callout.law{background:var(--sky);border-color:#bcd6ee}
+  .callout.tip{background:var(--green-soft);border-color:#bfe0cb}
+  .callout.warn{background:var(--red-soft);border-color:#f0c5c0}
+  .callout h4{margin:.1rem 0 .35rem;font-size:.95rem}
+  .wiifm{display:flex;gap:.7rem;align-items:flex-start;background:#f4f8fc;border:1px dashed #b9d2e8;border-radius:12px;padding:.8rem 1rem;margin:.4rem 0 1rem}
+  .wiifm .k{font-size:1.4rem;line-height:1}
+  .wiifm .t{font-size:.92rem;color:var(--muted)}
+  .wiifm .t b{color:var(--navy)}
+  .icsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:1rem 0}
+  .icscard{text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:.85rem;cursor:pointer;font:inherit;color:inherit;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+  .icscard:hover{transform:translateY(-2px);border-color:var(--blue)}
+  .icscard[aria-expanded="true"]{border-color:var(--blue);background:var(--sky)}
+  .icscard .role{font-weight:700;color:var(--navy);display:block}
+  .icscard .who{font-size:.8rem;color:var(--muted);display:block;margin-top:.15rem}
+  .icscard .detail{font-size:.88rem;margin-top:.6rem;display:none;border-top:1px dashed var(--line);padding-top:.55rem}
+  .icscard[aria-expanded="true"] .detail{display:block}
+  .icscard .chev{float:right;color:var(--blue);font-weight:700}
+  .acc{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:.6rem 0}
+  .acc>button{width:100%;text-align:left;background:#fff;border:0;padding:.9rem 1rem;font:inherit;font-weight:600;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+  .acc>button:hover{background:var(--sky)}
+  .acc>button .ico{transition:transform .2s;color:var(--blue);font-weight:700}
+  .acc>button[aria-expanded="true"] .ico{transform:rotate(90deg)}
+  .acc .panel{padding:0 1rem;max-height:0;overflow:hidden;transition:max-height .3s ease}
+  .acc .panel .inner{padding:.2rem 0 1rem}
+  .levels{display:grid;gap:.6rem;margin:1rem 0}
+  .level{display:grid;grid-template-columns:auto 1fr;gap:.9rem;align-items:start;border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem}
+  .lvbadge{font-weight:800;color:#fff;border-radius:10px;padding:.45rem .7rem;text-align:center;min-width:78px}
+  .lv1{background:var(--green)}.lv2{background:var(--gold)}.lv3{background:var(--red)}
+  .ttx{border:2px solid var(--navy);border-radius:16px;overflow:hidden;margin:1rem 0}
+  .ttx .ttxhead{background:var(--navy);color:#fff;padding:.9rem 1.1rem}
+  .ttx .ttxhead h3{color:#fff;margin:.1rem 0}
+  .ttx .ttxbody{padding:1.1rem}
+  .scenario{background:var(--sky);border-radius:12px;padding:.9rem 1rem;margin:.3rem 0 1rem;font-style:italic}
+  .choices{display:grid;gap:.55rem}
+  .choice{text-align:left;font:inherit;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:.7rem .9rem;cursor:pointer}
+  .choice:hover{border-color:var(--blue);background:var(--sky)}
+  .choice.correct{border-color:var(--green);background:var(--green-soft)}
+  .choice.incorrect{border-color:var(--red);background:var(--red-soft)}
+  .feedback{margin-top:.7rem;padding:.7rem .9rem;border-radius:10px;font-size:.92rem;display:none}
+  .feedback.show{display:block}
+  .q{border:1px solid var(--line);border-radius:12px;padding:1rem;margin:.8rem 0}
+  .q p.qtext{font-weight:700;color:var(--navy);margin:.1rem 0 .6rem}
+  .opt{display:block;text-align:left;width:100%;font:inherit;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:.6rem .8rem;margin:.35rem 0;cursor:pointer}
+  .opt:hover{border-color:var(--blue)}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.incorrect{border-color:var(--red);background:var(--red-soft)}
+  .qexpl{font-size:.88rem;color:var(--muted);margin-top:.5rem;display:none}
+  .qexpl.show{display:block}
+  .check{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.5rem}
+  .check li{display:flex;gap:.7rem;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:.65rem .8rem;background:#fff}
+  .check input{margin-top:.25rem;width:20px;height:20px;flex:0 0 auto}
+  .check label{cursor:pointer}
+  .check .cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);display:block}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin:1rem 0}
+  .kpi div{background:var(--sky);border-radius:12px;padding:.8rem;text-align:center}
+  .kpi b{display:block;font-size:1.5rem;color:var(--navy)}
+  .kpi span{font-size:.78rem;color:var(--muted)}
+  table.tidy{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  table.tidy th,table.tidy td{border:1px solid var(--line);padding:.55rem .7rem;text-align:left;vertical-align:top}
+  table.tidy th{background:var(--sky);color:var(--navy)}
+  footer{max-width:960px;margin:1rem auto 3rem;padding:1.4rem;color:var(--muted);font-size:.85rem}
+  footer .rule{height:1px;background:var(--line);margin:0 0 1rem}
+  .btnrow{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+  .btn{font:inherit;font-weight:600;border-radius:10px;padding:.6rem 1rem;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn.ghost{background:#fff;color:var(--blue)}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to training content</a>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Camp Community College · Leadership Development</p>
+    <h1>Emergency Incident Response: A Leadership Readiness Course</h1>
+    <p>An interactive, discussion-friendly session that prepares the leadership team to lead — not just react — when an emergency strikes. Built around how adults actually learn, grounded in Virginia law, VCCS expectations, and SACSCOC accreditation standards.</p>
+    <div class="badges" role="list" aria-label="Course standards alignment">
+      <span class="badge" role="listitem">Va. Code § 23.1-804</span>
+      <span class="badge" role="listitem">NIMS / ICS aligned</span>
+      <span class="badge" role="listitem">HSEEP tabletop</span>
+      <span class="badge" role="listitem">SACSCOC 13.7 &amp; 13.8</span>
+      <span class="badge" role="listitem">WCAG 2.1 AA accessible</span>
+    </div>
+  </div>
+</header>
+
+<div class="progresswrap" role="region" aria-label="Course progress">
+  <div class="progressbar"><div class="progressfill" id="pfill"></div></div>
+  <div class="progresslabel" id="plabel" aria-live="polite">0% complete</div>
+</div>
+
+<nav class="toc" aria-label="Course contents">
+  <ol>
+    <li><a href="#why">Start Here</a></li>
+    <li><a href="#who">1 · Who</a></li>
+    <li><a href="#what">2 · What</a></li>
+    <li><a href="#whylaw">3 · Why</a></li>
+    <li><a href="#when">4 · When</a></li>
+    <li><a href="#how">5 · How</a></li>
+    <li><a href="#tabletop">6 · Tabletop</a></li>
+    <li><a href="#quiz">7 · Check</a></li>
+    <li><a href="#compliance">8 · Readiness</a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+  <section class="module" id="why" tabindex="-1">
+    <span class="modtag">Start Here · Why you're in this room</span>
+    <h2>You are already an emergency leader. This makes you a prepared one.</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">🎯</span>
+      <span class="t"><b>What's in it for you:</b> When something goes wrong on campus, people will not look for the emergency binder — they will look at <b>you</b>. This course gives you the vocabulary, the roles, and the muscle memory so that when the moment comes, your leadership is calm, coordinated, and defensible.</span>
+    </div>
+    <p>This session is built on a simple idea from adult-learning research (called <em>andragogy</em>): adults learn best when the material respects what they already know, connects to a real problem, and can be used right away. So this is not a lecture. It is a working session. You will make decisions, test your instincts, and leave with things you can act on this week.</p>
+    <div class="analogy">
+      <span class="lead">🏈 Think of it like a football team the week before the big game.</span>
+      The players already know how to play. Practice isn't about teaching them the sport — it's about running the specific plays together so that on game day nobody has to stop and think about who does what. An emergency is game day. This course is practice.
+    </div>
+    <h3>How this session is designed for you (the andragogy behind it)</h3>
+    <table class="tidy">
+      <caption class="visually-hidden">How adult-learning principles shape this course</caption>
+      <thead><tr><th>Adult learners need…</th><th>So this course…</th></tr></thead>
+      <tbody>
+        <tr><td>To know <em>why</em> before the <em>what</em></td><td>Opens every module with "why this matters to you"</td></tr>
+        <tr><td>To draw on their own experience</td><td>Uses your real campus, roles, and buildings in the scenarios</td></tr>
+        <tr><td>To solve real problems, not memorize</td><td>Centers on a live tabletop exercise, not a quiz-first approach</td></tr>
+        <tr><td>To apply learning immediately</td><td>Ends with a readiness checklist you can start today</td></tr>
+        <tr><td>Respect and self-direction</td><td>Lets you explore modules in any order, at your own pace</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip">
+      <h4>How to use this page</h4>
+      <p>Click any card, question, or section header to expand it. Your progress bar fills as you open modules and answer questions. Everything works with a keyboard (Tab and Enter) and with a screen reader. There are no wrong turns — explore.</p>
+    </div>
+  </section>
+
+  <section class="module" id="who" tabindex="-1">
+    <span class="modtag">Module 1 · WHO</span>
+    <h2>Who does what when the alarm sounds</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">🧭</span>
+      <span class="t"><b>Why this matters:</b> The single biggest failure in real emergencies is not lack of courage — it's <b>role confusion</b>. Two people doing the same job, or a job nobody picked up. A shared command structure fixes that before the crisis, not during it.</span>
+    </div>
+    <p>Camp Community College, like every institution that receives federal preparedness support, organizes emergencies using the <strong>Incident Command System (ICS)</strong> — part of the national standard called <strong>NIMS</strong> (the National Incident Management System). It sounds bureaucratic. It's actually beautifully simple.</p>
+    <div class="analogy">
+      <span class="lead">👨‍🍳 ICS is a restaurant kitchen during the dinner rush.</span>
+      One head chef (the <strong>Incident Commander</strong>) calls the shots. Stations each own their lane — grill, sauté, plating, dish. Nobody wanders. Orders flow one way, food flows the other, and even on the busiest night the kitchen doesn't collapse into chaos — because everyone knows their station. ICS is that kitchen, scaled to a campus emergency.
+    </div>
+    <p><strong>Tap each role</strong> to see who it is and what they own. (These are ICS functions — one person may wear more than one hat on a small campus.)</p>
+    <div class="icsgrid" role="group" aria-label="Incident Command System roles — activate a card to read details">
+      <button class="icscard" aria-expanded="false"><span class="role">Incident Commander <span class="chev" aria-hidden="true">＋</span></span><span class="who">Usually the senior leader on scene</span><span class="detail">The one accountable person. Sets objectives ("get everyone safe, then account for everyone"), approves the plan, and speaks for the response. On a small campus this is often the President or a designated administrator. <strong>Analogy:</strong> the head chef.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Public Information Officer <span class="chev" aria-hidden="true">＋</span></span><span class="who">Communications lead</span><span class="detail">The single voice to students, families, and media. Prevents the rumor mill and conflicting messages. Owns the emergency notification wording. <strong>Analogy:</strong> the restaurant's host who tells waiting guests what's happening.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Safety Officer <span class="chev" aria-hidden="true">＋</span></span><span class="who">Watches for new dangers</span><span class="detail">Has the authority to stop any action that's unsafe. Thinks about responders' safety, not just the original hazard. <strong>Analogy:</strong> the kitchen manager who shuts a station down when the fryer catches.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Liaison Officer <span class="chev" aria-hidden="true">＋</span></span><span class="who">Talks to outside agencies</span><span class="detail">Coordinates with police, fire, EMS, and the local/State emergency managers so the campus and responders act as one team. <strong>Analogy:</strong> the person who calls the supplier and the fire department.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Operations <span class="chev" aria-hidden="true">＋</span></span><span class="who">Does the hands-on response</span><span class="detail">The "doers" — evacuation, lockdown, first aid, securing the area. Whatever directly resolves the incident. <strong>Analogy:</strong> the line cooks actually making the food.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Planning <span class="chev" aria-hidden="true">＋</span></span><span class="who">Tracks the big picture</span><span class="detail">Keeps the status board: who's accounted for, what's next, what resources are committed. Thinks 30 minutes ahead. <strong>Analogy:</strong> the expediter reading the ticket rail.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Logistics <span class="chev" aria-hidden="true">＋</span></span><span class="who">Gets people what they need</span><span class="detail">Supplies, facilities, food, water, shelter, radios. If the response needs a thing, Logistics finds it. <strong>Analogy:</strong> the stockroom keeping stations supplied.</span></button>
+      <button class="icscard" aria-expanded="false"><span class="role">Finance / Admin <span class="chev" aria-hidden="true">＋</span></span><span class="who">Tracks cost &amp; records</span><span class="detail">Documents spending and hours — essential for insurance and any FEMA reimbursement after a declared disaster. <strong>Analogy:</strong> the register and the books.</span></button>
+    </div>
+    <div class="callout tip"><h4>The one thing to remember</h4><p>ICS <em>scales</em>. A small event might be one person doing all eight jobs. A campus-wide event fills every box. You don't need a bigger team — you need everyone to know which box they're standing in.</p></div>
+  </section>
+
+  <section class="module" id="what" tabindex="-1">
+    <span class="modtag">Module 2 · WHAT</span>
+    <h2>What we're preparing for — and what document runs the show</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">📋</span>
+      <span class="t"><b>Why this matters:</b> "Emergency" is a wide word. Knowing the <b>categories</b> keeps you from over-reacting to a small event or under-reacting to a growing one — and every one of them is governed by a single plan you should be able to name.</span>
+    </div>
+    <h3>The document that runs everything: the CEMP</h3>
+    <p>Virginia law requires every public college to maintain a <strong>Crisis and Emergency Management Plan (CEMP)</strong>. Think of it as the campus's owner's manual for bad days.</p>
+    <div class="analogy">
+      <span class="lead">✈️ The CEMP is the seat-back safety card on an airplane.</span>
+      Nobody reads it for fun. But it's written, standardized, and in reach of every seat — so that in the ninety seconds that matter, no one is inventing a plan from scratch. Our job as leaders is to make sure the card exists, is current, and that we've all "found the nearest exit" before we ever need it.
+    </div>
+    <h3>The families of emergencies (tap to expand)</h3>
+    <div class="acc"><button aria-expanded="false" aria-controls="p-nat"><span>🌪️ Natural hazards</span><span class="ico" aria-hidden="true">▸</span></button><div class="panel" id="p-nat"><div class="inner">Hurricanes and flooding (very real for Franklin and Suffolk), severe storms, tornadoes, winter weather, extreme heat. These usually give <em>warning time</em> — the leadership challenge is deciding <em>when</em> to close or evacuate.</div></div></div>
+    <div class="acc"><button aria-expanded="false" aria-controls="p-hum"><span>🧑‍🤝‍🧑 Human-caused / security</span><span class="ico" aria-hidden="true">▸</span></button><div class="panel" id="p-hum"><div class="inner">Active threat or violence, bomb threat, civil disturbance, a missing student, suspicious package. These are <em>sudden</em> — success depends on notification speed and rehearsed lockdown/evacuate decisions.</div></div></div>
+    <div class="acc"><button aria-expanded="false" aria-controls="p-tech"><span>🔌 Technological / infrastructure</span><span class="ico" aria-hidden="true">▸</span></button><div class="panel" id="p-tech"><div class="inner">Power or water loss, hazardous materials spill, fire, gas leak, a cyber incident that knocks out systems (including the notification system itself). The leadership question: what's our backup when the normal tools are down?</div></div></div>
+    <div class="acc"><button aria-expanded="false" aria-controls="p-health"><span>🩺 Public health</span><span class="ico" aria-hidden="true">▸</span></button><div class="panel" id="p-health"><div class="inner">Disease outbreak, pandemic, a medical emergency in a crowd. These unfold slowly but broadly, and lean heavily on communication and continuity-of-instruction planning.</div></div></div>
+    <div class="callout law"><h4>Leader's takeaway</h4><p>You do not need to memorize every hazard. You need to know that <strong>one plan — the CEMP — covers all of them</strong>, and that your role inside ICS stays the same no matter which family of emergency you're facing. That's the whole point of a standardized system.</p></div>
+  </section>
+
+  <section class="module" id="whylaw" tabindex="-1">
+    <span class="modtag">Module 3 · WHY</span>
+    <h2>Why we must do this — law, accreditation, and trust</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">⚖️</span>
+      <span class="t"><b>Why this matters:</b> Preparedness isn't optional good practice for a Virginia college — it's a <b>legal duty of the governing board</b> and a factor in keeping the college accredited. Leaders who can cite the "why" get resources approved faster.</span>
+    </div>
+    <h3>1. Virginia law — Code § 23.1-804</h3>
+    <p>State law places specific, non-negotiable duties on every public institution of higher education. In plain English:</p>
+    <table class="tidy">
+      <caption class="visually-hidden">Key requirements of Virginia Code 23.1-804</caption>
+      <thead><tr><th>The law requires…</th><th>What that means for leadership</th></tr></thead>
+      <tbody>
+        <tr><td>Adopt &amp; keep a current CEMP</td><td>The governing board formally owns the plan</td></tr>
+        <tr><td>Designate &amp; train people to activate emergency alerts</td><td>Named individuals — with training on file</td></tr>
+        <tr><td>Annual review + written certification to VDEM</td><td>The President certifies each year to the state</td></tr>
+        <tr><td>Full review &amp; board re-adoption every 4 years</td><td>A scheduled, documented refresh cycle</td></tr>
+        <tr><td><strong>Conduct a test or exercise every year</strong> + certify it</td><td>This is exactly why a tabletop exercise matters</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><p>That last line is the hook for this whole project: the <strong>annual exercise requirement is met by running a tabletop exercise</strong> — the very thing this course is designed to deliver.</p></div>
+    <h3>2. Accreditation — SACSCOC</h3>
+    <p>Camp Community College's accreditation runs through the Southern Association of Colleges and Schools Commission on Colleges (SACSCOC). Two standards touch emergency readiness directly:</p>
+    <table class="tidy">
+      <caption class="visually-hidden">Relevant SACSCOC standards</caption>
+      <thead><tr><th>Standard</th><th>In plain terms</th></tr></thead>
+      <tbody>
+        <tr><td><strong>13.7 — Physical resources</strong></td><td>The college maintains and protects its facilities. A CEMP and drills are evidence of that stewardship.</td></tr>
+        <tr><td><strong>13.8 — Institutional environment</strong></td><td>The college takes reasonable steps to provide a <em>healthy, safe, and secure environment</em> for everyone on campus.</td></tr>
+      </tbody>
+    </table>
+    <div class="analogy">
+      <span class="lead">🩺 Accreditation is like a hospital's health inspection.</span>
+      Nobody stays open just to pass inspection — but the inspection exists because a safe, well-run institution is one you can trust with people's futures. Documented emergency preparedness is one of the things the inspector expects to find already in place.
+    </div>
+    <h3>3. The real why: trust</h3>
+    <p>Behind the statute and the standard is the simplest reason of all. Students, families, and employees hand this college their time, money, and safety. Being ready to protect them on the worst day is the clearest possible expression of that trust — and it's what leadership is ultimately for.</p>
+  </section>
+
+  <section class="module" id="when" tabindex="-1">
+    <span class="modtag">Module 4 · WHEN</span>
+    <h2>When to act — and how big to go</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">⏱️</span>
+      <span class="t"><b>Why this matters:</b> Most emergencies aren't "on/off." They <b>escalate</b>. Matching your response to the level — no more, no less — is a leadership skill you can practice.</span>
+    </div>
+    <div class="analogy">
+      <span class="lead">🌡️ Think of a thermostat, not a light switch.</span>
+      You don't run the furnace at full blast to warm a room by two degrees, and you don't ignore a room that's dropping toward freezing. Emergency levels let you dial the response to match the actual heat of the situation.
+    </div>
+    <div class="levels" role="list" aria-label="Emergency activation levels">
+      <div class="level" role="listitem"><span class="lvbadge lv1">Level 1<br>Minor</span><div><strong>Localized, handled by on-duty staff.</strong> A small water leak, a single medical call, a brief power blip. Leadership is <em>informed</em>, not activated. Documentation still matters.</div></div>
+      <div class="level" role="listitem"><span class="lvbadge lv2">Level 2<br>Partial</span><div><strong>Affects a building or a group; needs coordination.</strong> A gas leak evacuation, a serious storm approaching. A partial command team stands up. Emergency notification likely goes out. Leadership actively leads.</div></div>
+      <div class="level" role="listitem"><span class="lvbadge lv3">Level 3<br>Full</span><div><strong>Campus-wide, life-safety, or outside help needed.</strong> Active threat, major fire, hurricane closure. Full ICS activation, all channels used, outside agencies engaged, continuity plans triggered.</div></div>
+    </div>
+    <div class="callout warn"><h4>The costly instinct to resist</h4><p>Leaders often <em>under-declare</em> early — hoping a situation stays small so they don't "overreact." It is almost always cheaper and safer to stand a team up and stand it back down than to scramble late. <strong>You can always scale down. Scaling up late costs minutes you can't get back.</strong></p></div>
+    <h3>The clock that starts immediately</h3>
+    <p>The moment an incident is recognized, three things should happen fast and in parallel — not one after another:</p>
+    <div class="kpi" role="list" aria-label="Immediate priorities">
+      <div role="listitem"><b>1</b><span>Protect life<br>(evacuate / lockdown / shelter)</span></div>
+      <div role="listitem"><b>2</b><span>Notify<br>(alert those at risk)</span></div>
+      <div role="listitem"><b>3</b><span>Coordinate<br>(stand up ICS, call for help)</span></div>
+    </div>
+  </section>
+
+  <section class="module" id="how" tabindex="-1">
+    <span class="modtag">Module 5 · HOW</span>
+    <h2>How a response actually unfolds</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">🔧</span>
+      <span class="t"><b>Why this matters:</b> When you can picture the sequence, you stop freezing and start leading. This is the reusable pattern behind almost every campus emergency.</span>
+    </div>
+    <p>Emergency management has four phases. Two happen <em>before</em> anything goes wrong — and that's where leadership has the most power.</p>
+    <table class="tidy">
+      <caption class="visually-hidden">The four phases of emergency management</caption>
+      <thead><tr><th>Phase</th><th>Everyday analogy</th><th>Leadership's job</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mitigation</strong> — reduce risk</td><td>Installing smoke detectors</td><td>Fund fixes; remove known hazards</td></tr>
+        <tr><td><strong>Preparedness</strong> — get ready</td><td>Rehearsing the fire drill</td><td>Training, exercises, this course</td></tr>
+        <tr><td><strong>Response</strong> — act</td><td>Getting everyone out safely</td><td>Lead the ICS, make the calls</td></tr>
+        <tr><td><strong>Recovery</strong> — get back to normal</td><td>Cleaning up, rebuilding, checking on people</td><td>Continuity, care, lessons learned</td></tr>
+      </tbody>
+    </table>
+    <div class="analogy">
+      <span class="lead">🚪 The whole cycle is a fire drill you never stop running.</span>
+      You check the smoke detectors (mitigation), you rehearse the walk to the exit (preparedness), you walk calmly out when the alarm sounds (response), and you talk afterward about what to do better next time (recovery). Then you do it all again. Readiness is a habit, not an event.
+    </div>
+    <h3>The leader's five moves in the first 15 minutes</h3>
+    <ol>
+      <li><strong>Confirm and classify</strong> — Is this real? What level? (thermostat, not switch)</li>
+      <li><strong>Protect life first</strong> — Order the protective action: evacuate, lockdown, or shelter-in-place.</li>
+      <li><strong>Notify</strong> — Trigger the emergency alert to those at risk. Clear, short, action-oriented.</li>
+      <li><strong>Stand up ICS</strong> — Name the Incident Commander out loud. Assign the boxes you need.</li>
+      <li><strong>Connect outward</strong> — 911 / local responders and, when warranted, the State via your Liaison.</li>
+    </ol>
+    <div class="callout tip"><h4>Say it out loud</h4><p>The most under-used leadership tool in a crisis is a spoken sentence: <em>"I'm the Incident Commander. Our first objective is life safety. You have Operations, you have Communications."</em> Naming it ends the paralysis.</p></div>
+  </section>
+
+  <section class="module" id="tabletop" tabindex="-1">
+    <span class="modtag">Module 6 · PRACTICE</span>
+    <h2>Tabletop exercise: "The Tuesday That Wasn't Normal"</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">🎲</span>
+      <span class="t"><b>Why this matters:</b> A tabletop exercise (TTX) is a low-stress, discussion-based rehearsal — no evacuating real buildings, just leaders talking through a realistic scenario. It's how you satisfy the <b>annual exercise requirement</b> and, more importantly, how you find the gaps <b>before</b> a real event does.</span>
+    </div>
+    <div class="analogy">
+      <span class="lead">♟️ A tabletop is chess for your emergency plan.</span>
+      You move the pieces, see what happens, and take the move back if it was a blunder — all without a single real king in danger. The whole point is to make your mistakes here, on paper, where they're free.
+    </div>
+    <p>Below is a compressed, interactive version of the kind of tabletop we'd run live with the leadership team. Read the injects and choose. There's a "best" answer, but the real value is the discussion each choice sparks.</p>
+    <div class="ttx">
+      <div class="ttxhead"><h3>Scenario in play</h3><p style="margin:.2rem 0 0;color:#cfe0f0">Franklin Campus · a normal Tuesday, 10:15 a.m., classes in session.</p></div>
+      <div class="ttxbody">
+        <div class="scenario">Inject 1 — Facilities reports a strong natural-gas odor in the main academic building. Two students say they feel lightheaded. The fire department is 8 minutes out.</div>
+        <p class="qtext" style="font-weight:700;color:var(--navy)">As the senior leader on scene, your first move is:</p>
+        <div class="choices" data-ttx="1" role="group" aria-label="Inject 1 choices">
+          <button class="choice" data-correct="false">Wait for the fire department to assess before doing anything, to avoid overreacting.</button>
+          <button class="choice" data-correct="true">Order immediate evacuation of the building, move people upwind, and declare yourself Incident Commander.</button>
+          <button class="choice" data-correct="false">Send a staff member inside to find the source of the leak.</button>
+        </div>
+        <div class="feedback" data-fb="1"></div>
+        <div class="scenario" style="margin-top:1.4rem">Inject 2 — People are out of the building. A local TV crew, hearing scanner traffic, is already calling the main line, and a parent posts "gas explosion at Camp CC??" on Facebook.</div>
+        <p class="qtext" style="font-weight:700;color:var(--navy)">The best communications move is:</p>
+        <div class="choices" data-ttx="2" role="group" aria-label="Inject 2 choices">
+          <button class="choice" data-correct="false">Stay silent until everything is fully resolved, so nothing inaccurate gets out.</button>
+          <button class="choice" data-correct="false">Let each staff member answer questions from their own perspective.</button>
+          <button class="choice" data-correct="true">Route everything through one Public Information Officer who issues a short, factual alert and a holding statement.</button>
+        </div>
+        <div class="feedback" data-fb="2"></div>
+        <div class="scenario" style="margin-top:1.4rem">Inject 3 — The all-clear comes 90 minutes later. No injuries. But three classes were mid-exam, and a faculty member is upset the evacuation "ruined the test."</div>
+        <p class="qtext" style="font-weight:700;color:var(--navy)">In the recovery phase, leadership should:</p>
+        <div class="choices" data-ttx="3" role="group" aria-label="Inject 3 choices">
+          <button class="choice" data-correct="false">Consider it over — everyone's safe, so move on.</button>
+          <button class="choice" data-correct="true">Hold a short debrief, capture what worked and what didn't in an After-Action Report, and address academic continuity for the disrupted classes.</button>
+          <button class="choice" data-correct="false">Discipline the faculty member for questioning the response.</button>
+        </div>
+        <div class="feedback" data-fb="3"></div>
+        <div class="callout tip" style="margin-top:1.4rem">
+          <h4>The deliverable that makes it "official": the AAR/IP</h4>
+          <p>Every real tabletop ends with an <strong>After-Action Report / Improvement Plan (AAR/IP)</strong> — a short document listing what worked, what didn't, and who owns each fix by when. That single document is what turns a two-hour meeting into audit-ready, accreditation-friendly, legally-certifiable evidence that the college is prepared.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="module" id="quiz" tabindex="-1">
+    <span class="modtag">Module 7 · KNOWLEDGE CHECK</span>
+    <h2>Quick check — no grade, just confidence</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">✅</span>
+      <span class="t"><b>Why this matters:</b> A few questions help the learning stick. Answer, get instant feedback, move on. This is for you — nobody's keeping score.</span>
+    </div>
+    <div class="q" data-q="a">
+      <p class="qtext">1. What is the standardized structure Camp CC uses to organize any emergency?</p>
+      <button class="opt" data-correct="false">The campus phone tree</button>
+      <button class="opt" data-correct="true">The Incident Command System (ICS), part of NIMS</button>
+      <button class="opt" data-correct="false">Whoever gets there first is in charge</button>
+      <p class="qexpl">ICS gives every emergency the same clear structure so roles are never in doubt — the "kitchen brigade" for a campus.</p>
+    </div>
+    <div class="q" data-q="b">
+      <p class="qtext">2. Under Virginia Code § 23.1-804, how often must the college conduct an emergency test or exercise?</p>
+      <button class="opt" data-correct="false">Only when the plan changes</button>
+      <button class="opt" data-correct="true">Every year, with written certification to the state</button>
+      <button class="opt" data-correct="false">Once every four years</button>
+      <p class="qexpl">Annually — and this tabletop exercise is exactly how the college meets that requirement.</p>
+    </div>
+    <div class="q" data-q="c">
+      <p class="qtext">3. When a situation could be minor or could grow, the safer leadership instinct is to:</p>
+      <button class="opt" data-correct="true">Stand a response team up early — you can always scale down</button>
+      <button class="opt" data-correct="false">Wait to be sure it's serious before involving anyone</button>
+      <button class="opt" data-correct="false">Handle it personally and quietly</button>
+      <p class="qexpl">Scaling down is easy; scaling up late costs minutes you can't recover. Thermostat, not light switch.</p>
+    </div>
+    <div class="q" data-q="d">
+      <p class="qtext">4. What document turns a tabletop exercise into accreditation-ready evidence?</p>
+      <button class="opt" data-correct="false">The meeting sign-in sheet alone</button>
+      <button class="opt" data-correct="false">An email summary to staff</button>
+      <button class="opt" data-correct="true">An After-Action Report / Improvement Plan (AAR/IP)</button>
+      <p class="qexpl">The AAR/IP records what worked, what to fix, and who owns each fix by when — the proof that the college learns and improves.</p>
+    </div>
+  </section>
+
+  <section class="module" id="compliance" tabindex="-1">
+    <span class="modtag">Module 8 · READINESS</span>
+    <h2>What Camp CC needs to be fully compliant — a leadership checklist</h2>
+    <div class="wiifm">
+      <span class="k" aria-hidden="true">🗂️</span>
+      <span class="t"><b>Why this matters:</b> This is the "apply it today" module. Check off what's already in place and you'll instantly see where the gaps are. Bring this list to the meeting with Ms. Powell and Dr. Oliver.</span>
+    </div>
+    <p>Tick each item the college can confirm is in place. Anything left unchecked is a candidate for the improvement plan.</p>
+    <ul class="check" id="checklist" aria-label="Compliance readiness checklist">
+      <li><input type="checkbox" id="c1"><label for="c1"><span class="cat">Plan · Va. Code 23.1-804</span>A current, board-adopted Crisis &amp; Emergency Management Plan (CEMP) reviewed within the last year</label></li>
+      <li><input type="checkbox" id="c2"><label for="c2"><span class="cat">Plan · Cycle</span>A scheduled 4-year full review and annual CEO certification to VDEM on file</label></li>
+      <li><input type="checkbox" id="c3"><label for="c3"><span class="cat">People · ICS</span>Named Incident Commander(s) and command roles designated across Franklin, Suffolk, and Smithfield</label></li>
+      <li><input type="checkbox" id="c4"><label for="c4"><span class="cat">People · Training</span>Designated staff trained on the emergency notification system (FEMA IS-100 / IS-700 ICS &amp; NIMS basics recommended for leaders)</label></li>
+      <li><input type="checkbox" id="c5"><label for="c5"><span class="cat">Alert · Notification</span>A tested multi-channel mass-notification system (text, email, voice) with a backup if primary systems fail</label></li>
+      <li><input type="checkbox" id="c6"><label for="c6"><span class="cat">Exercise · Annual</span>At least one documented drill or tabletop exercise conducted this year — with an AAR/IP</label></li>
+      <li><input type="checkbox" id="c7"><label for="c7"><span class="cat">Accessibility</span>Emergency alerts and evacuation plans account for people with disabilities (visual, hearing, mobility) — an ADA/504 obligation</label></li>
+      <li><input type="checkbox" id="c8"><label for="c8"><span class="cat">Continuity</span>A Continuity of Operations plan so instruction and critical services can resume after a disruption</label></li>
+      <li><input type="checkbox" id="c9"><label for="c9"><span class="cat">Partners</span>Current MOUs / contacts with local police, fire, EMS, and the regional/State emergency managers</label></li>
+      <li><input type="checkbox" id="c10"><label for="c10"><span class="cat">Behavioral</span>An active threat-assessment / behavioral intervention team (required for VA public colleges)</label></li>
+      <li><input type="checkbox" id="c11"><label for="c11"><span class="cat">Facilities · SACSCOC 13.7/13.8</span>Building signage, evacuation maps, AEDs, and marked shelter/assembly areas verified current</label></li>
+      <li><input type="checkbox" id="c12"><label for="c12"><span class="cat">Records</span>Certifications, training rosters, and AAR/IPs stored where they can be produced for an accreditation or state review</label></li>
+    </ul>
+    <div id="scoreout" class="callout tip" aria-live="polite"><p><strong>Readiness so far:</strong> <span id="scoretext">0 of 12 confirmed.</span></p></div>
+    <div class="callout law">
+      <h4>Recommended next steps to bring to Ms. Powell &amp; Dr. Oliver</h4>
+      <p>Adopt this course + tabletop as the college's annual exercise; get leaders through FEMA IS-100/IS-700 (free, online, ~2 hours total); schedule the live tabletop; and assign an owner to close every unchecked box above with a due date. That package satisfies the statute, supports SACSCOC 13.7/13.8, and — most importantly — makes the college genuinely ready.</p>
+    </div>
+    <div class="btnrow">
+      <a class="btn" href="#why">Restart the course</a>
+      <button class="btn ghost" id="resetbtn" type="button">Reset my checkboxes</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="rule"></div>
+  <p><strong>Camp Community College — Emergency Incident Response Leadership Training.</strong> Draft training tool prepared for internal review by the emergency planning team (with Scott Maynard and Jeff Poplin) prior to review with Ms. Powell and Dr. Oliver. Aligns with Virginia Code § 23.1-804, NIMS/ICS, HSEEP tabletop methodology, and SACSCOC Standards 13.7 &amp; 13.8. Designed to WCAG 2.1 AA accessibility guidelines. Content is educational and should be reconciled with the college's official CEMP before use.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var opened = {};
+  function pct(){
+    var n = Object.keys(opened).length;
+    var p = Math.min(100, Math.round((n/(8+4+3))*100));
+    document.getElementById('pfill').style.width = p + '%';
+    document.getElementById('plabel').textContent = p + '% complete';
+  }
+  function mark(key){ if(!opened[key]){ opened[key]=true; pct(); } }
+  var mods = document.querySelectorAll('section.module[id]');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ mark('mod-'+e.target.id); } });
+    }, {threshold:.35});
+    mods.forEach(function(m){ io.observe(m); });
+  } else { mods.forEach(function(m){ mark('mod-'+m.id); }); }
+  document.querySelectorAll('.icscard').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      var chev = btn.querySelector('.chev'); if(chev) chev.textContent = open ? '＋' : '－';
+    });
+  });
+  document.querySelectorAll('.acc > button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      panel.style.maxHeight = open ? '0px' : (panel.scrollHeight + 40) + 'px';
+    });
+  });
+  document.querySelectorAll('.choices').forEach(function(group){
+    var id = group.getAttribute('data-ttx');
+    var fb = document.querySelector('.feedback[data-fb="'+id+'"]');
+    var msgs = {
+      '1':{ok:'Exactly. Life safety first, and naming yourself Incident Commander ends any confusion about who is in charge.',no:'Not quite — with a possible gas leak and symptomatic students, waiting or sending someone in adds risk. Evacuate first, then let responders assess.'},
+      '2':{ok:'Right. One voice, one message, issued fast. Silence lets rumor win; many voices create contradictions.',no:'That approach feeds the rumor mill. A single Public Information Officer with a short factual message is the standard.'},
+      '3':{ok:'Yes. The debrief + After-Action Report captures lessons, and academic continuity shows care for students and faculty.',no:'The incident isn’t truly over until you’ve debriefed, documented, and handled the disrupted classes. That’s recovery.'}
+    };
+    group.querySelectorAll('.choice').forEach(function(ch){
+      ch.addEventListener('click', function(){
+        if(group.getAttribute('data-answered')) return;
+        group.setAttribute('data-answered','1');
+        var correct = ch.getAttribute('data-correct') === 'true';
+        group.querySelectorAll('.choice').forEach(function(c){
+          if(c.getAttribute('data-correct')==='true') c.classList.add('correct');
+          c.disabled = true;
+        });
+        if(!correct) ch.classList.add('incorrect');
+        fb.textContent = correct ? msgs[id].ok : msgs[id].no;
+        fb.style.background = correct ? 'var(--green-soft)' : 'var(--red-soft)';
+        fb.classList.add('show');
+        mark('ttx-'+id);
+      });
+    });
+  });
+  document.querySelectorAll('.q').forEach(function(q){
+    var expl = q.querySelector('.qexpl');
+    q.querySelectorAll('.opt').forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if(q.getAttribute('data-answered')) return;
+        q.setAttribute('data-answered','1');
+        var correct = opt.getAttribute('data-correct')==='true';
+        q.querySelectorAll('.opt').forEach(function(o){
+          if(o.getAttribute('data-correct')==='true') o.classList.add('correct');
+          o.disabled = true;
+        });
+        if(!correct) opt.classList.add('incorrect');
+        expl.classList.add('show');
+        mark('quiz-'+q.getAttribute('data-q'));
+      });
+    });
+  });
+  var boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+  function updateScore(){
+    var n=0; boxes.forEach(function(b){ if(b.checked) n++; });
+    document.getElementById('scoretext').textContent = n + ' of 12 confirmed.' +
+      (n===12 ? ' Fully ready on paper — take it live!' : n>=8 ? ' Strong footing; close the remaining gaps.' : n>=1 ? ' Good start; several gaps to assign owners for.' : '');
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', updateScore); });
+  var reset = document.getElementById('resetbtn');
+  if(reset) reset.addEventListener('click', function(){ boxes.forEach(function(b){ b.checked=false; }); updateScore(); });
+  pct();
+})();
+</script>
+</body>
+</html>
