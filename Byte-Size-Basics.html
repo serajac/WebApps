@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Byte-Size Basics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Light mode by design (requested). Colors set explicitly so the page looks right on any host. */
+  :root{
+    color-scheme: light;
+    --ground:#F3F6FB;
+    --paper:#FFFFFF;
+    --ink:#18203A;
+    --ink-soft:#4A5470;
+    --line:#D9E0EC;
+    --blue:#2F5BEA;
+    --blue-tint:#E6ECFF;
+    --sun:#FFD25A;
+    --sun-tint:#FFF6D6;
+    --mint:#16A37F;
+    --mint-tint:#DDF6EE;
+    --coral:#E5533F;
+    --coral-tint:#FDE6E1;
+    --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:var(--body); font-size:17px; line-height:1.6;
+    padding-inline:16px; padding-block:0 64px;
+  }
+  .wrap{max-width:980px; margin:0 auto}
+  h1,h2,h3{font-family:var(--display); line-height:1.1; text-wrap:balance; margin:0}
+  p{margin:0}
+  a{color:var(--blue)}
+  :focus-visible{outline:3px solid var(--blue); outline-offset:2px; border-radius:6px}
+  .kbd{
+    font-family:var(--mono); font-size:.8em; font-weight:700;
+    background:var(--paper); border:1px solid var(--line); border-bottom-width:3px;
+    border-radius:6px; padding:.05em .45em; white-space:nowrap;
+  }
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--blue); font-weight:700}
+
+  /* HERO */
+  .hero{padding-block:48px 28px; display:grid; gap:28px; grid-template-columns:1.25fr 1fr; align-items:center}
+  .hero h1{font-size:clamp(44px, 8vw, 84px); font-weight:800; letter-spacing:-.02em}
+  .hero h1 .cursor{display:inline-block; width:.08em; height:.8em; background:var(--blue); margin-left:.06em; vertical-align:-.02em; animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .hero .lede{font-size:19px; color:var(--ink-soft); max-width:36em; margin-top:16px}
+  .hero .lede strong{color:var(--ink)}
+  .screen{
+    background:var(--ink); border-radius:18px; padding:14px; box-shadow:0 18px 40px -18px rgba(24,32,58,.45);
+  }
+  .screen-inner{background:var(--paper); border-radius:10px; padding:16px; display:grid; gap:10px}
+  .dots{display:flex; gap:6px}
+  .dots i{width:10px; height:10px; border-radius:50%; background:var(--line)}
+  .dots i:nth-child(1){background:var(--coral)} .dots i:nth-child(2){background:var(--sun)} .dots i:nth-child(3){background:var(--mint)}
+  .term{font-family:var(--mono); font-size:13px; line-height:1.7; color:var(--ink)}
+  .term .p{color:var(--blue)} .term .ok{color:var(--mint)} .term .c{color:var(--ink-soft)}
+  .stand{width:34%; height:14px; margin:0 auto; background:var(--ink); border-radius:0 0 8px 8px}
+
+  /* NAV */
+  nav.chapters{
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:5;
+    background:rgba(243,246,251,.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line); margin-inline:-16px; padding:10px 16px;
+  }
+  nav.chapters .row{max-width:980px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none}
+  nav.chapters .row::-webkit-scrollbar{display:none}
+  nav.chapters a{
+    flex:0 0 auto; text-decoration:none; color:var(--ink); font-weight:700; font-size:14px;
+    padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--paper);
+    display:flex; align-items:center; gap:6px;
+  }
+  nav.chapters a .n{font-family:var(--mono); color:var(--blue); font-size:12px}
+  nav.chapters a.done{background:var(--mint-tint); border-color:#9ADCC8}
+  nav.chapters a.done .n::after{content:" ✓"; color:var(--mint)}
+  .progress{max-width:980px; margin:8px auto 0; height:4px; background:var(--line); border-radius:4px; overflow:hidden}
+  .progress b{display:block; height:100%; width:0; background:var(--mint); transition:width .4s}
+
+  /* CHAPTERS */
+  section.ch{padding-block:56px 8px; scroll-margin-top:80px}
+  .ch-head{display:grid; grid-template-columns:auto 1fr; gap:6px 18px; align-items:end; margin-bottom:24px}
+  .ch-num{
+    grid-row:span 2; font-family:var(--display); font-weight:800; font-size:72px; line-height:.85;
+    color:var(--blue); -webkit-text-stroke:0;
+  }
+  .ch-head h2{font-size:clamp(30px, 4.6vw, 44px); font-weight:800; letter-spacing:-.01em}
+  .ch-head p{color:var(--ink-soft); max-width:40em}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px}
+  .stack{display:grid; gap:20px}
+
+  .panel{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:22px}
+  .panel h3{font-size:22px; margin-bottom:10px}
+  .panel p + p{margin-top:10px}
+
+  /* Sticky-note analogy */
+  .analogy{
+    background:var(--sun-tint); border:1px solid #F1D98A; border-radius:4px 14px 14px 14px; padding:22px;
+    position:relative;
+  }
+  .analogy .tag{
+    position:absolute; top:-12px; left:18px; background:var(--sun); font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; padding:3px 10px; border-radius:4px;
+  }
+  .analogy h3{font-size:22px; margin-bottom:8px}
+
+  .terms{display:grid; gap:0; margin:0; padding:0}
+  .terms div{display:grid; grid-template-columns:9.5em 1fr; gap:12px; padding:10px 0; border-top:1px dashed var(--line)}
+  .terms div:first-child{border-top:0; padding-top:0}
+  .terms dt{font-weight:700}
+  .terms dd{margin:0; color:var(--ink-soft)}
+
+  .kitchen{display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:4px}
+  .k{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:14px; display:grid; gap:4px; align-content:start}
+  .k .part{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--blue); letter-spacing:.06em; text-transform:uppercase}
+  .k .is{font-family:var(--display); font-size:22px; font-weight:700}
+  .k p{font-size:15px; color:var(--ink-soft)}
+
+  .tip{display:flex; gap:12px; align-items:flex-start; background:var(--mint-tint); border-radius:12px; padding:14px 16px}
+  .tip b.lbl{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--mint); padding-top:4px; flex:0 0 auto}
+  .warn{background:var(--coral-tint)}
+  .warn b.lbl{color:var(--coral)}
+
+  /* Joke card */
+  .joke{
+    display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+    border:2px dashed var(--blue); border-radius:14px; padding:16px 18px; background:var(--blue-tint);
+  }
+  .joke .q{flex:1 1 280px; font-weight:700}
+  .joke .q::before{content:"JOKE BREAK"; display:block; font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--blue); margin-bottom:2px}
+  .joke .a{flex-basis:100%; font-family:var(--display); font-size:20px; font-weight:700; color:var(--ink)}
+  button, .btn{
+    font:inherit; font-weight:700; font-size:15px; cursor:pointer;
+    background:var(--blue); color:#fff; border:0; border-radius:999px; padding:9px 16px;
+  }
+  button.ghost{background:var(--paper); color:var(--blue); border:1px solid var(--blue)}
+  button:hover{filter:brightness(1.07)}
+
+  /* Tables */
+  .tscroll{overflow-x:auto}
+  table{border-collapse:collapse; width:100%; font-size:15px; min-width:520px}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft)}
+
+  /* Widgets */
+  .widget{background:var(--paper); border:2px solid var(--ink); border-radius:14px; padding:22px; box-shadow:6px 6px 0 var(--ink)}
+  .widget .wtitle{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+  .widget .wtitle h3{font-size:22px}
+  .widget .try{font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; background:var(--sun); padding:3px 8px; border-radius:4px}
+  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  input[type=number], input[type=text], select{
+    font:inherit; font-size:17px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--ground); color:var(--ink);
+  }
+  input[type=number]{width:8em}
+  input[type=text]{flex:1 1 220px; min-width:0}
+  input[type=range]{accent-color:var(--blue); flex:1 1 180px}
+  .equiv{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-top:16px}
+  .equiv div{background:var(--ground); border-radius:10px; padding:12px}
+  .equiv b{display:block; font-family:var(--display); font-size:24px; font-variant-numeric:tabular-nums}
+  .equiv span{font-size:14px; color:var(--ink-soft)}
+  .ladder{display:grid; gap:6px; margin-top:6px}
+  .ladder div{display:grid; grid-template-columns:4.5em 1fr; gap:10px; align-items:baseline}
+  .ladder .u{font-family:var(--mono); font-weight:700; color:var(--blue)}
+
+  .url{
+    font-family:var(--mono); font-size:clamp(13px, 2.3vw, 17px); display:flex; flex-wrap:wrap; gap:3px; margin:6px 0 14px;
+  }
+  .url button{
+    font-family:var(--mono); font-size:inherit; font-weight:500; border-radius:6px; padding:6px 5px; color:var(--ink);
+    background:var(--ground); border:1px solid var(--line);
+  }
+  .url button[aria-pressed=true]{background:var(--sun); border-color:#E0B83C}
+  .url-exp{background:var(--sun-tint); border-radius:10px; padding:12px 14px; min-height:5.2em}
+  .url-exp b{font-family:var(--display); font-size:18px}
+
+  .meter{height:12px; background:var(--ground); border-radius:999px; overflow:hidden; margin:12px 0 8px}
+  .meter b{display:block; height:100%; width:0; background:var(--coral); transition:width .25s, background .25s}
+  .pwinfo{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:15px}
+  .pwinfo .v{font-weight:700}
+
+  .cipher-out{
+    font-family:var(--mono); font-size:18px; background:var(--ink); color:#9FE8CF; border-radius:10px; padding:14px 16px;
+    margin-top:12px; word-break:break-word; min-height:3em;
+  }
+  .cipher-out .lbl{display:block; font-size:11px; letter-spacing:.1em; color:#A9B3CE; margin-bottom:4px}
+
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{font-size:14px; background:var(--ground); border:1px solid var(--line); padding:4px 10px; border-radius:999px}
+
+  .steps{list-style:none; padding:0; margin:0; display:grid; gap:10px; counter-reset:s}
+  .steps li{counter-increment:s; display:grid; grid-template-columns:2.2em 1fr; gap:10px; align-items:start}
+  .steps li::before{
+    content:counter(s); font-family:var(--display); font-weight:800; color:#fff; background:var(--blue);
+    border-radius:50%; width:1.8em; height:1.8em; display:grid; place-items:center; font-size:15px;
+  }
+  ul.plain{margin:0; padding-left:1.2em; display:grid; gap:6px}
+
+  .done-row{display:flex; justify-content:flex-end; margin-top:20px}
+  .done-btn[aria-pressed=true]{background:var(--mint)}
+
+  /* Quiz */
+  .quiz{display:grid; gap:18px}
+  .qq{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:18px}
+  .qq p{font-weight:700; margin-bottom:10px}
+  .opts{display:grid; gap:8px}
+  .opts button{
+    text-align:left; background:var(--ground); color:var(--ink); border:1px solid var(--line); border-radius:10px; font-weight:400; padding:10px 14px;
+  }
+  .opts button.right{background:var(--mint-tint); border-color:var(--mint); font-weight:700}
+  .opts button.wrong{background:var(--coral-tint); border-color:var(--coral)}
+  .fb{margin-top:10px; font-size:15px; color:var(--ink-soft)}
+  .score{font-family:var(--display); font-size:24px; font-weight:800}
+
+  footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:15px}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr; padding-top:32px}
+    .grid2{grid-template-columns:1fr}
+    .kitchen{grid-template-columns:1fr 1fr}
+    .equiv{grid-template-columns:1fr 1fr}
+    .ch-num{font-size:52px}
+    .terms div{grid-template-columns:1fr; gap:2px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important; transition:none!important}
+    html{scroll-behavior:auto}
+  }
+  html{scroll-behavior:smooth}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">A friendly field guide for grown-ups</div>
+      <h1>Byte-Size Basics<span class="cursor" aria-hidden="true"></span></h1>
+      <p class="lede">How computers, the web, apps, widgets, bots, storage and encryption actually work, explained with <strong>kitchens, filing cabinets, mailboxes and lockboxes</strong> instead of jargon. Seven short chapters, a few things to try, and some jokes your grandkids will groan at.</p>
+    </div>
+    <div aria-hidden="true">
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="term">
+            <div><span class="p">you@home:~$</span> learn computers</div>
+            <div class="c">Loading confidence…</div>
+            <div class="c">Deleting fear.exe…</div>
+            <div class="ok">✓ Ready. No robots were harmed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="stand"></div>
+    </div>
+  </header>
+</div>
+
+<nav class="chapters" aria-label="Chapters">
+  <div class="row">
+    <a href="#machine" data-ch="machine"><span class="n">1</span>The machine</a>
+    <a href="#files" data-ch="files"><span class="n">2</span>Files &amp; storage</a>
+    <a href="#web" data-ch="web"><span class="n">3</span>The web</a>
+    <a href="#apps" data-ch="apps"><span class="n">4</span>Apps &amp; widgets</a>
+    <a href="#bots" data-ch="bots"><span class="n">5</span>Bots &amp; AI</a>
+    <a href="#security" data-ch="security"><span class="n">6</span>Security &amp; encryption</a>
+    <a href="#fixit" data-ch="fixit"><span class="n">7</span>Fixing things</a>
+    <a href="#quiz"><span class="n">?</span>Quick quiz</a>
+  </div>
+  <div class="progress" aria-hidden="true"><b id="progbar"></b></div>
+</nav>
+
+<main class="wrap">
+
+  <!-- 1 MACHINE -->
+  <section class="ch" id="machine">
+    <div class="ch-head">
+      <div class="ch-num">1</div>
+      <h2>The machine is a kitchen</h2>
+      <p>Every computer, from a phone to a laptop, does the same four jobs. Once you see them as a kitchen, the specs on the box start making sense.</p>
+    </div>
+
+    <div class="stack">
+      <div class="kitchen">
+        <div class="k"><span class="part">CPU (processor)</span><span class="is">The chef</span><p>Does the actual work. A faster chef finishes each dish sooner.</p></div>
+        <div class="k"><span class="part">RAM (memory)</span><span class="is">The countertop</span><p>Where current work sits. Bigger counter, more dishes at once. Cleared when power goes off.</p></div>
+        <div class="k"><span class="part">Storage (SSD/drive)</span><span class="is">The pantry</span><p>Where everything is kept long-term. Survives a power-off.</p></div>
+        <div class="k"><span class="part">Operating system</span><span class="is">The manager</span><p>Windows, macOS, iOS, Android. Seats customers, assigns the chef, keeps order.</p></div>
+      </div>
+
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Why is my computer slow?</h3>
+          <p>Picture 30 open browser tabs as 30 dishes piled on a small countertop. The chef spends more time shuffling plates than cooking. Close what you aren't using and the counter clears. That's why "more RAM" is usually the first upgrade people suggest.</p>
+        </div>
+        <div class="panel">
+          <h3>Hardware vs. software</h3>
+          <dl class="terms">
+            <div><dt>Hardware</dt><dd>Anything you can physically touch: screen, keyboard, the chips inside.</dd></div>
+            <div><dt>Software</dt><dd>The instructions that tell hardware what to do. Apps and the operating system are software.</dd></div>
+            <div><dt>Update</dt><dd>A new version of software. Like a recipe card with the typos fixed and a new lock on the back door.</dd></div>
+            <div><dt>Driver</dt><dd>A tiny translator so the computer can talk to a printer, mouse or camera.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Ten shortcuts that save hours</h3>
+        <p style="color:var(--ink-soft); margin-bottom:10px">Hold the first key, tap the second. On a Mac, <span class="kbd">⌘ Cmd</span> does what <span class="kbd">Ctrl</span> does on Windows.</p>
+        <div class="tscroll">
+          <table>
+            <thead><tr><th>What it does</th><th>Windows</th><th>Mac</th><th>Think of it as</th></tr></thead>
+            <tbody>
+              <tr><td>Copy</td><td><span class="kbd">Ctrl</span> + <span class="kbd">C</span></td><td><span class="kbd">⌘</span> + <span class="kbd">C</span></td><td>Photocopier</td></tr>
+              <tr><td>Paste</td><td><span class="kbd">Ctrl</span> + <span class="kbd">V</span></td><td><span class="kbd">⌘</span> + <span class="kbd">V</span></td><td>Glue stick</td></tr>
+              <tr><td>Cut</td><td><span class="kbd">Ctrl</span> + <span class="kbd">X</span></td><td><span class="kbd">⌘</span> + <span class="kbd">X</span></td><td>Scissors</td></tr>
+              <tr><td>Undo (the lifesaver)</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Z</span></td><td><span class="kbd">⌘</span> + <span class="kbd">Z</span></td><td>Time machine</td></tr>
+              <tr><td>Find a word on the page</td><td><span class="kbd">Ctrl</span> + <span class="kbd">F</span></td><td><span class="kbd">⌘</span> + <span class="kbd">F</span></td><td>Flashlight</td></tr>
+              <tr><td>Save</td><td><span class="kbd">Ctrl</span> + <span class="kbd">S</span></td><td><span class="kbd">⌘</span> + <span class="kbd">S</span></td><td>Put it in the pantry</td></tr>
+              <tr><td>Print</td><td><span class="kbd">Ctrl</span> + <span class="kbd">P</span></td><td><span class="kbd">⌘</span> + <span class="kbd">P</span></td><td>Paper, the original cloud</td></tr>
+              <tr><td>Reopen a tab you just closed</td><td><span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">T</span></td><td><span class="kbd">⌘</span> + <span class="kbd">Shift</span> + <span class="kbd">T</span></td><td>"Wait, come back!"</td></tr>
+              <tr><td>Switch between apps</td><td><span class="kbd">Alt</span> + <span class="kbd">Tab</span></td><td><span class="kbd">⌘</span> + <span class="kbd">Tab</span></td><td>Channel surfing</td></tr>
+              <tr><td>Screenshot</td><td><span class="kbd">Win</span> + <span class="kbd">Shift</span> + <span class="kbd">S</span></td><td><span class="kbd">⌘</span> + <span class="kbd">Shift</span> + <span class="kbd">4</span></td><td>Camera for your screen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">Why did the computer show up to work cold?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>It left its Windows open.</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="machine" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 2 FILES -->
+  <section class="ch" id="files">
+    <div class="ch-head">
+      <div class="ch-num">2</div>
+      <h2>Files, folders &amp; storage</h2>
+      <p>Your computer is a filing cabinet that never runs out of hanging folders, as long as you name things so you can find them again.</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>The filing cabinet</h3>
+          <p>A <b>file</b> is one document. A <b>folder</b> is a hanging folder. Folders can sit inside folders, like a drawer labeled "Taxes" holding folders for each year.</p>
+          <p style="margin-top:10px">The little ending on a file name, like <span class="kbd">.pdf</span> or <span class="kbd">.jpg</span>, is the label that tells the computer which app opens it. A <span class="kbd">.jpg</span> is a photo. A <span class="kbd">.docx</span> is a Word document.</p>
+        </div>
+        <div class="panel">
+          <h3>Local vs. cloud</h3>
+          <dl class="terms">
+            <div><dt>Local storage</dt><dd>Kept on your device. Like the garage: fast to reach, but if the house floods, it's gone.</dd></div>
+            <div><dt>Cloud storage</dt><dd>Kept on a company's computers far away (iCloud, Google Drive, OneDrive). Like a storage unit: reachable from anywhere with the key.</dd></div>
+            <div><dt>Sync</dt><dd>Keeping both copies identical. Change it on your phone, it updates on your laptop.</dd></div>
+            <div><dt>"The cloud"</dt><dd>Just someone else's computer. A very well-guarded one.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="wtitle"><h3>How much is a gigabyte, really?</h3><span class="try">Try it</span></div>
+        <p style="color:var(--ink-soft)">Type the storage size on your phone or laptop box and see what fits. Estimates use typical file sizes.</p>
+        <div class="controls" style="margin-top:12px">
+          <label for="gbAmt" class="eyebrow" style="color:var(--ink)">Size</label>
+          <input id="gbAmt" type="number" min="0" step="any" value="128">
+          <select id="gbUnit" aria-label="Unit">
+            <option value="0.001">MB</option>
+            <option value="1" selected>GB</option>
+            <option value="1000">TB</option>
+          </select>
+        </div>
+        <div class="equiv">
+          <div><b id="eqPhotos">–</b><span>phone photos (~4 MB)</span></div>
+          <div><b id="eqSongs">–</b><span>songs (~4 MB)</span></div>
+          <div><b id="eqMovies">–</b><span>hours of HD movies (~3 GB)</span></div>
+          <div><b id="eqPages">–</b><span>pages of plain text (~2 KB)</span></div>
+        </div>
+        <div class="ladder" style="margin-top:18px">
+          <div><span class="u">1 KB</span><span>a short email, roughly a sticky note</span></div>
+          <div><span class="u">1 MB</span><span>about 1,000 KB: a short novel, or a low-res photo</span></div>
+          <div><span class="u">1 GB</span><span>about 1,000 MB: a pickup truck full of paper books</span></div>
+          <div><span class="u">1 TB</span><span>about 1,000 GB: a small library</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <b class="lbl">Rule of thumb</b>
+        <span><b>3-2-1 backups:</b> keep <b>3</b> copies of anything you'd cry about losing, on <b>2</b> different kinds of storage (say, laptop and external drive), with <b>1</b> copy somewhere else (the cloud, or a drive at a relative's house). Photos of the grandkids qualify.</span>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">My cloud storage just filled up. What's the forecast?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>Heavy files, with a chance of "Storage Almost Full" warnings all week.</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="files" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 3 WEB -->
+  <section class="ch" id="web">
+    <div class="ch-head">
+      <div class="ch-num">3</div>
+      <h2>Navigating the web</h2>
+      <p>The internet and the web aren't the same thing, and knowing the difference makes everything else click.</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Roads, stores and your car</h3>
+          <p>The <b>internet</b> is the road system connecting every town. The <b>web</b> is the stores and libraries along those roads. Your <b>browser</b> (Chrome, Safari, Edge, Firefox) is the car you drive to visit them.</p>
+          <p style="margin-top:10px">A <b>search engine</b> like Google is the friendly gas-station clerk who knows where everything is. Email, video calls and apps also use the roads, they just aren't "stores."</p>
+        </div>
+        <div class="panel">
+          <h3>Browser vocabulary</h3>
+          <dl class="terms">
+            <div><dt>Tab</dt><dd>Another store you have open at the same time. Like bookmarks sticking out of a book.</dd></div>
+            <div><dt>Bookmark</dt><dd>A saved address so you can drive straight back.</dd></div>
+            <div><dt>Cookie</dt><dd>A coat-check ticket a site hands you so it remembers you next visit (your cart, your login).</dd></div>
+            <div><dt>Cache</dt><dd>Pieces of sites saved nearby so they load faster, like keeping groceries in the fridge.</dd></div>
+            <div><dt>Wi-Fi</dt><dd>Your home's invisible driveway onto the internet road.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="wtitle"><h3>Read a web address like a street address</h3><span class="try">Tap each part</span></div>
+        <div class="url" id="url" role="group" aria-label="Web address parts">
+          <button type="button" data-part="scheme">https://</button>
+          <button type="button" data-part="sub">www.</button>
+          <button type="button" data-part="domain">citylibrary</button>
+          <button type="button" data-part="tld">.org</button>
+          <button type="button" data-part="path">/books/search</button>
+          <button type="button" data-part="query">?title=moby-dick</button>
+        </div>
+        <div class="url-exp" id="urlExp" aria-live="polite"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3>Search smarter</h3>
+          <ul class="plain">
+            <li>Use <b>quotes</b> for an exact phrase: <span class="kbd">"sourdough starter"</span></li>
+            <li>Add <b>site:</b> to search one website: <span class="kbd">flu shot site:cdc.gov</span></li>
+            <li>Use a <b>minus</b> to leave something out: <span class="kbd">jaguar -car</span></li>
+            <li>Type like you're asking a librarian a question. Modern search handles full sentences well.</li>
+          </ul>
+        </div>
+        <div class="tip warn" style="align-self:start">
+          <b class="lbl">Watch out</b>
+          <span>The first few results often say <b>"Sponsored"</b> or <b>"Ad."</b> Those are paid spots, not necessarily the best answer. For anything official (taxes, DMV, Medicare) make sure the address ends in <span class="kbd">.gov</span>.</span>
+        </div>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">Why did the browser cookie go to the doctor?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>It was feeling crummy. So it cleared its cache and got some rest.</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="web" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 4 APPS -->
+  <section class="ch" id="apps">
+    <div class="ch-head">
+      <div class="ch-num">4</div>
+      <h2>Apps &amp; widgets</h2>
+      <p>Apps do things. Widgets show things. Permissions decide what each one is allowed to touch.</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Appliances and fridge magnets</h3>
+          <p>An <b>app</b> is an appliance. The blender blends, the toaster toasts; the weather app forecasts, the banking app banks. You open it, use it, close it.</p>
+          <p style="margin-top:10px">A <b>widget</b> is a fridge magnet that shows info at a glance without opening anything: today's weather, your next appointment, your step count. It lives on your home screen and updates itself.</p>
+        </div>
+        <div class="panel">
+          <h3>The app lifecycle</h3>
+          <dl class="terms">
+            <div><dt>Install</dt><dd>Get it from the <b>official store</b> only: App Store (iPhone), Google Play (Android), Microsoft Store or the maker's real site.</dd></div>
+            <div><dt>Update</dt><dd>Say yes. Updates are mostly repairs and new locks, like a car recall notice.</dd></div>
+            <div><dt>Notifications</dt><dd>The app tapping your shoulder. You can turn off the chatty ones in Settings.</dd></div>
+            <div><dt>Uninstall</dt><dd>Hauling an old appliance to the curb. Frees up pantry space.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Permissions are house keys</h3>
+        <p>When an app asks <i>"Allow access to your location?"</i> it's asking for a key to one room. Hand out keys that match the job.</p>
+        <div class="tscroll" style="margin-top:12px">
+          <table>
+            <thead><tr><th>App</th><th>Sensible keys</th><th>Raise an eyebrow if it asks for</th></tr></thead>
+            <tbody>
+              <tr><td>Maps</td><td>Location (while using)</td><td>Your contacts</td></tr>
+              <tr><td>Video calling</td><td>Camera, microphone</td><td>Location all the time</td></tr>
+              <tr><td>Flashlight</td><td>The camera light, nothing else</td><td>Contacts, location, microphone</td></tr>
+              <tr><td>Photo editor</td><td>Selected photos</td><td>Your text messages</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tip">
+        <b class="lbl">Try it</b>
+        <span>On iPhone or Android, long-press an empty spot on your home screen, then tap <b>+</b> or <b>Widgets</b>. Add the weather widget. Congratulations, you've hung your first fridge magnet.</span>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">Why did the flashlight app ask for access to my contacts?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>It wanted to see who else was in the dark. (Deny it anyway.)</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="apps" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 5 BOTS -->
+  <section class="ch" id="bots">
+    <div class="ch-head">
+      <div class="ch-num">5</div>
+      <h2>Bots &amp; AI assistants</h2>
+      <p>A bot is software that does a task automatically. Some are simple. Some, like AI chat assistants, can hold a real conversation.</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Vending machine vs. well-read intern</h3>
+          <p>A <b>simple bot</b> is a vending machine or a phone menu: "Press 1 for billing." It only knows the buttons it was built with.</p>
+          <p style="margin-top:10px">An <b>AI assistant</b> (a chatbot you can talk to in plain English) is more like a very well-read intern. Quick, helpful, great at drafting and explaining. But interns can be confidently wrong, so you check the important stuff.</p>
+        </div>
+        <div class="panel">
+          <h3>Bots you already meet</h3>
+          <div class="chips">
+            <span class="chip">Website help chat</span>
+            <span class="chip">"Your package shipped" texts</span>
+            <span class="chip">Spam filters</span>
+            <span class="chip">Voice assistants</span>
+            <span class="chip">Automated phone menus</span>
+            <span class="chip">AI writing helpers</span>
+            <span class="chip">Social media spam accounts</span>
+          </div>
+          <h3 style="margin-top:18px">Great uses for an AI assistant</h3>
+          <ul class="plain">
+            <li>"Explain this letter from my insurance in plain English."</li>
+            <li>"Help me write a polite email declining an invitation."</li>
+            <li>"Give me a 3-day meal plan with what's in my fridge."</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>How to talk to an AI assistant</h3>
+        <ol class="steps">
+          <li><span><b>Give it the backstory.</b> "I'm 67, new to iPhone, and want to share photos with my daughter" beats "how share photos."</span></li>
+          <li><span><b>Say what you want back.</b> A list? Three short steps? A friendly email?</span></li>
+          <li><span><b>Ask follow-ups.</b> "Simpler, please" or "What does that word mean?" is completely fine.</span></li>
+          <li><span><b>Double-check anything that matters.</b> Medical, legal, money and dates deserve a second source.</span></li>
+        </ol>
+      </div>
+
+      <div class="tip warn">
+        <b class="lbl">Never share</b>
+        <span>Passwords, full Social Security numbers, bank account numbers or one-time codes. No real company bot needs your password in a chat window.</span>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">Why did the chatbot take a vacation?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>It needed to recharge. And it was tired of being asked to "just be human for a sec."</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="bots" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 6 SECURITY -->
+  <section class="ch" id="security">
+    <div class="ch-head">
+      <div class="ch-num">6</div>
+      <h2>Security &amp; encryption</h2>
+      <p>Most online safety comes down to three habits: good locks (passwords), a second lock (two-step login), and not opening the door for strangers in fake uniforms (scams).</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Encryption is a lockbox in the mail</h3>
+          <p>Sending a normal message online is like mailing a postcard. Anyone who handles it could read it. <b>Encryption</b> puts the message in a lockbox. The mail carrier can still deliver it, but only the person with the key can open it.</p>
+          <p style="margin-top:10px">When a web address starts with <span class="kbd">https</span> and shows a little padlock, your connection to that site is in a lockbox. Note: the lock means <i>private</i>, not <i>trustworthy</i>. Scam sites can have padlocks too.</p>
+        </div>
+        <div class="widget">
+          <div class="wtitle"><h3>Scramble a secret</h3><span class="try">Try it</span></div>
+          <p style="color:var(--ink-soft); font-size:15px">This is a Caesar cipher: every letter slides forward in the alphabet. Real encryption uses math keys with more combinations than there are grains of sand on Earth, but the idea is the same.</p>
+          <div class="controls" style="margin-top:12px">
+            <input id="cipherIn" type="text" value="Meet me at the garden at noon" aria-label="Message to scramble">
+          </div>
+          <div class="controls" style="margin-top:10px">
+            <label for="shift" style="font-weight:700">Key: shift by <span id="shiftVal">3</span></label>
+            <input id="shift" type="range" min="1" max="25" value="3">
+          </div>
+          <div class="cipher-out"><span class="lbl">WHAT A SNOOP SEES</span><span id="cipherOut"></span></div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="wtitle"><h3>Password strength tester</h3><span class="try">Try it</span></div>
+        <p style="color:var(--ink-soft)">Please don't type a real password. Try a pattern like the one you use. Nothing leaves this page.</p>
+        <div class="controls" style="margin-top:12px">
+          <input id="pw" type="text" autocomplete="off" spellcheck="false" value="Fluffy2019!" aria-label="Sample password">
+        </div>
+        <div class="meter" aria-hidden="true"><b id="pwBar"></b></div>
+        <div class="pwinfo">
+          <span>Strength: <span class="v" id="pwLabel"></span></span>
+          <span>Rough time for a computer to guess: <span class="v" id="pwTime"></span></span>
+        </div>
+        <div class="tip" style="margin-top:14px">
+          <b class="lbl">Better idea</b>
+          <span>Use a <b>passphrase</b>: four random words like <span class="kbd">tuba-pickle-harbor-lantern</span>. Long beats clever. Then let a <b>password manager</b> (a locked key ring built into iPhone, Android and most browsers) remember the rest.</span>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3>Two-step login (2FA)</h3>
+          <p>Like an ATM: you need the <b>card</b> (your password) <i>and</i> the <b>PIN</b> (a code texted to you or shown in an app). A thief with one isn't enough. Turn it on for email and banking first; email is the master key that resets everything else.</p>
+        </div>
+        <div class="panel">
+          <h3>Spot a scam (phishing)</h3>
+          <ul class="plain">
+            <li><b>Urgency:</b> "Your account closes in 24 hours!"</li>
+            <li><b>Odd sender:</b> "amaz0n-support@mail-help.co"</li>
+            <li><b>Asks for codes</b>, gift cards or remote access to your computer.</li>
+            <li><b>The fix:</b> don't click. Open the company's app or type their address yourself.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">I tried "incorrect" as my password.</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>Now whenever I forget it, the computer reminds me: "Your password is incorrect."</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="security" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- 7 FIX -->
+  <section class="ch" id="fixit">
+    <div class="ch-head">
+      <div class="ch-num">7</div>
+      <h2>When things go sideways</h2>
+      <p>Most tech problems are solved by the same short checklist that professionals use. Work it top to bottom before you panic.</p>
+    </div>
+
+    <div class="stack">
+      <div class="grid2">
+        <div class="analogy">
+          <span class="tag">Analogy</span>
+          <h3>Why restarting works</h3>
+          <p>Remember the countertop? After hours of use it's cluttered with half-finished dishes, some of which the chef forgot about. Restarting wipes the counter clean and the manager sets up fresh. It fixes a surprising number of problems.</p>
+        </div>
+        <div class="panel">
+          <h3>The calm-down checklist</h3>
+          <ol class="steps">
+            <li><span><b>Is it plugged in, charged and switched on?</b> Including the Wi-Fi router.</span></li>
+            <li><span><b>Close the app and reopen it.</b></span></li>
+            <li><span><b>Restart the device.</b> A real restart, not just closing the lid.</span></li>
+            <li><span><b>Check for updates.</b></span></li>
+            <li><span><b>Search the exact error message</b> in quotes, or paste it into an AI assistant.</span></li>
+            <li><span><b>Ask someone,</b> and show them a screenshot.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="tip">
+        <b class="lbl">Wi-Fi fix</b>
+        <span>Unplug the router, count to 30 slowly, plug it back in, and give it 2 full minutes. Yes, the 30 seconds matter: it lets the device fully power down.</span>
+      </div>
+
+      <div class="joke" data-joke>
+        <span class="q">What's the IT department's favorite song?</span>
+        <button class="ghost" type="button">Reveal</button>
+        <span class="a" hidden>"Have You Tried Turning It Off and On Again," the extended remix.</span>
+      </div>
+    </div>
+    <div class="done-row"><button class="done-btn ghost" type="button" data-done="fixit" aria-pressed="false">Mark chapter done</button></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="ch" id="quiz">
+    <div class="ch-head">
+      <div class="ch-num">?</div>
+      <h2>Quick quiz</h2>
+      <p>Six questions. No grades, no permanent record, and no cookies were used in the making of this quiz. (Okay, maybe one.)</p>
+    </div>
+    <div class="quiz" id="quizBox"></div>
+    <div class="panel" style="margin-top:18px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap">
+      <span class="score" id="score">Score: 0 / 6</span>
+      <button type="button" id="quizReset" class="ghost">Start over</button>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Byte-Size Basics.</b> Your pocket guide to computers without the jargon. Keep this page bookmarked (see chapter 3) and come back whenever something new pops up.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  // ---------- Jokes ----------
+  document.querySelectorAll('[data-joke]').forEach(function(j){
+    var b = j.querySelector('button'), a = j.querySelector('.a');
+    b.addEventListener('click', function(){
+      a.hidden = !a.hidden;
+      b.textContent = a.hidden ? 'Reveal' : 'Hide';
+    });
+  });
+
+  // ---------- Progress (per-viewer convenience) ----------
+  var KEY = 'bsb-done';
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ done = {}; }
+  var chapters = ['machine','files','web','apps','bots','security','fixit'];
+  function paint(){
+    var n = 0;
+    chapters.forEach(function(c){
+      var on = !!done[c]; if(on) n++;
+      var a = document.querySelector('nav a[data-ch="'+c+'"]'); if(a) a.classList.toggle('done', on);
+      var btn = document.querySelector('[data-done="'+c+'"]');
+      if(btn){ btn.setAttribute('aria-pressed', on); btn.textContent = on ? '✓ Chapter done' : 'Mark chapter done'; btn.classList.toggle('ghost', !on); }
+    });
+    document.getElementById('progbar').style.width = (n/chapters.length*100)+'%';
+  }
+  document.querySelectorAll('[data-done]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var c = btn.getAttribute('data-done'); done[c] = !done[c];
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e){}
+      paint();
+    });
+  });
+  paint();
+
+  // ---------- Storage converter ----------
+  var amt = document.getElementById('gbAmt'), unit = document.getElementById('gbUnit');
+  function fmt(n){
+    if(!isFinite(n) || n < 0) return '–';
+    if(n >= 1e6) return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+' million';
+    return Math.floor(n).toLocaleString();
+  }
+  function calc(){
+    var gb = parseFloat(amt.value) * parseFloat(unit.value);
+    if(isNaN(gb)) gb = 0;
+    var mb = gb*1000;
+    document.getElementById('eqPhotos').textContent = fmt(mb/4);
+    document.getElementById('eqSongs').textContent = fmt(mb/4);
+    var hrs = gb/3;
+    document.getElementById('eqMovies').textContent = hrs < 1 ? (hrs>0 ? '< 1' : '0') : fmt(hrs);
+    document.getElementById('eqPages').textContent = fmt(mb*1000/2);
+  }
+  amt.addEventListener('input', calc); unit.addEventListener('change', calc); calc();
+
+  // ---------- URL explorer ----------
+  var parts = {
+    scheme:['The lockbox label','<span class="kbd">https://</span> means your trip to this site is encrypted. The "s" stands for secure. Plain <span class="kbd">http://</span> is the postcard version.'],
+    sub:['The side entrance','<span class="kbd">www.</span> is a subdomain, like a specific door of a building. Often optional; many sites work without it.'],
+    domain:['The building name','<span class="kbd">citylibrary</span> is the heart of the address. Scammers imitate this part: <span class="kbd">citylibrary-login-help</span> is a different building entirely.'],
+    tld:['The neighborhood','<span class="kbd">.org</span> is the top-level domain. <span class="kbd">.gov</span> is reserved for US government, <span class="kbd">.edu</span> for colleges, <span class="kbd">.com</span> is open to anyone.'],
+    path:['The room inside','<span class="kbd">/books/search</span> is the path: which hallway and room you want once inside the building.'],
+    query:['What you asked the clerk','<span class="kbd">?title=moby-dick</span> is a query. It carries your search or choices, like handing the clerk a slip of paper.']
+  };
+  var exp = document.getElementById('urlExp');
+  var btns = document.querySelectorAll('#url button');
+  function show(p){
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.part===p); });
+    exp.innerHTML = '<b>'+parts[p][0]+'</b><br>'+parts[p][1];
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ show(b.dataset.part); }); });
+  show('domain');
+
+  // ---------- Cipher ----------
+  var cin = document.getElementById('cipherIn'), sh = document.getElementById('shift');
+  function caesar(){
+    var s = parseInt(sh.value,10);
+    document.getElementById('shiftVal').textContent = s;
+    document.getElementById('cipherOut').textContent = cin.value.replace(/[a-z]/gi, function(ch){
+      var base = ch <= 'Z' ? 65 : 97;
+      return String.fromCharCode((ch.charCodeAt(0)-base+s)%26+base);
+    });
+  }
+  cin.addEventListener('input', caesar); sh.addEventListener('input', caesar); caesar();
+
+  // ---------- Password meter ----------
+  var pw = document.getElementById('pw');
+  var common = /(password|1234|qwerty|letmein|welcome|admin|iloveyou|abc123|monkey|dragon)/i;
+  function human(sec){
+    var units = [['centuries',3.15e9],['years',3.15e7],['days',86400],['hours',3600],['minutes',60],['seconds',1]];
+    if(sec < 1) return 'instantly';
+    if(sec > 3.15e11) return 'longer than the universe has existed, practically';
+    for(var i=0;i<units.length;i++){ if(sec >= units[i][1]) return Math.round(sec/units[i][1]).toLocaleString()+' '+units[i][0]; }
+    return 'instantly';
+  }
+  function rate(){
+    var v = pw.value, pool = 0;
+    if(/[a-z]/.test(v)) pool += 26;
+    if(/[A-Z]/.test(v)) pool += 26;
+    if(/[0-9]/.test(v)) pool += 10;
+    if(/[^a-zA-Z0-9]/.test(v)) pool += 33;
+    var bits = v.length ? v.length * Math.log2(Math.max(pool,1)) : 0;
+    if(common.test(v)) bits = Math.min(bits, 20);
+    if(/(19|20)\d\d/.test(v)) bits -= 8;             // years are easy guesses
+    if(/^[A-Z][a-z]+\d+[!@#$%]?$/.test(v)) bits = Math.min(bits, 34); // Word + digits + ! pattern
+    bits = Math.max(bits, 0);
+    var sec = Math.pow(2, bits) / 1e10;               // ~10 billion guesses/second
+    var label, color, pct;
+    if(bits < 35){label='Weak'; color='var(--coral)';}
+    else if(bits < 60){label='Okay'; color='var(--sun)';}
+    else if(bits < 80){label='Strong'; color='var(--mint)';}
+    else {label='Very strong'; color='var(--mint)';}
+    pct = Math.min(100, bits/90*100);
+    var bar = document.getElementById('pwBar');
+    bar.style.width = (v.length ? Math.max(pct,4) : 0)+'%'; bar.style.background = color;
+    document.getElementById('pwLabel').textContent = v.length ? label : '—';
+    document.getElementById('pwTime').textContent = v.length ? human(sec) : '—';
+  }
+  pw.addEventListener('input', rate); rate();
+
+  // ---------- Quiz ----------
+  var Q = [
+    {q:'In the kitchen analogy, what is RAM?', o:['The chef','The countertop','The pantry','The manager'], a:1, e:'RAM is the countertop: the space for what you are working on right now. It clears when the power goes off.'},
+    {q:'You want a file to survive if your laptop is stolen. Best move?', o:['Save it twice on the laptop','Rename it','Keep a copy in the cloud or on another drive','Make the file smaller'], a:2, e:'That is the "1" in the 3-2-1 rule: one copy somewhere else.'},
+    {q:'What is the difference between the internet and the web?', o:['They are the same thing','The internet is the roads; the web is the stores along them','The web is faster','The internet is only for email'], a:1, e:'The internet is the network. The web is one thing that travels on it, along with email, video calls and apps.'},
+    {q:'A flashlight app asks for your contacts. You should…', o:['Allow it, apps know best','Deny it; a flashlight doesn\'t need contacts','Restart your phone','Buy a new phone'], a:1, e:'Hand out keys that match the job. A flashlight needs the light, not your address book.'},
+    {q:'A website padlock (https) means…', o:['The site is trustworthy','The site is from the government','Your connection to the site is encrypted','The site cannot have viruses'], a:2, e:'The padlock means private, not trustworthy. Scam sites can have padlocks too.'},
+    {q:'Which password is strongest?', o:['Fluffy2019!','P@ssw0rd','tuba-pickle-harbor-lantern','12345678'], a:2, e:'Length beats cleverness. Four random words is much harder to guess than a pet name plus a year.'}
+  ];
+  var box = document.getElementById('quizBox'), scoreEl = document.getElementById('score'), score = 0;
+  function build(){
+    box.innerHTML=''; score=0; scoreEl.textContent='Score: 0 / '+Q.length;
+    Q.forEach(function(item, i){
+      var d = document.createElement('div'); d.className='qq';
+      var p = document.createElement('p'); p.textContent = (i+1)+'. '+item.q; d.appendChild(p);
+      var opts = document.createElement('div'); opts.className='opts';
+      var fb = document.createElement('div'); fb.className='fb'; fb.setAttribute('aria-live','polite');
+      item.o.forEach(function(txt, k){
+        var b = document.createElement('button'); b.type='button'; b.textContent = txt;
+        b.addEventListener('click', function(){
+          if(d.dataset.answered) return; d.dataset.answered='1';
+          var all = opts.querySelectorAll('button');
+          all[item.a].classList.add('right');
+          if(k===item.a){ score++; fb.innerHTML='<b style="color:var(--mint)">Nailed it.</b> '+item.e; }
+          else { b.classList.add('wrong'); fb.innerHTML='<b style="color:var(--coral)">Close, but no cookie.</b> '+item.e; }
+          scoreEl.textContent='Score: '+score+' / '+Q.length + (box.querySelectorAll('[data-answered]').length===Q.length ? (score===Q.length?'  · Certified tech whiz!':'  · Nice work!') : '');
+        });
+        opts.appendChild(b);
+      });
+      d.appendChild(opts); d.appendChild(fb); box.appendChild(d);
+    });
+  }
+  document.getElementById('quizReset').addEventListener('click', build);
+  build();
+})();
+</script>
+
+</body>
+</html>
