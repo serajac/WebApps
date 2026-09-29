@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Anesthesia Expert Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap">
+<style>
+:root{
+  --bg:#F2F5F6; --surface:#FFFFFF; --surface-2:#E9EEF0; --ink:#14212A; --ink-2:#4B5A64; --ink-3:#71818B;
+  --line:#D3DCE1; --line-2:#BCC8CF; --accent:#0B5D6E; --accent-2:#08495A; --accent-ink:#FFFFFF; --accent-soft:#DCEEF2;
+  --s0:#2F7A52; --s0-bg:#E1F1E7; --s1:#8A6A00; --s1-bg:#FBF1CC; --s2:#B4561A; --s2-bg:#FBE4D3; --s3:#B42318; --s3-bg:#FBDEDA; --na:#5F6E77; --na-bg:#E4E9EC;
+  --warn:#8A5A00; --warn-bg:#FFF4D6;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E151A; --surface:#152028; --surface-2:#1B2932; --ink:#E2EAEE; --ink-2:#A2B3BD; --ink-3:#7D8F9A;
+    --line:#26363F; --line-2:#34474F; --accent:#5DC2D5; --accent-2:#8AD6E4; --accent-ink:#06232B; --accent-soft:#12363F;
+    --s0:#6CCB93; --s0-bg:#16342A; --s1:#E3C04F; --s1-bg:#3A3212; --s2:#F09A5C; --s2-bg:#3F2616; --s3:#FF7F73; --s3-bg:#45201D; --na:#A0AFB8; --na-bg:#25323A;
+    --warn:#F0C466; --warn-bg:#3A2F12;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E151A; --surface:#152028; --surface-2:#1B2932; --ink:#E2EAEE; --ink-2:#A2B3BD; --ink-3:#7D8F9A;
+  --line:#26363F; --line-2:#34474F; --accent:#5DC2D5; --accent-2:#8AD6E4; --accent-ink:#06232B; --accent-soft:#12363F;
+  --s0:#6CCB93; --s0-bg:#16342A; --s1:#E3C04F; --s1-bg:#3A3212; --s2:#F09A5C; --s2-bg:#3F2616; --s3:#FF7F73; --s3-bg:#45201D; --na:#A0AFB8; --na-bg:#25323A;
+  --warn:#F0C466; --warn-bg:#3A2F12;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.5}
+a{color:var(--accent)}
+a:hover{color:var(--accent-2)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--serif);text-wrap:balance;margin:0;letter-spacing:-.005em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:4px;padding:6px 8px;width:100%;min-width:0}
+textarea{resize:vertical;line-height:1.4}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px var(--accent-soft)}
+label{display:block}
+
+.app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100%}
+.side{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow:auto;border-right:1px solid var(--line);background:var(--surface);padding:18px 14px 40px}
+.main{padding-inline:32px;padding-block:24px 80px;min-width:0}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+
+.brand{display:flex;flex-direction:column;gap:2px;padding:0 6px 14px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.brand b{font-family:var(--serif);font-size:17px;line-height:1.2}
+.brand span{font-size:12px;color:var(--ink-3)}
+.nav{display:flex;flex-direction:column;gap:1px}
+.nav .grp{margin:12px 6px 4px}
+.nav a{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:6px;padding:5px 6px;border-radius:4px;text-decoration:none;color:var(--ink-2);font-size:13px;line-height:1.25}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav a.dim{opacity:.5}
+.nav a .n{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.nav a .pt{font-family:var(--mono);font-size:11px;padding:0 5px;border-radius:3px;min-width:22px;text-align:center}
+.pt.z{color:var(--ink-3)}
+.pt.lvl1{background:var(--s1-bg);color:var(--s1)}
+.pt.lvl2{background:var(--s2-bg);color:var(--s2)}
+.pt.lvl3{background:var(--s3-bg);color:var(--s3)}
+
+/* header */
+.masthead{display:flex;flex-direction:column;gap:10px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.masthead h1{font-size:clamp(26px,3.4vw,36px);line-height:1.1}
+.masthead .sub{color:var(--ink-2);max-width:78ch}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--line-2);background:var(--surface);padding:6px 12px;border-radius:4px;font-size:13px;font-weight:500}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-2);color:var(--accent-ink)}
+.btn.danger:hover{border-color:var(--s3);color:var(--s3)}
+.btn.sm{padding:3px 8px;font-size:12px}
+.saved{font-size:12px;color:var(--ink-3);align-self:center}
+
+/* case selector */
+.selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:end}
+.selector label span,.field span{font-size:12px;font-weight:600;color:var(--ink-2);display:block;margin-bottom:4px}
+.selector select{font-weight:500;padding:9px 10px;border-width:1.5px}
+.selector select#caseType{border-color:var(--accent)}
+
+.profile{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0;border:1px solid var(--line);background:var(--surface);border-radius:6px;overflow:hidden}
+.profile > div{padding:18px 20px}
+.profile .l{border-right:1px solid var(--line)}
+.profile h2{font-size:21px;margin:4px 0 10px}
+.profile ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;color:var(--ink)}
+.profile ul li::marker{color:var(--accent)}
+.modchips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;border:1px solid var(--line-2);border-radius:3px;padding:2px 7px;text-decoration:none;color:var(--ink-2);background:var(--surface)}
+.chip.mod{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);font-weight:500}
+.chip .mono{font-size:11px}
+.reslist{display:flex;flex-direction:column;gap:8px}
+.res{display:flex;flex-direction:column;gap:1px;font-size:13.5px}
+.res a{font-weight:500;text-decoration:none}
+.res a:hover{text-decoration:underline}
+.res .meta{font-size:12px;color:var(--ink-3)}
+.vflag{display:inline-block;font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);border-radius:3px;padding:0 5px;margin-left:4px}
+.vflag.ok{color:var(--s0);background:var(--s0-bg)}
+
+/* info grid */
+.info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 16px}
+.info .wide{grid-column:span 2}
+
+/* summary */
+.sumwrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+table{border-collapse:collapse;width:100%}
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600;background:var(--surface-2)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.total td{font-weight:600;border-bottom:0;background:var(--surface-2)}
+.flagged{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto}
+.flag{display:grid;grid-template-columns:auto 58px 1fr;gap:8px;align-items:baseline;font-size:13px;text-decoration:none;color:var(--ink);padding:5px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--line)}
+.flag:hover{border-color:var(--accent)}
+.empty{color:var(--ink-3);font-size:13px;font-style:italic}
+.keyrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2)}
+.keyrow b{font-family:var(--mono)}
+
+
+/* guide */
+.guide details{border:1px solid var(--line);background:var(--surface);border-radius:6px}
+.guide details + details{margin-top:-2px}
+.guide summary{cursor:pointer;padding:12px 16px;font-family:var(--serif);font-size:17px;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary::before{content:"+";font-family:var(--mono);font-size:15px;color:var(--accent);width:14px}
+.guide details[open] > summary::before{content:"−"}
+.guide details[open] > summary{border-bottom:1px solid var(--line)}
+.gbody{padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px}
+.gl{margin:0;max-width:92ch}
+.gl.small{font-size:13px;color:var(--ink-2)}
+.gh{font-size:15px;margin:4px 0 0}
+.steps{margin:0;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column}
+.steps li{counter-increment:st;display:grid;grid-template-columns:34px 1fr;column-gap:10px;padding:10px 0;border-top:1px solid var(--line);max-width:110ch}
+.steps li::before{content:counter(st);grid-row:span 2;font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent-ink);background:var(--accent);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.steps .where{grid-column:2;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.rubric td{font-size:13.5px}
+.rubric td:first-child{font-size:12.5px;color:var(--ink-2)}
+.sc{display:inline-block;font-family:var(--mono);font-weight:600;font-size:13px;min-width:34px;text-align:center;padding:1px 6px;border-radius:3px;margin-bottom:3px;color:#fff}
+.sc.s0{background:var(--s0)}.sc.s1{background:var(--s1)}.sc.s2{background:var(--s2)}.sc.s3{background:var(--s3)}.sc.sna{background:var(--na)}
+.sc.sblank{background:transparent;color:var(--ink-3);border:1px dashed var(--line-2)}
+:root[data-theme="dark"] .sc:not(.sblank){color:#0E151A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sc:not(.sblank){color:#0E151A}}
+.path{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px;max-width:95ch}
+.gl-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;max-width:95ch}
+.twocol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+.twocol > div{display:flex;flex-direction:column;gap:8px}
+.ex{font-size:13px;border-radius:4px;padding:8px 10px;border:1px solid var(--line);line-height:1.45}
+.ex span{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:600;margin-bottom:2px}
+.ex.good{background:var(--s0-bg);border-color:transparent}.ex.good span{color:var(--s0)}
+.ex.weak{background:var(--s3-bg);border-color:transparent}.ex.weak span{color:var(--s3)}
+.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.checks li{padding-left:24px;position:relative}
+.checks li::before{content:"";position:absolute;left:2px;top:4px;width:12px;height:12px;border:1.5px solid var(--accent);border-radius:2px}
+.help{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid currentColor;font-size:10px;text-decoration:none;margin-left:4px;color:var(--accent);text-transform:none;letter-spacing:0;vertical-align:1px}
+@media (max-width:860px){.twocol{grid-template-columns:1fr}}
+
+/* sections */
+.sec{scroll-margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.sec-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;border-bottom:1px solid var(--line-2);padding-bottom:8px}
+.sec-h .sid{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:500}
+.sec-h h2{font-size:21px;flex:1 1 320px}
+.sec-h .tot{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.sec-h .tot b{color:var(--ink)}
+.sec-h .toggle{border:0;background:none;color:var(--ink-3);font-size:12.5px;padding:2px 4px}
+.sec-h .toggle:hover{color:var(--accent)}
+.rec{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:1px 6px;border-radius:3px}
+.notrec{font-size:11px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase}
+.sec.collapsed .sec-body{display:none}
+.auth{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.auth .eyebrow{margin-right:2px}
+.sec-note{font-size:13px;color:var(--ink-2);max-width:95ch;margin:0}
+.bulkrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-3)}
+
+.crits{border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden}
+.crit{display:grid;grid-template-columns:52px minmax(0,1.25fr) auto minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start;padding:9px 12px 9px 9px;border-bottom:1px solid var(--line);border-left:3px solid transparent}
+.crit:last-child{border-bottom:0}
+.crit[data-s="0"]{border-left-color:var(--s0)}
+.crit[data-s="1"]{border-left-color:var(--s1)}
+.crit[data-s="2"]{border-left-color:var(--s2);background:linear-gradient(90deg,var(--s2-bg),transparent 40%)}
+.crit[data-s="3"]{border-left-color:var(--s3);background:linear-gradient(90deg,var(--s3-bg),transparent 45%)}
+.crit[data-s="na"]{border-left-color:var(--na)}
+.crit[data-s="na"] .ctext{color:var(--ink-3)}
+.crit .cid{font-family:var(--mono);font-size:12px;color:var(--ink-3);padding-top:4px}
+.crit .ctext{padding-top:3px}
+.crit.ct .ctext::before{content:"Case-type item · ";font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.03em}
+.crit textarea{font-size:13px;min-height:32px;padding:5px 7px}
+.colhead{display:grid;grid-template-columns:52px minmax(0,1.25fr) auto minmax(0,1fr) minmax(0,1fr);gap:10px;padding:7px 12px 7px 12px;background:var(--surface-2);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.score{display:inline-flex;justify-self:start;align-self:start;border:1px solid var(--line-2);border-radius:4px;overflow:hidden;flex-shrink:0}
+.score button{border:0;border-right:1px solid var(--line-2);background:var(--surface);padding:4px 0;width:30px;font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+.score button:last-child{border-right:0;width:38px}
+.score button:hover{background:var(--surface-2)}
+.score button[aria-pressed="true"][data-v="0"]{background:var(--s0);color:#fff}
+.score button[aria-pressed="true"][data-v="1"]{background:var(--s1);color:#fff}
+.score button[aria-pressed="true"][data-v="2"]{background:var(--s2);color:#fff}
+.score button[aria-pressed="true"][data-v="3"]{background:var(--s3);color:#fff}
+.score button[aria-pressed="true"][data-v="na"]{background:var(--na);color:#fff}
+:root[data-theme="dark"] .score button[aria-pressed="true"]{color:#0E151A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .score button[aria-pressed="true"]{color:#0E151A}}
+
+/* data tables */
+.dt td{padding:4px}
+.dt td input,.dt td textarea{border-color:transparent;background:transparent;font-size:13px;padding:5px 6px}
+.dt td input:hover,.dt td textarea:hover{border-color:var(--line-2)}
+.dt td input:focus,.dt td textarea:focus{background:var(--surface);border-color:var(--accent)}
+.dt th{white-space:nowrap}
+.dt td.calc{font-family:var(--mono);font-size:13px;padding:9px 8px;color:var(--accent);white-space:nowrap}
+.dt .x{border:0;background:none;color:var(--ink-3);font-size:16px;line-height:1;padding:4px 6px}
+.dt .x:hover{color:var(--s3)}
+.tablebar{display:flex;gap:8px;flex-wrap:wrap}
+
+.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+.summary-grid label span{font-weight:600;font-size:13px;display:block;margin-bottom:4px}
+
+.lib{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 28px}
+.lib h3{font-size:16px;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.lib .res{padding:6px 0;border-bottom:1px dashed var(--line)}
+.lib .res:last-child{border-bottom:0}
+.lib .resrow{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.critical{border-left:3px solid var(--s3);background:var(--surface);padding:10px 14px;font-size:13.5px;border-radius:0 4px 4px 0}
+
+.builder{display:grid;grid-template-columns:2fr repeat(4,minmax(0,1fr)) auto;gap:8px;align-items:end}
+.cite-out{font-family:var(--mono);font-size:14px;padding:8px 10px;background:var(--surface-2);border-radius:4px;min-height:38px;display:flex;align-items:center;user-select:all}
+.convention{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:13.5px}
+.convention code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:0 4px;border-radius:3px}
+
+.panel{border:1px solid var(--accent);border-radius:6px;background:var(--surface);padding:14px;display:flex;flex-direction:column;gap:10px}
+.confirm{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--s3)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:4px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+.foot{font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:14px}
+.mobnav{display:none}
+
+@media (max-width:1100px){
+  .crit,.colhead{grid-template-columns:44px minmax(0,1fr) auto}
+  .crit textarea{grid-column:2 / span 2}
+  .colhead span:nth-child(4),.colhead span:nth-child(5){display:none}
+  .sumwrap,.profile{grid-template-columns:1fr}
+  .profile .l{border-right:0;border-bottom:1px solid var(--line)}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{display:none}
+  .main{padding-inline:16px}
+  .mobnav{display:block;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+  .selector,.info{grid-template-columns:1fr 1fr}
+  .info .wide{grid-column:span 2}
+  .lib,.summary-grid{grid-template-columns:1fr}
+  .builder{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  .selector,.info{grid-template-columns:1fr}
+  .info .wide{grid-column:auto}
+  .crit{grid-template-columns:1fr;gap:6px}
+  .crit textarea{grid-column:auto}
+  .colhead{display:none}
+  .crit .cid{padding-top:0}
+}
+@media print{.side,.mobnav,.toolbar,.bulkrow,.tablebar,.toggle,.dt .x,.help{display:none!important}.app{display:block}.main{padding:0}.crit{break-inside:avoid}textarea{border:0!important;resize:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <aside class="side" aria-label="Sections">
+    <div class="brand"><b>Anesthesia Expert Review</b><span>Procedural review checklist · v4</span></div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+
+  <main class="main">
+    <div class="mobnav"><select id="mobnav" aria-label="Jump to section"></select></div>
+    <div class="wrap">
+
+      <header class="masthead">
+        <div class="eyebrow">Multistate · Office/Dental · ASC · Hospital/PACU · Adverse event reconstruction</div>
+        <h1>Anesthesia Expert Witness Procedural Review</h1>
+        <p class="sub" style="margin:0">Choose the case type and setting to bring the relevant modules, focus items and authorities forward. Every section stays available. Your entries save in this browser only; use <b>Copy data</b> to keep a portable copy.</p>
+        <div class="toolbar">
+          <button class="btn primary" id="btnCopyFindings">Copy findings summary</button>
+          <button class="btn" id="btnExport">Copy data (JSON)</button>
+          <button class="btn" id="btnSaveFile">Save case file (.json)</button><button class="btn" id="btnPrint">Print / PDF</button><button class="btn" id="btnImport">Import data</button>
+          <span id="resetWrap"><button class="btn danger" id="btnReset">Clear case</button></span>
+          <span class="saved" id="saved"></span>
+        </div>
+        <div class="panel" id="importPanel" hidden>
+          <label for="importText"><span class="eyebrow">Paste previously copied JSON, or choose a .json file</span></label>
+          <textarea id="importText" rows="4" placeholder='{"info":{...},"scores":{...}}'></textarea>
+          <div class="toolbar"><input type="file" id="importFile" accept=".json,application/json" style="max-width:280px"><button class="btn primary" id="btnDoImport">Load</button><button class="btn" id="btnCancelImport">Cancel</button></div>
+        </div>
+      </header>
+
+      <section class="sec guide" id="s-guide">
+        <div class="sec-h"><span class="sid">?</span><h2>How to use this review</h2><span class="tot">read once, then keep open for reference</span></div>
+
+        <details id="g-workflow" open>
+          <summary>Workflow, from engagement to report</summary>
+          <div class="gbody">
+            <p class="gl">Work through the phases in order. The order is deliberate: you list the records and fix the governing authorities before judging care, and you build the timeline from objective data before reading narratives or depositions, so the chart and the testimony don't anchor your view of what happened.</p>
+            <ol class="steps">
+              <li><b>Intake and scope.</b> Confirm the engagement, the retaining side, any conflicts, the deadlines and the questions counsel wants answered. Note which expert rules apply: <a href="https://www.law.cornell.edu/rules/fre/rule_702" target="_blank" rel="noopener">FRE 702</a> and <a href="https://www.law.cornell.edu/rules/frcp/rule_26" target="_blank" rel="noopener">FRCP 26(a)(2)(B)</a> in federal court, or the state's equivalents. Bates-number and index every record you receive.
+                <span class="where">Goes in: <a href="#s-info">§0 Case identification</a></span></li>
+              <li><b>Set up the case.</b> Enter the case details. The <b>date of event</b> is the most important field: it sets which version of each authority applies and makes the regulation links open the text as it read on that day. Choose the case type and facility setting, then read the case profile's list of risks.
+                <span class="where">Goes in: <a href="#s-info">§0</a>, <a href="#s-case">case type &amp; setting</a></span></li>
+              <li><b>Inventory the records.</b> Work through <a href="#s-17">§17</a> before reviewing care. Score each record type with the scale in the <a href="#g-scoring">scoring guide</a> (the §17 column explains what each score means for records), and send counsel the list of 2- and 3-point gaps as a records request.
+                <span class="where">Goes in: <a href="#s-17">§17 Missing / additional records</a></span></li>
+              <li><b>Fix the governing authorities.</b> Classify the facility and identify which laws, board rules, CMS conditions, accreditation standards, professional guidelines and facility policies apply, <i>in the versions in effect on the event date</i>. Press <b>Log</b> beside any authority to add it to the verification log, then record the exact version and pinpoint section.
+                <span class="where">Goes in: <a href="#s-1">§1</a>, <a href="#s-19">§19 Authority log</a>, <a href="#s-20">§20 Source library</a></span></li>
+              <li><b>Reconstruct the timeline.</b> Build the minute-by-minute chronology from objective timestamps first: monitor or device exports, medication administration times, EMS and 911 records. Add narrative notes afterward and flag any conflicts between sources. Then fill in the critical intervals.
+                <span class="where">Goes in: <a href="#s-15">§15 Reconstruction</a>, <a href="#s-22">§22 Critical intervals</a></span></li>
+              <li><b>Review care in the core sections.</b> Work through §2–14 in the order care happened: patient selection, preanesthesia evaluation, personnel, equipment, conduct of anesthesia, sedation depth, rescue, recovery, infection control, systems, then the setting module. Score every item and fill in both note fields for anything scored 1 or higher.
+                <span class="where">Goes in: <a href="#s-2">§2–14</a>, plus <a href="#s-CT">§CT case-type focus</a></span></li>
+              <li><b>Analyze the event.</b> Open the §21 module or modules that match what happened (hypoxemia, difficult airway, LAST, arrest and so on). Use the timeline to find the earliest objective sign, when the team recognized it, the first intervention, escalation and transfer.
+                <span class="where">Goes in: <a href="#s-21A">§21A–K</a></span></li>
+              <li><b>Analyze causation.</b> Separate the complication itself from how the team responded to it. State each alleged departure as a specific act or omission, test other possible causes, and say plainly where the data can't answer the question.
+                <span class="where">Goes in: <a href="#s-23">§23 Causation</a></span></li>
+              <li><b>Integrate testimony.</b> As depositions arrive, log admissions and contradictions with page:line cites, link them to Concern # IDs, and <b>re-score</b> items the testimony confirms or undercuts.
+                <span class="where">Goes in: <a href="#s-DN">Deposition notes</a>, <a href="#s-X">Cross-reference</a>, <a href="#s-dep">Citation builder</a></span></li>
+              <li><b>Synthesize.</b> Move every 2- and 3-point finding into the finding-to-authority matrix. Complete the expert analysis summary, keeping opinions the record already supports separate from those that should stay provisional.
+                <span class="where">Goes in: <a href="#s-16">§16 Matrix</a>, <a href="#s-18">§18 Summary</a></span></li>
+              <li><b>Quality-check and export.</b> Run the <a href="#g-qa">pre-report check</a>, then use <b>Copy findings summary</b> for your report draft and <b>Save case file</b> to keep a portable copy.
+                <span class="where">Goes in: toolbar at top</span></li>
+            </ol>
+          </div>
+        </details>
+
+        <details id="g-scoring">
+          <summary>Scoring: what 0, 1, 2, 3 and N/A mean</summary>
+          <div class="gbody">
+            <p class="gl">Each score answers one question: <i>based on the material reviewed so far, how much does this criterion need expert attention?</i> A score is a triage signal for you and counsel. It is not a finding of negligence, and every score stays provisional until the record is complete.</p>
+            <div class="tscroll"><table class="rubric">
+              <thead><tr><th style="width:92px">Score</th><th>Meaning</th><th>Test to apply</th><th>Example</th><th>For §17 records</th></tr></thead>
+              <tbody>
+                <tr><td><span class="sc s0">0</span><br>No concern identified</td><td>The reviewed record shows the criterion was met, or nothing in it suggests a problem.</td><td>Could you point to the record that shows this was done? If yes, score 0.</td><td>6.10: The monitor export shows continuous SpO2 throughout the case with no gaps.</td><td>Received, complete, and consistent with other records.</td></tr>
+                <tr><td><span class="sc s1">1</span><br>Documentation / clarification</td><td>Something is missing, unclear, inconsistent or charted late, but on current evidence it doesn't appear to have changed patient care. It can usually be resolved with a records request or a deposition question.</td><td>If this were fixed or explained, would the clinical picture stay the same? If yes, score 1.</td><td>6.9: The paper record shows BP every 10 minutes, but the device export shows the cuff cycled every 5 minutes. It's a charting gap, not a monitoring gap.</td><td>Received but partial, or the date and time sources need reconciling.</td></tr>
+                <tr><td><span class="sc s2">2</span><br>Substantive concern</td><td>The evidence suggests care may have departed from an identifiable authority, and the issue could matter to the event. It needs analysis against the authority, more records or testimony before you can form an opinion.</td><td>Can you name the requirement that may not have been met? Is its relevance to the outcome still open? If both, score 2.</td><td>6.12: No end-tidal CO2 is documented during deep propofol sedation, and the monitoring standard in effect called for ventilation monitoring. Its link to the event isn't established yet.</td><td>Missing, and material to reconstructing the event.</td></tr>
+                <tr><td><span class="sc s3">3</span><br>Significant concern / potential material departure</td><td>Clear, well-documented evidence of a departure from a mandatory requirement or core safety practice, <i>and</i> either a plausible link to the injury or a serious safety failure on its own. These are your priority items.</td><td>Is the departure well-documented, and would it plausibly matter to the outcome? If both, score 3.</td><td>8.3 / 21A: SpO2 stayed below 85% for 6 minutes on the monitor export with no airway intervention charted, and 911 was called 14 minutes after the first desaturation.</td><td>Critical record missing, or signs of alteration or after-the-fact entries that prevent reconstruction.</td></tr>
+                <tr><td><span class="sc sna">N/A</span><br>Not applicable</td><td>The criterion doesn't apply to this patient, procedure or setting.</td><td>Would this criterion be irrelevant even with a perfect record? If yes, score N/A.</td><td>21G malignant hyperthermia when no triggering agents were used; the pregnancy item for a male patient.</td><td>That record type doesn't exist for this case (for example, no EMS transport).</td></tr>
+                <tr><td><span class="sc sblank">blank</span><br>Not yet reviewed</td><td>Leave the item unscored until you have actually looked at it.</td><td>Blank items don't count toward totals.</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3 class="gh">Decision path</h3>
+            <ol class="path">
+              <li>Does the criterion apply to this case? <b>No → N/A.</b></li>
+              <li>Is there enough information to judge it? <b>No → score at least 1</b> and add the missing item to §17. Don't use N/A for missing information.</li>
+              <li>Does the record show it was met? <b>Yes → 0.</b></li>
+              <li>Is the problem only in how care was documented, with no apparent effect on care? <b>Yes → 1.</b></li>
+              <li>Can you name the authority that may have been departed from? <b>Yes, but relevance is still open → 2.</b></li>
+              <li>Is the departure clear, and is it material to the outcome or a core safety failure? <b>Yes → 3.</b></li>
+            </ol>
+
+            <h3 class="gh">Scoring discipline</h3>
+            <ul class="gl-list">
+              <li><b>Score the care, not the outcome.</b> Ask what was known or knowable at that moment. A bad outcome doesn't raise a score, and a good outcome doesn't lower one.</li>
+              <li><b>Don't infer undocumented care.</b> An action that "would ordinarily" happen but isn't charted is a documentation question (at least 1) until evidence or testimony confirms it.</li>
+              <li><b>One fact, several items.</b> The same fact can properly affect more than one criterion (for example, late EMS activation in 8.13 and 21K.5). Score each item on its own terms, and write "same fact as 21K.5" in the analysis so counsel doesn't read it as separate failures.</li>
+              <li><b>Totals are for triage.</b> One 3-point finding can outweigh twenty 1-point findings. The totals show where concerns cluster; your opinion rests on the analysis.</li>
+              <li><b>Re-score as the record grows.</b> New records and testimony should move scores both up and down. Note what changed in the analysis field.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details id="g-evidence">
+          <summary>Evidence / pinpoint citation: what to write</summary>
+          <div class="gbody">
+            <p class="gl"><b>What it answers:</b> <i>where in the record is the fact that supports this score?</i> Anyone, whether counsel, opposing counsel or you months later, should be able to find the exact page and line in seconds. It records the fact itself, not your opinion about it.</p>
+            <div class="twocol">
+              <div>
+                <h3 class="gh">What to include</h3>
+                <ul class="gl-list">
+                  <li><b>Source document:</b> anesthesia record, MAR, monitor export, PACU flowsheet, EMS run sheet, deposition</li>
+                  <li><b>Exhibit number and Bates number</b> when assigned</li>
+                  <li><b>Page and line(s)</b>, or the clock time for records organized by time</li>
+                  <li><b>The fact</b>, briefly quoted or paraphrased (values, times, who did what)</li>
+                  <li><b>Absence:</b> when the point is that something <i>isn't</i> there, list every place you checked</li>
+                  <li><b>Conflicts:</b> cite both sources and state the difference</li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="gh">Examples</h3>
+                <div class="ex good"><span>Strong</span>Anesthesia Record, Ex. 7, p. 3 (Bates DEF-000142), 10:42–10:47: SpO2 charted 88% → 79%; no airway maneuver charted until 10:49.</div>
+                <div class="ex good"><span>Strong (absence)</span>No ETCO2 values on Anesthesia Record Ex. 7 pp. 2–4 or monitor export Ex. 9; Jones Dep. 84:12–25 confirms no capnograph in room.</div>
+                <div class="ex good"><span>Strong (conflict)</span>Nursing note Ex. 11 p. 2 records 911 call at 10:55; CAD log Ex. 14 p. 1 time-stamps the call at 11:03 (8-minute discrepancy).</div>
+                <div class="ex weak"><span>Weak</span>Anesthesia record shows desaturation.</div>
+              </div>
+            </div>
+            <p class="gl">For citation formats (Smith Dep. 84:12–85:4 and so on), see the <a href="#s-dep">pinpoint citation section and builder</a>.</p>
+          </div>
+        </details>
+
+        <details id="g-authority">
+          <summary>Authority / analysis: what to write</summary>
+          <div class="gbody">
+            <p class="gl">This field has two parts. <b>Authority</b> answers <i>what rule or standard applies here?</i> <b>Analysis</b> answers <i>how does the evidence measure up against it, and why does that matter?</i> The evidence field holds the fact; this field holds your reasoning.</p>
+            <div class="twocol">
+              <div>
+                <h3 class="gh">Authority: name it precisely</h3>
+                <ul class="gl-list">
+                  <li><b>Type:</b> statute/regulation · licensing-board rule · CMS condition · accreditation standard · professional standard or guideline · facility policy · manufacturer IFU · peer-reviewed literature</li>
+                  <li><b>Exact document and section</b> (for example, 42 CFR 416.42(a)), not just the organization's name</li>
+                  <li><b>Version in effect on the event date.</b> Never substitute the current version; the page flags links that post-date the event.</li>
+                  <li><b>Applicability:</b> jurisdiction, and whether it applies to this facility (a Medicare-certified ASC, for example)</li>
+                  <li><b>Weight:</b> mandatory (law, regulation, CfC) or evidence of the standard of care (guidelines, policy, literature)</li>
+                </ul>
+                <p class="gl small">The legal standard of care is set by the jurisdiction's law (for example, <a href="https://law.lis.virginia.gov/vacode/title8.01/chapter21.1/section8.01-581.20/" target="_blank" rel="noopener">Va. Code § 8.01-581.20</a>). Guidelines and policies are evidence of that standard; they don't define it by themselves.</p>
+              </div>
+              <div>
+                <h3 class="gh">Analysis: four short moves</h3>
+                <ol class="gl-list">
+                  <li><b>Required:</b> what the authority called for in this situation</li>
+                  <li><b>Record:</b> what the evidence shows actually happened (refer to the cite; don't repeat it)</li>
+                  <li><b>Comparison:</b> met, departed, or can't tell yet, and why</li>
+                  <li><b>Significance:</b> whether it matters to the event, links to related Concern #s, and what would change your view</li>
+                </ol>
+                <div class="ex good"><span>Example (illustrative)</span><b>Authority:</b> ASA Standards for Basic Anesthetic Monitoring, version in effect on [event date], ventilation section. Professional standard, not binding law. Facility sedation policy Ex. 21 § 4.3 adopts it.<br><b>Analysis:</b> Continual ventilation monitoring was required during deep sedation. The record shows no capnography (see evidence) and the CRNA confirms it. Likely departure. It matters because the monitor export shows hypoventilation about 4 minutes before desaturation; same fact as 21A.2. Open question: whether earlier capnography would have changed the course (see 23.6).</div>
+                <div class="ex weak"><span>Weak</span>Violated ASA standards.</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details id="g-qa">
+          <summary>Pre-report quality check</summary>
+          <div class="gbody">
+            <ul class="checks">
+              <li>Every 2- and 3-point item has a pinpoint citation and a named authority, with its version.</li>
+              <li>No current guideline has been substituted for the version in effect on the event date (check the "post-dates event" flags).</li>
+              <li>Mandatory requirements are clearly separated from professional guidance and literature.</li>
+              <li>No undocumented action has been assumed to have occurred.</li>
+              <li>Each 3-point item has a stated link to the injury in §23, or is stated to be a safety concern without a causal link.</li>
+              <li>Opinions sit within your expertise; §18 lists any other experts needed.</li>
+              <li>Records still outstanding are listed in §17, and opinions that depend on them are marked provisional in §18.</li>
+              <li>Concern # IDs match across the checklist, matrix, cross-reference and report.</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section class="sec" id="s-case">
+        <div class="selector">
+          <label for="caseType"><span>Case type</span><select id="caseType"></select></label>
+          <label for="setting"><span>Facility setting</span><select id="setting"></select></label>
+          <label for="viewMode"><span>Show modules</span><select id="viewMode"><option value="rec">Recommended for this case + core</option><option value="all">All sections</option></select></label>
+        </div>
+        <div class="profile" id="profile"></div>
+      </section>
+
+      <section class="sec" id="s-info">
+        <div class="sec-h"><span class="sid">§0</span><h2>Case identification</h2></div>
+        <div class="info" id="info"></div>
+      </section>
+
+      <section class="sec" id="s-summary">
+        <div class="sec-h"><span class="sid">Σ</span><h2>Case concern summary</h2><span class="tot">auto-calculated</span></div>
+        <div class="keyrow"><span><b>0</b> no concern identified</span><span><b>1</b> documentation / clarification issue</span><span><b>2</b> substantive concern requiring analysis</span><span><b>3</b> significant concern / potential material departure</span><span><b>N/A</b> not applicable</span><a href="#g-scoring">Full scoring guide</a></div>
+        <div class="sumwrap">
+          <div class="tscroll"><table id="sumTable"><thead><tr><th>Section</th><th class="num">Points</th><th class="num">2-pt</th><th class="num">3-pt</th><th class="num">Scored</th></tr></thead><tbody></tbody></table></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="eyebrow">Priority findings (2- and 3-point) · Concern #</div>
+            <div class="flagged" id="flagged"></div>
+          </div>
+        </div>
+        <p class="sec-note">Higher totals show where concerns concentrate and how severe they are. They do not by themselves establish negligence, breach of the standard of care, or causation, and a single 3-point issue may matter more than several 1-point issues. For every material issue, identify the authority type, jurisdiction, the version in effect on the event date, and the supporting chart evidence.</p>
+      </section>
+
+      <div id="sections" style="display:flex;flex-direction:column;gap:30px"></div>
+
+      <footer class="foot">This page organizes expert review from the uploaded checklist (v4). It does not itself establish the legal standard of care. Linked authorities open the publisher's current page; confirm the version in effect on the date of care before relying on any of them.</footer>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const SECTIONS = [{"id": "1", "t": "Case Classification & Applicable Authority", "c": ["State/venue and date of event confirmed.", "Facility classified: hospital / HOPD / ASC / physician office / dental office / other.", "Ownership/governing body identified where relevant.", "Accreditation status and accreditor on event date identified.", "Medicare-certified ASC status determined when applicable.", "Applicable medical, nursing/APRN/CRNA, dental and facility licensing rules identified.", "Statutes/regulations retrieved in version effective on event date.", "Accreditation standards retrieved in version effective on event date.", "Professional standards/guidelines retrieved in version effective on event date.", "Facility policies/procedures effective on event date requested and compared with practice.", "Later-issued authorities clearly separated from contemporaneous authorities."]}, {"id": "2", "t": "Patient Selection & Risk Stratification", "c": ["Age, height, weight and BMI documented and considered.", "ASA Physical Status documented; reviewer assessment noted if disputed.", "Procedure/duration appropriate for patient and facility.", "Cardiac history and functional status assessed.", "Pulmonary disease, smoking/vaping and recent respiratory illness assessed.", "OSA risk assessed; CPAP use and screening considered.", "Prior difficult airway/anesthesia complication history assessed.", "Diabetes/endocrine disease and relevant medications considered.", "Renal/hepatic disease considered for drug selection/dosing.", "Anticoagulant/antiplatelet therapy and bleeding risk addressed.", "Pregnancy status addressed when applicable.", "Allergies/adverse reactions documented and reconciled.", "Substance use, opioid tolerance and sedating home medications considered.", "Facility inclusion/exclusion criteria met.", "Need for higher-acuity/hospital setting considered."]}, {"id": "3", "t": "Preanesthesia Evaluation & Planning", "c": ["Preprocedure H&P present and sufficiently current.", "Interval change/reassessment documented before anesthesia.", "Anesthesia-focused history completed.", "Airway exam includes mouth opening, Mallampati, dentition, neck mobility and relevant anatomy.", "Baseline vital signs and SpO2 documented.", "Pertinent labs/ECG/imaging/consultations reviewed when indicated.", "NPO/fasting status documented and risk addressed.", "Medication reconciliation and perioperative medication plan documented.", "Medication-related aspiration considerations addressed under contemporaneous guidance when applicable.", "Anesthetic plan appropriate to procedure, patient and resources.", "Anesthesia risks/alternatives and informed consent documented.", "Postprocedure destination/monitoring needs considered.", "Plan supports rescue from deeper-than-intended sedation."]}, {"id": "4", "t": "Personnel, Credentialing & Privileging", "c": ["Anesthesia professional license/certification active.", "Credentialing file complete/current as required.", "Privileges encompass anesthesia/sedation level and setting.", "Airway rescue/resuscitation competency supported.", "BLS/ACLS/PALS status appropriate.", "Proceduralist credentials/privileges appropriate.", "RN/PACU/recovery qualifications appropriate.", "Staffing sufficient for procedure, anesthesia and monitoring.", "No problematic dual-role/distraction during critical periods.", "Backup coverage available for emergency/prolonged recovery.", "Relevant competency/orientation records available."]}, {"id": "5", "t": "Facility, Equipment & Medication Readiness", "c": ["Primary and backup oxygen available.", "Functional suction immediately available.", "Bag-mask ventilation and appropriate masks available.", "Airway adjuncts/supraglottic rescue equipment available as appropriate.", "Laryngoscopy/video laryngoscopy and ETT equipment appropriate.", "Difficult-airway rescue process/equipment available.", "Pulse oximetry, ECG, NIBP and capnography equipment available as required/indicated.", "Defibrillator/AED and emergency cart immediately accessible.", "Emergency medications present, current and properly stored.", "Reversal agents available for drugs used.", "Lipid emulsion/LAST resources available when foreseeable.", "Malignant hyperthermia readiness appropriate to triggering agents/requirements.", "Medication labeling/storage/controlled-substance/expiration processes appropriate.", "Temperature management available when indicated.", "Backup power/equipment-failure process appropriate.", "EMS access and immediate transfer process established.", "Emergency location/address/contact information readily available.", "Relevant emergency drill records and role assignments available."]}, {"id": "6", "t": "Day-of-Procedure Safety & Anesthetic Conduct", "c": ["Identity, procedure/site and consent confirmed.", "Time-out performed/documented.", "Baseline physiologic data recorded before medication/anesthetic.", "IV access appropriate when required.", "Drugs documented with dose, route and time.", "Weight-based dosing appropriate where applicable.", "Oxygen method/flow documented.", "Airway technique/device and changes documented.", "Blood pressure recorded at appropriate intervals.", "Continuous SpO2 documented.", "ECG monitoring documented when required/indicated.", "Ventilation/ETCO2 monitoring documented when required/indicated.", "Respiratory rate/clinical ventilation assessment documented.", "Sedation depth/level of consciousness sufficiently documented.", "Fluids/blood loss/urine output documented when relevant.", "Temperature monitored when indicated.", "Positioning and nerve/pressure protection appropriate.", "Anesthesia record contemporaneous and internally consistent.", "Procedure/anesthetic duration and transitions reconstructable."]}, {"id": "7", "t": "Sedation Depth vs. Rescue Capability", "c": ["Intended depth explicitly identified.", "Drug combination/doses evaluated against intended depth.", "Observed responsiveness and airway/ventilation evaluated for actual depth reached.", "Progression to deeper-than-intended sedation identified.", "Sedation provider capable of rescue from next deeper level as applicable.", "Independent monitoring personnel present when required.", "Obstruction/apnea/hypoventilation recognized promptly.", "Rescue equipment accessible and appropriately used.", "Escalation from basic maneuvers to advanced airway timely.", "Need to stop/abort procedure considered.", "Need for EMS/hospital transfer recognized timely."]}, {"id": "8", "t": "Recognition, Rescue & Emergency Response", "c": ["First objective sign of deterioration identified.", "First clinician recognition identified.", "Time from abnormality to intervention calculated.", "Oxygen/escalation documented.", "Airway repositioning/suction/adjuncts/ventilation documented.", "Advanced airway attempts, devices, personnel and success documented.", "Reversal agent use appropriate/timely when indicated.", "Anaphylaxis recognition/treatment evaluated when applicable.", "LAST recognition/treatment evaluated when applicable.", "MH recognition/treatment evaluated when applicable.", "ACLS/PALS response evaluated as applicable.", "CPR start, rhythm, defibrillation and medication sequence reconstructable.", "EMS activation time documented.", "Transfer decision/departure time documented.", "Receiving-facility handoff adequate.", "Post-event reporting/QI process identified."]}, {"id": "9", "t": "PACU / Recovery / Discharge", "c": ["Qualified recovery personnel continuously responsible.", "Airway and respiratory status monitored.", "SpO2/required physiologic monitoring continued.", "Consciousness recovered appropriately.", "Pain and PONV assessed/treated.", "Bleeding/surgical complications assessed.", "OSA/obesity-related monitoring considered.", "Objective recovery/discharge criteria used.", "Responsible discharge decision-maker identified.", "Discharge vital signs/status documented.", "Responsible adult/escort requirements met.", "Written instructions provided.", "Medication/diet/activity/emergency instructions appropriate.", "Prolonged recovery triggered reassessment/escalation.", "Postdischarge event/contact appropriately managed."]}, {"id": "10", "t": "Infection Prevention & Medication Safety", "c": ["Hand hygiene/PPE practices appropriate.", "Injection safety and vial practices appropriate.", "Medication preparation area/process appropriate.", "Multidose vial use/storage appropriate if present.", "IV tubing/ports handled appropriately.", "Sharps disposal/exposure response appropriate.", "Cleaning/disinfection/sterilization responsibilities identified.", "Allergy status visible/reconciled across records.", "High-alert/emergency medications standardized/distinguishable.", "Medication errors/near misses reported/reviewed when applicable."]}, {"id": "11", "t": "Systems, Governance & Quality", "c": ["Governing-body oversight of anesthesia services identified.", "Written anesthesia/sedation policies match services offered.", "Patient selection/exclusion policy present/followed.", "Emergency response policies operationalized.", "Effective transfer process exists for emergencies beyond capability.", "Credentialing/privileging process followed.", "Equipment maintenance/pre-use checks documented as required.", "Medication/cart expiration checks documented.", "QAPI process present.", "Adverse event entered into required reporting/QI pathway.", "Relevant prior deficiencies/corrective actions identified if discoverable.", "Relevant accreditation survey findings identified."]}, {"id": "12", "t": "Dental / Office-Based Anesthesia Module", "c": ["Office legally permitted to provide planned depth.", "Dentist/proceduralist permit requirements satisfied.", "Anesthesia-provider authority/permit requirements satisfied.", "Office accreditation requirement evaluated under state law/rule.", "Patient selection appropriate for office.", "Physical layout permits airway access/emergency movement.", "Anesthesia machine/equipment checks appropriate.", "Independent anesthesia monitoring maintained.", "Dental equipment/position did not compromise airway access without mitigation.", "Shared-airway plan appropriate.", "Throat pack/dental material/foreign-body risk addressed where applicable.", "Local anesthetic total dose/epinephrine exposure reconstructable.", "Emergency drugs/equipment match population/depth.", "EMS can locate/access office promptly; transfer pathway practical.", "Recovery area/staffing/monitoring adequate.", "Discharge criteria appropriate."]}, {"id": "13", "t": "ASC Module", "c": ["Medicare certification/deemed status identified when applicable.", "ASC Conditions for Coverage applicable on event date identified.", "Governing-body responsibilities reviewed.", "Surgical/anesthesia policies reviewed.", "Admission, pre-surgical assessment and discharge requirements reviewed.", "Infection-control program/findings reviewed when relevant.", "Pharmaceutical services/medication management reviewed.", "Emergency preparedness requirements reviewed.", "Effective immediate hospital-transfer procedure reviewed.", "QAPI/adverse-event review requested when relevant.", "Medical-record completeness evaluated."]}, {"id": "14", "t": "PACU / Postoperative Deterioration Module", "c": ["Arrival condition from OR/procedure room documented.", "Formal anesthesia-to-PACU handoff occurred.", "Airway/respiratory/hemodynamic risks communicated.", "Initial PACU assessment completed promptly.", "Vital-sign/SpO2/ETCO2 trends reconstructed.", "Opioid/sedative cumulative dosing reconstructed.", "OSA/airway risk and oxygen/CPAP needs addressed.", "Pain/agitation differentiated from hypoxia, hypercarbia or evolving complication.", "New neck swelling/bleeding/hematoma or airway compromise recognized when applicable.", "Escalation to anesthesia/surgeon/rapid response timely.", "Reintubation/difficult-airway strategy timely and appropriate.", "Transfer to higher level of care timely.", "Documentation supports sequence and decision-making."]}, {"id": "17", "t": "Missing / Additional Records Request", "c": ["Complete anesthesia record including pre- and postanesthesia assessments.", "Medication administration record and controlled-substance record.", "Electronic monitor trend data / strips / device export.", "PACU/recovery flowsheet and nursing notes.", "Code/rapid-response record.", "EMS dispatch, run sheet and monitor/AED data.", "Receiving ED/hospital records and imaging.", "Operative/procedure note and surgeon/proceduralist notes.", "Preprocedure H&P, consultations and diagnostic testing.", "Informed-consent documents.", "Facility anesthesia/sedation policies effective on event date.", "Patient-selection/exclusion and discharge policies.", "Emergency, airway, MH, LAST, anaphylaxis and transfer policies.", "Credentialing/privileging files for relevant clinicians.", "Licenses, permits and required certifications on event date.", "Staff schedule and role assignments.", "Emergency drill records relevant to event type.", "Crash-cart/emergency medication check logs.", "Anesthesia machine/monitor/equipment maintenance and service logs.", "Accreditation certificate and relevant survey/corrective-action reports.", "Incident report / QAPI materials to extent discoverable.", "911 audio/time stamps, security video or other time-source evidence if relevant."]}, {"id": "21A", "t": "Hypoxemia / Apnea / Hypoventilation / Airway Obstruction", "c": ["Baseline respiratory status, SpO2, oxygen delivery and ventilation monitoring established.", "Earliest decline in SpO2, ETCO2, respiratory rate, tidal movement or responsiveness identified.", "Obstruction versus central apnea/hypoventilation considered.", "Supplemental oxygen escalation documented.", "Jaw thrust/chin lift/repositioning performed and response documented.", "Suction and airway adjunct use documented when indicated.", "Bag-mask ventilation initiated promptly when spontaneous ventilation inadequate.", "Sedative/opioid contribution assessed; reversal considered/used when appropriate.", "Supraglottic or endotracheal airway escalation timely when basic maneuvers inadequate.", "Bradycardia/hypotension/arrest temporally related to respiratory deterioration assessed.", "Procedure stopped/aborted when appropriate.", "Need for EMS/transfer recognized without avoidable delay."]}, {"id": "21B", "t": "Difficult / Failed Airway & Cannot Intubate / Cannot Oxygenate", "c": ["Preprocedure predictors of difficult mask ventilation/intubation documented.", "Primary and backup airway plan identifiable.", "Number, duration and sequence of airway attempts reconstructable.", "Oxygenation maintained between attempts when possible.", "Repeated attempts did not create avoidable delay/trauma.", "Alternative device/operator introduced appropriately.", "Supraglottic rescue attempted when indicated.", "Neuromuscular blockade/reversal considerations documented where relevant.", "Front-of-neck/emergency invasive airway capability considered when clinically indicated.", "Call for additional expertise/EMS timely.", "Airway trauma, aspiration, hypoxic injury and post-event airway disposition evaluated."]}, {"id": "21C", "t": "Laryngospasm / Bronchospasm", "c": ["Precipitating event and clinical signs identified.", "Differential between obstruction, laryngospasm and bronchospasm considered.", "Stimulus removed/procedure paused.", "100% oxygen and positive-pressure ventilation attempted appropriately.", "Airway maneuvers/suction performed as indicated.", "Deepening anesthesia and/or appropriate pharmacologic treatment considered.", "Neuromuscular blockade used timely for refractory laryngospasm when indicated.", "Bronchodilator therapy used appropriately for bronchospasm.", "Progression to hypoxemia/bradycardia/arrest recognized and treated.", "Post-event monitoring/transfer appropriate."]}, {"id": "21D", "t": "Aspiration / Regurgitation", "c": ["Fasting status and aspiration risk factors documented preprocedure.", "Medication/comorbidity factors affecting gastric emptying considered under contemporaneous guidance.", "Regurgitation/aspiration event timing and evidence identified.", "Positioning and suction performed promptly.", "Airway secured when clinically indicated.", "Oxygenation/ventilation consequences monitored and treated.", "Bronchoscopy/imaging/hospital evaluation considered as appropriate.", "Antibiotic/steroid use distinguished from supportive management and clinical indication.", "Post-event observation/transfer/disposition appropriate."]}, {"id": "21E", "t": "Anaphylaxis / Severe Allergic Reaction", "c": ["Likely exposure(s) and timing identified.", "Skin, airway, respiratory and cardiovascular manifestations reconstructed.", "Anaphylaxis recognized promptly despite possible absence of skin findings.", "Epinephrine route/dose/timing appropriate to severity and setting.", "Airway/oxygen/ventilation support timely.", "IV fluids and vasopressor escalation appropriate.", "Potential trigger discontinued/avoided.", "Refractory reaction considerations addressed where applicable.", "Post-event observation/transfer appropriate.", "Allergy documentation/referral/tryptase considerations addressed when applicable."]}, {"id": "21F", "t": "Local Anesthetic Systemic Toxicity (LAST)", "c": ["Total local anesthetic dose, concentration, formulation, site and timing calculated.", "Patient weight and dose limits/risk modifiers considered.", "Intravascular injection prevention/recognition measures documented where applicable.", "Prodromal neurologic or cardiovascular signs identified.", "Local anesthetic administration stopped promptly.", "Airway/oxygenation/ventilation and seizure management appropriate.", "Lipid emulsion immediately available and administered when indicated.", "Resuscitation medications/technique considered in context of LAST.", "Transfer and prolonged monitoring appropriate after suspected LAST."]}, {"id": "21G", "t": "Malignant Hyperthermia (MH)", "c": ["Triggering agents/exposure identified.", "Earliest ETCO2 rise, tachycardia, rigidity, temperature change, acidosis or hyperkalemia identified.", "MH considered promptly in differential.", "Trigger discontinued and high-flow oxygen initiated.", "Dantrolene availability, access time, dose and redosing reconstructed.", "Cooling and treatment of hyperkalemia/acidosis/arrhythmia appropriate.", "Urine output/rhabdomyolysis monitoring considered.", "EMS/transfer to higher-acuity care immediate and appropriate.", "Post-crisis monitoring and referral/counseling addressed."]}, {"id": "21H", "t": "Cardiac Arrest / Peri-Arrest", "c": ["Pre-arrest physiologic deterioration and likely mechanism reconstructed.", "Pulse loss/critical rhythm recognition time identified.", "CPR start time and interruptions reconstructed.", "Defibrillation/cardioversion timing appropriate to rhythm.", "Epinephrine and other resuscitation medications timed/dosed appropriately.", "Airway and ventilation strategy during arrest evaluated.", "Reversible causes considered and treated.", "ROSC time and post-ROSC hemodynamic/oxygenation management documented.", "EMS activation/transfer did not create avoidable delay.", "Code documentation reconciled against monitor/AED/EMS timestamps."]}, {"id": "21I", "t": "Hemorrhage / Hemodynamic Collapse", "c": ["Expected versus actual blood loss reconstructed.", "Early tachycardia/hypotension or other warning signs recognized.", "Surgical source/occult bleeding considered promptly.", "IV access and fluid/blood resuscitation appropriate.", "Vasopressor use assessed in context of volume status/cause.", "Anticoagulant/antiplatelet factors considered.", "Need for operative control, imaging or hospital transfer recognized promptly.", "Serial hemoglobin/labs considered when clinically appropriate.", "Shock/end-organ consequences and causation analyzed."]}, {"id": "21J", "t": "Postoperative Hematoma / Neck Swelling / Airway Compression", "c": ["Risk of postoperative bleeding/hematoma recognized from procedure and patient factors.", "Neck swelling, voice change, dysphagia, stridor, agitation, dyspnea or desaturation identified promptly.", "Airway compromise considered before complete obstruction developed.", "Surgeon/anesthesia escalation timely.", "Decision for bedside wound opening/decompression versus OR management assessed where relevant.", "Difficult-airway strategy anticipated in distorted anatomy.", "Delay from first symptom to definitive decompression/airway control calculated.", "EMS/ICU/higher-level transfer appropriate.", "Neurologic/hypoxic injury relationship to airway delay evaluated."]}, {"id": "21K", "t": "Delayed EMS Activation / Interfacility Transfer", "c": ["Trigger for transfer defined by patient condition and facility capability.", "Time patient exceeded facility rescue capability identified.", "Time transfer decision made identified.", "911/EMS call time verified independently when possible.", "Time from deterioration to EMS activation calculated.", "Stabilization efforts did not create inappropriate delay in transfer.", "Receiving facility selection appropriate to condition.", "Handoff included event, drugs, airway, resuscitation and relevant history.", "Records/medication information accompanied patient as required/appropriate.", "Effect of any transfer delay on outcome analyzed separately from underlying event."]}, {"id": "23", "t": "Event Causation & Counterfactual Analysis", "c": ["Underlying complication distinguished from response to complication.", "Alleged breach/deviation stated as a specific act or omission rather than outcome alone.", "Temporal relationship between alleged deviation and injury established from objective data.", "Alternative causes identified and evaluated.", "Pre-existing vulnerability/comorbidity distinguished from preventable deterioration.", "Whether earlier recognition/intervention would likely have changed physiologic trajectory evaluated using appropriate evidence.", "Whether facility capability itself contributed to delay or injury evaluated.", "Subsequent treating-provider actions separated from index-event analysis.", "Causation opinions remain within reviewer expertise and jurisdictional legal framework.", "Uncertainty, missing data and assumptions explicitly identified."]}];
+
+/* ---------- Authorities (links checked Sept 2026) ---------- */
+const R = {
+  "asa-hub":{org:"ASA",t:"Statements, Standards & Practice Parameters (index)",u:"https://www.asahq.org/standards-and-practice-parameters",ty:"std"},
+  "asa-continuum":{org:"ASA",t:"Continuum of Depth of Sedation: Definition of General Anesthesia and Levels of Sedation/Analgesia",u:"https://www.asahq.org/standards-and-practice-parameters/statement-on-continuum-of-depth-of-sedation-definition-of-general-anesthesia-and-levels-of-sedation-analgesia",ty:"std",v:"2024-10-23",vl:"last amended Oct 23, 2024"},
+  "asa-monitoring":{org:"ASA",t:"Standards for Basic Anesthetic Monitoring",u:"https://www.asahq.org/standards-and-practice-parameters/standards-for-basic-anesthetic-monitoring",ty:"std",v:"2025-10-15",vl:"last amended Oct 15, 2025"},
+  "asa-preanes":{org:"ASA",t:"Basic Standards for Preanesthesia Care",u:"https://www.asahq.org/standards-and-practice-parameters/basic-standards-for-preanesthesia-care",ty:"std",v:"2025-10-15",vl:"last amended Oct 15, 2025"},
+  "asa-pacu":{org:"ASA",t:"Standards for Postanesthesia Care",u:"https://www.asahq.org/standards-and-practice-parameters/standards-for-postanesthesia-care",ty:"std",v:"2024-10-23",vl:"last amended Oct 23, 2024"},
+  "asa-ps":{org:"ASA",t:"Statement on ASA Physical Status Classification System (Anesthesiology Open)",u:"https://journals.lww.com/anesthesiologyopen/fulltext/10.1097/ao9.0000000000000002~american-society-of-anesthesiologists-statement-on-asa",ty:"std"},
+  "asa-office":{org:"ASA",t:"Statement on Office-Based Anesthesia",u:"https://www.asahq.org/standards-and-practice-parameters/statement-on-office-based-anesthesia",ty:"std"},
+  "asa-office-qual":{org:"ASA",t:"Statement on Qualifications of Anesthesia Providers in the Office-Based Setting",u:"https://www.asahq.org/standards-and-practice-parameters/statement-on-qualifications-of-anesthesia-providers-in-the-office-based-setting",ty:"std"},
+  "asa-priv":{org:"ASA",t:"Statement on Granting Privileges for Moderate Sedation to Non-Anesthesia Practitioners",u:"https://www.asahq.org/standards-and-practice-parameters/statement-on-granting-privileges-for-administration-of-moderate-sedation-to-practitioners-who-are-not-anesthesia-professionals",ty:"std"},
+  "asa-propofol":{org:"ASA",t:"Statement on Safe Use of Propofol",u:"https://www.asahq.org/standards-and-practice-parameters/statement-on-safe-use-of-propofol",ty:"std"},
+  "asa-airway":{org:"ASA",t:"2022 Practice Guidelines for Management of the Difficult Airway",u:"https://pubs.asahq.org/anesthesiology/article/136/1/31/117915/2022-American-Society-of-Anesthesiologists",ty:"std",v:"2022-01",vl:"Anesthesiology, Jan 2022"},
+  "asa-modsed":{org:"ASA et al.",t:"Practice Guidelines for Moderate Procedural Sedation and Analgesia 2018",u:"https://pubs.asahq.org/anesthesiology/article/128/3/437/18818/Practice-Guidelines-for-Moderate-Procedural",ty:"std",v:"2018-03",vl:"Anesthesiology, Mar 2018"},
+  "asa-fasting":{org:"ASA",t:"2023 Practice Guidelines for Preoperative Fasting (modular update of 2017)",u:"https://journals.lww.com/anesthesiology/fulltext/10.1097/aln.0000000000004381~2023-american-society-of-anesthesiologists-practice",ty:"std",v:"2023-02",vl:"Anesthesiology, Feb 2023"},
+  "glp1":{org:"ASA / AGA / ASMBS / ISPOR / SAGES",t:"Multisociety Clinical Practice Guidance: GLP-1 Receptor Agonists in the Perioperative Period",u:"https://pmc.ncbi.nlm.nih.gov/articles/PMC11666732/",ty:"std",v:"2024-10",vl:"released Oct 2024; superseded 2023 ASA consensus"},
+  "asa-osa":{org:"ASA",t:"Practice Guidelines for Perioperative Management of Patients with Obstructive Sleep Apnea",u:"https://pubs.asahq.org/anesthesiology/article/120/2/268/11781/Practice-Guidelines-for-the-Perioperative",ty:"std",v:"2014-02",vl:"Anesthesiology, Feb 2014"},
+  "aana-std":{org:"AANA",t:"Standards for Nurse Anesthesia Practice",u:"https://www.aana.com/practice-manual/aana-practice-manual-standards-for-nurse-anesthesia-practice/",ty:"std"},
+  "aana-ppm":{org:"AANA",t:"Professional Practice Manual (incl. office-based anesthesia resources)",u:"https://www.aana.com/practice/professional-practice-manual/",ty:"std"},
+  "ecfr-416":{org:"CMS · eCFR",t:"42 CFR Part 416 — Ambulatory Surgical Services",p:"/title-42/chapter-IV/subchapter-B/part-416",ty:"cms",dyn:1},
+  "ecfr-416c":{org:"CMS · eCFR",t:"42 CFR 416 Subpart C — Specific Conditions for Coverage",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C",ty:"cms",dyn:1},
+  "cfr-416.41":{org:"CMS · eCFR",t:"42 CFR 416.41 — Governing body and management (incl. hospital transfer)",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.41",ty:"cms",dyn:1},
+  "cfr-416.42":{org:"CMS · eCFR",t:"42 CFR 416.42 — Surgical services (anesthetic risk, pre-discharge evaluation)",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.42",ty:"cms",dyn:1},
+  "cfr-416.43":{org:"CMS · eCFR",t:"42 CFR 416.43 — Quality assessment and performance improvement",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.43",ty:"cms",dyn:1},
+  "cfr-416.44":{org:"CMS · eCFR",t:"42 CFR 416.44 — Environment (emergency equipment)",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.44",ty:"cms",dyn:1},
+  "cfr-416.45":{org:"CMS · eCFR",t:"42 CFR 416.45 — Medical staff (privileges)",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.45",ty:"cms",dyn:1},
+  "cfr-416.47":{org:"CMS · eCFR",t:"42 CFR 416.47 — Medical records",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.47",ty:"cms",dyn:1},
+  "cfr-416.48":{org:"CMS · eCFR",t:"42 CFR 416.48 — Pharmaceutical services",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.48",ty:"cms",dyn:1},
+  "cfr-416.51":{org:"CMS · eCFR",t:"42 CFR 416.51 — Infection control",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.51",ty:"cms",dyn:1},
+  "cfr-416.52":{org:"CMS · eCFR",t:"42 CFR 416.52 — Patient admission, assessment and discharge",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.52",ty:"cms",dyn:1},
+  "cfr-416.54":{org:"CMS · eCFR",t:"42 CFR 416.54 — Emergency preparedness",p:"/title-42/chapter-IV/subchapter-B/part-416/subpart-C/section-416.54",ty:"cms",dyn:1},
+  "cfr-482.52":{org:"CMS · eCFR",t:"42 CFR 482.52 — Hospital CoP: Anesthesia services",p:"/title-42/chapter-IV/subchapter-G/part-482/subpart-D/section-482.52",ty:"cms",dyn:1},
+  "som-l":{org:"CMS",t:"State Operations Manual, Appendix L — ASC surveyor guidance",u:"https://www.cms.gov/Regulations-and-Guidance/Guidance/Manuals/downloads/som107ap_l_ambulatory.pdf",ty:"cms",vl:"current PDF; request archived revision for older events"},
+  "som-a":{org:"CMS",t:"State Operations Manual, Appendix A — Hospital interpretive guidelines (anesthesia §482.52)",u:"https://www.cms.gov/Regulations-and-Guidance/Guidance/Manuals/downloads/som107ap_a_hospitals.pdf",ty:"cms",vl:"current PDF; request archived revision for older events"},
+  "ecfr-pit":{org:"eCFR",t:"Using the eCFR point-in-time system (regulation as of a date; coverage from 2017)",u:"https://www.ecfr.gov/reader-aids/using-ecfr/ecfr-changes-through-time",ty:"cms"},
+  "aaahc":{org:"AAAHC",t:"Accreditation programs & Accreditation Handbook for Ambulatory Health Care",u:"https://www.aaahc.org/accreditation/",ty:"acc",vl:"handbook v44 current; v43 PDF public for earlier events"},
+  "aaahc-v43":{org:"AAAHC",t:"Accreditation Handbook for Ambulatory Health Care v43 (PDF)",u:"https://www.aaahc.org/uploads/2024/01/HBK_DOC_v43-AMB_FINAL_updated.pdf",ty:"acc",vl:"v43"},
+  "quada":{org:"QUAD A (AAAASF)",t:"Accreditation standards (Office-Based Surgery manual v16.0 effective Apr 7, 2025)",u:"https://www.quada.org/accreditation-standards",ty:"acc",v:"2025-04-07",vl:"OBS v16.0 effective Apr 7, 2025"},
+  "tjc":{org:"The Joint Commission",t:"The Joint Commission (hospital / ambulatory / office-based surgery standards)",u:"https://www.jointcommission.org/",ty:"acc"},
+  "ada":{org:"ADA",t:"Guidelines for the Use of Sedation and General Anesthesia by Dentists (PDF)",u:"https://www.ada.org/-/media/project/ada-organization/ada/ada-org/files/resources/library/oral-health-topics/ada_sedation_use_guidelines.pdf?rev=b08b8eb5e859419383ec19fa99248db3&hash=12AD34F236D560A8417855F10DFF4FF5",ty:"std",v:"2025-10",vl:"adopted Oct 2025, released Apr 20, 2026; prior edition 2016"},
+  "ada-topic":{org:"ADA",t:"Anesthesia and Sedation — ADA policies and guidance hub",u:"https://www.ada.org/resources/ada-library/oral-health-topics/anesthesia-and-sedation",ty:"std"},
+  "aaoms-poc":{org:"AAOMS",t:"Parameters of Care — Anesthesia in Outpatient Facilities",u:"https://www.aaoms.org/practice-resources/anesthesia/anesthesia-resources/anesthesia-parameters-of-care",ty:"std"},
+  "aaoms-wp":{org:"AAOMS",t:"Office-Based Anesthesia White Paper (PDF)",u:"https://aaoms.org/wp-content/uploads/2024/03/office_based_anesthesia_whitepaper_1.pdf",ty:"std"},
+  "aap-aapd":{org:"AAP / AAPD",t:"Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation",u:"https://publications.aap.org/pediatrics/article/143/6/e20191000/37173/Guidelines-for-Monitoring-and-Management-of",ty:"std",v:"2019-06",vl:"Pediatrics, June 2019 update"},
+  "mhaus":{org:"MHAUS",t:"Managing an MH crisis — treatment resources",u:"https://www.mhaus.org/healthcare-professionals/managing-a-crisis/",ty:"std"},
+  "mhaus-rec":{org:"MHAUS",t:"MHAUS recommendations (dantrolene availability, preparedness)",u:"https://www.mhaus.org/healthcare-professionals/mhaus-recommendations/",ty:"std"},
+  "asra-last":{org:"ASRA",t:"Checklist for Treatment of Local Anesthetic Systemic Toxicity (2020)",u:"https://asra.com/news-publications/asra-updates/blog-landing/guidelines/2020/11/01/checklist-for-treatment-of-local-anesthetic-systemic-toxicity",ty:"std",v:"2020-11-01",vl:"2020 version"},
+  "asra-ac":{org:"ASRA",t:"Regional Anesthesia in the Patient Receiving Antithrombotic or Thrombolytic Therapy (5th ed.)",u:"https://asra.com/news-publications/asra-updates/blog-landing/guidelines/2025/01/31/regional-anesthesia-in-the-patient-receiving-antithrombotic-or-thrombolytic-therapy-american-society-of-regional-anesthesia-and-pain-medicine-evidence-based-guidelines-(fifth-edition)",ty:"std",v:"2025-01-31",vl:"5th ed., Jan 2025; 4th ed. 2018"},
+  "aha":{org:"AHA",t:"Guidelines for CPR and Emergency Cardiovascular Care (ACLS / PALS)",u:"https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines",ty:"std",v:"2025-10",vl:"2025 guidelines; 2020 prior"},
+  "anaph":{org:"AAAAI / ACAAI",t:"Anaphylaxis: A 2023 Practice Parameter Update (PDF)",u:"https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Anaphylaxis-Practice-Paramaters-2023.pdf",ty:"std",v:"2023",vl:"2023 update"},
+  "das":{org:"Difficult Airway Society",t:"DAS guidelines for unanticipated difficult intubation in adults",u:"https://das.uk.com/guidelines/das_intubation_guidelines/",ty:"std",v:"2025",vl:"2025 update; 2015 prior"},
+  "asge":{org:"ASGE",t:"Guidelines for Sedation and Anesthesia in GI Endoscopy",u:"https://www.asge.org/home/resources/publications/guidelines/guidelines-for-sedation-and-anesthesia-in-gi-endoscopy",ty:"std",v:"2018",vl:"GIE 2018"},
+  "acr-sir":{org:"ACR / SIR",t:"Practice Parameter for Minimal and/or Moderate Sedation/Analgesia",u:"https://gravitas.acr.org/PPTS/DownloadPreviewDocument?DocId=95",ty:"std"},
+  "asps-lipo":{org:"ASPS",t:"Practice Advisory on Liposuction — Executive Summary (PDF)",u:"https://www.plasticsurgery.org/documents/medical-professionals/health-policy/key-issues/executive-summary-on-liposuction.pdf",ty:"std"},
+  "asps-safety":{org:"ASPS",t:"Patient Safety resources",u:"https://www.plasticsurgery.org/patient-safety",ty:"std"},
+  "apsf-tumescent":{org:"APSF",t:"Mega-Dose Lidocaine Dangers Seen in 'Tumescent' Liposuction",u:"https://www.apsf.org/article/mega-dose-lidocaine-dangers-seen-in-tumescent-liposuction/",ty:"lit"},
+  "apsf-office":{org:"APSF",t:"Standards for Office Anesthesia Vary Widely or Do Not Exist",u:"https://www.apsf.org/article/standards-for-office-anesthesia-vary-widely-or-do-not-exist/",ty:"lit"},
+  "apsf-fire":{org:"APSF",t:"OR Fire Prevention Algorithm (poster PDF)",u:"https://www.apsf.org/wp-content/uploads/collateral/posters/ORFireAlgorithmPoster11x17.pdf",ty:"std"},
+  "aaohns-t":{org:"AAO-HNS",t:"Clinical Practice Guideline: Tonsillectomy in Children (Update)",u:"https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/tonsillectomy-in-children-update/",ty:"std",v:"2019-02",vl:"2019 update"},
+  "cdc-inj":{org:"CDC",t:"Safe Injection Practices checklist (PDF)",u:"https://www.cdc.gov/injection-safety/media/pdfs/safe-injection-checklist-p.pdf",ty:"std"},
+  "fl-office":{org:"Florida Board of Medicine",t:"Fla. Admin. Code R. 64B8-9.009 — Standard of Care for Office Surgery (example state rule)",u:"https://flrules.org/gateway/ruleno.asp?id=64B8-9.009",ty:"board",vl:"check rule history for event date"},
+  "va-oba":{org:"Virginia Board of Medicine",t:"18VAC85-20, Part VIII — Office-Based Anesthesia (example state rule)",u:"https://law.lis.virginia.gov/admincodefull/title18/agency85/chapter20/partVIII/",ty:"board"},
+  "va-dent":{org:"Virginia Board of Dentistry",t:"18VAC60-21 — Sedation & anesthesia permits (Part VII) (example state rule)",u:"https://law.lis.virginia.gov/admincodefull/title18/agency60/chapter21/partVII/",ty:"board"},
+  "va-soc":{org:"Code of Virginia",t:"§ 8.01-581.20 — Standard of care; expert testimony (example jurisdiction)",u:"https://law.lis.virginia.gov/vacode/title8.01/chapter21.1/section8.01-581.20/",ty:"law"},
+  "va-cert":{org:"Code of Virginia",t:"§ 8.01-20.1 — Certification of expert witness opinion at service of process",u:"https://law.lis.virginia.gov/vacode/title8.01/chapter2/section8.01-20.1/",ty:"law"},
+  "fre702":{org:"Federal Rules of Evidence",t:"Rule 702 — Testimony by Expert Witnesses",u:"https://www.law.cornell.edu/rules/fre/rule_702",ty:"law",v:"2023-12-01",vl:"amended Dec 1, 2023"},
+  "frcp26":{org:"Federal Rules of Civil Procedure",t:"Rule 26 — Disclosure, incl. 26(a)(2)(B) expert reports",u:"https://www.law.cornell.edu/rules/frcp/rule_26",ty:"law"},
+  "lii-state":{org:"Cornell LII",t:"State regulations finder (all states)",u:"https://www.law.cornell.edu/regulations",ty:"law"}
+};
+const TYPES = {law:"Statute, rule of evidence & procedure",cms:"CMS / Conditions for Coverage",board:"Licensing-board rules (state examples)",acc:"Accreditation requirements",std:"Professional standards & guidelines",lit:"Patient-safety literature"};
+
+/* Section-level authorities */
+const SEC_AUTH = {
+  "1":["ecfr-416c","cfr-482.52","som-l","som-a","ecfr-pit","aaahc","quada","lii-state"],
+  "2":["asa-ps","asa-preanes","asa-osa","asa-office","asra-ac"],
+  "3":["asa-preanes","asa-fasting","glp1","asa-airway","asa-continuum"],
+  "4":["asa-office-qual","asa-priv","aana-std","cfr-416.45","cfr-482.52"],
+  "5":["asa-monitoring","cfr-416.44","mhaus-rec","asra-last","asa-office"],
+  "6":["asa-monitoring","aana-std","asa-continuum","apsf-fire"],
+  "7":["asa-continuum","asa-modsed","asa-propofol","asa-priv"],
+  "8":["aha","asa-airway","anaph","asra-last","mhaus"],
+  "9":["asa-pacu","asa-osa","cfr-416.52"],
+  "10":["cdc-inj","cfr-416.51","cfr-416.48"],
+  "11":["cfr-416.41","cfr-416.43","aaahc","quada","tjc"],
+  "12":["ada","aaoms-poc","asa-office","va-oba","va-dent","fl-office"],
+  "13":["ecfr-416c","som-l","cfr-416.42","cfr-416.52","cfr-416.54"],
+  "14":["asa-pacu","asa-osa","asa-airway"],
+  "15":["cfr-416.47"],
+  "16":["frcp26","fre702"],
+  "17":["cfr-416.47","frcp26"],
+  "19":["ecfr-pit"],
+  "21A":["asa-continuum","asa-modsed","asa-monitoring"],
+  "21B":["asa-airway","das"],
+  "21C":["asa-airway","aap-aapd","aha"],
+  "21D":["asa-fasting","glp1"],
+  "21E":["anaph","aha"],
+  "21F":["asra-last"],
+  "21G":["mhaus","mhaus-rec"],
+  "21H":["aha"],
+  "21I":["aha","asra-ac"],
+  "21J":["asa-airway","das","aaohns-t"],
+  "21K":["cfr-416.41","som-l"],
+  "22":["aha","asa-airway"],
+  "23":["fre702","va-soc"],
+  "dep":["frcp26","fre702","va-cert"]
+};
+
+/* Settings */
+const SETTINGS = {
+  hospital:{l:"Hospital / HOPD",mods:["14"],res:["cfr-482.52","som-a","tjc"],note:"Hospital Conditions of Participation (42 CFR 482.52) and SOM Appendix A interpretive guidelines govern anesthesia services in Medicare-participating hospitals."},
+  asc:{l:"Medicare-certified ASC",mods:["13","14"],res:["ecfr-416c","som-l","aaahc"],note:"ASC Conditions for Coverage (42 CFR 416 Subpart C) apply; confirm deemed status and accreditor on the event date."},
+  ascnc:{l:"Surgery center (not Medicare-certified)",mods:["13","14"],res:["aaahc","quada","lii-state"],note:"CfCs may not apply directly. State licensure and accreditation standards usually control; CfCs may still inform the analysis."},
+  office:{l:"Physician office (office-based surgery)",mods:["12"],res:["asa-office","quada","fl-office","va-oba"],note:"Office-based surgery is regulated state by state (registration, accreditation, level-of-sedation limits). Retrieve the board rule in effect on the event date."},
+  dental:{l:"Dental / OMS office",mods:["12"],res:["ada","va-dent","aaoms-poc"],note:"Dental board permits govern who may induce each level of sedation and where. Check the dentist's and the anesthesia provider's permits for the deepest level actually reached."}
+};
+
+/* Case types */
+const CASES = {
+  dental:{l:"Dental / Oral & maxillofacial surgery",set:"dental",mods:["12","21A","21B","21C","21D","21F","21K"],
+    risks:["Shared airway with the operator; oral packing, irrigation and debris sit directly above the larynx","Operator-anesthetist model: confirm a separate person was monitoring throughout","Cumulative local anesthetic and epinephrine across every cartridge, in mg/kg","Permit tier (minimal, moderate, deep/GA) versus the depth actually reached","Pediatric dental sedation: dedicated observer, dosing by actual weight, recovery","Office layout and EMS access: stairs, hallways, stretcher route, address clarity"],
+    ct:["Sedation permit held by the dentist and/or anesthesia provider matched the deepest level of sedation actually reached.","Operator-anesthetist model: a trained person other than the operator monitored the patient continuously.","Throat pack or oral partition placement and removal documented, with a count or confirmation.","Cumulative local anesthetic (mg/kg) and epinephrine totals calculated across all cartridges and re-injections.","Capnography and supplemental oxygen used as required for the level of sedation under the ADA/ASA guidance in effect.","Pediatric patient: AAP/AAPD personnel, monitoring and discharge requirements met."],
+    res:["ada","ada-topic","aaoms-poc","aaoms-wp","aap-aapd","va-dent","asa-continuum","asra-last"]},
+  plastics:{l:"Plastic / Cosmetic surgery",set:"office",mods:["12","13","21A","21F","21H","21I","21J","21K"],
+    risks:["Tumescent lidocaine: large infiltrate volumes, delayed peak levels (LAST can appear in recovery)","Combined procedures and long operative time in office settings","VTE and fat embolism (notably gluteal fat grafting)","Hypothermia with large exposed surfaces and cold infiltrate","Facelift / neck procedures: expanding hematoma and airway compression","State office-surgery rules: accreditation, procedure-time limits, overnight stays"],
+    ct:["Tumescent lidocaine total (mg/kg) calculated from infiltrate volume and concentration, with the timing of peak risk considered.","Combined-procedure duration and aspirate volume within state office-surgery and facility limits.","VTE risk assessed (e.g., Caprini) with prophylaxis decision documented.","Gluteal fat grafting: technique and ultrasound-guidance requirements under the state rule in effect, where applicable.","Active warming and temperature monitoring used for large-surface procedures.","Office accreditation and registration for the level of surgery confirmed on the event date."],
+    res:["asps-lipo","asps-safety","apsf-tumescent","fl-office","quada","aaahc","asra-last","apsf-office"]},
+  ortho:{l:"Orthopedic / Sports / Spine",set:"asc",mods:["13","14","21F","21H","21I","21A","21K"],
+    risks:["Peripheral nerve blocks and neuraxial techniques: LAST, nerve injury, intravascular injection","Antithrombotic timing relative to neuraxial or deep blocks","Beach-chair positioning and cerebral hypoperfusion (cuff site vs brain level)","Tourniquet time and pressure; bone cement implantation syndrome","Fat embolism with long-bone instrumentation","Compartment syndrome masked by dense blocks; outpatient total joints"],
+    ct:["Block drug, dose, volume, ultrasound guidance and aspiration or injection-pressure monitoring documented.","Antithrombotic timing versus neuraxial/deep block placement consistent with the ASRA edition in effect.","Beach-chair or upright positioning: blood pressure corrected to brain level and cerebral perfusion addressed.","Tourniquet inflation time and pressure documented, with deflation response noted.","Cemented arthroplasty: bone cement implantation syndrome anticipated, recognized and treated.","Post-block neurovascular checks and compartment-syndrome monitoring documented."],
+    res:["asra-last","asra-ac","asa-monitoring","aha","ecfr-416c","som-l"]},
+  gi:{l:"GI endoscopy / Procedural sedation",set:"asc",mods:["13","21A","21D","21C"],
+    risks:["Propofol given by non-anesthesia personnel; unintended deep sedation","Shared airway with bite block; prone or lateral ERCP positioning","Capnography expectations for moderate and deep sedation","Aspiration risk: GLP-1 receptor agonists, gastroparesis, bowel prep","OSA and obesity with minimal airway support","High-volume turnover and early discharge"],
+    ct:["Propofol administered only by personnel privileged for deep sedation under facility policy and the ASA statement in effect.","Capnography used for moderate or deep sedation as required by the standard in effect.","GLP-1 receptor agonist hold or liquid-diet plan followed under the guidance in effect on the event date.","Prone or lateral positioning: airway access and rescue plan documented."],
+    res:["asge","asa-propofol","asa-modsed","asa-priv","glp1","asa-fasting","asa-monitoring"]},
+  peds:{l:"Pediatric sedation / anesthesia",set:"hospital",mods:["21A","21B","21C","21D","12"],
+    risks:["Weight-based dosing errors and stacked sedatives","Laryngospasm and rapid desaturation","Dedicated independent observer for deep sedation","Size-appropriate airway and resuscitation equipment","Post-discharge airway risk in car safety seats","Post-tonsillectomy hemorrhage and OSA"],
+    ct:["Every dose checked in mg/kg against the patient's actual measured weight.","A dedicated independent observer was present for deep sedation (AAP/AAPD).","Age- and size-appropriate airway, suction and resuscitation equipment present.","Discharge criteria met and car-safety-seat and airway risks counseled.","PALS-qualified personnel immediately available."],
+    res:["aap-aapd","asa-fasting","aha","aaohns-t","asa-continuum"]},
+  ent:{l:"ENT / Head & neck / Airway surgery",set:"hospital",mods:["14","21B","21C","21J","21A"],
+    risks:["Shared or distorted airway; laser and airway fire","Post-tonsillectomy hemorrhage","Thyroid / neck surgery hematoma with airway compression","OSA with postoperative opioids","Difficult reintubation through edema or blood"],
+    ct:["Fire-risk assessment done and oxygen concentration managed near ignition sources.","Laser airway precautions (tube, cuff fill, FiO2) documented where applicable.","Neck-surgery hematoma plan: bedside opening equipment and escalation pathway.","Post-tonsillectomy bleeding plan and discharge instructions documented."],
+    res:["apsf-fire","aaohns-t","asa-airway","das","asa-osa"]},
+  ophtho:{l:"Ophthalmology / MAC",set:"asc",mods:["13","21F","21A","21H"],
+    risks:["Retrobulbar or peribulbar block: brainstem anesthesia, intravascular injection","Face covered by drapes: limited airway access, CO2 buildup under drapes","Open oxygen near cautery (fire)","Elderly patients with cardiac disease and anticoagulants","Oversedation causing sudden movement under the microscope"],
+    ct:["Block type, agent and volume documented; brainstem anesthesia recognized and managed.","Airway access and CO2 clearance under drapes addressed.","Oxygen delivery method and fire risk managed near cautery."],
+    res:["asra-last","apsf-fire","asa-continuum","asa-monitoring","ecfr-416c"]},
+  bariatric:{l:"Bariatric / High-BMI patient",set:"hospital",mods:["14","21A","21B","21D"],
+    risks:["OSA (often undiagnosed); CPAP availability in recovery","Difficult mask ventilation and rapid desaturation","Dosing by total vs lean body weight","GLP-1 receptor agonists and aspiration","Postoperative opioid-induced respiratory depression","Facility patient-selection BMI limits"],
+    ct:["OSA screening (e.g., STOP-Bang) done, with CPAP use planned for recovery.","Drug dosing basis (total, ideal or lean body weight) appropriate to each agent.","Patient met the facility's BMI and comorbidity selection criteria.","Ramped positioning and preoxygenation documented before induction."],
+    res:["asa-osa","glp1","asa-airway","asa-fasting","asa-pacu"]},
+  ir:{l:"IR / Cath lab / Non-OR sedation",set:"hospital",mods:["14","21A","21E","21H"],
+    risks:["Nurse-administered sedation under a non-anesthesia proceduralist","Remote location, far from airway help","Contrast reactions and anaphylaxis","Hemodynamic instability during cardiac procedures","Supine, draped patient in a dim room"],
+    ct:["Sedation nurse privileges and competencies match the depth reached.","Time for airway help to arrive in the remote location assessed.","Contrast-allergy history and premedication decisions documented."],
+    res:["acr-sir","asa-modsed","asa-priv","anaph","aha","cfr-482.52"]},
+  general:{l:"General surgery / Other",set:"asc",mods:["13","14"],
+    risks:["Use the core review and select adverse-event modules that fit the event."],ct:[],
+    res:["asa-hub","asa-monitoring","asa-continuum","ecfr-416c"]}
+};
+
+const INFO_FIELDS = [
+  ["case","Case / Matter",""],["patient","Patient / Identifier",""],["jur","Jurisdiction","e.g., Virginia"],
+  ["event","Date of event","",true],["dates","Date(s) of care","e.g., 03/14/2024 – 03/15/2024"],["facility","Facility / Location",""],
+  ["procedure","Procedure","",false,true],["anes","Anesthesia / Sedation","e.g., MAC with propofol; deep sedation"],
+  ["reviewer","Reviewer",""],["rdate","Review date","",true]
+];
+
+/* ---------- State ---------- */
+const KEY="aewr-v4";
+const blankTables = ()=>({timeline:[{},{},{}],matrix:[{},{}],authlog:[],xref:[{},{}],depo:[{},{}],intervals:{}});
+let S = {info:{},caseType:"dental",setting:"",settingTouched:false,view:"rec",scores:{},ev:{},au:{},tables:blankTables(),summary:{},collapsed:{},cite:{}};
+try{const raw=localStorage.getItem(KEY); if(raw){S=Object.assign(S,JSON.parse(raw)); S.tables=Object.assign(blankTables(),S.tables||{});}}catch(e){}
+if(!S.setting) S.setting = CASES[S.caseType].set;
+
+let saveT=null;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));document.getElementById("saved").textContent="Saved in this browser "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});}catch(e){document.getElementById("saved").textContent="Browser storage unavailable. Use Copy data to keep your work.";}},400);}
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),1800);}
+
+/* ---------- Authority links & version flags ---------- */
+function resUrl(id){const r=R[id]; if(!r.dyn) return r.u; const d=S.info.event; if(d && d>="2017-01-03" && d<=new Date().toISOString().slice(0,10)) return "https://www.ecfr.gov/on/"+d+r.p; return "https://www.ecfr.gov/current"+r.p;}
+function vStart(v){if(!v)return null; if(v.length===4)return v+"-01-01"; if(v.length===7)return v+"-01"; return v;}
+function vflag(id){
+  const r=R[id], d=S.info.event;
+  if(r.dyn){ if(!d) return ""; if(d<"2017-01-03") return '<span class="vflag">pre-2017: use CFR annual edition</span>'; return '<span class="vflag ok">as of '+d+'</span>'; }
+  if(!d||!r.v) return "";
+  const st=vStart(r.v);
+  if(d<st) return '<span class="vflag" title="The version linked here post-dates the event. Retrieve the version in effect on the event date.">post-dates event</span>';
+  return "";
+}
+function chip(id){const r=R[id]; if(!r) return ""; return '<a class="chip" href="'+esc(resUrl(id))+'" target="_blank" rel="noopener" title="'+esc(r.org+" — "+r.t+(r.vl?" ("+r.vl+")":""))+'">'+esc(shortName(id))+vflag(id)+'</a>';}
+function shortName(id){const r=R[id];
+  const map={"asa-hub":"ASA index","asa-continuum":"ASA Continuum of Sedation","asa-monitoring":"ASA Basic Monitoring","asa-preanes":"ASA Preanesthesia Care","asa-pacu":"ASA Postanesthesia Care","asa-ps":"ASA Physical Status","asa-office":"ASA Office-Based Anesthesia","asa-office-qual":"ASA Office Provider Qualifications","asa-priv":"ASA Moderate Sedation Privileges","asa-propofol":"ASA Propofol Statement","asa-airway":"ASA Difficult Airway 2022","asa-modsed":"ASA Moderate Sedation 2018","asa-fasting":"ASA Fasting 2023","glp1":"GLP-1 Multisociety 2024","asa-osa":"ASA OSA Guidelines","aana-std":"AANA Practice Standards","aana-ppm":"AANA Practice Manual","ecfr-416":"42 CFR 416","ecfr-416c":"42 CFR 416 Subpart C","cfr-482.52":"42 CFR 482.52","som-l":"SOM App. L","som-a":"SOM App. A","ecfr-pit":"eCFR point-in-time","aaahc":"AAAHC","aaahc-v43":"AAAHC Handbook v43","quada":"QUAD A","tjc":"Joint Commission","ada":"ADA Sedation Guidelines","ada-topic":"ADA sedation hub","aaoms-poc":"AAOMS Parameters of Care","aaoms-wp":"AAOMS Office White Paper","aap-aapd":"AAP/AAPD Pediatric Sedation","mhaus":"MHAUS crisis","mhaus-rec":"MHAUS recommendations","asra-last":"ASRA LAST Checklist","asra-ac":"ASRA Anticoagulation 5th ed.","aha":"AHA CPR/ECC","anaph":"Anaphylaxis Parameter 2023","das":"DAS Intubation","asge":"ASGE Sedation","acr-sir":"ACR–SIR Sedation","asps-lipo":"ASPS Liposuction Advisory","asps-safety":"ASPS Patient Safety","apsf-tumescent":"APSF Tumescent Lidocaine","apsf-office":"APSF Office Standards","apsf-fire":"APSF OR Fire Algorithm","aaohns-t":"AAO-HNS Tonsillectomy","cdc-inj":"CDC Safe Injection","fl-office":"Fla. R. 64B8-9.009","va-oba":"18VAC85-20 Pt VIII","va-dent":"18VAC60-21 Pt VII","va-soc":"Va. Code § 8.01-581.20","va-cert":"Va. Code § 8.01-20.1","fre702":"FRE 702","frcp26":"FRCP 26","lii-state":"LII state regs"};
+  if(map[id]) return map[id]; if(id.startsWith("cfr-")) return "42 CFR "+id.slice(4); return r.t;}
+function resBlock(id,withLog){const r=R[id]; if(!r) return "";
+  return '<div class="res"><div class="resrow"><div><a href="'+esc(resUrl(id))+'" target="_blank" rel="noopener">'+esc(r.t)+'</a>'+vflag(id)+'<div class="meta">'+esc(r.org)+(r.vl?" · "+esc(r.vl):"")+(r.dyn?" · link follows event date":"")+'</div></div>'+(withLog?'<button class="btn sm" data-log="'+id+'" title="Add to Authority Verification Log (§19)">Log</button>':'')+'</div></div>';}
+
+/* ---------- Relevance ---------- */
+function recMods(){const c=CASES[S.caseType], s=SETTINGS[S.setting]; return new Set([...(c.mods||[]),...(s?s.mods:[])]);}
+const OPTIONAL = new Set(["12","13","14","21A","21B","21C","21D","21E","21F","21G","21H","21I","21J","21K"]);
+function isRec(id){return !OPTIONAL.has(id) || recMods().has(id);}
+
+/* ---------- Build selectors & profile ---------- */
+function buildSelectors(){
+  $("#caseType").innerHTML=Object.entries(CASES).map(([k,v])=>'<option value="'+k+'">'+esc(v.l)+'</option>').join("");
+  $("#setting").innerHTML=Object.entries(SETTINGS).map(([k,v])=>'<option value="'+k+'">'+esc(v.l)+'</option>').join("");
+  $("#caseType").value=S.caseType; $("#setting").value=S.setting; $("#viewMode").value=S.view;
+}
+function secTitle(id){const s=SECTIONS.find(x=>x.id===id); return s?s.t:"";}
+function renderProfile(){
+  const c=CASES[S.caseType], st=SETTINGS[S.setting];
+  const mods=[...recMods()].sort((a,b)=>order(a)-order(b));
+  const res=[...new Set([...c.res,...st.res])];
+  $("#profile").innerHTML=
+    '<div class="l"><div class="eyebrow">Case profile</div><h2>'+esc(c.l)+' <span style="font-weight:500;color:var(--ink-3);font-size:15px">· '+esc(st.l)+'</span></h2>'+
+    '<div class="eyebrow" style="margin-top:4px">Modules brought forward</div><div class="modchips">'+mods.map(m=>'<a class="chip mod" href="#s-'+m+'"><span class="mono">§'+m+'</span>'+esc(secTitle(m))+'</a>').join("")+'</div>'+
+    '<div class="eyebrow">Case-specific risks to examine</div><ul style="margin-top:6px">'+c.risks.map(r=>'<li>'+esc(r)+'</li>').join("")+'</ul>'+
+    (c.ct.length?'<p class="sec-note" style="margin-top:12px">'+c.ct.length+' case-type focus items are added as <a href="#s-CT">§CT</a> and scored with the core review.</p>':'')+
+    '<p class="sec-note" style="margin-top:10px"><b>Setting:</b> '+esc(st.note)+'</p></div>'+
+    '<div><div class="eyebrow">Key authorities for this case</div><div class="reslist" style="margin-top:8px">'+res.map(id=>resBlock(id,true)).join("")+'</div></div>';
+}
+function order(id){const i=SECTIONS.findIndex(s=>s.id===id); return i<0?999:i;}
+
+/* ---------- Case info ---------- */
+function buildInfo(){
+  $("#info").innerHTML=INFO_FIELDS.map(([k,l,ph,isDate,wide])=>'<label class="field'+(wide?' wide':'')+'" for="i-'+k+'"><span>'+l+(k==="event"?' <span style="font-weight:400;color:var(--ink-3)">(sets authority versions)</span>':'')+'</span><input id="i-'+k+'" data-info="'+k+'" type="'+(isDate?"date":"text")+'" placeholder="'+esc(ph)+'" value="'+esc(S.info[k]||"")+'"></label>').join("");
+}
+
+/* ---------- Scored sections ---------- */
+function scoreBtns(cid){const v=S.scores[cid]; return '<div class="score" role="group" aria-label="Concern score">'+["0","1","2","3","na"].map(x=>'<button type="button" data-v="'+x+'" aria-pressed="'+(v===x)+'" title="'+({0:"0 · No concern: record shows the criterion was met",1:"1 · Documentation/clarification issue: gap or inconsistency with no apparent effect on care",2:"2 · Substantive concern: possible departure from an identifiable authority; relevance still to be analyzed",3:"3 · Significant concern: clear departure, material to outcome or a core safety failure",na:"N/A · Criterion does not apply to this case (not for missing information)"})[x]+'">'+(x==="na"?"N/A":x)+'</button>').join("")+'</div>';}
+function critRow(cid,text,ct){const v=S.scores[cid]||"";
+  return '<div class="crit'+(ct?' ct':'')+'" data-cid="'+cid+'" data-s="'+v+'" id="c-'+cid.replace(/[^\w.-]/g,"_")+'"><div class="cid">'+cid+'</div><div class="ctext">'+esc(text)+'</div>'+scoreBtns(cid)+
+  '<textarea rows="1" data-ev="'+cid+'" aria-label="Evidence / pinpoint citation for '+cid+'" placeholder="Where: doc · Ex. · p. · line/time · Bates">'+esc(S.ev[cid]||"")+'</textarea>'+
+  '<textarea rows="1" data-au="'+cid+'" aria-label="Authority / analysis for '+cid+'" placeholder="Rule + version · required vs. shown · why it matters">'+esc(S.au[cid]||"")+'</textarea></div>';}
+const COLHEAD='<div class="colhead"><span>#</span><span>Review criterion</span><span>Concern score<a class="help" href="#g-scoring" title="What 0–3 and N/A mean">?</a></span><span>Evidence / pinpoint citation<a class="help" href="#g-evidence" title="What to write here">?</a></span><span>Authority / analysis<a class="help" href="#g-authority" title="What to write here">?</a></span></div>';
+function authRow(id){const a=SEC_AUTH[id]; if(!a) return ""; return '<div class="auth"><span class="eyebrow">Authorities</span>'+a.map(chip).join("")+'</div>';}
+function secHead(id,title,extra){return '<div class="sec-h"><span class="sid">§'+id+'</span><h2>'+esc(title)+'</h2>'+(extra||"")+'</div>';}
+
+function scoredSection(s){
+  const opt=OPTIONAL.has(s.id), rec=isRec(s.id);
+  const tag = opt ? (rec?'<span class="rec">Recommended</span>':'<span class="notrec">Not flagged for this case</span>') : "";
+  const collapsed = S.collapsed[s.id]!==undefined ? S.collapsed[s.id] : (opt && !rec);
+  return '<section class="sec'+(collapsed?' collapsed':'')+'" id="s-'+s.id+'" data-sec="'+s.id+'"'+(S.view==="rec"&&opt&&!rec?' hidden':'')+'>'+
+    secHead(s.id,s.t,tag+'<span class="tot" data-tot="'+s.id+'"></span><button class="toggle" data-toggle="'+s.id+'">'+(collapsed?"Expand":"Collapse")+'</button>')+
+    '<div class="sec-body" style="display:flex;flex-direction:column;gap:10px">'+(s.id==="17"?'<p class="sec-note"><b>Scoring records:</b> 0 received and complete · 1 received but partial or needs reconciling · 2 missing and material to reconstruction · 3 critical record missing, or signs of alteration or after-the-fact entries · N/A this record type doesn\'t exist for the case. Send the 2- and 3-point items to counsel as a records request.</p>':'')+(s.id==="21A"?'<p class="sec-note"><b>Event review method.</b> For each suspected event, document the earliest objective evidence, recognition time, first intervention, escalation, definitive rescue, transfer/disposition and outcome. Calculate clinically material intervals. Do not infer an undocumented action merely because it would ordinarily be expected.</p>':'')+
+    authRow(s.id)+
+    '<div class="bulkrow">Mark unscored items: <button class="btn sm" data-bulk="'+s.id+'" data-bv="0">0</button><button class="btn sm" data-bulk="'+s.id+'" data-bv="na">N/A</button></div>'+
+    '<div class="crits">'+COLHEAD+s.c.map((t,i)=>critRow(s.id+"."+(i+1),t)).join("")+'</div></div></section>';
+}
+function ctSection(){
+  const c=CASES[S.caseType]; if(!c.ct.length) return '<section class="sec" id="s-CT" data-sec="CT" hidden></section>';
+  return '<section class="sec" id="s-CT" data-sec="CT">'+secHead("CT","Case-type focus: "+c.l,'<span class="rec">From case type</span><span class="tot" data-tot="CT"></span>')+
+    '<div class="sec-body" style="display:flex;flex-direction:column;gap:10px"><p class="sec-note">Supplemental items for this case type, added to the core checklist. They are scored with the core review and carry Concern # IDs like the other items.</p>'+
+    '<div class="auth"><span class="eyebrow">Authorities</span>'+c.res.map(chip).join("")+'</div>'+
+    '<div class="crits">'+COLHEAD+c.ct.map((t,i)=>critRow("CT-"+S.caseType+"."+(i+1),t,true)).join("")+'</div></div></section>';
+}
+
+/* ---------- Data tables ---------- */
+const TABLES={
+  timeline:{cols:[["time","Time","HH:MM:SS",90],["src","Source","monitor / MAR / EMS"],["phys","Physiology / monitor",""],["med","Medication / event",""],["resp","Provider response",""],["_el","Elapsed (from first)",""],["sig","Significance / conflict",""]]},
+  matrix:{cols:[["n","#","",40],["find","Material finding",""],["ev","Evidence / pinpoint citation",""],["type","Authority type",""],["auth","Exact authority / version",""],["an","Analysis",""],["cau","Causation relevance",""]]},
+  authlog:{cols:[["org","Authority / organization",""],["doc","Document / rule",""],["ver","Version / effective date",""],["jur","Jurisdiction / applicability",""],["pin","Pinpoint section / page",""],["use","How used in analysis",""]]},
+  xref:{cols:[["n","Concern #","e.g., 7.4",70],["pts","Pts","",46],["iss","Issue / finding",""],["wit","Witness / source",""],["ex","Exhibit / document",""],["pg","Page","",54],["ln","Line(s) / time","",80],["why","Why it matters / authority",""]]},
+  depo:{cols:[["wit","Witness",""],["top","Topic",""],["pg","Page","",54],["ln","Line(s)","",70],["tx","Testimony / admission (brief paraphrase)",""],["cn","Related Concern #","",80],["fu","Follow-up / contradiction",""]]}
+};
+const AUTH_TYPES=["Statute/regulation","Licensing-board rule","CMS/CfC","Accreditation requirement","Professional standard/guideline","Facility policy","Manufacturer IFU","Peer-reviewed literature"];
+function parseT(t){if(!t)return null; const m=String(t).trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/); if(!m)return null; return (+m[1])*3600+(+m[2])*60+(+(m[3]||0));}
+function fmtD(s){if(s==null)return ""; const neg=s<0; s=Math.abs(s); const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60; return (neg?"−":"")+(h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0");}
+function tableHTML(name){
+  const T=TABLES[name], rows=S.tables[name];
+  let base=null; if(name==="timeline"){for(const r of rows){const t=parseT(r.time); if(t!=null){base=t;break;}}}
+  return '<div class="tscroll"><table class="dt"><thead><tr>'+T.cols.map(c=>'<th'+(c[3]?' style="width:'+c[3]+'px"':'')+'>'+c[1]+'</th>').join("")+'<th style="width:30px"></th></tr></thead><tbody>'+
+   rows.map((r,i)=>'<tr>'+T.cols.map(c=>{
+     if(c[0]==="_el"){let t=parseT(r.time); let d=(t!=null&&base!=null)?t-base:null; if(d!=null&&d<0)d+=86400; return '<td class="calc">'+(d!=null?"T+"+fmtD(d):"")+'</td>';}
+     if(name==="matrix"&&c[0]==="type") return '<td><select data-t="'+name+'" data-r="'+i+'" data-k="type" aria-label="Authority type"><option value=""></option>'+AUTH_TYPES.map(a=>'<option'+(r.type===a?' selected':'')+'>'+a+'</option>').join("")+'</select></td>';
+     const short=c[3]&&c[3]<100;
+     return '<td>'+(short?'<input':'<textarea rows="1"')+' data-t="'+name+'" data-r="'+i+'" data-k="'+c[0]+'" aria-label="'+esc(c[1])+'" placeholder="'+esc(c[2])+'"'+(short?' value="'+esc(r[c[0]]||"")+'">':'>'+esc(r[c[0]]||"")+'</textarea>')+'</td>';
+   }).join("")+'<td><button class="x" data-del="'+name+'" data-r="'+i+'" aria-label="Remove row">×</button></td></tr>').join("")+
+   '</tbody></table></div><div class="tablebar"><button class="btn sm" data-add="'+name+'">Add row</button>'+(name==="timeline"?'<button class="btn sm" data-sort="timeline">Sort by time</button>':'')+'</div>';
+}
+function tableSection(id,title,name,note){return '<section class="sec" id="s-'+id+'">'+secHead(id,title)+'<div class="sec-body" style="display:flex;flex-direction:column;gap:10px">'+(note?'<p class="sec-note">'+note+'</p>':'')+authRow(id)+'<div data-table="'+name+'">'+tableHTML(name)+'</div></div></section>';}
+
+const INTERVALS=["First abnormality → recognition","Recognition → first intervention","Recognition → effective ventilation/oxygenation","Deterioration → advanced airway","Deterioration → CPR/defibrillation","Deterioration → EMS activation","Transfer decision → EMS activation","EMS activation → departure","Deterioration → definitive treatment","Other material interval"];
+function intervalsHTML(){const I=S.tables.intervals;
+  return '<div class="tscroll"><table class="dt"><thead><tr><th>Interval</th><th style="width:90px">Start</th><th>Start source</th><th style="width:90px">End</th><th>End source</th><th>Elapsed</th><th>Clinical significance / authority</th></tr></thead><tbody>'+
+  INTERVALS.map((n,i)=>{const r=I[i]||{}; const a=parseT(r.s),b=parseT(r.e); let d=(a!=null&&b!=null)?b-a:null; if(d!=null&&d<0)d+=86400;
+   return '<tr><td style="padding:9px 10px;font-size:13px">'+(i===9?'<input data-iv="'+i+'" data-k="name" placeholder="Other material interval" value="'+esc(r.name||"")+'">':esc(n))+'</td>'+
+   '<td><input data-iv="'+i+'" data-k="s" placeholder="HH:MM:SS" value="'+esc(r.s||"")+'"></td><td><input data-iv="'+i+'" data-k="ss" value="'+esc(r.ss||"")+'"></td>'+
+   '<td><input data-iv="'+i+'" data-k="e" placeholder="HH:MM:SS" value="'+esc(r.e||"")+'"></td><td><input data-iv="'+i+'" data-k="es" value="'+esc(r.es||"")+'"></td>'+
+   '<td class="calc" data-ivout="'+i+'">'+(d!=null?fmtD(d):"")+'</td><td><textarea rows="1" data-iv="'+i+'" data-k="sig">'+esc(r.sig||"")+'</textarea></td></tr>';}).join("")+'</tbody></table></div>';}
+
+const SUMMARY_FIELDS=["Undisputed facts","Key factual conflicts","Material documentation gaps","Material deviations/concerns requiring opinion","Defenses / alternative explanations to evaluate","Causation questions","Additional expertise needed outside reviewer scope","Opinions supported by current record","Opinions that should remain provisional"];
+
+function libraryHTML(){
+  const groups={}; Object.keys(R).forEach(id=>{(groups[R[id].ty]=groups[R[id].ty]||[]).push(id);});
+  return '<div class="lib">'+Object.keys(TYPES).filter(t=>groups[t]).map(t=>'<div><h3>'+TYPES[t]+'</h3>'+groups[t].map(id=>resBlock(id,true)).join("")+'</div>').join("")+'</div>';
+}
+
+function buildSections(){
+  const core=SECTIONS.filter(s=>+s.id>=1&&+s.id<=14);
+  let h="";
+  h+='<div class="eyebrow" style="margin-bottom:-18px">Core review · §1–14</div>';
+  core.forEach(s=>{ h+=scoredSection(s); if(s.id==="11") h+=ctSection(); });
+  h+=tableSection("15","Minute-by-minute adverse event reconstruction","timeline","Use objective timestamps whenever possible. Distinguish monitor-derived time, medication-administration time, narrative-entry time, EMS time and retrospective documentation. Enter times as HH:MM or HH:MM:SS; elapsed time is calculated from the first timed entry.");
+  h+=tableSection("16","Material finding-to-authority matrix","matrix");
+  h+=scoredSection(SECTIONS.find(s=>s.id==="17"));
+  h+='<section class="sec" id="s-18">'+secHead("18","Expert analysis summary")+'<div class="summary-grid">'+SUMMARY_FIELDS.map((f,i)=>'<label for="sum-'+i+'"><span>'+f+'</span><textarea id="sum-'+i+'" rows="3" data-sum="'+i+'">'+esc(S.summary[i]||"")+'</textarea></label>').join("")+'</div></section>';
+  h+=tableSection("19","Authority verification log","authlog","Use the <b>Log</b> button next to any authority on this page to add it here, then record the exact version, jurisdiction and pinpoint.");
+  h+='<section class="sec" id="s-20">'+secHead("20","Core source library")+'<div class="critical"><b>Critical rule:</b> Do not substitute a current guideline for the version governing the event date. Clearly distinguish mandatory legal and accreditation requirements from professional guidance and literature. Enter the <a href="#s-info">date of event</a> to flag linked versions that post-date it; eCFR links then open the regulation as it read on that date.</div>'+libraryHTML()+'</section>';
+  h+='<div class="eyebrow" style="margin-bottom:-18px">§21 · Adverse-event specific analysis modules</div>';
+  SECTIONS.filter(s=>s.id.startsWith("21")).forEach(s=>h+=scoredSection(s));
+  h+='<section class="sec" id="s-22">'+secHead("22","Critical-interval calculation sheet")+'<div class="sec-body" style="display:flex;flex-direction:column;gap:10px"><p class="sec-note">Enter start and end times (HH:MM or HH:MM:SS). Elapsed time calculates automatically and handles intervals that cross midnight.</p>'+authRow("22")+'<div id="ivwrap">'+intervalsHTML()+'</div></div></section>';
+  h+=scoredSection(SECTIONS.find(s=>s.id==="23"));
+  h+='<section class="sec" id="s-dep">'+secHead("D","Deposition / testimony pinpoint citations")+'<div class="sec-body" style="display:flex;flex-direction:column;gap:12px">'+
+    '<ul class="convention"><li>Deposition: <code>Smith Dep. 84:12–25</code> (Witness Last Name Dep. p. 84, lines 12–25)</li><li>Spanning pages: <code>Smith Dep. 84:12–85:4</code></li><li>Trial / hearing: <code>Transcript, Day 2, p. 117, lines 3–18</code></li><li>Medical record: <code>Anesthesia Record, p. 37, 10:42–10:47</code>; include Bates number when available</li><li>Exhibit: <code>Ex. 14, Emergency Transfer Policy, p. 3 § 4.2</code></li><li>For every scored concern, cite the best primary source. Add corroborating testimony or records when the issue is disputed.</li></ul>'+
+    authRow("dep")+
+    '<div class="eyebrow">Pinpoint citation builder</div><div class="builder">'+
+    '<label for="cb-w"><span class="eyebrow">Witness last name</span><input id="cb-w" data-cite="w" value="'+esc(S.cite.w||"")+'" placeholder="Smith"></label>'+
+    '<label for="cb-p1"><span class="eyebrow">Page</span><input id="cb-p1" data-cite="p1" inputmode="numeric" value="'+esc(S.cite.p1||"")+'" placeholder="84"></label>'+
+    '<label for="cb-l1"><span class="eyebrow">Line</span><input id="cb-l1" data-cite="l1" inputmode="numeric" value="'+esc(S.cite.l1||"")+'" placeholder="12"></label>'+
+    '<label for="cb-p2"><span class="eyebrow">End page</span><input id="cb-p2" data-cite="p2" inputmode="numeric" value="'+esc(S.cite.p2||"")+'" placeholder="85"></label>'+
+    '<label for="cb-l2"><span class="eyebrow">End line</span><input id="cb-l2" data-cite="l2" inputmode="numeric" value="'+esc(S.cite.l2||"")+'" placeholder="4"></label>'+
+    '<button class="btn primary" id="cbCopy">Copy</button></div><div class="cite-out" id="citeOut"></div></div></section>';
+  h+=tableSection("X","Attorney-ready concern / testimony cross-reference","xref","Use the Concern # (e.g., 7.4 or 21A.3) as the common identifier across the checklist, chronology, deposition cross-reference and final report, so counsel can move from a summary finding straight to the page/line testimony and underlying record.");
+  h+=tableSection("DN","Deposition review notes","depo");
+  $("#sections").innerHTML=h;
+  autosizeAll();
+  renderCite();
+}
+
+/* ---------- Totals ---------- */
+function sectionIds(){const ids=SECTIONS.map(s=>s.id); ids.splice(ids.indexOf("12"),0,"CT"); return ids;}
+function critIds(id){ if(id==="CT"){const c=CASES[S.caseType]; return c.ct.map((_,i)=>"CT-"+S.caseType+"."+(i+1));} const s=SECTIONS.find(x=>x.id===id); return s.c.map((_,i)=>id+"."+(i+1)); }
+function tally(id){let p=0,t2=0,t3=0,n=0; critIds(id).forEach(c=>{const v=S.scores[c]; if(!v)return; n++; if(v!=="na"){p+=+v; if(v==="2")t2++; if(v==="3")t3++;}}); return {p,t2,t3,n,tot:critIds(id).length};}
+function group(id){ if(id.startsWith("21")) return "ae"; if(id==="17"||id==="23") return "other"; return "core"; }
+function critText(cid){ if(cid.startsWith("CT-")){const [k,n]=cid.slice(3).split("."); return CASES[k]?CASES[k].ct[n-1]:"";} const [sid,n]=cid.split("."); const s=SECTIONS.find(x=>x.id===sid); return s?s.c[n-1]:""; }
+function updateTotals(){
+  const G={core:{p:0,t2:0,t3:0,n:0},ae:{p:0,t2:0,t3:0,n:0},other:{p:0,t2:0,t3:0,n:0}};
+  sectionIds().forEach(id=>{const t=tally(id); const g=G[group(id)]; g.p+=t.p; g.t2+=t.t2; g.t3+=t.t3; g.n+=t.n;
+    const el=document.querySelector('[data-tot="'+id+'"]'); if(el) el.innerHTML='<b>'+t.p+'</b> pts · 2-pt: <b>'+t.t2+'</b> · 3-pt: <b>'+t.t3+'</b> · scored '+t.n+'/'+t.tot;
+    const nb=document.querySelector('.nav a[data-nid="'+id+'"] .pt'); if(nb){nb.textContent=t.n?t.p:"–"; nb.className="pt "+(t.t3?"lvl3":t.t2?"lvl2":t.p?"lvl1":"z");}
+  });
+  const T={p:G.core.p+G.ae.p+G.other.p,t2:G.core.t2+G.ae.t2+G.other.t2,t3:G.core.t3+G.ae.t3+G.other.t3,n:G.core.n+G.ae.n+G.other.n};
+  const row=(l,g,cls)=>'<tr'+(cls?' class="'+cls+'"':'')+'><td>'+l+'</td><td class="num">'+g.p+'</td><td class="num">'+g.t2+'</td><td class="num">'+g.t3+'</td><td class="num">'+g.n+'</td></tr>';
+  document.querySelector("#sumTable tbody").innerHTML=row("Core review (§1–14 + case-type focus)",G.core)+row("Adverse-event modules (§21A–K)",G.ae)+row("Missing records / causation (§17, §23)",G.other)+row("Total case concern points",T,"total");
+  const fl=[]; sectionIds().forEach(id=>critIds(id).forEach(c=>{const v=S.scores[c]; if(v==="2"||v==="3") fl.push([c,v]);}));
+  fl.sort((a,b)=>b[1]-a[1]);
+  $("#flagged").innerHTML=fl.length?fl.map(([c,v])=>'<a class="flag" href="#c-'+c.replace(/[^\w.-]/g,"_")+'" data-jump="'+c+'"><span class="pt lvl'+v+' mono">'+v+'</span><span class="mono" style="font-size:12px;color:var(--ink-3)">'+c+'</span><span>'+esc(critText(c))+'</span></a>').join(""):'<div class="empty">No 2- or 3-point findings yet. Score items below and they appear here with their Concern #.</div>';
+}
+
+/* ---------- Nav ---------- */
+function buildNav(){
+  const items=[["guide","","How to use this review"],["case","","Case type & profile"],["info","0","Case identification"],["summary","Σ","Concern summary"]];
+  const core=[],ae=[],tail=[];
+  SECTIONS.forEach(s=>{const n=+s.id; if(n>=1&&n<=14){core.push([s.id,s.id,s.t]); if(s.id==="11"&&CASES[S.caseType].ct.length) core.push(["CT","CT","Case-type focus"]);} });
+  const mid=[["15","15","Event reconstruction"],["16","16","Finding-to-authority matrix"],["17","17","Missing records"],["18","18","Expert analysis summary"],["19","19","Authority log"],["20","20","Source library"]];
+  SECTIONS.filter(s=>s.id.startsWith("21")).forEach(s=>ae.push([s.id,s.id,s.t]));
+  tail.push(["22","22","Critical intervals"],["23","23","Causation analysis"],["dep","D","Pinpoint citations"],["X","X","Cross-reference"],["DN","DN","Deposition notes"]);
+  const scoredSet=new Set(sectionIds());
+  const a=([id,n,t])=>{const hide=S.view==="rec"&&OPTIONAL.has(id)&&!isRec(id); if(hide) return ""; return '<a href="#s-'+id+'" data-nid="'+id+'" class="'+(OPTIONAL.has(id)&&!isRec(id)?"dim":"")+'"><span class="n">'+(n?"§"+n:"")+'</span><span>'+esc(t)+'</span>'+(scoredSet.has(id)?'<span class="pt z">–</span>':'<span></span>')+'</a>';};
+  $("#nav").innerHTML=items.map(a).join("")+'<div class="grp eyebrow">Core review</div>'+core.map(a).join("")+'<div class="grp eyebrow">Records & analysis</div>'+mid.map(a).join("")+'<div class="grp eyebrow">Adverse-event modules</div>'+ae.map(a).join("")+'<div class="grp eyebrow">Intervals, causation & testimony</div>'+tail.map(a).join("");
+  const all=[...items,...core,...mid,...ae,...tail].filter(([id])=>!(S.view==="rec"&&OPTIONAL.has(id)&&!isRec(id)));
+  $("#mobnav").innerHTML='<option value="">Jump to section…</option>'+all.map(([id,n,t])=>'<option value="'+id+'">'+(n?"§"+n+" ":"")+esc(t)+'</option>').join("");
+}
+
+/* ---------- Misc ---------- */
+function autosize(t){t.style.height="auto"; t.style.height=Math.min(t.scrollHeight+2,320)+"px";}
+function autosizeAll(){document.querySelectorAll("#sections textarea").forEach(t=>{if(t.value)autosize(t);});}
+function renderCite(){const c=S.cite; let o=""; if(c.w&&c.p1){o=c.w+" Dep. "+c.p1+(c.l1?":"+c.l1:""); if(c.p2&&c.p2!==c.p1){o+="–"+c.p2+(c.l2?":"+c.l2:"");} else if(c.l2){o+="–"+c.l2;}} const el=$("#citeOut"); if(el) el.textContent=o||"Enter a witness and page to build the citation";}
+function copyText(txt,msg){ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast(msg),()=>fallbackCopy(txt,msg));} else fallbackCopy(txt,msg); }
+function fallbackCopy(txt,msg){ $("#importPanel").hidden=false; const ta=$("#importText"); ta.value=txt; ta.focus(); ta.select(); toast("Copy blocked here. The text is selected in the box above; press Ctrl/Cmd+C."); }
+function rerenderAll(){ buildSelectors(); renderProfile(); buildInfo(); buildSections(); buildNav(); updateTotals(); }
+
+/* ---------- Events ---------- */
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".score button");
+  if(b){const row=b.closest(".crit"), cid=row.dataset.cid, v=b.dataset.v; S.scores[cid]=S.scores[cid]===v?undefined:v; if(!S.scores[cid]) delete S.scores[cid];
+    row.dataset.s=S.scores[cid]||""; row.querySelectorAll(".score button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===S.scores[cid])); updateTotals(); save(); return;}
+  const tg=e.target.closest("[data-toggle]");
+  if(tg){const id=tg.dataset.toggle, sec=document.getElementById("s-"+id); const c=!sec.classList.contains("collapsed"); sec.classList.toggle("collapsed",c); tg.textContent=c?"Expand":"Collapse"; S.collapsed[id]=c; save(); return;}
+  const bk=e.target.closest("[data-bulk]");
+  if(bk){critIds(bk.dataset.bulk).forEach(c=>{if(!S.scores[c]){S.scores[c]=bk.dataset.bv; const row=document.querySelector('.crit[data-cid="'+c+'"]'); if(row){row.dataset.s=bk.dataset.bv; row.querySelectorAll(".score button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===bk.dataset.bv));}}}); updateTotals(); save(); return;}
+  const ad=e.target.closest("[data-add]");
+  if(ad){S.tables[ad.dataset.add].push({}); document.querySelector('[data-table="'+ad.dataset.add+'"]').innerHTML=tableHTML(ad.dataset.add); save(); return;}
+  const dl=e.target.closest("[data-del]");
+  if(dl){S.tables[dl.dataset.del].splice(+dl.dataset.r,1); document.querySelector('[data-table="'+dl.dataset.del+'"]').innerHTML=tableHTML(dl.dataset.del); save(); return;}
+  const so=e.target.closest("[data-sort]");
+  if(so){S.tables.timeline.sort((a,b)=>{const x=parseT(a.time),y=parseT(b.time); if(x==null)return 1; if(y==null)return -1; return x-y;}); document.querySelector('[data-table="timeline"]').innerHTML=tableHTML("timeline"); autosizeAll(); save(); return;}
+  const lg=e.target.closest("[data-log]");
+  if(lg){const r=R[lg.dataset.log]; S.tables.authlog.push({org:r.org,doc:r.t+"\n"+resUrl(lg.dataset.log),ver:r.dyn?(S.info.event?"as of "+S.info.event:"current"):(r.vl||""),jur:(r.ty==="cms"?"Federal (Medicare-participating)":r.ty==="board"||r.ty==="law"?"":"Professional guidance (not binding law)")}); document.querySelector('[data-table="authlog"]').innerHTML=tableHTML("authlog"); autosizeAll(); save(); toast("Added to Authority Verification Log (§19)"); return;}
+  if(e.target.id==="cbCopy"){copyText($("#citeOut").textContent,"Citation copied"); return;}
+  if(e.target.id==="btnExport"){copyText(JSON.stringify(S,null,1),"Case data copied as JSON"); return;}
+  if(e.target.id==="btnImport"){$("#importPanel").hidden=false; $("#importText").value=""; $("#importText").focus(); return;}
+  if(e.target.id==="btnCancelImport"){$("#importPanel").hidden=true; return;}
+  if(e.target.id==="btnDoImport"){try{const d=JSON.parse($("#importText").value); if(!d||typeof d!=="object"||!("scores" in d)) throw 0; S=Object.assign({info:{},scores:{},ev:{},au:{},summary:{},collapsed:{},cite:{}},d); S.tables=Object.assign(blankTables(),d.tables||{}); if(!CASES[S.caseType])S.caseType="general"; if(!SETTINGS[S.setting])S.setting=CASES[S.caseType].set; $("#importPanel").hidden=true; rerenderAll(); save(); toast("Case data loaded");}catch(err){toast("That text isn't case data from this page. Paste the full JSON from Copy data.");} return;}
+  if(e.target.id==="btnReset"){$("#resetWrap").innerHTML='<span class="confirm">Clear every score and note? <button class="btn sm danger" id="btnResetYes">Clear</button><button class="btn sm" id="btnResetNo">Keep</button></span>'; return;}
+  if(e.target.id==="btnResetNo"){$("#resetWrap").innerHTML='<button class="btn danger" id="btnReset">Clear case</button>'; return;}
+  if(e.target.id==="btnResetYes"){const ct=S.caseType; S={info:{},caseType:ct,setting:CASES[ct].set,settingTouched:false,view:S.view,scores:{},ev:{},au:{},tables:blankTables(),summary:{},collapsed:{},cite:{}}; $("#resetWrap").innerHTML='<button class="btn danger" id="btnReset">Clear case</button>'; rerenderAll(); save(); toast("Case cleared"); return;}
+  if(e.target.id==="btnSaveFile"){const blob=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=((S.info.case||"anesthesia-review").replace(/[^\w-]+/g,"_"))+"-"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast("Case file saved");return;}
+  if(e.target.id==="btnPrint"){document.querySelectorAll(".sec").forEach(x=>{x.hidden=false;x.classList.remove("collapsed");});document.querySelectorAll(".guide details").forEach(d=>d.open=true);window.print();return;}
+  if(e.target.id==="btnCopyFindings"){copyText(findingsText(),"Findings summary copied"); return;}
+  const j=e.target.closest("[data-jump]");
+  if(j){const c=j.dataset.jump, sid=c.startsWith("CT-")?"CT":c.split(".")[0]; const sec=document.getElementById("s-"+sid); if(sec){sec.hidden=false; sec.classList.remove("collapsed");}}
+  const ga=e.target.closest('a[href^="#g-"]');
+  if(ga){const d=document.getElementById(ga.getAttribute("href").slice(1)); if(d&&d.tagName==="DETAILS"){d.open=true;} return;}
+  const na=e.target.closest('a[href^="#s-"]');
+  if(na){const sec=document.getElementById(na.getAttribute("href").slice(1)); if(sec){sec.hidden=false; sec.classList.remove("collapsed"); const t=sec.querySelector("[data-toggle]"); if(t)t.textContent="Collapse";}}
+});
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.ev){S.ev[t.dataset.ev]=t.value; autosize(t); save(); return;}
+  if(t.dataset.au){S.au[t.dataset.au]=t.value; autosize(t); save(); return;}
+  if(t.dataset.info){S.info[t.dataset.info]=t.value; save(); if(t.dataset.info==="event"){renderProfile(); refreshChips();} return;}
+  if(t.dataset.t){const r=S.tables[t.dataset.t][+t.dataset.r]; r[t.dataset.k]=t.value; if(t.tagName==="TEXTAREA")autosize(t); save();
+    if(t.dataset.t==="timeline"&&t.dataset.k==="time"){ /* update elapsed cells */ const rows=S.tables.timeline; let base=null; for(const x of rows){const v=parseT(x.time); if(v!=null){base=v;break;}} document.querySelectorAll('[data-table="timeline"] tbody tr').forEach((tr,i)=>{const v=parseT(rows[i].time); let d=(v!=null&&base!=null)?v-base:null; if(d!=null&&d<0)d+=86400; tr.querySelector(".calc").textContent=d!=null?"T+"+fmtD(d):"";}); }
+    return;}
+  if(t.dataset.iv){const i=+t.dataset.iv; S.tables.intervals[i]=S.tables.intervals[i]||{}; S.tables.intervals[i][t.dataset.k]=t.value; if(t.tagName==="TEXTAREA")autosize(t); const r=S.tables.intervals[i]; const a=parseT(r.s),b=parseT(r.e); let d=(a!=null&&b!=null)?b-a:null; if(d!=null&&d<0)d+=86400; document.querySelector('[data-ivout="'+i+'"]').textContent=d!=null?fmtD(d):""; save(); return;}
+  if(t.dataset.sum){S.summary[t.dataset.sum]=t.value; save(); return;}
+  if(t.dataset.cite){S.cite[t.dataset.cite]=t.value.trim(); renderCite(); save(); return;}
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="caseType"){S.caseType=t.value; if(!S.settingTouched){S.setting=CASES[S.caseType].set; $("#setting").value=S.setting;} S.collapsed={}; renderProfile(); buildSections(); buildNav(); updateTotals(); save(); return;}
+  if(t.id==="setting"){S.setting=t.value; S.settingTouched=true; S.collapsed={}; renderProfile(); buildSections(); buildNav(); updateTotals(); save(); return;}
+  if(t.id==="viewMode"){S.view=t.value; buildSections(); buildNav(); updateTotals(); save(); return;}
+  if(t.id==="mobnav"&&t.value){const sec=document.getElementById("s-"+t.value); if(sec){sec.hidden=false; sec.classList.remove("collapsed"); sec.scrollIntoView();} t.value=""; return;}
+  if(t.dataset.t&&t.tagName==="SELECT"){S.tables[t.dataset.t][+t.dataset.r][t.dataset.k]=t.value; save(); return;}
+  if(t.id==="importFile"&&t.files[0]){const fr=new FileReader(); fr.onload=()=>{$("#importText").value=fr.result;}; fr.readAsText(t.files[0]); return;}
+});
+function refreshChips(){ document.querySelectorAll(".sec .auth").forEach(el=>{const sec=el.closest(".sec"); const id=sec.dataset.sec||sec.id.slice(2); const list=id==="CT"?CASES[S.caseType].res:SEC_AUTH[id]; if(list) el.innerHTML='<span class="eyebrow">Authorities</span>'+list.map(chip).join("");}); const lib=document.querySelector("#s-20 .lib"); if(lib) lib.outerHTML=libraryHTML(); }
+
+function findingsText(){
+  const I=S.info, c=CASES[S.caseType], st=SETTINGS[S.setting];
+  let o="ANESTHESIA EXPERT REVIEW — FINDINGS SUMMARY\n";
+  o+="Matter: "+(I.case||"—")+" | Jurisdiction: "+(I.jur||"—")+" | Event date: "+(I.event||"—")+"\nCase type: "+c.l+" | Setting: "+st.l+" | Procedure: "+(I.procedure||"—")+"\nReviewer: "+(I.reviewer||"—")+" | Review date: "+(I.rdate||"—")+"\n\n";
+  let tot={p:0,t2:0,t3:0}; sectionIds().forEach(id=>{const t=tally(id); tot.p+=t.p; tot.t2+=t.t2; tot.t3+=t.t3;});
+  o+="Total concern points: "+tot.p+" | 2-point findings: "+tot.t2+" | 3-point findings: "+tot.t3+"\n\n";
+  ["3","2","1"].forEach(v=>{const L=[]; sectionIds().forEach(id=>critIds(id).forEach(cid=>{if(S.scores[cid]===v){L.push("  ["+cid+"] "+critText(cid)+(S.ev[cid]?"\n      Evidence: "+S.ev[cid]:"")+(S.au[cid]?"\n      Authority: "+S.au[cid]:""));}})); if(L.length) o+=v+"-POINT FINDINGS\n"+L.join("\n")+"\n\n";});
+  o+="Totals do not independently establish negligence, breach of the standard of care, or causation.";
+  return o;
+}
+
+document.querySelectorAll(".guide details").forEach(d=>{ if(S.guide&&d.id in S.guide) d.open=S.guide[d.id]; d.addEventListener("toggle",()=>{S.guide=S.guide||{}; S.guide[d.id]=d.open; save();}); });
+rerenderAll();
+if(!Object.keys(S.scores).length && !S.info.case){ document.getElementById("saved").textContent="Blank case · entries save in this browser only"; }
+</script>
+
+</body>
+</html>
