@@ -1,573 +1,1103 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EMS Programs | Paul D. Camp Community College</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --camp-green: #1A6B36;
-            --camp-green-dark: #145A2C;
-            --camp-green-light: #238B47;
-            --lime: #8CC63F;
-            --lime-light: #A8D86B;
-            --lime-dark: #72A832;
-            --white: #FFFFFF;
-            --off-white: #F8FAF9;
-            --gray-50: #F9FAFB;
-            --gray-100: #F3F4F6;
-            --gray-200: #E5E7EB;
-            --gray-300: #D1D5DB;
-            --gray-400: #9CA3AF;
-            --gray-500: #6B7280;
-            --gray-600: #4B5563;
-            --gray-700: #374151;
-            --gray-800: #1F2937;
-            --gray-900: #111827;
-            --emt-blue: #1565C0;
-            --aemt-purple: #7B1FA2;
-            --paramedic-green: #00796B;
-            --aas-orange: #E65100;
-            --gold: #FFD700;
-            --gradient-green: linear-gradient(135deg, var(--camp-green) 0%, var(--camp-green-light) 100%);
-            --gradient-lime: linear-gradient(135deg, var(--lime-dark) 0%, var(--lime) 100%);
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-            --radius-sm: 6px;
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --radius-xl: 30px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-800); background: var(--white); overflow-x: hidden; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; font-weight: 700; line-height: 1.2; }
-        a { color: inherit; text-decoration: none; transition: all 0.3s ease; }
-        a:hover { color: var(--camp-green); }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-
-        /* Navigation */
-        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(20px); border-bottom: 3px solid var(--camp-green); transition: all 0.3s ease; }
-        .nav.scrolled { box-shadow: var(--shadow-lg); }
-        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 80px; }
-        .nav-logo { display: flex; align-items: center; gap: 14px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--camp-green); }
-        .nav-logo-icon { width: 50px; height: 50px; background: var(--gradient-green); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; box-shadow: var(--shadow-md); }
-        .nav-logo span { color: var(--lime-dark); }
-        .nav-menu { display: flex; align-items: center; gap: 8px; list-style: none; }
-        .nav-item { position: relative; }
-        .nav-link { display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-weight: 500; color: var(--gray-700); border-radius: var(--radius-md); transition: all 0.3s ease; cursor: pointer; }
-        .nav-link:hover { color: var(--camp-green); background: var(--gray-50); }
-        .nav-link i { font-size: 0.7rem; transition: transform 0.3s ease; }
-        .nav-item:hover .nav-link i { transform: rotate(180deg); }
-        .nav-dropdown { position: absolute; top: 100%; left: 0; min-width: 280px; background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-xl); border: 1px solid var(--gray-100); padding: 12px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; }
-        .nav-item:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--radius-sm); transition: all 0.3s ease; }
-        .dropdown-item:hover { background: var(--gray-50); }
-        .dropdown-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; flex-shrink: 0; }
-        .dropdown-icon.emt { background: var(--emt-blue); }
-        .dropdown-icon.aemt { background: var(--aemt-purple); }
-        .dropdown-icon.paramedic { background: var(--paramedic-green); }
-        .dropdown-icon.aas { background: var(--aas-orange); }
-        .dropdown-text { display: flex; flex-direction: column; }
-        .dropdown-text strong { color: var(--gray-800); font-size: 0.95rem; }
-        .dropdown-text small { color: var(--gray-500); font-size: 0.8rem; }
-        .dropdown-content h4 { font-size: 0.95rem; font-weight: 600; color: var(--gray-800); margin-bottom: 2px; }
-        .dropdown-content p { font-size: 0.8rem; color: var(--gray-500); }
-        .nav-cta { background: var(--gradient-green); color: white !important; padding: 12px 28px; border-radius: var(--radius-xl); font-weight: 600; box-shadow: var(--shadow-md); }
-        .nav-cta:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); color: white !important; }
-        .nav-toggle { display: none; flex-direction: column; gap: 5px; padding: 10px; cursor: pointer; background: none; border: none; }
-        .nav-toggle span { width: 26px; height: 3px; background: var(--camp-green); border-radius: 3px; transition: all 0.3s ease; }
-
-        /* Hero */
-        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 0 80px; background: linear-gradient(135deg, #f0f7f2 0%, #e8f5e9 50%, #f1f8e9 100%); overflow: hidden; }
-        .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 80%; height: 150%; background: radial-gradient(circle, rgba(140, 198, 63, 0.15) 0%, transparent 70%); animation: float 20s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, -30px); } }
-        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; z-index: 1; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--gold) 0%, #FFC107 100%); padding: 12px 24px; border-radius: var(--radius-xl); font-size: 0.9rem; font-weight: 700; color: var(--gray-900); box-shadow: var(--shadow-lg); margin-bottom: 24px; animation: slideInUp 0.8s ease forwards, pulse 2s ease-in-out infinite; }
-        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6); } }
-        .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); color: var(--gray-900); margin-bottom: 20px; animation: slideInUp 0.8s ease 0.1s forwards; opacity: 0; }
-        .hero-title span { background: var(--gradient-green); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero-subtitle { font-size: 1.25rem; color: var(--gray-600); margin-bottom: 32px; max-width: 520px; animation: slideInUp 0.8s ease 0.2s forwards; opacity: 0; }
-        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; animation: slideInUp 0.8s ease 0.3s forwards; opacity: 0; }
-        .btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; border-radius: var(--radius-xl); font-weight: 600; font-size: 1rem; transition: all 0.3s ease; cursor: pointer; border: none; }
-        .btn-primary { background: var(--gradient-green); color: white; box-shadow: var(--shadow-md); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); color: white; }
-        .btn-secondary { background: white; color: var(--camp-green); border: 2px solid var(--camp-green); }
-        .btn-secondary:hover { background: var(--camp-green); color: white; }
-        .hero-visual { animation: slideInUp 0.8s ease 0.4s forwards; opacity: 0; }
-        .hero-card { background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow-xl); }
-        .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: center; }
-        .stat-number { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--camp-green); margin-bottom: 8px; }
-        .stat-label { font-size: 0.9rem; color: var(--gray-500); font-weight: 500; }
-        .hero-features { margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--gray-200); }
-        .feature-item { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-        .feature-icon { width: 36px; height: 36px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--camp-green-dark); font-size: 0.9rem; }
-        .feature-text { font-weight: 500; color: var(--gray-700); }
-
-        /* LOR Banner */
-        .lor-banner { background: linear-gradient(135deg, var(--gold) 0%, #FFC107 50%, var(--gold) 100%); padding: 20px 0; position: relative; overflow: hidden; }
-        .lor-banner::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
-        .lor-content { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1; }
-        .lor-icon { font-size: 2.5rem; color: var(--camp-green-dark); }
-        .lor-text { text-align: center; }
-        .lor-text h3 { font-size: 1.3rem; color: var(--gray-900); margin-bottom: 4px; }
-        .lor-text p { font-size: 0.95rem; color: var(--gray-700); }
-
-        /* Programs */
-        .programs { padding: 100px 0; background: var(--white); }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--gray-100); padding: 8px 20px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 600; color: var(--camp-green); margin-bottom: 16px; }
-        .section-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--gray-900); margin-bottom: 16px; }
-        .section-subtitle { font-size: 1.1rem; color: var(--gray-500); max-width: 600px; margin: 0 auto; }
-        .programs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .program-card { background: white; border-radius: var(--radius-lg); padding: 32px; border: 1px solid var(--gray-200); transition: all 0.4s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .program-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; transition: height 0.3s ease; }
-        .program-card.emt::before { background: var(--emt-blue); }
-        .program-card.aemt::before { background: var(--aemt-purple); }
-        .program-card.paramedic::before { background: var(--paramedic-green); }
-        .program-card.aas::before { background: var(--aas-orange); }
-        .program-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); border-color: transparent; }
-        .program-icon { width: 64px; height: 64px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; margin-bottom: 20px; }
-        .program-card.emt .program-icon { background: var(--emt-blue); }
-        .program-card.aemt .program-icon { background: var(--aemt-purple); }
-        .program-card.paramedic .program-icon { background: var(--paramedic-green); }
-        .program-card.aas .program-icon { background: var(--aas-orange); }
-        .program-card h3 { font-size: 1.3rem; color: var(--gray-900); margin-bottom: 8px; }
-        .program-card .duration { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 16px; }
-        .program-card p { color: var(--gray-600); margin-bottom: 20px; flex-grow: 1; }
-        .program-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .meta-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--gray-50); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--gray-600); }
-        .program-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem; margin-top: auto; }
-        .program-card.emt .program-link { color: var(--emt-blue); }
-        .program-card.aemt .program-link { color: var(--aemt-purple); }
-        .program-card.paramedic .program-link { color: var(--paramedic-green); }
-        .program-card.aas .program-link { color: var(--aas-orange); }
-        .program-link i { transition: transform 0.3s ease; }
-        .program-card:hover .program-link i { transform: translateX(5px); }
-        .lor-badge { display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, var(--gold), #FFC107); padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; font-weight: 700; color: var(--gray-900); margin-left: 6px; vertical-align: middle; }
-
-        /* Why Choose */
-        .why-choose { padding: 100px 0; background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 100%); }
-        .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-        .why-card { background: white; border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md); transition: all 0.3s ease; }
-        .why-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .why-icon { width: 56px; height: 56px; background: var(--gradient-green); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; margin-bottom: 20px; }
-        .why-card h3 { font-size: 1.2rem; color: var(--gray-900); margin-bottom: 12px; }
-        .why-card p { color: var(--gray-600); }
-
-        /* Enrollment */
-        .enrollment { padding: 100px 0; background: var(--gradient-green); position: relative; }
-        .enrollment::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
-        .enrollment .section-header { position: relative; z-index: 1; }
-        .enrollment .section-badge { background: rgba(255,255,255,0.2); color: white; }
-        .enrollment .section-title { color: white; }
-        .enrollment .section-subtitle { color: rgba(255,255,255,0.8); }
-        .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; position: relative; z-index: 1; }
-        .step-card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: var(--radius-lg); padding: 32px; text-align: center; border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
-        .step-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-5px); }
-        .step-number { width: 48px; height: 48px; background: var(--lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--camp-green-dark); margin: 0 auto 20px; }
-        .step-card h3 { font-size: 1.1rem; color: white; margin-bottom: 12px; }
-        .step-card p { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
-        .step-card a { color: var(--lime); text-decoration: underline; }
-
-        /* Campuses */
-        .campuses { padding: 100px 0; background: var(--white); }
-        .campuses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-        .campus-card { background: white; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); transition: all 0.3s ease; border: 1px solid var(--gray-200); }
-        .campus-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-        .campus-image { height: 200px; background: var(--gradient-green); display: flex; align-items: center; justify-content: center; }
-        .campus-image i { font-size: 4rem; color: rgba(255,255,255,0.3); }
-        .campus-content { padding: 28px; }
-        .campus-content h3 { font-size: 1.3rem; color: var(--gray-900); margin-bottom: 12px; }
-        .campus-content p { color: var(--gray-600); margin-bottom: 16px; }
-        .campus-link { display: inline-flex; align-items: center; gap: 8px; color: var(--camp-green); font-weight: 600; }
-        .campus-link:hover { gap: 12px; }
-
-        /* CTA */
-        .cta { padding: 100px 0; background: var(--gradient-lime); position: relative; overflow: hidden; }
-        .cta::before { content: ''; position: absolute; top: -50%; right: -20%; width: 80%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
-        .cta-content { text-align: center; position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
-        .cta-content h2 { font-size: clamp(2rem, 4vw, 2.5rem); color: var(--gray-900); margin-bottom: 20px; }
-        .cta-content p { font-size: 1.1rem; color: var(--gray-700); margin-bottom: 32px; }
-        .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-        /* Footer */
-        .footer { background: var(--gray-900); color: white; padding: 60px 0 30px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 48px; margin-bottom: 48px; }
-        .footer-brand h3 { font-size: 1.5rem; margin-bottom: 16px; }
-        .footer-brand p { color: var(--gray-400); margin-bottom: 20px; }
-        .social-links { display: flex; gap: 12px; }
-        .social-link { width: 40px; height: 40px; background: var(--gray-800); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s ease; }
-        .social-link:hover { background: var(--camp-green); transform: translateY(-3px); color: white; }
-        .footer-column h4 { font-size: 1rem; margin-bottom: 20px; color: white; }
-        .footer-column ul { list-style: none; }
-        .footer-column li { margin-bottom: 12px; }
-        .footer-column a { color: var(--gray-400); }
-        .footer-column a:hover { color: var(--lime); }
-        .footer-bottom { padding-top: 30px; border-top: 1px solid var(--gray-800); text-align: center; color: var(--gray-500); }
-        .footer-bottom a { color: var(--lime); }
-
-        /* Back to Top */
-        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: var(--camp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; border: none; box-shadow: var(--shadow-lg); }
-        .back-to-top.visible { opacity: 1; visibility: visible; }
-        .back-to-top:hover { background: var(--camp-green-dark); transform: translateY(-3px); }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-            .hero-visual { order: -1; }
-            .programs-grid { grid-template-columns: repeat(2, 1fr); }
-            .why-grid { grid-template-columns: repeat(2, 1fr); }
-            .steps-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .nav-menu { position: fixed; top: 80px; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; gap: 0; box-shadow: var(--shadow-lg); transform: translateY(-100%); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-            .nav-menu.active { transform: translateY(0); opacity: 1; visibility: visible; }
-            .nav-toggle { display: flex; }
-            .nav-item { width: 100%; }
-            .nav-link { width: 100%; padding: 16px; }
-            .nav-dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; padding: 0 0 0 20px; display: none; }
-            .nav-item.active .nav-dropdown { display: block; }
-            .programs-grid, .why-grid, .steps-grid, .campuses-grid { grid-template-columns: 1fr; }
-            .footer-grid { grid-template-columns: 1fr; text-align: center; }
-            .social-links { justify-content: center; }
-            .hero-buttons { flex-direction: column; }
-            .btn { justify-content: center; }
-            .lor-content { flex-direction: column; text-align: center; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lita">
+<style>:root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
-                CAMP <span>EMS</span>
-            </a>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <span class="nav-link">Programs <i class="fas fa-chevron-down"></i></span>
-                    <div class="nav-dropdown">
-                        <a href="emt.html" class="dropdown-item">
-                            <div class="dropdown-icon" style="background: #1565C0;"><i class="fas fa-heartbeat"></i></div>
-                            <div class="dropdown-text"><strong>EMT Basic</strong><small>Emergency Medical Technician</small></div>
-                        </a>
-                        <a href="aemt.html" class="dropdown-item">
-                            <div class="dropdown-icon" style="background: #7B1FA2;"><i class="fas fa-user-md"></i></div>
-                            <div class="dropdown-text"><strong>AEMT</strong><small>Advanced EMT</small></div>
-                        </a>
-                        <a href="paramedic.html" class="dropdown-item">
-                            <div class="dropdown-icon" style="background: #00796B;"><i class="fas fa-ambulance"></i></div>
-                            <div class="dropdown-text"><strong>Paramedic</strong><small>National Registry Paramedic</small></div>
-                        </a>
-                        <a href="aas-ems.html" class="dropdown-item">
-                            <div class="dropdown-icon" style="background: #E65100;"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="dropdown-text"><strong>AAS Degree</strong><small>Associate of Applied Science</small></div>
-                        </a>
-                        <a href="cpl.html" class="dropdown-item">
-                            <div class="dropdown-icon" style="background: #1A6B36;"><i class="fas fa-award"></i></div>
-                            <div class="dropdown-text"><strong>Credit for Prior Learning</strong><small>Get credit for certifications</small></div>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item"><a href="https://www.pdc.edu/attend/advising-and-orientation/" class="nav-link" target="_blank">Admissions</a></li>
-                <li class="nav-item"><a href="https://www.pdc.edu/attend/paying-for-college/" class="nav-link" target="_blank">Financial Aid</a></li>
-                <li class="nav-item"><a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="nav-link" target="_blank">Contact</a></li>
-                <li class="nav-item"><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="nav-cta" target="_blank">Apply Now</a></li>
-            </ul>
-            <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
-        </div>
-    </nav>
+<title>Lita's Voice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lexend:wght@500;600&display=swap">
+<style>
+/* Layout: one-screen tablet app. Message strip on top, the active space in the middle, a big tab dock at the bottom.
+   Low-arousal sage/blue palette; talk buttons use the Fitzgerald Key colors AAC users and therapists already know. */
+:root{
+  --bg:#EDF1EE; --surface:#FFFFFF; --ink:#1D2A2C; --muted:#4F5E63; --line:#C7D2CC; --soft:#E0E8E3;
+  --accent:#2F5D8A; --accent-ink:#FFFFFF; --scrim:rgba(16,28,30,.5); --good:#2E7D4F;
+  --calm1:#BFD9EC; --calm2:#7FAFD3; --paper:#FFFFFF;
+  --people-bg:#FFF2C2; --people-bd:#B8931A;
+  --verb-bg:#DCF1D6;   --verb-bd:#4A9441;
+  --desc-bg:#DAE9F9;   --desc-bd:#3A77BA;
+  --noun-bg:#FCE2CB;   --noun-bd:#C9722A;
+  --social-bg:#FADCE7; --social-bd:#BB4B79;
+  --question-bg:#E8DFF7; --question-bd:#7556B0;
+  --neg-bg:#F8D8D5;    --neg-bd:#B83C35;
+  --folder-bg:#E4E7E2; --folder-bd:#66715F;
+  --f-display:"Lexend","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Verdana","Segoe UI",system-ui,sans-serif;
+  --radius:18px; --gap:10px; --tscale:1;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#131A1C; --surface:#1C2528; --ink:#E6EDEC; --muted:#A9B7B6; --line:#34423F; --soft:#26312F;
+  --accent:#8DB6E0; --accent-ink:#0F1C28; --scrim:rgba(0,0,0,.62); --good:#6FC28F;
+  --calm1:#2B4A63; --calm2:#4F7FA6; --paper:#FAFAF7;
+  --people-bg:#39321A; --people-bd:#D6B54A;
+  --verb-bg:#1E331F;   --verb-bd:#6EBD64;
+  --desc-bg:#1A2A3C;   --desc-bd:#7EAEE4;
+  --noun-bg:#392616;   --noun-bd:#E49D5C;
+  --social-bg:#3A1D29; --social-bd:#E083A9;
+  --question-bg:#2A2140; --question-bd:#A88AE0;
+  --neg-bg:#3B1B19;    --neg-bd:#E4766E;
+  --folder-bg:#262B25; --folder-bd:#9DA898;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#131A1C; --surface:#1C2528; --ink:#E6EDEC; --muted:#A9B7B6; --line:#34423F; --soft:#26312F;
+  --accent:#8DB6E0; --accent-ink:#0F1C28; --scrim:rgba(0,0,0,.62); --good:#6FC28F;
+  --calm1:#2B4A63; --calm2:#4F7FA6; --paper:#FAFAF7;
+  --people-bg:#39321A; --people-bd:#D6B54A;
+  --verb-bg:#1E331F;   --verb-bd:#6EBD64;
+  --desc-bg:#1A2A3C;   --desc-bd:#7EAEE4;
+  --noun-bg:#392616;   --noun-bd:#E49D5C;
+  --social-bg:#3A1D29; --social-bd:#E083A9;
+  --question-bg:#2A2140; --question-bd:#A88AE0;
+  --neg-bg:#3B1B19;    --neg-bd:#E4766E;
+  --folder-bg:#262B25; --folder-bd:#9DA898;
+  color-scheme:dark }
+/* High-contrast mode (grown-up setting): pure black on white, heavy borders */
+.app.hc{ --bg:#FFFFFF; --surface:#FFFFFF; --ink:#000000; --muted:#1A1A1A; --line:#000000; --soft:#F0F0F0; --accent:#003A8C; --accent-ink:#FFFFFF;
+  --people-bg:#FFF; --verb-bg:#FFF; --desc-bg:#FFF; --noun-bg:#FFF; --social-bg:#FFF; --question-bg:#FFF; --neg-bg:#FFF; --folder-bg:#FFF; color:#000; background:#FFF }
+.app.hc .tile{border-width:5px}
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <div class="hero-badge"><i class="fas fa-award"></i> Virginia's ONLY AEMT & Paramedic Letters of Review</div>
-                    <h1 class="hero-title">Launch Your <span>EMS Career</span> in Hampton Roads</h1>
-                    <p class="hero-subtitle">Join Virginia's most comprehensive EMS training program. From EMT to Paramedic, we provide the education and hands-on experience you need to save lives.</p>
-                    <div class="hero-buttons">
-                        <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="btn btn-primary" target="_blank"><i class="fas fa-rocket"></i> Apply Now</a>
-                        <a href="#programs" class="btn btn-secondary"><i class="fas fa-info-circle"></i> Explore Programs</a>
-                    </div>
-                </div>
-                <div class="hero-visual">
-                    <div class="hero-card">
-                        <div class="hero-stats">
-                            <div class="stat-item"><div class="stat-number">95%</div><div class="stat-label">Pass Rate</div></div>
-                            <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">Graduates</div></div>
-                            <div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Campuses</div></div>
-                        </div>
-                        <div class="hero-features">
-                            <div class="feature-item"><div class="feature-icon"><i class="fas fa-check"></i></div><span class="feature-text">G3 Eligible - Tuition Assistance Available</span></div>
-                            <div class="feature-item"><div class="feature-icon"><i class="fas fa-check"></i></div><span class="feature-text">Flexible Day & Evening Classes</span></div>
-                            <div class="feature-item"><div class="feature-icon"><i class="fas fa-check"></i></div><span class="feature-text">Hands-On Clinical Training</span></div>
-                            <div class="feature-item"><div class="feature-icon"><i class="fas fa-check"></i></div><span class="feature-text"><a href="cpl.html" style="color: inherit; text-decoration: underline;">Credit for Prior Learning Available</a></span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+*{box-sizing:border-box}
+html{height:100%;box-sizing:border-box}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select{font:inherit;color:var(--ink);-webkit-user-select:text;user-select:text}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0}
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;padding:10px 16px;background:var(--bg)}
+.app.rm *, .app.rm *::before, .app.rm *::after{transition:none!important;animation:none!important}
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important} }
 
-    <section class="lor-banner">
-        <div class="container">
-            <div class="lor-content">
-                <i class="fas fa-certificate lor-icon"></i>
-                <div class="lor-text">
-                    <h3><i class="fas fa-star"></i> Virginia's ONLY EMS Program with Letters of Review for AEMT & Paramedic</h3>
-                    <p>Recognized by the Committee on Accreditation of Educational Programs for the EMS Professions (CoAEMSP)</p>
-                </div>
-                <i class="fas fa-certificate lor-icon"></i>
-            </div>
-        </div>
-    </section>
+/* message strip */
+.msgbar{display:flex;gap:8px;align-items:stretch;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:8px}
+.msgwords{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;align-items:center;padding:4px 6px;border-radius:14px;min-height:76px;background:none;border:0;text-align:left}
+.chip{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;flex:none;min-width:66px;padding:4px 8px;border-radius:12px;background:var(--soft);font-weight:700;font-size:.9rem;gap:2px}
+.csym{font-size:1.9rem;line-height:1}
+img.csym{width:42px;height:42px;object-fit:cover;border-radius:8px}
+.hint{color:var(--muted);font-size:1rem;padding-left:6px}
+.mbtn{flex:none;width:70px;border-radius:16px;border:2px solid var(--line);background:var(--soft);display:grid;place-items:center;font-size:1.7rem;position:relative;overflow:hidden}
+.mbtn small{display:block;font-size:.72rem;font-weight:700;margin-top:-4px}
+.mbtn.speak{width:100px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.mbtn.gear{width:52px;font-size:1.3rem;color:var(--muted)}
+.hold::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--accent);transform:scaleX(0);transform-origin:left}
+.hold.holding::after{transform:scaleX(1);transition:transform var(--hold,2000ms) linear}
 
-    <section class="programs" id="programs">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge"><i class="fas fa-graduation-cap"></i> Our Programs</div>
-                <h2 class="section-title">Build Your EMS Career Path</h2>
-                <p class="section-subtitle">Progressive certification levels designed to advance your skills and career in emergency medical services.</p>
-            </div>
-            <div class="programs-grid">
-                <div class="program-card emt">
-                    <div class="program-icon"><i class="fas fa-user-md"></i></div>
-                    <h3>EMT Basic</h3>
-                    <p class="duration">EMS 111 & EMS 120 • 1 Semester</p>
-                    <p>Start your EMS journey with essential emergency care skills. Learn patient assessment, airway management, CPR, and emergency response fundamentals.</p>
-                    <div class="program-meta">
-                        <span class="meta-tag"><i class="fas fa-clock"></i> 8 Credits</span>
-                        <span class="meta-tag"><i class="fas fa-dollar-sign"></i> $1,376</span>
-                        <span class="meta-tag"><i class="fas fa-chart-line"></i> $37,720/yr</span>
-                    </div>
-                    <a href="emt.html" class="program-link">Learn More <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="program-card aemt">
-                    <div class="program-icon"><i class="fas fa-ambulance"></i></div>
-                    <h3>Advanced EMT <span class="lor-badge"><i class="fas fa-award"></i> LOR</span></h3>
-                    <p class="duration">EMS 123-186 • 1 Semester</p>
-                    <p>Advance your skills with IV therapy, advanced airway techniques, and expanded medication administration.</p>
-                    <div class="program-meta">
-                        <span class="meta-tag"><i class="fas fa-clock"></i> 11 Credits</span>
-                        <span class="meta-tag"><i class="fas fa-dollar-sign"></i> $1,891</span>
-                        <span class="meta-tag"><i class="fas fa-chart-line"></i> $42,077/yr</span>
-                    </div>
-                    <a href="aemt.html" class="program-link">Learn More <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="program-card paramedic">
-                    <div class="program-icon"><i class="fas fa-star-of-life"></i></div>
-                    <h3>Paramedic <span class="lor-badge"><i class="fas fa-award"></i> LOR</span></h3>
-                    <p class="duration">EMS 221-249 • 3 Semesters</p>
-                    <p>Master advanced life support including cardiac monitoring, medication administration, and complex patient management.</p>
-                    <div class="program-meta">
-                        <span class="meta-tag"><i class="fas fa-clock"></i> 33 Credits</span>
-                        <span class="meta-tag"><i class="fas fa-dollar-sign"></i> $5,674</span>
-                        <span class="meta-tag"><i class="fas fa-chart-line"></i> $45,266/yr</span>
-                    </div>
-                    <a href="paramedic.html" class="program-link">Learn More <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="program-card aas">
-                    <div class="program-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <h3>AAS in EMS</h3>
-                    <p class="duration">Complete Degree • 5 Semesters</p>
-                    <p>Earn your Associate degree while completing Paramedic certification. Includes general education for career advancement.</p>
-                    <div class="program-meta">
-                        <span class="meta-tag"><i class="fas fa-clock"></i> 65 Credits</span>
-                        <span class="meta-tag"><i class="fas fa-book"></i> Full Degree</span>
-                        <span class="meta-tag"><i class="fas fa-arrow-up"></i> Pathway</span>
-                    </div>
-                    <a href="aas-ems.html" class="program-link">Learn More <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
+/* main + dock */
+.main{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;padding-block:2px}
+.main.fill{overflow:hidden}
+.dock{display:flex;gap:6px;justify-content:center;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:6px}
+.tab{flex:1;max-width:124px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:15px;border:0;background:none;font-weight:700;font-size:.85rem;color:var(--muted)}
+.tab .ti{font-size:1.7rem;line-height:1.1}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
 
-    <section class="why-choose">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge"><i class="fas fa-star"></i> Why CAMP EMS</div>
-                <h2 class="section-title">Your Success Is Our Mission</h2>
-                <p class="section-subtitle">Discover what sets our EMS programs apart from the rest.</p>
-            </div>
-            <div class="why-grid">
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-award"></i></div>
-                    <h3>Only LOR Program in Virginia</h3>
-                    <p>We're the only EMS program in Virginia with Letters of Review for both AEMT and Paramedic from CoAEMSP.</p>
-                </div>
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-hands-helping"></i></div>
-                    <h3>Hands-On Training</h3>
-                    <p>Gain real-world experience with simulation labs, clinical rotations, and field internships with local fire departments.</p>
-                </div>
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-piggy-bank"></i></div>
-                    <h3>Affordable & G3 Eligible</h3>
-                    <p>Community college rates plus G3 tuition assistance. Financial aid, VA benefits, and payment plans available.</p>
-                </div>
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-calendar-alt"></i></div>
-                    <h3>Flexible Scheduling</h3>
-                    <p>Day and evening class options accommodate working professionals. Complete EMT in one semester.</p>
-                </div>
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>95% Pass Rate</h3>
-                    <p>Our graduates consistently exceed the national average on NREMT certification exams.</p>
-                </div>
-                <div class="why-card">
-                    <div class="why-icon"><i class="fas fa-briefcase"></i></div>
-                    <h3>Job Placement Support</h3>
-                    <p>Strong partnerships with Norfolk Fire-Rescue, Hampton Fire & Rescue, and area EMS agencies.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+/* talk grid */
+.boardhead{display:flex;align-items:center;gap:12px;min-height:48px}
+.boardhead h2{font-size:1.35rem}
+.back{padding:10px 18px;border-radius:14px;border:2px solid var(--folder-bd);background:var(--folder-bg);font-weight:700;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(var(--cols,6),minmax(0,1fr));gap:var(--gap)}
+.tile{position:relative;container-type:inline-size;aspect-ratio:1/1;min-width:0;border-radius:var(--radius);border:3px solid var(--cbd,var(--line));background:var(--cbg,var(--surface));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px;transition:transform .08s ease}
+.tile:active{transform:scale(.95)}
+.tile .sym{font-size:38cqi;line-height:1.05}
+.tile img.sym{width:74%;height:60%;object-fit:cover;border-radius:12px}
+.tile .lbl{font-weight:700;font-size:calc(clamp(.72rem,12cqi,1.4rem) * var(--tscale));text-align:center;line-height:1.1;overflow-wrap:anywhere;max-width:100%}
+.tile.ghost{visibility:hidden}
+.tile.is-hidden{opacity:.45;border-style:dashed}
+.tile.addtile{border-style:dashed;background:var(--surface)}
+.sndmark{position:absolute;top:4px;right:8px;font-size:.9rem;color:var(--muted)}
+.c-people{--cbg:var(--people-bg);--cbd:var(--people-bd)} .c-verb{--cbg:var(--verb-bg);--cbd:var(--verb-bd)}
+.c-desc{--cbg:var(--desc-bg);--cbd:var(--desc-bd)} .c-noun{--cbg:var(--noun-bg);--cbd:var(--noun-bd)}
+.c-social{--cbg:var(--social-bg);--cbd:var(--social-bd)} .c-question{--cbg:var(--question-bg);--cbd:var(--question-bd)}
+.c-neg{--cbg:var(--neg-bg);--cbd:var(--neg-bd)} .c-folder{--cbg:var(--folder-bg);--cbd:var(--folder-bd)}
+.c-folder::before{content:"";position:absolute;top:-3px;left:12%;width:38%;height:11px;background:var(--cbd);border-radius:0 0 9px 9px}
+.editbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;padding:10px 14px;border-radius:16px;background:var(--desc-bg);border:2px solid var(--desc-bd);font-weight:700}
+.sect{font-size:1.15rem;color:var(--muted)}
 
-    <section class="enrollment">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge"><i class="fas fa-clipboard-list"></i> Get Started</div>
-                <h2 class="section-title">Your Path to Enrollment</h2>
-                <p class="section-subtitle">Follow these simple steps to begin your EMS education journey.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3>Apply to CAMP</h3>
-                    <p>Complete your free application at <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank">pdc.edu/apply</a>.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3>Meet with Advisor</h3>
-                    <p>Schedule an appointment with the EMS Program Director to discuss your goals.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3>Complete Requirements</h3>
-                    <p>Submit health forms, background check, CPR certification, and immunization records.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3>Register & Start</h3>
-                    <p>Register for classes, purchase textbooks, and begin your EMS journey!</p>
-                </div>
-            </div>
-        </div>
-    </section>
+/* generic controls */
+.btn{padding:12px 18px;border-radius:14px;border:2px solid var(--line);background:var(--soft);font-weight:700;position:relative;overflow:hidden}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{border-color:var(--neg-bd);background:var(--neg-bg)}
+.btn.small{padding:8px 12px;font-size:.9rem}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{padding:10px 16px;border-radius:999px;border:2px solid var(--line);background:var(--surface);font-weight:700;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 
-    <section class="campuses">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge"><i class="fas fa-map-marker-alt"></i> Our Locations</div>
-                <h2 class="section-title">Three Convenient Campuses</h2>
-                <p class="section-subtitle">Serving the Hampton Roads and Southside Virginia communities.</p>
-            </div>
-            <div class="campuses-grid">
-                <div class="campus-card">
-                    <div class="campus-image"><i class="fas fa-university"></i></div>
-                    <div class="campus-content">
-                        <h3>Franklin Campus / Workforce Development Center</h3>
-                        <p>100 North College Drive<br>Franklin, VA 23851<br>757.569.6700</p>
-                        <a href="https://www.google.com/maps/place/100+North+College+Drive,+Franklin,+VA+23851" target="_blank" class="campus-link">Get Directions <i class="fas fa-external-link-alt"></i></a>
-                    </div>
-                </div>
-                <div class="campus-card">
-                    <div class="campus-image"><i class="fas fa-university"></i></div>
-                    <div class="campus-content">
-                        <h3>Hobbs Suffolk Campus</h3>
-                        <p>271 Kenyon Road<br>Suffolk, VA 23434<br>757.925.6300</p>
-                        <a href="https://www.google.com/maps/place/271+Kenyon+Road,+Suffolk,+VA+23434" target="_blank" class="campus-link">Get Directions <i class="fas fa-external-link-alt"></i></a>
-                    </div>
-                </div>
-                <div class="campus-card">
-                    <div class="campus-image"><i class="fas fa-university"></i></div>
-                    <div class="campus-content">
-                        <h3>CAMP in Smithfield</h3>
-                        <p>253 James Street<br>Smithfield, VA 23430<br>757.925.6340</p>
-                        <a href="https://www.google.com/maps/place/253+James+Street,+Smithfield,+VA+23430" target="_blank" class="campus-link">Get Directions <i class="fas fa-external-link-alt"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+/* modal */
+.overlay{position:fixed;inset:0;background:var(--scrim);display:grid;place-items:center;padding:16px;z-index:50}
+.dialog{background:var(--surface);color:var(--ink);border:2px solid var(--line);border-radius:22px;width:min(780px,100%);max-height:100%;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dhead h2{font-size:1.4rem}
+.dfoot{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.field{display:grid;gap:6px}
+.flabel{font-weight:700}
+.fhint{color:var(--muted);font-size:.9rem;max-width:62ch}
+.text{padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);width:100%}
+select.text{min-height:48px}
+.tog{display:flex;align-items:center;gap:10px;font-weight:700;min-height:44px}
+.tog input{width:26px;height:26px;accent-color:var(--accent)}
+.gsec{border:2px solid var(--line);border-radius:16px;padding:0 14px}
+.gsec summary{font-family:var(--f-display);font-weight:600;font-size:1.1rem;padding:14px 0;cursor:pointer}
+.gbody{display:flex;flex-direction:column;gap:16px;padding-bottom:16px}
+.preview{width:96px;height:96px;border-radius:16px;border:3px solid var(--line);display:grid;place-items:center;font-size:3rem;overflow:hidden;background:var(--bg)}
+.preview img{width:100%;height:100%;object-fit:cover}
+.filebtn{position:relative;overflow:hidden}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.listrow{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:var(--bg)}
+.listrow .csym{width:42px;text-align:center}
+.listrow span.grow{flex:1;min-width:0;font-weight:700}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.thumb{position:relative;border-radius:14px;overflow:hidden;border:2px solid var(--line);background:var(--paper)}
+.thumb img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.thumb .mood{position:absolute;left:6px;bottom:6px;font-size:1.4rem}
+.thumb .x{position:absolute;right:4px;top:4px;border:0;border-radius:10px;background:var(--surface);padding:4px 8px;font-weight:700}
+table.prog{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+table.prog th,table.prog td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.legend span{padding:6px 10px;border-radius:10px;border:2px solid var(--cbd);background:var(--cbg);font-weight:700;font-size:.9rem}
 
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Save Lives?</h2>
-                <p>Take the first step toward a rewarding career in emergency medical services. Apply today!</p>
-                <div class="cta-buttons">
-                    <a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" class="btn btn-primary" target="_blank"><i class="fas fa-rocket"></i> Start Application</a>
-                    <a href="https://outlook.office365.com/owa/calendar/CAMPEMSProgram@pdc.edu/bookings/" class="btn btn-secondary" target="_blank"><i class="fas fa-phone"></i> Contact Us</a>
-                </div>
-            </div>
-        </div>
-    </section>
+/* my day */
+.day{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px}
+.ft{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ftslot{border:3px solid var(--line);border-radius:18px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;min-height:170px}
+.ftslot h3{font-size:1rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ftslot .sym{font-size:4rem;line-height:1}
+.ftslot img.sym{width:110px;height:110px;object-fit:cover;border-radius:14px}
+.ftslot .lbl{font-weight:700;font-size:1.25rem}
+.sched{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.step{position:relative;border:3px solid var(--line);border-radius:18px;background:var(--surface);padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.step .sym{font-size:3rem;line-height:1}
+.step img.sym{width:80px;height:80px;object-fit:cover;border-radius:12px}
+.step .lbl{font-weight:700}
+.step.now{border-color:var(--accent);border-width:4px;background:var(--desc-bg)}
+.step.now::before{content:"Now";position:absolute;top:-12px;background:var(--accent);color:var(--accent-ink);font-size:.8rem;font-weight:700;padding:2px 10px;border-radius:999px}
+.step.done{opacity:.5}
+.step.done::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;font-size:4rem;color:var(--good);font-weight:700}
+.timerwrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+#timerc{width:220px;height:220px;max-width:100%}
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>CAMP EMS Programs</h3>
-                    <p>Paul D. Camp Community College provides comprehensive Emergency Medical Services education for Hampton Roads and Southside Virginia.</p>
-                    <div class="social-links">
-                        <a href="https://www.facebook.com/pabordeave" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/pdcamps/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://twitter.com/pdcamps" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.youtube.com/user/pdcamps" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://www.apply.vccs.edu/applications/vccs/apply.html?application_id=4091" target="_blank">Apply Now</a></li>
-                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">Financial Aid</a></li>
-                        <li><a href="https://www.pdc.edu/attend/paying-for-college/" target="_blank">G3 Program</a></li>
-                        <li><a href="https://www.nremt.org/" target="_blank">NREMT</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="tel:757-569-6700"><i class="fas fa-phone"></i> (757) 569-6700</a></li>
-                        <li><a href="mailto:ems@pdc.edu"><i class="fas fa-envelope"></i> ems@pdc.edu</a></li>
-                        <li><a href="https://www.pdc.edu" target="_blank"><i class="fas fa-globe"></i> www.pdc.edu</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Paul D. Camp Community College. All rights reserved. | <a href="https://www.pdc.edu/about-camp/accreditation/" target="_blank">Accreditation</a></p>
-            </div>
-        </div>
-    </footer>
+/* learn */
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.game{border:3px solid var(--line);border-radius:20px;background:var(--surface);padding:18px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.game .sym{font-size:3.4rem}
+.game b{font-family:var(--f-display);font-size:1.2rem}
+.game span{color:var(--muted)}
+.stars{display:flex;gap:6px;font-size:1.8rem}
+.stars i{font-style:normal;opacity:.25;transition:opacity .3s, transform .3s}
+.stars i.on{opacity:1;transform:scale(1.15)}
+.prompt{display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px}
+.prompt .big{font-size:5rem;line-height:1}
+.prompt img.big{width:150px;height:150px;object-fit:cover;border-radius:18px}
+.prompt .word{font-family:var(--f-display);font-size:2rem;font-weight:600}
+.countrow{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;font-size:3.4rem;max-width:560px}
+.choices{display:grid;grid-template-columns:repeat(var(--n),minmax(0,190px));gap:14px;justify-content:center}
+.choice{aspect-ratio:1/1;border-radius:20px;border:3px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;container-type:inline-size;transition:opacity .3s, transform .15s}
+.choice .sym{font-size:42cqi;line-height:1}
+.choice img.sym{width:78%;height:70%;object-fit:cover;border-radius:14px}
+.choice .num{font-family:var(--f-display);font-size:48cqi;font-weight:600}
+.choice .dot{width:62%;aspect-ratio:1;border-radius:50%;border:3px solid var(--line)}
+.choice .lbl{font-weight:700}
+.choice.faded{opacity:.25;pointer-events:none}
+.choice.right{border-color:var(--good);border-width:6px}
+.choice.cue{animation:cue 1.4s ease-in-out infinite}
+@keyframes cue{50%{transform:scale(1.06);border-color:var(--accent)}}
 
-    <button class="back-to-top" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+/* art */
+.artwrap{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;height:100%;min-height:0}
+.tools{display:flex;flex-direction:column;gap:8px;overflow:auto;padding:2px}
+.swatches{display:grid;grid-template-columns:repeat(2,48px);gap:8px}
+.sw{width:48px;height:48px;border-radius:50%;border:3px solid var(--line)}
+.sw[aria-pressed="true"]{outline:4px solid var(--accent);outline-offset:2px}
+.tbtn{min-height:48px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-weight:700;padding:6px 8px;display:flex;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden}
+.tbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.sizes .tbtn i{display:block;border-radius:50%;background:currentColor}
+.canvasbox{position:relative;min-height:0;min-width:0}
+.artcanvas{position:absolute;inset:0;width:100%;height:100%;border-radius:18px;border:2px solid var(--line);background:var(--paper);touch-action:none;display:block}
+.moodask{position:absolute;left:12px;right:12px;bottom:12px;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.moodask button{font-size:2.2rem;width:64px;height:64px;border-radius:16px;border:2px solid var(--line);background:var(--bg)}
 
-    <script>
-        const nav = document.querySelector('.nav');
-        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
-        const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-        navToggle.addEventListener('click', () => { navMenu.classList.toggle('active'); });
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => { if (window.innerWidth <= 768 && item.querySelector('.nav-dropdown')) item.classList.toggle('active'); });
-        });
-        const backToTop = document.querySelector('.back-to-top');
-        window.addEventListener('scroll', () => { backToTop.classList.toggle('visible', window.scrollY > 500); });
-        backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); });
-        });
-    </script>
+/* music + calm */
+.subnav{display:flex;flex-wrap:wrap;gap:8px}
+.xylo{flex:1;min-height:240px;display:flex;gap:10px;align-items:center}
+.bar{flex:1;min-width:0;height:var(--h);border-radius:18px;border:3px solid var(--line);background:var(--c);position:relative;touch-action:none;transition:filter .1s, transform .1s}
+.bar::before,.bar::after{content:"";position:absolute;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--surface);opacity:.8}
+.bar::before{top:12%} .bar::after{bottom:12%}
+.bar.hit{filter:brightness(1.15);transform:scale(.97)}
+.pads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:1}
+.pad{border-radius:22px;border:3px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:700;font-size:1.1rem;min-height:120px;touch-action:none}
+.pad .sym{font-size:3rem}
+.pad.hit{background:var(--soft);transform:scale(.97)}
+.calmstage{flex:1;min-height:300px;display:grid;place-items:center;position:relative}
+.breath{width:min(62vmin,360px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--calm1),var(--calm2));transform:scale(.5);display:grid;place-items:center;transition-property:transform;transition-timing-function:ease-in-out}
+.breath span{font-family:var(--f-display);font-size:1.6rem;font-weight:600;color:var(--ink);background:var(--surface);padding:6px 16px;border-radius:999px}
+.bubbles{position:absolute;inset:0;width:100%;height:100%;border-radius:20px;background:var(--surface);border:2px solid var(--line);touch-action:none}
+.soundgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;width:100%}
+.songs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+
+@media (max-width:760px){
+  .day{grid-template-columns:1fr}
+  .artwrap{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .tools{flex-direction:row;flex-wrap:wrap}
+  .swatches{grid-template-columns:repeat(5,40px)} .sw{width:40px;height:40px}
+}
+@media (max-width:520px){
+  .app{padding:8px 16px;gap:8px}
+  .mbtn{width:54px;font-size:1.4rem} .mbtn.speak{width:66px} .mbtn.gear{width:40px}
+  .msgwords{min-height:64px}
+  .tab{font-size:.7rem} .tab .ti{font-size:1.4rem}
+  .pads{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* phrases */
+.phrases{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:var(--gap)}
+.ptile{position:relative;display:flex;align-items:center;gap:12px;min-height:84px;padding:10px 14px;border-radius:var(--radius);border:3px solid var(--cbd,var(--line));background:var(--cbg,var(--surface));text-align:left;transition:transform .08s ease}
+.ptile:active{transform:scale(.97)}
+.ptile .sym{font-size:2.4rem;line-height:1;flex:none}
+.ptile img.sym{width:56px;height:56px;object-fit:cover;border-radius:10px}
+.ptile .lbl{font-weight:700;font-size:calc(1.1rem * var(--tscale));line-height:1.25;min-width:0}
+.ptile.is-hidden{opacity:.45;border-style:dashed}
+.ptile.ghost{visibility:hidden}
+.gsect{display:flex;flex-direction:column;gap:10px}
+.gsect > h3{font-size:.95rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.lvl{padding:3px 12px;border-radius:999px;background:var(--soft);font-weight:700;font-size:.85rem;color:var(--ink)}
+
+/* math */
+.group{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px;font-size:2.3rem;line-height:1;max-width:280px;padding:10px;border-radius:16px;background:var(--soft)}
+.group img.csym{width:40px;height:40px}
+.group .gone{opacity:.25}
+.eq{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px}
+.op{font-family:var(--f-display);font-size:3rem;font-weight:600}
+.bignum{font-family:var(--f-display);font-size:6rem;font-weight:600;line-height:1}
+.choice.grp{aspect-ratio:auto;min-height:150px;padding:10px}
+.choice.grp .group{background:none;font-size:1.7rem;max-width:100%}
+.choice.grp .group img.csym{width:30px;height:30px}
+.patrow{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;align-items:center}
+.pcell{width:84px;height:84px;border-radius:16px;border:3px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:3rem;overflow:hidden}
+.pcell img{width:100%;height:100%;object-fit:cover}
+.pcell.q{border-style:dashed;font-family:var(--f-display);color:var(--muted)}
+
+/* jigsaw */
+.jig{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:center}
+.jboard{display:grid;border:3px solid var(--line);border-radius:14px;background:var(--soft);position:relative;overflow:hidden;flex:none;max-width:100%}
+.jghost{position:absolute;inset:0;opacity:.2;background-size:cover;pointer-events:none}
+.jcell{position:relative;outline:1px dashed var(--line);outline-offset:-1px}
+.jtray{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;justify-content:center;flex:1;min-width:220px;padding:10px;border:2px dashed var(--line);border-radius:14px;min-height:120px}
+.piece{border:2px solid var(--surface);border-radius:6px;background-repeat:no-repeat;touch-action:none;padding:0;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.piece.sel{outline:4px solid var(--accent);outline-offset:2px}
+.piece.drag{position:fixed;z-index:60;pointer-events:none;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.jcell .piece{position:absolute;inset:0;width:100%!important;height:100%!important;border:0;border-radius:0;box-shadow:none}
+.srcs{display:flex;flex-wrap:wrap;gap:10px}
+.src{width:76px;height:76px;border-radius:14px;border:3px solid var(--line);background-size:cover;background-position:center;padding:0}
+.src[aria-pressed="true"]{outline:4px solid var(--accent);outline-offset:2px}
+.donebox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px}
+
+/* memory */
+.mem{display:grid;grid-template-columns:repeat(var(--mc),minmax(0,150px));gap:12px;justify-content:center}
+.mcard{aspect-ratio:1/1;border-radius:18px;border:3px solid var(--accent);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;container-type:inline-size;padding:0;font-size:2rem}
+.mcard.open{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.mcard .sym{font-size:48cqi;line-height:1}
+.mcard img.sym{width:80%;height:80%;object-fit:cover;border-radius:12px}
+.mcard.matched{border-color:var(--good);border-width:6px}
+
+/* stories */
+.stories{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.reader{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;min-height:0}
+.reader .pic{font-size:7rem;line-height:1}
+.reader img.pic{width:min(360px,80vw);height:min(260px,36vh);object-fit:cover;border-radius:20px;border:3px solid var(--line)}
+.reader p{font-family:var(--f-display);font-size:calc(1.7rem * var(--tscale));font-weight:500;max-width:28ch;margin:0;text-wrap:balance;line-height:1.3}
+.pdots{display:flex;gap:8px}
+.pdots i{width:12px;height:12px;border-radius:50%;background:var(--line)}
+.pdots i.on{background:var(--accent)}
+.navrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.navrow .btn{min-width:130px;font-size:1.2rem;padding:16px 22px}
+
+/* log */
+.stats{display:flex;flex-wrap:wrap;gap:10px}
+.stat{padding:10px 14px;border-radius:14px;background:var(--bg);display:flex;flex-direction:column;min-width:120px}
+.stat b{font-family:var(--f-display);font-size:1.6rem;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:.85rem}
+textarea.text{min-height:160px;resize:vertical}
+
+.game img.sym{width:96px;height:96px;object-fit:cover;border-radius:14px}
+.ptile.addtile{border-style:dashed;background:var(--surface)}
+@media (max-width:520px){ .tab .ti{font-size:1.25rem} .tab{font-size:.62rem} .dock{gap:2px;padding:4px} }
+</style>
+
+<div class="app" id="app">
+  <div class="msgbar" role="region" aria-label="Message">
+    <button class="msgwords" id="msgwords" aria-label="Message. Tap to say it" aria-live="polite"></button>
+    <button class="mbtn" id="bk" aria-label="Remove last word">⌫<small>back</small></button>
+    <button class="mbtn" id="clr" aria-label="Clear message">✕<small>clear</small></button>
+    <button class="mbtn speak" id="spk" aria-label="Say the message">▶<small>say it</small></button>
+    <button class="mbtn gear hold" id="gear" aria-label="Grown-up settings. Press and hold">⚙</button>
+  </div>
+  <main class="main" id="main"></main>
+  <nav class="dock" id="dock" role="tablist" aria-label="Sections"></nav>
+</div>
+
+<script>
+/* ---------- tiny helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+function h(tag,attrs,...kids){const e=document.createElement(tag);
+  for(const[k,v]of Object.entries(attrs||{})){ if(v==null||v===false)continue;
+    if(k==='class')e.className=v;
+    else if(k==='style'&&typeof v==='object'){for(const[p,val]of Object.entries(v)){p.startsWith('--')?e.style.setProperty(p,val):e.style[p]=val}}
+    else if(k.startsWith('on')&&typeof v==='function')e.addEventListener(k.slice(2),v);
+    else if(v===true)e.setAttribute(k,'');
+    else e.setAttribute(k,v)}
+  for(const c of kids.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)))}
+  return e}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const tok=n=>getComputedStyle($('#app')).getPropertyValue(n).trim();
+
+/* ---------- words for the interface (child-facing) ---------- */
+const STR={
+ en:{talk:'Talk',phrases:'Phrases',feel:'Feel',day:'My Day',stories:'Stories',learn:'Learn',art:'Art',music:'Music',calm:'Calm',
+  tapHint:'Tap pictures to make a message',words:"{name}'s words",home:'Home',ifeel:'I feel…',ineed:'I need…',
+  first:'First',then:'Then',firstThen:'First, then',timer:'Wait timer',dayT:"{name}'s day",tapStep:'Tap a step when it is done',stopB:'Stop',min:'min',
+  learnT:'Learn and play',gWords:'Words',gMath:'Numbers',gPuz:'Puzzles',games:'Games',again:'Play again',other:'Other games',hear:'Hear it again',
+  did:'You did it!',yes:'Yes!',findSame:'Find the same',find:'Find',howMany:'How many?',more:'Which has more?',less:'Which has less?',next:'What comes next?',
+  showMe:'Show me',plus:'plus',minus:'minus',whatIs:'What is',level:'Level',levelUp:'Level up!',pieces:'Pieces',pairs:'Pairs',pick:'Pick a picture',
+  morePieces:'More pieces',morePairs:'More pairs',newPic:'New picture',allDone:'All done',
+  read:'Read',nextP:'Next',backP:'Back',theEnd:'The end',storiesT:'Stories',
+  in:'Breathe in',hold:'Hold',out:'Breathe out',ready:'Ready',start:'Start',breathe:'Breathe',bubbles:'Bubbles',sounds:'Calm sounds',
+  rain:'Rain',ocean:'Ocean',hum:'Soft hum',night:'Night',volume:'Volume',playing:'playing',
+  notes:'Play notes',drums:'Drums',mysongs:'My songs',beatOff:'Beat off',slow:'Slow beat',steady:'Steady beat',chimes:'Chimes',marimba:'Marimba',piano:'Soft piano',
+  kick:'Big drum',tomlo:'Low drum',tomhi:'High drum',snare:'Snare',clap:'Clap',shaker:'Shaker',
+  eraser:'Eraser',draw:'Draw',mirror:'Mirror',flower:'Flower',clear:'Hold to clear',saveA:'Save',mypics:'My pictures',feelPic:'How does it feel?',howFeel:'How does your picture feel?',iFeel:'I feel',
+  back:'back',clearB:'clear',sayit:'say it',edit:'Editing: tap a button to change it, or tap ＋ to add one.',doneEdit:'Done editing',add:'Add',noSongs:'A grown-up can add songs: hold ⚙ for 2 seconds, then open "Music: my songs".'},
+ es:{talk:'Hablar',phrases:'Frases',feel:'Sentir',day:'Mi día',stories:'Cuentos',learn:'Aprender',art:'Arte',music:'Música',calm:'Calma',
+  tapHint:'Toca las imágenes para hacer un mensaje',words:'Palabras de {name}',home:'Inicio',ifeel:'Me siento…',ineed:'Necesito…',
+  first:'Primero',then:'Después',firstThen:'Primero, después',timer:'Temporizador',dayT:'El día de {name}',tapStep:'Toca un paso cuando termines',stopB:'Parar',min:'min',
+  learnT:'Aprender y jugar',gWords:'Palabras',gMath:'Números',gPuz:'Rompecabezas',games:'Juegos',again:'Otra vez',other:'Otros juegos',hear:'Escuchar otra vez',
+  did:'¡Lo lograste!',yes:'¡Sí!',findSame:'Busca el mismo',find:'Busca',howMany:'¿Cuántos hay?',more:'¿Cuál tiene más?',less:'¿Cuál tiene menos?',next:'¿Qué sigue?',
+  showMe:'Muéstrame',plus:'más',minus:'menos',whatIs:'¿Cuánto es',level:'Nivel',levelUp:'¡Subiste de nivel!',pieces:'Piezas',pairs:'Parejas',pick:'Escoge una imagen',
+  morePieces:'Más piezas',morePairs:'Más parejas',newPic:'Otra imagen',allDone:'Terminado',
+  read:'Leer',nextP:'Siguiente',backP:'Atrás',theEnd:'Fin',storiesT:'Cuentos',
+  in:'Respira',hold:'Aguanta',out:'Suelta el aire',ready:'Lista',start:'Empezar',breathe:'Respirar',bubbles:'Burbujas',sounds:'Sonidos',
+  rain:'Lluvia',ocean:'Mar',hum:'Zumbido suave',night:'Noche',volume:'Volumen',playing:'sonando',
+  notes:'Tocar notas',drums:'Tambores',mysongs:'Mis canciones',beatOff:'Sin ritmo',slow:'Ritmo lento',steady:'Ritmo',chimes:'Campanas',marimba:'Marimba',piano:'Piano suave',
+  kick:'Tambor grande',tomlo:'Tambor bajo',tomhi:'Tambor alto',snare:'Redoblante',clap:'Palmas',shaker:'Maraca',
+  eraser:'Borrador',draw:'Dibujar',mirror:'Espejo',flower:'Flor',clear:'Mantén para borrar',saveA:'Guardar',mypics:'Mis dibujos',feelPic:'¿Cómo se siente?',howFeel:'¿Cómo se siente tu dibujo?',iFeel:'Me siento',
+  back:'atrás',clearB:'borrar',sayit:'decir',edit:'Editando: toca un botón para cambiarlo, o toca ＋ para añadir.',doneEdit:'Terminar',add:'Añadir',noSongs:'Un adulto puede añadir canciones: mantén ⚙ por 2 segundos y abre "Music: my songs".'}};
+const ES=()=>S.settings.lang==='es';
+const fill=s=>String(s??'').replace(/\{name\}/g,S.settings.name);
+const T=k=>fill((ES()?STR.es[k]:STR.en[k])??STR.en[k]??k);
+const L=b=>fill(ES()&&b.labelEs?b.labelEs:b.label);
+const SAYT=b=>fill(ES()?(b.sayEs||b.labelEs||b.say||b.label):(b.say||b.label));
+const BN=bd=>ES()&&bd.nameEs?bd.nameEs:bd.name;
+
+/* ---------- storage: IndexedDB with in-memory fallback ---------- */
+const mem={kv:{},media:{}};
+const DB={db:null,
+  async open(){try{this.db=await new Promise((res,rej)=>{const r=indexedDB.open('litas-voice',1);
+      r.onupgradeneeded=()=>{r.result.createObjectStore('kv');r.result.createObjectStore('media')};
+      r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);setTimeout(()=>rej(new Error('timeout')),4000)})}catch(e){this.db=null}},
+  req(store,mode,fn){return new Promise((res,rej)=>{try{const t=this.db.transaction(store,mode);const r=fn(t.objectStore(store));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)}catch(e){rej(e)}})},
+  async get(s,k){if(this.db){try{return await this.req(s,'readonly',st=>st.get(k))}catch(e){}}return mem[s][k]},
+  async put(s,k,v){mem[s][k]=v;if(this.db){try{await this.req(s,'readwrite',st=>st.put(v,k))}catch(e){}}},
+  async del(s,k){delete mem[s][k];if(this.db){try{await this.req(s,'readwrite',st=>st.delete(k))}catch(e){}}},
+  async clear(s){mem[s]={};if(this.db){try{await this.req(s,'readwrite',st=>st.clear())}catch(e){}}}
+};
+const urls={};
+async function putMedia(blob){const k=uid('m');await DB.put('media',k,blob);urls[k]=URL.createObjectURL(blob);return k}
+async function dropMedia(k){if(!k)return;if(urls[k]){URL.revokeObjectURL(urls[k]);delete urls[k]}await DB.del('media',k)}
+function mediaKeys(){const ks=new Set();const add=k=>k&&ks.add(k);
+  Object.values(S.buttons).forEach(b=>{add(b.img);add(b.snd)});S.schedule.forEach(s=>add(s.img));
+  [S.firstThen.first,S.firstThen.then].forEach(s=>s&&add(s.img));S.songs.forEach(s=>{add(s.img);add(s.snd)});S.gallery.forEach(g=>add(g.k));
+  S.stories.forEach(st=>{add(st.img);st.pages.forEach(p=>{add(p.img);add(p.snd)})});return[...ks]}
+async function loadMedia(){for(const k of mediaKeys()){if(urls[k])continue;const b=await DB.get('media',k);if(b)urls[k]=URL.createObjectURL(b)}}
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>DB.put('kv','state',JSON.parse(JSON.stringify(S))),300)}
+
+/* ---------- default content (English + Spanish) ---------- */
+const CATS={people:'People',verb:'Actions',desc:'Describing',noun:'Things',social:'Social',question:'Questions',neg:'Stop / No',folder:'Folder'};
+function defaults(){
+  const buttons={},boards={};let n=0;
+  const board=(id,name,nameEs)=>boards[id]={name,nameEs,items:[]};
+  const add=(bd,label,sym,cat,labelEs,o={})=>{const id='k'+(n++);buttons[id]={label,labelEs:labelEs||'',sym,cat,say:o.say||label,sayEs:o.sayEs||'',folder:o.folder||null,img:null,snd:null,hidden:false};boards[bd].items.push(id)};
+  [['home','Home','Inicio'],['food','Food','Comida'],['drinks','Drinks','Bebidas'],['play','Play','Juegos'],['places','Places','Lugares'],['people','People','Personas'],['body','Body','Cuerpo'],
+   ['feel','Feelings','Sentimientos'],['need','I need','Necesito'],['p_social','Hello and thank you','Saludos'],['p_want','Asking','Pedir'],['p_school','School and play','Escuela y juego'],['p_q','Questions','Preguntas']].forEach(([i,a,b])=>board(i,a,b));
+  const H=(l,s,c,e,o)=>add('home',l,s,c,e,o);
+  H('I','🙋','people','yo');H('you','👉','people','tú');H('want','🤲','verb','quiero');H('more','➕','desc','más');H('help','🙏','verb','ayuda');H('stop','✋','neg','para');H('yes','👍','social','sí');H('no','👎','neg','no');
+  H('go','🏃','verb','ir');H('like','❤️','verb','me gusta');H('not','🚫','neg','no');H('all done','✅','social','terminé');H('eat','🍽️','verb','comer');H('drink','🥤','verb','beber');H('play','🧸','verb','jugar');H('look','👀','verb','mira');
+  H('open','📦','verb','abrir');H('feel','💭','verb','siento');H('where','📍','question','dónde');H('what','❓','question','qué');H('big','🐘','desc','grande');H('little','🐭','desc','pequeño');H('good','👌','desc','bien');H('bathroom','🚽','noun','baño');
+  H('Mom','👩','people','Mamá');H('Dad','👨','people','Papá');
+  H('Food','🍎','folder','Comida',{folder:'food'});H('Drinks','🧃','folder','Bebidas',{folder:'drinks'});H('Play','🎈','folder','Juegos',{folder:'play'});
+  H('Places','🏠','folder','Lugares',{folder:'places'});H('People','👪','folder','Personas',{folder:'people'});H('Body','🖐️','folder','Cuerpo',{folder:'body'});
+  [['apple','🍎','manzana'],['banana','🍌','plátano'],['grapes','🍇','uvas'],['crackers','🍘','galletas saladas'],['cheese','🧀','queso'],['yogurt','🥣','yogur'],['chicken','🍗','pollo'],['rice','🍚','arroz'],['pizza','🍕','pizza'],['sandwich','🥪','sándwich'],['cookie','🍪','galleta'],['snack','🍿','merienda']].forEach(([l,s,e])=>add('food',l,s,'noun',e));
+  [['water','💧','agua'],['milk','🥛','leche'],['juice','🧃','jugo'],['smoothie','🥤','batido']].forEach(([l,s,e])=>add('drinks',l,s,'noun',e));
+  [['iPad','📱','iPad'],['bubbles','🫧','burbujas'],['blocks','🧱','bloques'],['music','🎵','música'],['swing','🛝','columpio'],['ball','⚽','pelota'],['puzzle','🧩','rompecabezas'],['books','📚','libros'],['paint','🎨','pintar'],['outside','🌳','afuera'],['TV','📺','tele'],['dance','💃','bailar']].forEach(([l,s,e])=>add('play',l,s,'noun',e));
+  [['home','🏠','casa'],['school','🏫','escuela'],['park','🌳','parque'],['garden','🌻','jardín'],['store','🛒','tienda'],['car','🚗','carro'],['bed','🛏️','cama'],['doctor','🩺','doctor']].forEach(([l,s,e])=>add('places',l,s,'noun',e));
+  [['Mom','👩','Mamá'],['Dad','👨','Papá'],['teacher','🧑‍🏫','maestra'],['friend','🧒','amiga'],['Grandma','👵','Abuela'],['Grandpa','👴','Abuelo'],['me','🙋','yo']].forEach(([l,s,e])=>add('people',l,s,'people',e));
+  add('body','hurts','🤕','desc','duele');[['head','👧','cabeza'],['tummy','🤢','barriga'],['mouth','👄','boca'],['tooth','🦷','diente'],['ear','👂','oreja'],['eye','👁️','ojo'],['hand','✋','mano'],['foot','🦶','pie']].forEach(([l,s,e])=>add('body',l,s,'noun',e));
+  [['too hot','🥵','mucho calor'],['too cold','🥶','mucho frío'],['tired','😴','cansada']].forEach(([l,s,e])=>add('body',l,s,'desc',e));
+  [['happy','😊','feliz'],['sad','😢','triste'],['mad','😠','enojada'],['scared','😨','asustada'],['calm','😌','tranquila'],['silly','🤪','chistosa'],['frustrated','😣','frustrada'],['excited','🤩','emocionada'],['sick','🤒','enferma'],['bored','😐','aburrida'],['loved','🥰','amada'],['tired','😴','cansada']]
+    .forEach(([l,s,e])=>add('feel',l,s,'desc',e,{say:'I feel '+l,sayEs:'Me siento '+e}));
+  [['a break','🧘','I need a break','un descanso','Necesito un descanso'],['help','🙏','I need help','ayuda','Necesito ayuda'],['a hug','🤗','Hug please','un abrazo','Un abrazo, por favor'],['quiet','🤫','I need quiet','silencio','Necesito silencio'],
+   ['space','↔️','Please give me space','espacio','Por favor, dame espacio'],['bathroom','🚽','I need the bathroom','baño','Necesito ir al baño'],['water','💧','I want water','agua','Quiero agua'],['food','🍽️',"I'm hungry",'comida','Tengo hambre'],
+   ['stop','✋','Stop please','para','Para, por favor'],['all done','✅',"I'm all done",'terminé','Ya terminé'],['more','➕','More please','más','Más, por favor'],['go outside','🌳','I want to go outside','afuera','Quiero salir afuera']]
+    .forEach(([l,s,say,e,sayEs])=>add('need',l,s,l==='stop'?'neg':'verb',e,{say,sayEs}));
+  const P=(bd,cat,list)=>list.forEach(([l,say,s,e,sayEs])=>add(bd,l,s,cat,e,{say,sayEs}));
+  P('p_social','social',[['Hi','Hi! How are you?','😃','Hola','¡Hola! ¿Cómo estás?'],['Bye','Goodbye, see you later!','👋','Adiós','¡Adiós, nos vemos!'],['My name','My name is {name}.','🙋‍♀️','Mi nombre','Me llamo {name}.'],
+    ['Thank you','Thank you!','🙏','Gracias','¡Gracias!'],['Please','Please.','🥺','Por favor','Por favor.'],['I love you','I love you!','❤️','Te quiero','¡Te quiero!'],['Sorry','I am sorry.','😔','Lo siento','Lo siento.'],
+    ['Good morning','Good morning!','🌅','Buenos días','¡Buenos días!'],['Good night','Good night!','🌙','Buenas noches','¡Buenas noches!'],['Funny','That is funny!','😂','Qué chistoso','¡Qué chistoso!'],
+    ['Yes please','Yes, please.','👍','Sí, por favor','Sí, por favor.'],['No thanks','No, thank you.','🙅‍♀️','No, gracias','No, gracias.']]);
+  P('p_want','verb',[['Play','I want to play.','🧸','Jugar','Quiero jugar.'],['Eat','I am hungry. Can I eat?','🍽️','Comer','Tengo hambre. ¿Puedo comer?'],['Drink','Can I have a drink?','🥤','Beber','¿Me das algo de beber?'],
+    ['Go home','I want to go home.','🏠','Ir a casa','Quiero ir a casa.'],['More','Can I have more, please?','➕','Más','¿Me das más, por favor?'],['Outside',"Let's go outside!",'🌳','Afuera','¡Vamos afuera!'],
+    ['Help me','Can you help me?','🙏','Ayúdame','¿Me ayudas?'],['Alone','I want to be alone for a little while.','🚪','Sola','Quiero estar sola un ratito.'],['iPad','Can I have my iPad?','📱','iPad','¿Me das mi iPad?'],['Music','Can you play music?','🎵','Música','¿Pones música?']]);
+  P('p_school','desc',[['Finished','I am finished.','✅','Terminé','Ya terminé.'],['Confused',"I don't understand.",'🤔','No entiendo','No entiendo.'],['Show me','Can you show me?','👀','Muéstrame','¿Me enseñas?'],
+    ['Try','I want to try.','💪','Intentar','Quiero intentarlo.'],['My turn','It is my turn.','☝️','Mi turno','Es mi turno.'],['Your turn','Your turn.','👉','Tu turno','Tu turno.'],['Wait','Wait, please.','✋','Espera','Espera, por favor.'],
+    ['Look','Look at this!','👀','Mira','¡Mira esto!'],['I did it','I did it!','🎉','Lo hice','¡Lo hice!'],['Too loud','It is too loud.','🙉','Mucho ruido','Hay mucho ruido.']]);
+  P('p_q','question',[['Where','Where are we going?','📍','¿Adónde?','¿Adónde vamos?'],['What','What is that?','❓','¿Qué es?','¿Qué es eso?'],['When','When is it time?','⏰','¿Cuándo?','¿Cuándo es la hora?'],
+    ['Who','Who is coming?','🧑','¿Quién?','¿Quién viene?'],['Can I','Can I go?','🙋','¿Puedo?','¿Puedo ir?'],['Why','Why?','🤷‍♀️','¿Por qué?','¿Por qué?']]);
+  const story=(title,titleEs,sym,pages)=>({id:uid('st'),title,titleEs,sym,img:null,pages:pages.map(([text,s,textEs])=>({text,textEs,sym:s,img:null,snd:null}))});
+  return{v:2,buttons,boards,
+    schedule:[['wake up','☀️','despertar'],['breakfast','🥣','desayuno'],['get dressed','👕','vestirse'],['school','🏫','escuela'],['lunch','🥪','almuerzo'],['play','🧸','jugar'],['dinner','🍽️','cena'],['bath','🛁','bañarse'],['bed','🛏️','cama']]
+      .map(([label,sym,labelEs])=>({id:uid('s'),label,labelEs,sym,img:null,done:false})),
+    firstThen:{first:{label:'work',labelEs:'trabajo',sym:'📝',img:null},then:{label:'iPad',labelEs:'iPad',sym:'📱',img:null}},
+    stories:[
+      story('When I feel upset','Cuando me siento molesta','😣',[['Sometimes I feel upset.','😣','A veces me siento molesta.'],['That is okay. Everyone feels upset sometimes.','🤗','Está bien. Todos nos sentimos molestos a veces.'],
+        ['I can breathe slowly. In, and out.','🌬️','Puedo respirar despacio. Adentro y afuera.'],['I can tap "I need a break" on my iPad.','🧘','Puedo tocar "Necesito un descanso" en mi iPad.'],
+        ['I can ask for a hug or a quiet place.','🤫','Puedo pedir un abrazo o un lugar tranquilo.'],['Soon I will feel calm again.','😌','Pronto me voy a sentir tranquila otra vez.']]),
+      story('Going to the doctor','Voy al doctor','🩺',[['Today I am going to the doctor.','🩺','Hoy voy al doctor.'],['First we wait. I can use my iPad while I wait.','📱','Primero esperamos. Puedo usar mi iPad mientras espero.'],
+        ['The doctor may look in my ears and mouth.','👂','El doctor puede mirar mis oídos y mi boca.'],['The doctor may listen to my heart. It can feel cold, but it is quick.','❤️','El doctor puede escuchar mi corazón. Se siente frío, pero es rápido.'],
+        ['If I need to, I can tap "stop" or "help".','✋','Si lo necesito, puedo tocar "para" o "ayuda".'],['When we are done, we go home.','🏠','Cuando terminamos, nos vamos a casa.']]),
+      story('Getting a haircut','Me cortan el pelo','💇‍♀️',[['Today I am getting a haircut.','💇‍♀️','Hoy me van a cortar el pelo.'],['I sit in a big chair.','💺','Me siento en una silla grande.'],
+        ['The scissors go snip, snip. It does not hurt.','✂️','Las tijeras hacen chic, chic. No duele.'],['I can hold my iPad or listen to music.','🎵','Puedo tener mi iPad o escuchar música.'],['When it is done, my hair looks nice!','🌟','¡Cuando termina, mi pelo se ve bonito!']])],
+    songs:[],gallery:[],progress:{},log:{},recent:[],
+    levels:{count:1,numbers:1,add:1,more:1,pattern:1,jigsaw:4,memory:3},
+    settings:{name:'Lita',lang:'en',voice:'',voiceEs:'',rate:.9,pitch:1.05,cols:'auto',showLabels:true,speakOnTap:true,homeAfter:true,tscale:1,theme:'auto',hc:false,rm:false,
+      tabs:{talk:true,phrases:true,feel:true,day:true,stories:true,learn:true,art:true,music:true,calm:true},choices:2,errorless:false,cueDelay:5,reinforce:'both',autoLevel:true,jigHint:true}};
+}
+let S=defaults();
+const UI={tab:'talk',board:'home',msg:[],edit:false,game:null,story:null,jig:null,mem:null,music:'chimes',inst:'chimes',calm:'breathe',raf:0,moodFor:null};
+
+/* ---------- speech & sound playback ---------- */
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()||[]}catch(e){voices=[]}}
+if('speechSynthesis'in window){loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices}catch(e){}}
+function pickVoice(lang){const want=lang==='es'?S.settings.voiceEs:S.settings.voice;let v=voices.find(v=>v.voiceURI===want);
+  if(!v&&lang==='es')v=voices.find(v=>/^es[-_]US/i.test(v.lang))||voices.find(v=>/^es[-_]MX/i.test(v.lang))||voices.find(v=>/^es/i.test(v.lang));return v}
+function tts(text,lang=S.settings.lang){return new Promise(res=>{try{text=fill(text);
+  const u=new SpeechSynthesisUtterance(text);const v=pickVoice(lang);if(v){u.voice=v;u.lang=v.lang}else u.lang=lang==='es'?'es-US':'en-US';
+  u.rate=S.settings.rate;u.pitch=S.settings.pitch;u.onend=u.onerror=()=>res();speechSynthesis.speak(u);setTimeout(res,Math.max(6000,text.length*160))}catch(e){res()}})}
+function stopSpeech(){try{if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel()}catch(e){}}
+function playURL(url){return new Promise(res=>{try{const a=new Audio(url);a.onended=a.onerror=()=>res();a.play().catch(()=>res())}catch(e){res()}})}
+function sayItem(b){stopSpeech();return b.snd&&urls[b.snd]?playURL(urls[b.snd]):tts(SAYT(b))}
+async function speakSeq(items){stopSpeech();let buf=[];
+  for(const it of items){if(it.snd&&urls[it.snd]){if(buf.length){await tts(buf.join(' '));buf=[]}await playURL(urls[it.snd])}else buf.push(it.say||it.label)}
+  if(buf.length)await tts(buf.join(' '))}
+
+/* ---------- communication log ---------- */
+function today(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function logDay(){const d=today();return S.log[d]||(S.log[d]={w:{},s:0})}
+function trimLog(){const ks=Object.keys(S.log).sort();while(ks.length>120)delete S.log[ks.shift()]}
+function logWord(label){if(UI.edit)return;const e=logDay();e.w[label]=(e.w[label]||0)+1;trimLog();save()}
+function logSentence(text){const e=logDay();e.s++;S.recent.unshift({t:Date.now(),text});S.recent=S.recent.slice(0,40);save()}
+function logSummary(days){const out={taps:0,sent:0,words:{},days:[]};for(let i=0;i<days;i++){const d=new Date();d.setDate(d.getDate()-i);const k=today(d),e=S.log[k];
+  const t=e?Object.values(e.w).reduce((a,b)=>a+b,0):0;out.days.push([k,t,e?e.s:0]);if(!e)continue;out.taps+=t;out.sent+=e.s;for(const[w,c]of Object.entries(e.w))out.words[w]=(out.words[w]||0)+c}
+  out.top=Object.entries(out.words).sort((a,b)=>b[1]-a[1]);return out}
+
+/* ---------- Web Audio: instruments, drums, calm sounds ---------- */
+let AC,master;
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;AC=new C();master=AC.createGain();master.gain.value=.8;const comp=AC.createDynamicsCompressor();master.connect(comp);comp.connect(AC.destination)}
+  if(AC.state==='suspended')AC.resume();return AC}
+const PENTA=[261.63,293.66,329.63,392.0,440.0,523.25,587.33,659.25];
+const INST={chimes:{parts:[['sine',1,1],['sine',2.76,.22],['sine',5.4,.07]],atk:.006,dec:2.4},
+  marimba:{parts:[['sine',1,1],['sine',4,.25]],atk:.003,dec:.7},piano:{parts:[['triangle',1,1],['sine',2,.18]],atk:.005,dec:1.4}};
+function note(freq,inst='chimes',vol=.32){try{const a=ac(),t=a.currentTime,cfg=INST[inst],g=a.createGain();g.connect(master);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+cfg.atk);g.gain.exponentialRampToValueAtTime(.0001,t+cfg.dec);
+  cfg.parts.forEach(([type,mul,amp])=>{const o=a.createOscillator(),og=a.createGain();o.type=type;o.frequency.value=freq*mul;og.gain.value=amp;o.connect(og);og.connect(g);o.start(t);o.stop(t+cfg.dec+.05)})}catch(e){}}
+let NB,BB;
+function noiseBuf(){if(NB)return NB;const a=ac();NB=a.createBuffer(1,a.sampleRate*2,a.sampleRate);const d=NB.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return NB}
+function brownBuf(){if(BB)return BB;const a=ac();BB=a.createBuffer(1,a.sampleRate*4,a.sampleRate);const d=BB.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+.02*(Math.random()*2-1))/1.02;d[i]=l*3.5}return BB}
+function drum(kind,vol=1){try{const a=ac(),t=a.currentTime,g=a.createGain();g.connect(master);
+  const tone={kick:[150,45,.4],tomlo:[140,88,.45],tomhi:[250,175,.32]}[kind];
+  if(tone){const[f0,f1,d]=tone,o=a.createOscillator();o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);
+    g.gain.setValueAtTime(.9*vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);o.start(t);o.stop(t+d+.02)}
+  else{const[type,freq,d,v]={snare:['highpass',1200,.22,.55],shaker:['highpass',5200,.1,.35],clap:['bandpass',1500,.2,.7]}[kind];
+    const s=a.createBufferSource(),f=a.createBiquadFilter();s.buffer=noiseBuf();f.type=type;f.frequency.value=freq;s.connect(f);f.connect(g);
+    g.gain.setValueAtTime(v*vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);s.start(t);s.stop(t+d+.02)}}catch(e){}}
+function chimeDone(){[523.25,659.25,783.99].forEach((f,i)=>setTimeout(()=>note(f,'marimba',.35),i*180))}
+const CALM={nodes:[],kind:null,gain:null,vol:.5};
+function stopCalm(){CALM.nodes.forEach(n=>{try{n.stop()}catch(e){}try{n.disconnect()}catch(e){}});CALM.nodes=[];CALM.kind=null}
+function startCalm(kind){stopCalm();const a=ac();const out=a.createGain();out.gain.value=CALM.vol;out.connect(master);CALM.gain=out;CALM.kind=kind;
+  const keep=n=>{CALM.nodes.push(n);return n};
+  if(kind==='rain'){const s=keep(a.createBufferSource());s.buffer=noiseBuf();s.loop=true;const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;const hp=a.createBiquadFilter();hp.type='highpass';hp.frequency.value=350;const g=a.createGain();g.gain.value=.22;s.connect(hp);hp.connect(lp);lp.connect(g);g.connect(out);s.start()}
+  if(kind==='ocean'){const s=keep(a.createBufferSource());s.buffer=brownBuf();s.loop=true;const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=600;const g=a.createGain();g.gain.value=.35;
+    const lfo=keep(a.createOscillator());lfo.frequency.value=.08;const lg=a.createGain();lg.gain.value=.3;lfo.connect(lg);lg.connect(g.gain);s.connect(lp);lp.connect(g);g.connect(out);s.start();lfo.start()}
+  if(kind==='hum'){[110,164.8,220,277.2].forEach((f,i)=>{const o=keep(a.createOscillator());o.type='sine';o.frequency.value=f;o.detune.value=(i-1.5)*4;const g=a.createGain();g.gain.value=.06;o.connect(g);g.connect(out);o.start()})}
+  if(kind==='night'){const s=keep(a.createBufferSource());s.buffer=brownBuf();s.loop=true;const lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=300;const g=a.createGain();g.gain.value=.5;s.connect(lp);lp.connect(g);g.connect(out);s.start()}
+}
+const BEAT={iv:null,bpm:70,n:0};
+function setBeat(on){clearInterval(BEAT.iv);BEAT.iv=null;if(on){BEAT.n=0;BEAT.iv=setInterval(()=>{drum(BEAT.n%4===0?'kick':'shaker',.55);BEAT.n++},60000/BEAT.bpm)}}
+
+/* ---------- render shell ---------- */
+const TABS=[['talk','💬'],['phrases','🗨️'],['feel','😊'],['day','🗓️'],['stories','📖'],['learn','🧩'],['art','🎨'],['music','🎵'],['calm','🫧']];
+function cols(){const c=S.settings.cols;if(c!=='auto')return+c;const w=$('#main').clientWidth||innerWidth;return w>=1000?8:w>=720?6:w>=460?5:4}
+function applySettings(){const st=S.settings,app=$('#app'),root=document.documentElement;
+  if(st.theme==='auto')root.removeAttribute('data-theme');else root.setAttribute('data-theme',st.theme);
+  app.classList.toggle('hc',!!st.hc);app.classList.toggle('rm',!!st.rm);app.style.setProperty('--tscale',st.tscale);
+  root.lang=st.lang==='es'?'es':'en';$('#bk small').textContent=T('back');$('#clr small').textContent=T('clearB');$('#spk small').textContent=T('sayit')}
+function renderDock(){const d=$('#dock');d.replaceChildren(...TABS.filter(([k])=>k==='talk'||S.settings.tabs[k]).map(([k,ic])=>
+  h('button',{class:'tab',role:'tab','aria-selected':String(UI.tab===k),onclick:()=>{UI.tab=k;if(k==='talk'&&!UI.edit)UI.board='home';if(k==='stories')UI.story=null;render()}},h('span',{class:'ti','aria-hidden':'true'},ic),h('span',{},T(k)))))}
+function render(){cancelAnimationFrame(UI.raf);const m=$('#main');m.replaceChildren();m.className='main';
+  if(!S.settings.tabs[UI.tab]&&UI.tab!=='talk')UI.tab='talk';
+  ({talk:renderTalk,phrases:renderPhrases,feel:renderFeel,day:renderDay,stories:renderStories,learn:renderLearn,art:renderArt,music:renderMusic,calm:renderCalm})[UI.tab](m);renderDock()}
+function symEl(b,cls='sym'){if(b&&b.img&&urls[b.img])return h('img',{class:cls,src:urls[b.img],alt:''});return h('span',{class:cls,'aria-hidden':'true'},(b&&b.sym)||'⬜')}
+
+/* ---------- message strip ---------- */
+function renderMsg(){const box=$('#msgwords');
+  box.replaceChildren(...UI.msg.map(m=>h('span',{class:'chip'},symEl(m,'csym'),h('span',{},m.label))));
+  if(!UI.msg.length)box.append(h('span',{class:'hint'},T('tapHint')));
+  box.setAttribute('aria-label',UI.msg.length?'Message: '+UI.msg.map(m=>m.label).join(' ')+'. Tap to say it':'Message is empty');
+  box.scrollLeft=box.scrollWidth}
+function addToMessage(b){UI.msg.push({label:L(b),say:SAYT(b),sym:b.sym,img:b.img,snd:b.snd});renderMsg()}
+function sayMessage(){if(!UI.msg.length)return;logSentence(UI.msg.map(m=>m.say||m.label).join(' '));speakSeq(UI.msg)}
+$('#spk').onclick=sayMessage;$('#msgwords').onclick=sayMessage;
+$('#bk').onclick=()=>{UI.msg.pop();renderMsg()};
+$('#clr').onclick=()=>{UI.msg=[];stopSpeech();renderMsg()};
+
+function holdable(el,ms,fn){let t;el.classList.add('hold');el.style.setProperty('--hold',ms+'ms');
+  const start=e=>{if(e.cancelable)e.preventDefault();el.classList.add('holding');clearTimeout(t);t=setTimeout(()=>{el.classList.remove('holding');fn()},ms)};
+  const end=()=>{clearTimeout(t);el.classList.remove('holding')};
+  el.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(ev=>el.addEventListener(ev,end));
+  el.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.repeat)start(e)});el.addEventListener('keyup',end);
+  el.addEventListener('contextmenu',e=>e.preventDefault())}
+holdable($('#gear'),2000,openGrownUp);
+
+/* ---------- Talk, Phrases, Feel ---------- */
+function tile(id,bid,phrase){const b=S.buttons[id];
+  if(phrase)return h('button',{class:`ptile c-${b.cat}${b.hidden?' is-hidden':''}`,'aria-label':SAYT(b),onclick:()=>tapTile(id,bid)},symEl(b),h('span',{class:'lbl'},SAYT(b)),b.snd?h('span',{class:'sndmark','aria-hidden':'true'},'♪'):null);
+  return h('button',{class:`tile c-${b.cat}${b.hidden?' is-hidden':''}`,'aria-label':L(b)+(b.folder?', folder':''),onclick:()=>tapTile(id,bid)},
+    symEl(b),S.settings.showLabels?h('span',{class:'lbl'},L(b)):null,b.snd?h('span',{class:'sndmark','aria-hidden':'true'},'♪'):null)}
+function gridFor(bid,phrase=false){const g=phrase?h('div',{class:'phrases'}):h('div',{class:'grid',style:{'--cols':String(cols())}});
+  (S.boards[bid]?.items||[]).forEach(id=>{const b=S.buttons[id];if(!b)return;
+    if(b.hidden&&!UI.edit){g.append(h('div',{class:(phrase?'ptile':'tile')+' ghost','aria-hidden':'true'}));return}g.append(tile(id,bid,phrase))});
+  if(UI.edit)g.append(h('button',{class:(phrase?'ptile':'tile')+' addtile',onclick:()=>newButton(bid)},h('span',{class:'sym'},'＋'),h('span',{class:'lbl'},T('add'))));
+  return g}
+function tapTile(id,bid){const b=S.buttons[id];
+  if(UI.edit){openEditor(id,bid);return}
+  if(b.folder&&S.boards[b.folder]){if(S.settings.speakOnTap)sayItem(b);UI.board=b.folder;render();return}
+  addToMessage(b);logWord(b.label);if(S.settings.speakOnTap)sayItem(b);
+  if(S.settings.homeAfter&&UI.tab==='talk'&&bid!=='home'){UI.board='home';render()}}
+function editBar(m){if(!UI.edit)return;m.append(h('div',{class:'editbar'},h('span',{},T('edit')),h('button',{class:'btn primary',onclick:()=>{UI.edit=false;render()}},T('doneEdit'))))}
+function renderTalk(m){editBar(m);if(!S.boards[UI.board])UI.board='home';const b=S.boards[UI.board];
+  m.append(h('div',{class:'boardhead'},UI.board!=='home'?h('button',{class:'back',onclick:()=>{UI.board='home';render()}},'⬅ '+T('home')):null,h('h2',{},UI.board==='home'?T('words'):BN(b))),gridFor(UI.board))}
+const PHRASE_BOARDS=()=>Object.keys(S.boards).filter(k=>k.startsWith('p_'));
+function renderPhrases(m){editBar(m);PHRASE_BOARDS().forEach(k=>m.append(h('section',{class:'gsect'},h('h3',{},BN(S.boards[k])),gridFor(k,true))))}
+function renderFeel(m){editBar(m);m.append(h('h2',{class:'sect'},T('ifeel')),gridFor('feel'),h('h2',{class:'sect'},T('ineed')),gridFor('need'))}
+
+/* ---------- modal ---------- */
+let modalEl=null,lastFocus=null;
+function openModal(title,body,foot=[]){closeModal();lastFocus=document.activeElement;
+  const d=h('div',{class:'dialog',role:'dialog','aria-modal':'true','aria-label':title},
+    h('div',{class:'dhead'},h('h2',{},title),h('button',{class:'btn small',onclick:closeModal,'aria-label':'Close'},'✕')),body,foot.length?h('div',{class:'dfoot'},...foot):null);
+  modalEl=h('div',{class:'overlay',onclick:e=>{if(e.target===modalEl)closeModal()}},d);
+  modalEl.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  document.body.append(modalEl);setTimeout(()=>{const f=d.querySelector('input,select,textarea');(f||d).focus?.()},30);return d}
+function closeModal(){if(modalEl){modalEl.remove();modalEl=null;try{lastFocus?.focus()}catch(e){}}}
+function seg(options,value,onpick){const w=h('div',{class:'seg',role:'group'});
+  options.forEach(([v,l])=>{const b=h('button',{type:'button','aria-pressed':String(v===value)},l);
+    b.onclick=()=>{w.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');onpick(v)};w.append(b)});return w}
+function field(label,ctl,hint){return h('div',{class:'field'},h('div',{class:'flabel'},label),ctl,hint?h('div',{class:'fhint'},hint):null)}
+function tog(id,label,val,fn){const i=h('input',{type:'checkbox',id});i.checked=!!val;i.onchange=()=>fn(i.checked);return h('label',{class:'tog',for:id},i,h('span',{},label))}
+function fileBtn(label,accept,onfile,id){const inp=h('input',{type:'file',accept,id,'aria-label':label});inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)onfile(f);inp.value=''};return h('span',{class:'btn filebtn'},label,inp)}
+function textIn(id,val,oninput,ph){const i=h('input',{class:'text',id,value:val||'',placeholder:ph||null});i.oninput=()=>oninput(i.value);return i}
+
+/* ---------- media helpers ---------- */
+async function imageBlob(file,max=600){const url=URL.createObjectURL(file);try{
+  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url});
+  const sc=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(img.naturalWidth*sc));c.height=Math.max(1,Math.round(img.naturalHeight*sc));c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(r,'image/jpeg',.86))}finally{URL.revokeObjectURL(url)}}
+async function startRec(){try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});const mr=new MediaRecorder(stream);const chunks=[];
+  const done=new Promise(res=>{mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{stream.getTracks().forEach(t=>t.stop());res(new Blob(chunks,{type:mr.mimeType||'audio/mp4'}))}});
+  mr.start();return{mr,done}}catch(e){return null}}
+function mediaEditor(draft,{sound=true,testText}={}){
+  const pv=h('div',{class:'preview','aria-hidden':'true'});const paint=()=>pv.replaceChildren(draft.img&&urls[draft.img]?h('img',{src:urls[draft.img],alt:''}):h('span',{},draft.sym||'⬜'));paint();
+  const symIn=h('input',{class:'text',id:'ed-sym',value:draft.sym||'',maxlength:'8'});symIn.oninput=()=>{draft.sym=symIn.value.trim();paint()};
+  const photoRow=h('div',{class:'row'},fileBtn('Choose or take a photo','image/*',async f=>{const b=await imageBlob(f);if(!b)return;draft.img=await putMedia(b);paint()},'ed-photo'),
+    h('button',{class:'btn',type:'button',onclick:()=>{draft.img=null;paint()}},'Use symbol instead'));
+  const kids=[h('div',{class:'row'},pv,h('div',{class:'field',style:{flex:'1',minWidth:'180px'}},h('label',{class:'flabel',for:'ed-sym'},'Symbol (emoji)'),symIn)),field('Photo',photoRow,'Real photos of her own things, people and places work best for many children.')];
+  if(sound){const st=h('span',{class:'fhint'},draft.snd?'Has a recorded sound.':'Uses the voice.');let rec=null;
+    const recBtn=h('button',{class:'btn',type:'button'},'● Record');
+    recBtn.onclick=async()=>{if(rec){rec.mr.stop();const blob=await rec.done;rec=null;recBtn.textContent='● Record';draft.snd=await putMedia(blob);st.textContent='Recorded.';return}
+      rec=await startRec();if(!rec){st.textContent='Recording is not available here. Record a voice memo, then use "Upload a sound".';return}recBtn.textContent='■ Stop';st.textContent='Recording…'};
+    kids.push(field('Sound',h('div',{class:'row'},recBtn,fileBtn('Upload a sound','audio/*',async f=>{draft.snd=await putMedia(f);st.textContent='Sound added.'},'ed-snd'),
+      h('button',{class:'btn',type:'button',onclick:()=>draft.snd&&urls[draft.snd]?playURL(urls[draft.snd]):tts(testText?testText():(draft.say||draft.label||''))},'▶ Test'),
+      h('button',{class:'btn',type:'button',onclick:()=>{draft.snd=null;st.textContent='Uses the voice.'}},'Use voice'),st),'Record a family member saying it, or a sound she loves.'))}
+  return h('div',{class:'gbody'},...kids)}
+
+/* ---------- button editor ---------- */
+function newButton(bid){const id=uid('u');const phrase=bid.startsWith('p_');S.buttons[id]={label:'',labelEs:'',sym:phrase?'💬':'⭐',cat:bid==='feel'?'desc':phrase?'social':'noun',say:'',sayEs:'',folder:null,img:null,snd:null,hidden:false};S.boards[bid].items.push(id);openEditor(id,bid,true)}
+function removeButton(id,bid){const b=S.boards[bid];b.items=b.items.filter(x=>x!==id);
+  if(!Object.values(S.boards).some(bd=>bd.items.includes(id))){const old=S.buttons[id];delete S.buttons[id];dropMedia(old?.img);dropMedia(old?.snd)}}
+function openEditor(id,bid,isNew=false){const orig=S.buttons[id];const d={...orig};const phrase=bid.startsWith('p_');
+  const cat=h('select',{class:'text',id:'ed-cat'},...Object.entries(CATS).map(([k,l])=>h('option',{value:k},l)));cat.value=d.cat;cat.onchange=()=>{d.cat=cat.value};
+  const fsel=h('select',{class:'text',id:'ed-folder'},h('option',{value:''},'No, it is a word'),...Object.entries(S.boards).filter(([k])=>k!=='home'&&k!==bid).map(([k,b])=>h('option',{value:k},'Opens: '+b.name)),h('option',{value:'__new'},'Opens a new folder'));
+  fsel.value=d.folder||'';fsel.onchange=()=>{d.folder=fsel.value||null;if(d.folder)cat.value=d.cat='folder'};
+  const move=dir=>{const it=S.boards[bid].items,i=it.indexOf(id),j=i+dir;if(j<0||j>=it.length)return;[it[i],it[j]]=[it[j],it[i]];save();render()};
+  const body=h('div',{class:'gbody'},
+    h('div',{class:'row'},h('div',{style:{flex:'1',minWidth:'220px'}},field(phrase?'Short name (shows in the message strip)':'Label',textIn('ed-label',d.label,v=>d.label=v))),
+      h('div',{style:{flex:'1',minWidth:'220px'}},field(phrase?'Full sentence it says':'What it says',textIn('ed-say',d.say===d.label?'':d.say,v=>d.say=v,phrase?'For example: Can I have a drink?':'Same as the label')))),
+    h('div',{class:'row'},h('div',{style:{flex:'1',minWidth:'220px'}},field('Spanish label',textIn('ed-labelEs',d.labelEs,v=>d.labelEs=v,'Optional'))),
+      h('div',{style:{flex:'1',minWidth:'220px'}},field('Spanish: what it says',textIn('ed-sayEs',d.sayEs,v=>d.sayEs=v,'Optional')))),
+    h('p',{class:'fhint'},'Type {name} to insert her name, for example "My name is {name}."'),
+    mediaEditor(d,{testText:()=>SAYT(d)}),
+    h('div',{class:'row'},h('div',{style:{flex:'1',minWidth:'200px'}},field('Color group',cat)),phrase?null:h('div',{style:{flex:'1',minWidth:'200px'}},field('Folder',fsel))),
+    tog('ed-hide','Hide for now (keeps its spot so other buttons do not move)',d.hidden,v=>d.hidden=v),
+    field('Position',h('div',{class:'row'},h('button',{class:'btn',type:'button',onclick:()=>move(-1)},'◀ Move earlier'),h('button',{class:'btn',type:'button',onclick:()=>move(1)},'Move later ▶')),'Keep positions steady once she learns them. Motor memory helps her find words fast.'));
+  const del=h('button',{class:'btn danger',type:'button'},'Hold to delete');holdable(del,1200,()=>{removeButton(id,bid);save();closeModal();render()});
+  openModal(isNew?(phrase?'New phrase':'New button'):(phrase?'Edit phrase':'Edit button'),body,[del,
+    h('button',{class:'btn',onclick:()=>{if(isNew)removeButton(id,bid);closeModal();render()}},'Cancel'),
+    h('button',{class:'btn primary',onclick:()=>{d.label=(d.label||'').trim()||(d.say||'').trim()||'new';d.say=(d.say||'').trim()||d.label;d.labelEs=(d.labelEs||'').trim();d.sayEs=(d.sayEs||'').trim();
+      if(d.folder==='__new'){const fid=uid('f');S.boards[fid]={name:d.label,nameEs:d.labelEs,items:[]};d.folder=fid;d.cat='folder'}
+      if(orig.img&&orig.img!==d.img)dropMedia(orig.img);if(orig.snd&&orig.snd!==d.snd)dropMedia(orig.snd);
+      S.buttons[id]=d;save();closeModal();render()}},'Save')])}
+
+/* ---------- picker (choose from her words) ---------- */
+function openPicker(title,onPick){const g=h('div',{class:'grid',style:{'--cols':'5'}});
+  Object.entries(S.boards).forEach(([bid,b])=>{if(bid.startsWith('p_'))return;b.items.forEach(id=>{const x=S.buttons[id];if(!x||x.folder)return;
+    g.append(h('button',{class:`tile c-${x.cat}`,onclick:()=>{closeModal();onPick({label:x.label,labelEs:x.labelEs,sym:x.sym,img:x.img})}},symEl(x),h('span',{class:'lbl'},x.label)))})});
+  openModal(title,h('div',{class:'gbody'},h('p',{class:'fhint'},'Pick a picture. You can change its photo afterwards.'),g))}
+
+/* ---------- My Day ---------- */
+const TIMER={end:0,total:0,iv:null};
+function startTimer(min){ac();TIMER.total=min*60000;TIMER.end=Date.now()+TIMER.total;clearInterval(TIMER.iv);TIMER.iv=setInterval(tickTimer,250);tickTimer()}
+function stopTimer(){clearInterval(TIMER.iv);TIMER.iv=null;TIMER.end=0;drawTimer(0)}
+function tickTimer(){const left=TIMER.end-Date.now();if(left<=0){stopTimer();chimeDone();setTimeout(()=>tts(T('allDone')),600);return}drawTimer(left)}
+function drawTimer(left){const c=document.getElementById('timerc');if(!c)return;const dpr=Math.min(2,devicePixelRatio||1),s=220*dpr;if(c.width!==s){c.width=c.height=s}
+  const x=c.getContext('2d'),r=s/2;x.clearRect(0,0,s,s);x.beginPath();x.arc(r,r,r*.92,0,Math.PI*2);x.fillStyle=tok('--soft');x.fill();x.lineWidth=4*dpr;x.strokeStyle=tok('--line');x.stroke();
+  if(left>0){const f=left/TIMER.total;x.beginPath();x.moveTo(r,r);x.arc(r,r,r*.86,-Math.PI/2,-Math.PI/2+f*Math.PI*2);x.closePath();x.fillStyle=tok('--neg-bd');x.fill()}
+  x.beginPath();x.arc(r,r,r*.3,0,Math.PI*2);x.fillStyle=tok('--surface');x.fill();
+  const sec=Math.ceil(left/1000);x.fillStyle=tok('--ink');x.font=`700 ${22*dpr}px ${tok('--f-display')}`;x.textAlign='center';x.textBaseline='middle';
+  x.fillText(left>0?`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`:'0:00',r,r)}
+function renderDay(m){const ft=S.firstThen;
+  const slot=(k)=>{const it=ft[k];return h('button',{class:'ftslot',onclick:()=>tts(T(k)+', '+(it?L(it):''))},h('h3',{},T(k)),symEl(it),h('span',{class:'lbl'},it?L(it):''))};
+  const now=S.schedule.findIndex(s=>!s.done);
+  const sched=h('div',{class:'sched'},...S.schedule.map((s,i)=>h('button',{class:`step${s.done?' done':''}${i===now?' now':''}`,'aria-label':L(s)+(s.done?', done':i===now?', now':''),
+    onclick:()=>{s.done=!s.done;if(s.done)note(PENTA[5],'marimba',.25);tts(L(s));save();render()}},symEl(s),h('span',{class:'lbl'},L(s)))));
+  const tbtns=h('div',{class:'row',style:{justifyContent:'center'}},...[1,2,5,10].map(mn=>h('button',{class:'btn',onclick:()=>startTimer(mn)},mn+' '+T('min'))),h('button',{class:'btn',onclick:stopTimer},T('stopB')));
+  m.append(h('div',{class:'day'},h('div',{class:'card'},h('h2',{},T('firstThen')),h('div',{class:'ft'},slot('first'),slot('then'))),
+    h('div',{class:'card timerwrap'},h('h2',{},T('timer')),h('canvas',{id:'timerc','aria-label':'Visual timer'}),tbtns)),
+    h('div',{class:'card'},h('div',{class:'row',style:{justifyContent:'space-between'}},h('h2',{},T('dayT')),h('span',{class:'fhint'},T('tapStep'))),sched));
+  requestAnimationFrame(()=>drawTimer(TIMER.end?TIMER.end-Date.now():0))}
+
+/* ---------- Stories ---------- */
+const stTitle=s=>fill(ES()&&s.titleEs?s.titleEs:s.title);
+const pgText=p=>fill(ES()&&p.textEs?p.textEs:p.text);
+function readPage(){const s=S.stories.find(x=>x.id===UI.story?.id);if(!s)return;const p=s.pages[UI.story.page];if(!p)return;stopSpeech();
+  if(p.snd&&urls[p.snd])playURL(urls[p.snd]);else tts(pgText(p))}
+function renderStories(m){const s=UI.story&&S.stories.find(x=>x.id===UI.story.id);
+  if(!s){m.append(h('h2',{},T('storiesT')),h('div',{class:'stories'},...S.stories.map(st=>h('button',{class:'game',onclick:()=>{UI.story={id:st.id,page:0};render();setTimeout(readPage,250)}},symEl(st),h('b',{},stTitle(st)),h('span',{},st.pages.length+(ES()?' páginas':' pages'))))));
+    if(!S.stories.length)m.append(h('p',{class:'fhint'},'A grown-up can add stories in settings (hold ⚙).'));return}
+  const i=UI.story.page,p=s.pages[i];m.classList.add('fill');
+  const go=d=>{const j=i+d;if(j<0)return;if(j>=s.pages.length){chimeDone();tts(T('theEnd'));UI.story=null;render();return}UI.story.page=j;render();setTimeout(readPage,200)};
+  m.append(h('div',{class:'row',style:{justifyContent:'space-between'}},h('button',{class:'back',onclick:()=>{stopSpeech();UI.story=null;render()}},'⬅ '+T('storiesT')),h('h2',{},stTitle(s))),
+    h('div',{class:'reader'},p?symEl(p,'pic'):null,h('p',{},p?pgText(p):''),h('div',{class:'pdots','aria-label':`Page ${i+1} of ${s.pages.length}`},...s.pages.map((_,k)=>h('i',{class:k===i?'on':''})))),
+    h('div',{class:'navrow'},h('button',{class:'btn',onclick:()=>go(-1),disabled:i===0||null},'◀ '+T('backP')),h('button',{class:'btn',onclick:readPage},'🔊 '+T('read')),
+      h('button',{class:'btn primary',onclick:()=>go(1)},i===s.pages.length-1?T('theEnd')+' ✓':T('nextP')+' ▶')))}
+
+/* ---------- Learn: games ---------- */
+const GAMES={
+  match:{g:'gWords',sym:'🔍',en:['Match','Find the same picture'],es:['Iguales','Busca la misma imagen']},
+  find:{g:'gWords',sym:'👂',en:['Listen and find','Hear a word, tap its picture'],es:['Escucha y busca','Oye una palabra y toca su imagen']},
+  colors:{g:'gWords',sym:'🌈',en:['Colors','Find the color'],es:['Colores','Busca el color']},
+  count:{g:'gMath',sym:'🔢',en:['Count','How many are there?'],es:['Contar','¿Cuántos hay?'],lv:1},
+  numbers:{g:'gMath',sym:'7️⃣',en:['Numbers','Find the group with that many'],es:['Números','Busca el grupo con esa cantidad'],lv:1},
+  add:{g:'gMath',sym:'➕',en:['Add and take away','Put groups together'],es:['Sumar y restar','Junta y quita'],lv:1},
+  more:{g:'gMath',sym:'⚖️',en:['More or less','Which group has more?'],es:['Más o menos','¿Qué grupo tiene más?'],lv:1},
+  pattern:{g:'gPuz',sym:'🔁',en:['Patterns','What comes next?'],es:['Patrones','¿Qué sigue?'],lv:1},
+  jigsaw:{g:'gPuz',sym:'🧩',en:['Jigsaw','Put the picture back together'],es:['Rompecabezas','Arma la imagen']},
+  memory:{g:'gPuz',sym:'🃏',en:['Memory','Flip cards and find pairs'],es:['Memoria','Voltea y busca parejas']}};
+const gName=k=>(ES()?GAMES[k].es:GAMES[k].en)[0];
+const LEVEL_MAX=[3,5,10,10];const LEVEL_NOTE=['Up to 3','Up to 5','Up to 10','Up to 10, adds take-away / harder'];
+const COLORS=[['red','rojo','#D64541'],['blue','azul','#2F6DB5'],['yellow','amarillo','#F2C53D'],['green','verde','#3E9B55'],['orange','anaranjado','#E8843A'],['purple','morado','#8A5CC2'],['pink','rosado','#E57BA8'],['brown','marrón','#8B5E3C'],['black','negro','#222222'],['white','blanco','#FFFFFF']];
+const cName=c=>ES()?c[1]:c[0];
+function pool(){const out=[];['food','drinks','play','places','people','body'].forEach(bid=>(S.boards[bid]?.items||[]).forEach(id=>{const b=S.buttons[id];if(b&&!b.folder&&!b.hidden&&(b.sym||b.img))out.push(b)}));
+  const seen=new Set();return out.filter(b=>{const k=b.label.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})}
+function group(item,k,gone=0){return h('div',{class:'group','aria-label':String(k-gone)},...Array.from({length:k},(_,i)=>{const e=symEl(item,'csym');if(i>=k-gone)e.classList.add('gone');return e}))}
+function nearNums(k,n,min,max){const c=[];for(let d=1;c.length<12&&d<12;d++){if(k+d<=max)c.push(k+d);if(k-d>=min)c.push(k-d)}return shuffle([k,...shuffle(c.slice(0,Math.max(n+1,4))).slice(0,n-1)])}
+function buildRound(type){const n=Math.max(2,Math.min(4,S.settings.choices)),lv=S.levels[type]||1,mx=LEVEL_MAX[Math.min(3,lv-1)],P=shuffle(pool());
+  const numChoice=k=>({key:k,right:false,aria:String(k),els:()=>[h('span',{class:'num'},String(k))]});
+  if(type==='match'||type==='find'){const t=P[0];return{say:type==='match'?T('findSame'):T('find')+' '+SAYT(t),word:L(t),
+    prompt:()=>type==='match'?[symEl(t,'big'),h('span',{class:'word'},T('findSame'))]:[hearBtn(),h('span',{class:'word'},L(t))],
+    choices:shuffle(P.slice(0,n)).map(c=>({key:c.label,right:c===t,aria:L(c),els:()=>[symEl(c),type==='match'?h('span',{class:'lbl'},L(c)):null]}))}}
+  if(type==='colors'){const p=shuffle(COLORS),t=p[0];return{say:T('find')+' '+cName(t),word:cName(t),prompt:()=>[hearBtn(),h('span',{class:'word'},cName(t))],
+    choices:shuffle(p.slice(0,n)).map(c=>({key:c[0],right:c===t,aria:cName(c),els:()=>[h('span',{class:'dot',style:{background:c[2]}}),h('span',{class:'lbl'},cName(c))]}))}}
+  if(type==='count'){const k=rnd(1,mx),it=P[0];return{say:T('howMany'),word:String(k),prompt:()=>[group(it,k),h('span',{class:'word'},T('howMany'))],
+    choices:nearNums(k,n,1,Math.max(mx,n+1)).map(v=>({...numChoice(v),right:v===k}))}}
+  if(type==='numbers'){const k=rnd(1,mx),it=P[0];return{say:T('showMe')+' '+k,word:String(k),grp:true,prompt:()=>[h('span',{class:'bignum'},String(k)),hearBtn()],
+    choices:nearNums(k,n,1,Math.max(mx,n+1)).map(v=>({key:v,right:v===k,aria:String(v),els:()=>[group(it,v)]}))}}
+  if(type==='add'){const it=P[0];const sub=lv>=4&&Math.random()<.5;let a,b,ans;
+    if(sub){a=rnd(2,mx);b=rnd(1,a-1);ans=a-b}else{const m2=Math.max(2,mx);a=rnd(1,m2-1);b=rnd(1,m2-a);ans=a+b}
+    const say=ES()?`${T('whatIs')} ${a} ${sub?T('minus'):T('plus')} ${b}?`:`What is ${a} ${sub?'minus':'plus'} ${b}?`;
+    return{say,word:String(ans),prompt:()=>[sub?h('div',{class:'eq'},group(it,a,b)):h('div',{class:'eq'},group(it,a),h('span',{class:'op'},'+'),group(it,b)),
+      h('span',{class:'word'},`${a} ${sub?'−':'+'} ${b} = ?`)],choices:nearNums(ans,n,sub?0:1,Math.max(mx,n+1)).map(v=>({...numChoice(v),right:v===ans}))}}
+  if(type==='more'){const it=P[0],gap=lv===1?2:1;let x,y;do{x=rnd(1,mx);y=rnd(1,mx)}while(Math.abs(x-y)<gap);const less=lv>=3&&Math.random()<.5;const ans=less?Math.min(x,y):Math.max(x,y);
+    return{say:less?T('less'):T('more'),word:String(ans),grp:true,prompt:()=>[h('span',{class:'word'},less?T('less'):T('more'))],
+      choices:[x,y].map(v=>({key:v,right:v===ans,aria:String(v),els:()=>[group(it,v)]}))}}
+  if(type==='pattern'){const units=['AB','AAB','ABC','AABB'][Math.min(3,lv-1)];const letters=[...new Set(units)];const items=P.slice(0,letters.length+2);const map={};letters.forEach((l,i)=>map[l]=items[i]);
+    const len=units.length*2+rnd(0,units.length-1);const seq=Array.from({length:len},(_,i)=>map[units[i%units.length]]);const ans=map[units[len%units.length]];
+    const opts=shuffle([ans,...shuffle(items.filter(x=>x!==ans)).slice(0,n-1)]);
+    return{say:T('next'),word:L(ans),prompt:()=>[h('div',{class:'patrow'},...seq.map(x=>h('span',{class:'pcell'},symEl(x,''))),h('span',{class:'pcell q'},'?')),h('span',{class:'word'},T('next'))],
+      choices:opts.map(c=>({key:c.label,right:c===ans,aria:L(c),els:()=>[symEl(c)]}))}}
+}
+function hearBtn(){return h('button',{class:'btn primary',onclick:()=>UI.game&&tts(UI.game.R.say)},'🔊 '+T('hear'))}
+function startGame(type){if(type==='jigsaw'){UI.jig={n:S.levels.jigsaw||4,src:null};UI.game={type};render();return}
+  if(type==='memory'){UI.game={type};newMemory();render();return}
+  UI.game={type,round:0,stars:0,firstRight:0,done:false};newRound();render()}
+function newRound(){const G=UI.game;clearTimeout(G.cueT);G.tries=0;G.R=buildRound(G.type);setTimeout(()=>tts(G.R.say),250)}
+function pick(c,el){const G=UI.game;if(G.locked)return;
+  if(c.right){G.locked=true;clearTimeout(G.cueT);el.classList.add('right');const p=S.progress[G.type]||(S.progress[G.type]={rounds:0,first:0});p.rounds++;if(G.tries===0){p.first++;G.firstRight++}G.stars++;save();
+    const r=S.settings.reinforce;if(r==='both'||r==='chime')chimeDone();if(r==='both'||r==='voice')setTimeout(()=>tts(T('yes')+' '+G.R.word),r==='both'?450:0);
+    setTimeout(()=>{G.locked=false;G.round++;if(G.round>=5){G.done=true;G.leveled=false;
+        if(GAMES[G.type].lv&&S.settings.autoLevel&&G.firstRight>=4&&(S.levels[G.type]||1)<4){S.levels[G.type]=(S.levels[G.type]||1)+1;G.leveled=true;save()}
+        tts(G.leveled?T('did')+' '+T('levelUp'):T('did'))}else newRound();render()},1600)}
+  else{G.tries++;el.classList.add('faded');setTimeout(()=>tts(G.R.say),200)}}
+function gameHead(m,G,extra){m.append(h('div',{class:'row',style:{justifyContent:'space-between'}},h('button',{class:'back',onclick:()=>{clearTimeout(G.cueT);UI.game=null;render()}},'⬅ '+T('games')),
+  h('div',{class:'row'},h('b',{},gName(G.type)),GAMES[G.type].lv?h('span',{class:'lvl'},T('level')+' '+(S.levels[G.type]||1)):null,extra||null)))}
+function renderLearn(m){const G=UI.game;
+  if(!G){m.append(h('h2',{},T('learnT')));['gWords','gMath','gPuz'].forEach(gk=>m.append(h('section',{class:'gsect'},h('h3',{},T(gk)),
+      h('div',{class:'games'},...Object.entries(GAMES).filter(([,g])=>g.g===gk).map(([k,g])=>{const[nm,ds]=ES()?g.es:g.en;
+        const lvl=g.lv?T('level')+' '+(S.levels[k]||1):k==='jigsaw'?(S.levels.jigsaw||4)+' '+T('pieces').toLowerCase():k==='memory'?(S.levels.memory||3)+' '+T('pairs').toLowerCase():null;
+        return h('button',{class:'game',onclick:()=>startGame(k)},h('span',{class:'sym','aria-hidden':'true'},g.sym),h('b',{},nm),h('span',{},ds),lvl?h('span',{class:'lvl'},lvl):null)})))));return}
+  if(G.type==='jigsaw')return renderJigsaw(m);if(G.type==='memory')return renderMemory(m);
+  const stars=h('div',{class:'stars','aria-label':`${G.stars} of 5 stars`},...[0,1,2,3,4].map(i=>h('i',{class:i<G.stars?'on':''},'⭐')));
+  gameHead(m,G,stars);
+  if(G.done){m.append(h('div',{class:'prompt'},h('span',{class:'big'},'🌟'),h('span',{class:'word'},T('did')),G.leveled?h('span',{class:'lvl'},T('levelUp')+' → '+T('level')+' '+S.levels[G.type]):null,
+    h('div',{class:'row'},h('button',{class:'btn primary',onclick:()=>startGame(G.type)},T('again')),h('button',{class:'btn',onclick:()=>{UI.game=null;render()}},T('other')))));return}
+  const R=G.R;const pr=h('div',{class:'prompt'},...R.prompt());
+  const ch=h('div',{class:'choices',style:{'--n':String(R.choices.length)}});
+  R.choices.forEach(c=>{const el=h('button',{class:'choice'+(R.grp?' grp':'')+(S.settings.errorless&&!c.right?' faded':''),'aria-label':c.aria},...c.els());
+    el.onclick=()=>pick(c,el);if(c.right)el.dataset.right='1';ch.append(el)});
+  m.append(pr,ch);
+  if(S.settings.cueDelay>0){clearTimeout(G.cueT);G.cueT=setTimeout(()=>{const r=ch.querySelector('[data-right]');if(r&&UI.game===G&&r.isConnected)r.classList.add('cue')},S.settings.cueDelay*1000)}}
+
+/* ---------- Jigsaw ---------- */
+const PIECES=[2,4,6,9,12,16,20,25];const DIMS={2:[2,1],4:[2,2],6:[3,2],9:[3,3],12:[4,3],16:[4,4],20:[5,4],25:[5,5]};
+const SCENES=[['🐘','#BFD9EC'],['🦋','#F6D8E4'],['🌻','#FCE9B8'],['🚗','#D6ECD2'],['🐠','#CDE7F0'],['🌈','#E8E0F6'],['🐶','#F5E0C8'],['🍎','#DCF1D6']];
+const sceneCache={};
+function sceneURL(i){if(sceneCache[i])return sceneCache[i];const[e,bg]=SCENES[i];const c=document.createElement('canvas');c.width=c.height=600;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,600,600);g.addColorStop(0,bg);g.addColorStop(1,'#FFFFFF');x.fillStyle=g;x.fillRect(0,0,600,600);
+  x.fillStyle='rgba(255,255,255,.55)';for(let k=0;k<7;k++){x.beginPath();x.arc(80+k*80,520-(k%2)*40,40,0,Math.PI*2);x.fill()}
+  x.font='380px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(e,300,300);
+  return sceneCache[i]=c.toDataURL('image/png')}
+function squareURL(url){return new Promise(res=>{const i=new Image();i.onload=()=>{const s=Math.min(i.naturalWidth,i.naturalHeight),c=document.createElement('canvas');c.width=c.height=Math.min(600,s);
+  c.getContext('2d').drawImage(i,(i.naturalWidth-s)/2,(i.naturalHeight-s)/2,s,s,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.9))};i.onerror=()=>res(null);i.src=url})}
+function jigSources(){const out=SCENES.map((_,i)=>({key:'scene'+i,thumb:sceneURL(i),get:async()=>sceneURL(i)}));const seen=new Set();
+  Object.values(S.buttons).forEach(b=>{if(b.img&&urls[b.img]&&!seen.has(b.img)&&out.length<24){seen.add(b.img);out.push({key:b.img,thumb:urls[b.img],get:()=>squareURL(urls[b.img])})}});
+  S.gallery.slice(0,8).forEach(g=>{if(urls[g.k])out.push({key:g.k,thumb:urls[g.k],get:()=>squareURL(urls[g.k])})});return out}
+async function setJigSource(src){UI.jig.src=src.key;UI.jig.url=await src.get();UI.jig.order=null;UI.jig.placed={};UI.jig.done=false;render()}
+function renderJigsaw(m){const J=UI.jig,G=UI.game;
+  gameHead(m,G);
+  m.append(field(T('pieces'),seg(PIECES.map(p=>[p,String(p)]),J.n,v=>{J.n=v;S.levels.jigsaw=v;save();J.order=null;J.placed={};J.done=false;render()})));
+  const srcs=jigSources();
+  m.append(field(T('pick'),h('div',{class:'srcs'},...srcs.map(s=>h('button',{class:'src',style:{backgroundImage:`url("${s.thumb}")`},'aria-pressed':String(J.src===s.key),'aria-label':'Picture',onclick:()=>setJigSource(s)})))));
+  if(!J.url){setJigSource(srcs[Math.floor(Math.random()*SCENES.length)]);return}
+  const[cc,rr]=DIMS[J.n];const mw=$('#main').clientWidth,mh=$('#main').clientHeight;
+  const B=Math.round(Math.max(200,Math.min(540,mw>820?mw*.52:mw-8,mh>500?mh-230:420)));const pw=B/cc,ph=B/rr;
+  if(!J.order)J.order=shuffle([...Array(J.n).keys()]);
+  const makePiece=i=>{const r=Math.floor(i/cc),c=i%cc;const p=h('button',{class:'piece','aria-label':`Piece ${i+1}`,
+      style:{width:pw+'px',height:ph+'px',backgroundImage:`url("${J.url}")`,backgroundSize:`${B}px ${B}px`,backgroundPosition:`-${c*pw}px -${r*ph}px`}});p.dataset.i=i;return p};
+  const board=h('div',{class:'jboard',style:{width:B+'px',height:B+'px',gridTemplateColumns:`repeat(${cc},1fr)`,gridTemplateRows:`repeat(${rr},1fr)`}},
+    S.settings.jigHint?h('div',{class:'jghost',style:{backgroundImage:`url("${J.url}")`}}):null);
+  const cells=[];for(let i=0;i<J.n;i++){const cell=h('div',{class:'jcell'});cell.dataset.i=i;if(J.placed[i])cell.append(makePiece(i));
+    cell.addEventListener('click',()=>{if(J.sel!=null)tryPlace(J.sel,i)});cells.push(cell);board.append(cell)}
+  const tray=h('div',{class:'jtray','aria-label':'Puzzle pieces'});
+  J.order.filter(i=>!J.placed[i]).forEach(i=>{const p=makePiece(i);if(J.sel===i)p.classList.add('sel');dragPiece(p,i,board,pw,ph,cc,rr);tray.append(p)});
+  const wrap=h('div',{class:'jig'},board,J.done?null:tray);m.append(wrap);
+  if(J.done){const ni=PIECES.indexOf(J.n);m.append(h('div',{class:'donebox'},h('span',{class:'word'},'🌟 '+T('did')),h('div',{class:'row'},
+    ni<PIECES.length-1?h('button',{class:'btn primary',onclick:()=>{J.n=PIECES[ni+1];S.levels.jigsaw=J.n;save();J.order=null;J.placed={};J.done=false;render()}},T('morePieces')+' ('+PIECES[ni+1]+')'):null,
+    h('button',{class:'btn',onclick:()=>{J.order=null;J.placed={};J.done=false;render()}},T('again')),
+    h('button',{class:'btn',onclick:()=>{const s=shuffle(jigSources()).find(x=>x.key!==J.src);if(s)setJigSource(s)}},T('newPic')))))}
+  function tryPlace(i,cellIdx){if(i===cellIdx&&!J.placed[i]){J.placed[i]=true;J.sel=null;note(PENTA[Object.keys(J.placed).length%8],'marimba',.25);
+      if(Object.keys(J.placed).length===J.n){J.done=true;const p=S.progress.jigsaw||(S.progress.jigsaw={rounds:0,first:0,best:0});p.rounds++;p.best=Math.max(p.best||0,J.n);save();chimeDone();setTimeout(()=>tts(T('did')),500)}
+      render();return true}
+    J.sel=null;render();return false}
+  J.tryPlace=tryPlace}
+function dragPiece(p,i,board,pw,ph,cc,rr){let st=null,moved=false;
+  p.addEventListener('pointerdown',e=>{e.preventDefault();const r=p.getBoundingClientRect();st={x:e.clientX,y:e.clientY,ox:e.clientX-r.left,oy:e.clientY-r.top};moved=false;try{p.setPointerCapture(e.pointerId)}catch(_){}});
+  p.addEventListener('pointermove',e=>{if(!st)return;if(!moved&&Math.hypot(e.clientX-st.x,e.clientY-st.y)>8){moved=true;p.classList.add('drag')}
+    if(moved){p.style.left=(e.clientX-st.ox)+'px';p.style.top=(e.clientY-st.oy)+'px'}});
+  const end=e=>{if(!st)return;const J=UI.jig;const wasMoved=moved;st=null;moved=false;
+    if(!wasMoved){J.sel=J.sel===i?null:i;render();return}
+    const br=board.getBoundingClientRect();const x=e.clientX,y=e.clientY;
+    const cx=br.left+(i%cc+.5)*pw,cy=br.top+(Math.floor(i/cc)+.5)*ph;
+    if(Math.abs(x-cx)<pw*.6&&Math.abs(y-cy)<ph*.6){J.tryPlace(i,i);return}
+    p.classList.remove('drag');p.style.left=p.style.top='';};
+  p.addEventListener('pointerup',end);p.addEventListener('pointercancel',()=>{st=null;moved=false;p.classList.remove('drag');p.style.left=p.style.top=''})}
+
+/* ---------- Memory ---------- */
+const PAIRS=[2,3,4,6,8,10];const MEMCOLS={2:2,3:3,4:4,6:4,8:4,10:5};
+function newMemory(){const P=S.levels.memory||3;const items=shuffle(pool()).slice(0,P);UI.mem={pairs:P,moves:0,first:null,lock:false,done:false,cards:shuffle(items.flatMap(it=>[{it},{it}])).map(c=>({...c,open:false,matched:false}))}}
+function renderMemory(m){const M=UI.mem,G=UI.game;gameHead(m,G);
+  m.append(field(T('pairs'),seg(PAIRS.map(p=>[p,String(p)]),M.pairs,v=>{S.levels.memory=v;save();newMemory();render()})));
+  const grid=h('div',{class:'mem',style:{'--mc':String(MEMCOLS[M.pairs]||4)}});
+  M.cards.forEach((c,idx)=>{const el=h('button',{class:'mcard'+(c.open||c.matched?' open':'')+(c.matched?' matched':''),'aria-label':c.open||c.matched?L(c.it):'Hidden card'},c.open||c.matched?symEl(c.it):'?');
+    el.onclick=()=>flip(idx);grid.append(el)});m.append(grid);
+  if(M.done){const ni=PAIRS.indexOf(M.pairs);m.append(h('div',{class:'donebox'},h('span',{class:'word'},'🌟 '+T('did')),h('div',{class:'row'},
+    ni<PAIRS.length-1?h('button',{class:'btn primary',onclick:()=>{S.levels.memory=PAIRS[ni+1];save();newMemory();render()}},T('morePairs')+' ('+PAIRS[ni+1]+')'):null,
+    h('button',{class:'btn',onclick:()=>{newMemory();render()}},T('again')))))}}
+function flip(idx){const M=UI.mem,c=M.cards[idx];if(M.lock||c.open||c.matched)return;c.open=true;tts(L(c.it));
+  if(M.first==null){M.first=idx;render();return}
+  M.moves++;const a=M.cards[M.first];M.first=null;
+  if(a.it===c.it){a.matched=c.matched=true;a.open=c.open=false;note(PENTA[5],'chimes',.3);
+    if(M.cards.every(x=>x.matched)){M.done=true;const p=S.progress.memory||(S.progress.memory={rounds:0,first:0,best:0});p.rounds++;p.best=Math.max(p.best||0,M.pairs);save();setTimeout(()=>{chimeDone();tts(T('did'))},400)}
+    render();return}
+  M.lock=true;render();setTimeout(()=>{a.open=c.open=false;M.lock=false;if(UI.mem===M)render()},1200)}
+
+/* ---------- Art ---------- */
+const ART={canvas:null,ctx:null,color:'#2F6DB5',size:20,erase:false,sym:'off',last:new Map(),dpr:1};
+const ART_COLORS=['#1D2A2C','#D64541','#E8843A','#F2C53D','#3E9B55','#2FA3A0','#2F6DB5','#8A5CC2','#E57BA8','#8B5E3C'];
+function artCanvas(){if(ART.canvas)return ART.canvas;const c=h('canvas',{class:'artcanvas','aria-label':'Drawing space. Draw with your finger'});ART.canvas=c;ART.ctx=c.getContext('2d');
+  const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*ART.dpr,(e.clientY-r.top)*ART.dpr]};
+  c.addEventListener('pointerdown',e=>{c.setPointerCapture(e.pointerId);const p=pt(e);ART.last.set(e.pointerId,p);seg2(p,p)});
+  c.addEventListener('pointermove',e=>{const l=ART.last.get(e.pointerId);if(!l)return;const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];let prev=l;for(const ev of evs){const p=pt(ev);seg2(prev,p);prev=p}ART.last.set(e.pointerId,prev)});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>c.addEventListener(ev,e=>ART.last.delete(e.pointerId)));
+  return c}
+function seg2(a,b){const x=ART.ctx,W=ART.canvas.width,H=ART.canvas.height;x.lineCap=x.lineJoin='round';x.lineWidth=ART.size*ART.dpr;x.strokeStyle=ART.erase?tok('--paper'):ART.color;
+  const Tr=ART.sym==='off'?[[0,1]]:ART.sym==='mirror'?[[0,1],[0,-1]]:[0,1,2,3,4,5].flatMap(k=>[[k*Math.PI/3,1],[k*Math.PI/3,-1]]);
+  for(const[ang,sx]of Tr){x.save();x.translate(W/2,H/2);x.rotate(ang);x.scale(sx,1);x.translate(-W/2,-H/2);x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(b[0]+.01,b[1]);x.stroke();x.restore()}}
+function sizeArt(){const c=ART.canvas;if(!c||!c.isConnected)return;const r=c.getBoundingClientRect();const dpr=Math.min(2,devicePixelRatio||1);const W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);
+  if(!W||!H||(W===c.width&&H===c.height))return;let tmp=null;if(c.width>1&&c.height>1){tmp=document.createElement('canvas');tmp.width=c.width;tmp.height=c.height;tmp.getContext('2d').drawImage(c,0,0)}
+  c.width=W;c.height=H;ART.dpr=dpr;const x=ART.ctx;x.fillStyle=tok('--paper');x.fillRect(0,0,W,H);if(tmp)x.drawImage(tmp,0,0)}
+function clearArt(){const c=ART.canvas;ART.ctx.fillStyle=tok('--paper');ART.ctx.fillRect(0,0,c.width,c.height)}
+function renderArt(m){m.classList.add('fill');const box=h('div',{class:'canvasbox'},artCanvas());
+  const sw=h('div',{class:'swatches',role:'group','aria-label':'Colors'},...ART_COLORS.map(col=>{const b=h('button',{class:'sw',style:{background:col},'aria-label':'Color','aria-pressed':String(!ART.erase&&ART.color===col)});
+    b.onclick=()=>{ART.color=col;ART.erase=false;render()};return b}));
+  const sizes=h('div',{class:'sizes',role:'group','aria-label':'Brush size'},...[[8,10],[20,18],[44,28]].map(([s,d])=>h('button',{class:'tbtn','aria-pressed':String(ART.size===s),'aria-label':'Brush '+s,onclick:()=>{ART.size=s;render()}},h('i',{style:{width:d+'px',height:d+'px'}}))));
+  const symName={off:T('draw'),mirror:T('mirror'),kaleido:T('flower')};
+  const clr=h('button',{class:'tbtn'},T('clear'));holdable(clr,1000,()=>{clearArt();note(PENTA[0],'chimes',.2)});
+  const tools=h('div',{class:'tools'},sw,sizes,
+    h('button',{class:'tbtn','aria-pressed':String(ART.erase),onclick:()=>{ART.erase=!ART.erase;render()}},'🧽 '+T('eraser')),
+    h('button',{class:'tbtn',onclick:()=>{ART.sym={off:'mirror',mirror:'kaleido',kaleido:'off'}[ART.sym];render()}},'✳ '+symName[ART.sym]),
+    clr,h('button',{class:'tbtn',onclick:saveArt},'💾 '+T('saveA')),h('button',{class:'tbtn',onclick:showGallery},'🖼 '+T('mypics')));
+  m.append(h('div',{class:'artwrap'},tools,box));
+  if(UI.moodFor)box.append(moodAsk());
+  requestAnimationFrame(sizeArt)}
+function saveArt(){ART.canvas.toBlob(async b=>{if(!b)return;const k=await putMedia(b);S.gallery.unshift({k,t:Date.now(),mood:null});save();UI.moodFor=k;note(PENTA[4],'chimes',.25);tts(T('howFeel'));render()},'image/jpeg',.9)}
+function moodAsk(){const moods=[['😊','happy','feliz'],['😌','calm','tranquila'],['😢','sad','triste'],['😠','mad','enojada'],['🤩','excited','emocionada'],['😨','scared','asustada']];
+  return h('div',{class:'moodask',role:'group','aria-label':T('howFeel')},h('b',{},T('feelPic')),...moods.map(([e,l,le])=>h('button',{'aria-label':ES()?le:l,onclick:()=>{const g=S.gallery.find(x=>x.k===UI.moodFor);if(g)g.mood=e;UI.moodFor=null;save();tts(T('iFeel')+' '+(ES()?le:l));render()}},e)),
+    h('button',{'aria-label':'Skip',onclick:()=>{UI.moodFor=null;render()}},'✕'))}
+function showGallery(){const g=h('div',{class:'thumbs'},...S.gallery.filter(x=>urls[x.k]).map(x=>h('div',{class:'thumb'},h('img',{src:urls[x.k],alt:'Drawing from '+new Date(x.t).toLocaleDateString()}),x.mood?h('span',{class:'mood'},x.mood):null)));
+  openModal(T('mypics'),S.gallery.length?g:h('p',{},'Saved pictures will show up here.'))}
+
+/* ---------- Music ---------- */
+const BAR_COLORS=['#E36B6B','#EE9A55','#EFC94C','#8CC56B','#4FB3A9','#5A93D6','#8C7AD1','#D07AB5'];
+let songAudio=null;
+function renderMusic(m){m.classList.add('fill');
+  m.append(h('div',{class:'row',style:{justifyContent:'space-between'}},seg([['chimes','🎶 '+T('notes')],['drums','🥁 '+T('drums')],['songs','📀 '+T('mysongs')]],UI.music,v=>{UI.music=v;render()}),
+    seg([['off',T('beatOff')],['60',T('slow')],['80',T('steady')]],BEAT.iv?String(BEAT.bpm):'off',v=>{if(v==='off')setBeat(false);else{ac();BEAT.bpm=+v;setBeat(true)}})));
+  if(UI.music==='chimes'){m.append(seg([['chimes',T('chimes')],['marimba',T('marimba')],['piano',T('piano')]],UI.inst,v=>{UI.inst=v;note(PENTA[2],v)}));
+    const x=h('div',{class:'xylo',role:'group','aria-label':'Music bars. Every note sounds good together'});
+    PENTA.forEach((f,i)=>{const b=h('button',{class:'bar',style:{'--c':BAR_COLORS[i],'--h':(100-i*4.5)+'%'},'aria-label':'Note '+(i+1)});
+      b.addEventListener('pointerdown',e=>{e.preventDefault();note(f,UI.inst);b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),140)});
+      b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();note(f,UI.inst)}});x.append(b)});m.append(x)}
+  if(UI.music==='drums'){const pads=h('div',{class:'pads'},...[['kick','🥁'],['tomlo','🪘'],['tomhi','🪘'],['snare','🥁'],['clap','👏'],['shaker','🪇']].map(([k,e])=>{
+      const p=h('button',{class:'pad'},h('span',{class:'sym','aria-hidden':'true'},e),T(k));p.addEventListener('pointerdown',ev=>{ev.preventDefault();drum(k);p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),120)});
+      p.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();drum(k)}});return p}));m.append(pads)}
+  if(UI.music==='songs'){m.classList.remove('fill');
+    if(!S.songs.length)m.append(h('div',{class:'card'},h('h2',{},T('mysongs')),h('p',{class:'fhint'},T('noSongs'))));
+    else m.append(h('div',{class:'songs'},...S.songs.map(s=>h('button',{class:'tile c-social',onclick:()=>{if(songAudio){songAudio.pause();const same=songAudio._id===s.id;songAudio=null;if(same)return}
+      if(urls[s.snd]){songAudio=new Audio(urls[s.snd]);songAudio._id=s.id;songAudio.play().catch(()=>{});songAudio.onended=()=>{songAudio=null}}}},symEl(s),h('span',{class:'lbl'},s.label)))))}}
+
+/* ---------- Calm ---------- */
+const BREATH={on:false,t:null};
+function renderCalm(m){m.classList.add('fill');BREATH.on=false;clearTimeout(BREATH.t);
+  m.append(seg([['breathe','🌬 '+T('breathe')],['bubbles','🫧 '+T('bubbles')],['sounds','🌧 '+T('sounds')]],UI.calm,v=>{UI.calm=v;render()}));
+  const st=h('div',{class:'calmstage'});m.append(st);
+  if(UI.calm==='breathe'){const circ=h('div',{class:'breath'},h('span',{},T('ready')));const lbl=circ.firstChild;
+    const phases=[[T('in'),4000,1],[T('hold'),2000,1],[T('out'),6000,.5]];let i=0;
+    const step=()=>{if(!BREATH.on||!circ.isConnected)return;const[t,d,sc]=phases[i%3];lbl.textContent=t;circ.style.transitionDuration=d+'ms';circ.style.transform=`scale(${sc})`;
+      if(i%3===0)note(196,'chimes',.12);if(i%3===2)note(147,'chimes',.1);i++;BREATH.t=setTimeout(step,d)};
+    const go=h('button',{class:'btn primary'},T('start'));go.onclick=()=>{BREATH.on=!BREATH.on;go.textContent=BREATH.on?T('stopB'):T('start');if(BREATH.on){ac();i=0;step()}else{clearTimeout(BREATH.t);lbl.textContent=T('ready');circ.style.transform='scale(.5)'}};
+    st.append(h('div',{style:{display:'grid',justifyItems:'center',gap:'18px'}},circ,go))}
+  if(UI.calm==='bubbles'){const c=h('canvas',{class:'bubbles','aria-label':'Bubbles. Tap to pop'});st.append(c);requestAnimationFrame(()=>startBubbles(c))}
+  if(UI.calm==='sounds'){const vol=h('input',{type:'range',min:'0',max:'1',step:'0.05',value:String(CALM.vol),id:'calmvol','aria-label':T('volume'),style:{width:'min(320px,100%)'}});
+    vol.oninput=()=>{CALM.vol=+vol.value;if(CALM.gain)CALM.gain.gain.value=CALM.vol};
+    st.append(h('div',{style:{display:'grid',gap:'16px',justifyItems:'center',width:'100%'}},h('div',{class:'soundgrid'},...[['rain','🌧'],['ocean','🌊'],['hum','🎐'],['night','🌙']].map(([k,e])=>
+      h('button',{class:'pad','aria-pressed':String(CALM.kind===k),style:CALM.kind===k?{borderColor:tok('--accent'),borderWidth:'5px'}:null,onclick:()=>{if(CALM.kind===k)stopCalm();else startCalm(k);render()}},h('span',{class:'sym','aria-hidden':'true'},e),T(k)+(CALM.kind===k?' ('+T('playing')+')':'')))),
+      h('label',{class:'flabel',for:'calmvol'},T('volume')),vol))}}
+function startBubbles(c){const ctx=c.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);const r0=c.getBoundingClientRect();c.width=Math.max(1,r0.width*dpr);c.height=Math.max(1,r0.height*dpr);
+  const W=c.width,H=c.height,B=[],slow=S.settings.rm||matchMedia('(prefers-reduced-motion: reduce)').matches;let last=0,spawn=0;
+  const cols=['#7FB3E0','#9ED3C6','#C7B4E8','#F2C7A5','#F4B6C8'];
+  const frame=t=>{if(!c.isConnected)return;const dt=Math.min(50,t-(last||t));last=t;spawn-=dt;
+    if(spawn<=0&&B.length<14){spawn=slow?2000:1000;const r=(30+Math.random()*50)*dpr;B.push({x:r+Math.random()*Math.max(1,W-2*r),y:H+r,r,v:(.025+Math.random()*.03)*dpr*(slow?.5:1),ph:Math.random()*6,col:cols[Math.floor(Math.random()*cols.length)],cx:0})}
+    ctx.clearRect(0,0,W,H);
+    for(let i=B.length-1;i>=0;i--){const b=B[i];
+      if(b.pop!=null){b.pop+=dt;const k=b.pop/320;ctx.beginPath();ctx.arc(b.cx,b.y,b.r*(1+k*.6),0,Math.PI*2);ctx.strokeStyle=b.col;ctx.globalAlpha=Math.max(0,1-k);ctx.lineWidth=3*dpr;ctx.stroke();ctx.globalAlpha=1;if(k>=1)B.splice(i,1);continue}
+      b.y-=b.v*dt;b.ph+=dt*.0012;b.cx=b.x+Math.sin(b.ph)*12*dpr;if(b.y<-b.r){B.splice(i,1);continue}
+      ctx.beginPath();ctx.arc(b.cx,b.y,b.r,0,Math.PI*2);ctx.fillStyle=b.col;ctx.globalAlpha=.35;ctx.fill();ctx.globalAlpha=.9;ctx.lineWidth=3*dpr;ctx.strokeStyle=b.col;ctx.stroke();
+      ctx.beginPath();ctx.arc(b.cx-b.r*.35,b.y-b.r*.35,b.r*.14,0,Math.PI*2);ctx.fillStyle='#FFFFFF';ctx.globalAlpha=.8;ctx.fill();ctx.globalAlpha=1}
+    UI.raf=requestAnimationFrame(frame)};
+  UI.raf=requestAnimationFrame(frame);
+  c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*dpr,y=(e.clientY-r.top)*dpr;
+    for(const b of B){if(b.pop==null&&Math.hypot(x-b.cx,y-b.y)<b.r*1.15){b.pop=0;note(PENTA[Math.floor(Math.random()*8)],'chimes',.25);break}}})}
+
+/* ---------- Grown-up settings ---------- */
+function set(k,v){S.settings[k]=v;save();applySettings();render();renderMsg()}
+function openGrownUp(openSec){closeModal();const st=S.settings;
+  const sec=(key,title,...kids)=>h('details',{class:'gsec',open:(openSec?openSec===key:key==='voice')||null},h('summary',{},title),h('div',{class:'gbody'},...kids));
+  const name=textIn('g-name',st.name,()=>{});name.onchange=()=>set('name',name.value.trim()||'Lita');
+  loadVoices();const vopts=list=>list.slice().sort((a,b)=>a.lang.localeCompare(b.lang)).map(v=>h('option',{value:v.voiceURI},`${v.name} (${v.lang})`));
+  const vs=h('select',{class:'text',id:'g-voice'},h('option',{value:''},'Device default'),...vopts(voices.filter(v=>/^en/i.test(v.lang))));
+  vs.value=st.voice;vs.onchange=()=>{set('voice',vs.value);tts(`Hi, I am ${S.settings.name}`,'en')};
+  const vsEs=h('select',{class:'text',id:'g-voice-es'},h('option',{value:''},'Automatic Spanish voice'),...vopts(voices.filter(v=>/^es/i.test(v.lang))));
+  vsEs.value=st.voiceEs;vsEs.onchange=()=>{set('voiceEs',vsEs.value);tts(`Hola, soy ${S.settings.name}`,'es')};
+  const rate=h('input',{type:'range',id:'g-rate',min:'0.5',max:'1.3',step:'0.05',value:String(st.rate)});rate.onchange=()=>{set('rate',+rate.value);tts(ES()?'Esta es mi voz':'This is my voice')};
+  const pitch=h('input',{type:'range',id:'g-pitch',min:'0.7',max:'1.5',step:'0.05',value:String(st.pitch)});pitch.onchange=()=>{set('pitch',+pitch.value);tts(ES()?'Esta es mi voz':'This is my voice')};
+  const tabs=h('div',{class:'row'},...TABS.filter(([k])=>k!=='talk').map(([k,ic])=>tog('g-tab-'+k,ic+' '+STR.en[k],st.tabs[k],v=>{st.tabs[k]=v;save();render()})));
+
+  const schedList=h('div',{class:'gbody'});
+  const paintSched=()=>{schedList.replaceChildren(...S.schedule.map((s,i)=>h('div',{class:'listrow'},symEl(s,'csym'),h('span',{class:'grow'},s.label),
+    h('button',{class:'btn small',onclick:()=>editItem('Edit step',s,false,()=>openGrownUp('day')),'aria-label':'Change '+s.label},'Edit'),
+    h('button',{class:'btn small','aria-label':'Move up',onclick:()=>{if(i>0){[S.schedule[i-1],S.schedule[i]]=[S.schedule[i],S.schedule[i-1]];save();paintSched();render()}}},'▲'),
+    h('button',{class:'btn small','aria-label':'Move down',onclick:()=>{if(i<S.schedule.length-1){[S.schedule[i+1],S.schedule[i]]=[S.schedule[i],S.schedule[i+1]];save();paintSched();render()}}},'▼'),
+    h('button',{class:'btn small','aria-label':'Remove '+s.label,onclick:()=>{S.schedule.splice(i,1);save();paintSched();render()}},'✕'))))};paintSched();
+
+  const storyList=h('div',{class:'gbody'},...S.stories.map((s,i)=>h('div',{class:'listrow'},symEl(s,'csym'),h('span',{class:'grow'},s.title+' · '+s.pages.length+' pages'),
+    h('button',{class:'btn small',onclick:()=>editStory(s)},'Edit'),
+    h('button',{class:'btn small','aria-label':'Move up',onclick:()=>{if(i>0){[S.stories[i-1],S.stories[i]]=[S.stories[i],S.stories[i-1]];save();openGrownUp('stories')}}},'▲'))));
+
+  const songList=h('div',{class:'gbody'});
+  const paintSongs=()=>songList.replaceChildren(...S.songs.map((s,i)=>h('div',{class:'listrow'},symEl(s,'csym'),h('span',{class:'grow'},s.label),h('button',{class:'btn small',onclick:()=>{dropMedia(s.snd);dropMedia(s.img);S.songs.splice(i,1);save();paintSongs();render()}},'Remove'))));paintSongs();
+  const song={label:'',img:null,snd:null};const slab=textIn('g-song','',v=>song.label=v,'Song name');
+  const sstat=h('span',{class:'fhint'},'No sound chosen yet.');
+
+  const prog=h('table',{class:'prog'},h('thead',{},h('tr',{},h('th',{},'Game'),h('th',{},'Level'),h('th',{},'Rounds'),h('th',{},'First try'))),
+    h('tbody',{},...Object.keys(GAMES).map(k=>{const p=S.progress[k]||{rounds:0,first:0};const lv=GAMES[k].lv?String(S.levels[k]||1):k==='jigsaw'?(S.levels.jigsaw||4)+' pieces':k==='memory'?(S.levels.memory||3)+' pairs':'–';
+      return h('tr',{},h('td',{},GAMES[k].en[0]),h('td',{},lv),h('td',{},String(p.rounds)),h('td',{},k==='jigsaw'||k==='memory'?(p.best?'best '+p.best:'–'):p.rounds?Math.round(100*p.first/p.rounds)+'%':'–'))})));
+  const levelCtl=h('div',{class:'gbody'},...Object.keys(GAMES).filter(k=>GAMES[k].lv).map(k=>field(GAMES[k].en[0],seg([1,2,3,4].map(v=>[v,'Level '+v]),S.levels[k]||1,v=>{S.levels[k]=v;save();render()}))),
+    h('p',{class:'fhint'},'Levels 1–4 set number ranges: '+LEVEL_NOTE.map((t,i)=>`${i+1}: ${t}`).join('; ')+'. Patterns: AB, AAB, ABC, AABB.'));
+  const gal=h('div',{class:'thumbs'});const paintGal=()=>gal.replaceChildren(...S.gallery.filter(x=>urls[x.k]).map(x=>h('div',{class:'thumb'},h('img',{src:urls[x.k],alt:'Drawing from '+new Date(x.t).toLocaleString()}),x.mood?h('span',{class:'mood'},x.mood):null,
+    h('button',{class:'x','aria-label':'Delete drawing',onclick:()=>{dropMedia(x.k);S.gallery=S.gallery.filter(g=>g!==x);save();paintGal()}},'✕'))));paintGal();
+
+  const bstat=h('span',{class:'fhint'});
+  const reset=h('button',{class:'btn danger'},'Hold 3 seconds to erase everything');holdable(reset,3000,async()=>{await DB.clear('media');Object.keys(urls).forEach(k=>{URL.revokeObjectURL(urls[k]);delete urls[k]});S=defaults();save();applySettings();closeModal();UI.board='home';UI.msg=[];renderMsg();render()});
+
+  const body=h('div',{class:'gbody'},
+    h('p',{class:'fhint'},'Tip: model language. While you talk to her, tap the words on her screen too. Children learn to use a talker by seeing others use it.'),
+    sec('voice','Her voice and language',field('Her name',name),field('Language she sees and hears',seg([['en','English'],['es','Español']],st.lang,v=>set('lang',v)),'Switching changes her buttons, phrases, stories and games. Words without a Spanish label stay in English. These settings stay in English.'),
+      field('English voice',vs,'Try a few. Pick one that sounds like a child her age if the iPad has one.'),field('Spanish voice',vsEs,'Add more voices on the iPad: Settings › Accessibility › Spoken Content › Voices.'),
+      field('Speed',rate),field('Pitch',pitch),h('button',{class:'btn',onclick:()=>tts(ES()?`Hola, me llamo ${S.settings.name}`:`Hi, my name is ${S.settings.name}`)},'▶ Test voice')),
+    sec('talk','Talk, phrases and feelings buttons',
+      h('div',{class:'row'},...[['talk','Edit Talk'],['phrases','Edit Phrases'],['feel','Edit Feel']].map(([k,l])=>h('button',{class:'btn primary',onclick:()=>{UI.edit=true;UI.tab=k;closeModal();render()}},l))),
+      h('p',{class:'fhint'},'In Phrases edit mode you can change any sentence, add new ones, record your own voice, and add Spanish.'),
+      h('div',{class:'row'},h('button',{class:'btn',onclick:()=>{const id=uid('p_');S.boards[id]={name:'New group',nameEs:'',items:[]};save();UI.edit=true;UI.tab='phrases';closeModal();render();newButton(id)}},'＋ New phrase group')),
+      field('Buttons per row',seg([['auto','Auto'],['4','4'],['5','5'],['6','6'],['8','8']],String(st.cols),v=>set('cols',v)),'Fewer, bigger buttons are easier to hit. Add more as she grows.'),
+      field('Label size',seg([[1,'Normal'],[1.25,'Large'],[1.5,'Extra large']],st.tscale,v=>set('tscale',v))),
+      tog('g-labels','Show words under pictures',st.showLabels,v=>set('showLabels',v)),
+      tog('g-speak','Say each word when tapped',st.speakOnTap,v=>set('speakOnTap',v)),
+      tog('g-home','Go back to Home after picking from a folder',st.homeAfter,v=>set('homeAfter',v)),
+      field('Rename phrase groups',h('div',{class:'gbody'},...PHRASE_BOARDS().map(k=>{const b=S.boards[k];return h('div',{class:'row'},textIn('g-pn-'+k,b.name,v=>{b.name=v;save()}),textIn('g-pne-'+k,b.nameEs,v=>{b.nameEs=v;save()},'Spanish name'))}))),
+      field('Color key (Fitzgerald Key)',h('div',{class:'legend'},...Object.entries(CATS).map(([k,l])=>h('span',{class:'c-'+k},l))),'The standard AAC color groups help her find word types.')),
+    sec('log','Communication log (for her therapists)',logPanel()),
+    sec('stories','Stories',storyList,h('button',{class:'btn primary',onclick:()=>{const s={id:uid('st'),title:'New story',titleEs:'',sym:'📖',img:null,pages:[{text:'',textEs:'',sym:'⭐',img:null,snd:null}]};S.stories.push(s);save();editStory(s)}},'＋ New story'),
+      h('p',{class:'fhint'},'Social stories help her prepare for new or hard moments: short sentences, one idea per page, real photos, and her own words.')),
+    sec('look','Look and comfort',field('Theme',seg([['auto','Match iPad'],['light','Light'],['dark','Dark']],st.theme,v=>set('theme',v))),
+      tog('g-hc','High contrast (black and white, thick borders)',st.hc,v=>set('hc',v)),tog('g-rm','Reduce motion',st.rm,v=>set('rm',v)),
+      field('Sections she can see',tabs,'Hide sections to keep choices simple. Talk is always on.')),
+    sec('learn','Learning games and levels',field('Pictures to choose from',seg([[2,'2'],[3,'3'],[4,'4']],st.choices,v=>set('choices',v))),
+      tog('g-auto','Level up automatically (4 of 5 right on the first try)',st.autoLevel,v=>set('autoLevel',v)),
+      tog('g-err','Errorless mode (only the right answer can be tapped)',st.errorless,v=>set('errorless',v)),
+      field('Show a hint after',seg([[0,'Never'],[3,'3 sec'],[5,'5 sec'],[10,'10 sec']],st.cueDelay,v=>set('cueDelay',v)),'The right answer gently pulses as a prompt.'),
+      field('Reward',seg([['both','Chime + voice'],['chime','Chime'],['voice','Voice'],['quiet','Quiet']],st.reinforce,v=>set('reinforce',v))),
+      field('Math and pattern levels',levelCtl),
+      field('Jigsaw pieces',seg(PIECES.map(p=>[p,String(p)]),S.levels.jigsaw||4,v=>{S.levels.jigsaw=v;if(UI.jig)UI.jig.n=v;save();render()})),
+      tog('g-jhint','Show a faint picture under the jigsaw',st.jigHint,v=>set('jigHint',v)),
+      field('Memory pairs',seg(PAIRS.map(p=>[p,String(p)]),S.levels.memory||3,v=>{S.levels.memory=v;save();render()})),
+      field('Progress',prog)),
+    sec('day','My Day',field('First, then',h('div',{class:'row'},h('button',{class:'btn',onclick:()=>openPicker('Pick "First"',p=>{S.firstThen.first=p;save();render();openGrownUp('day')})},'Change First'),
+        h('button',{class:'btn',onclick:()=>openPicker('Pick "Then"',p=>{S.firstThen.then=p;save();render();openGrownUp('day')})},'Change Then'))),
+      field('Schedule steps',schedList),h('div',{class:'row'},h('button',{class:'btn',onclick:()=>openPicker('Add a step',p=>{S.schedule.push({id:uid('s'),...p,done:false});save();render();openGrownUp('day')})},'＋ Add a step'),
+        h('button',{class:'btn',onclick:()=>{S.schedule.forEach(s=>s.done=false);save();render()}},'Start a new day (clear checks)'))),
+    sec('music','Music: my songs',songList,field('Add a song or sound',h('div',{class:'gbody'},slab,h('div',{class:'row'},fileBtn('Choose sound file','audio/*',async f=>{song.snd=await putMedia(f);sstat.textContent='Sound ready: '+f.name},'g-songfile'),
+        fileBtn('Add a photo','image/*',async f=>{const b=await imageBlob(f);if(b)song.img=await putMedia(b)},'g-songimg'),sstat),
+      h('button',{class:'btn primary',onclick:()=>{if(!song.snd){sstat.textContent='Choose a sound file first.';return}S.songs.push({id:uid('g'),label:song.label.trim()||'My song',sym:'🎵',img:song.img,snd:song.snd});save();openGrownUp('music');render()}},'Add song')),'Songs from Files, voice memos of family singing, or sounds she loves.')),
+    sec('gallery','Art gallery',S.gallery.length?gal:h('p',{class:'fhint'},'Saved drawings and the feeling she picked will show here.')),
+    sec('backup','Backup and restore',h('p',{class:'fhint'},'Everything lives on this iPad only. Download a backup file now and then, and after big changes.'),
+      h('div',{class:'row'},h('button',{class:'btn primary',onclick:()=>exportBackup(bstat)},'Download backup'),fileBtn('Restore from backup','.json,application/json',f=>importBackup(f,bstat),'g-restore'),bstat),reset));
+  openModal('Grown-up settings',body,[h('button',{class:'btn primary',onclick:closeModal},'Done')])}
+
+function editItem(title,s,sound,back){const d={...s};
+  openModal(title,h('div',{class:'gbody'},field('Label',textIn('st-label',d.label,v=>d.label=v)),field('Spanish label',textIn('st-labelEs',d.labelEs,v=>d.labelEs=v,'Optional')),mediaEditor(d,{sound})),
+    [h('button',{class:'btn',onclick:back},'Cancel'),h('button',{class:'btn primary',onclick:()=>{Object.assign(s,{label:(d.label||'').trim()||s.label,labelEs:(d.labelEs||'').trim(),sym:d.sym,img:d.img});save();render();back()}},'Save')])}
+
+/* story editor */
+function editStory(s){const pages=h('div',{class:'gbody'},...s.pages.map((p,i)=>h('div',{class:'listrow'},symEl(p,'csym'),h('span',{class:'grow'},(i+1)+'. '+(p.text||'(empty page)')),
+    h('button',{class:'btn small',onclick:()=>editPage(s,p)},'Edit'),
+    h('button',{class:'btn small','aria-label':'Move up',onclick:()=>{if(i>0){[s.pages[i-1],s.pages[i]]=[s.pages[i],s.pages[i-1]];save();editStory(s)}}},'▲'),
+    h('button',{class:'btn small','aria-label':'Remove page',onclick:()=>{s.pages.splice(i,1);dropMedia(p.img);dropMedia(p.snd);save();editStory(s)}},'✕'))));
+  const cover={sym:s.sym,img:s.img};
+  const del=h('button',{class:'btn danger'},'Hold to delete story');holdable(del,1200,()=>{S.stories=S.stories.filter(x=>x!==s);save();render();openGrownUp('stories')});
+  openModal('Edit story',h('div',{class:'gbody'},
+    h('div',{class:'row'},h('div',{style:{flex:'1',minWidth:'220px'}},field('Title',textIn('sy-title',s.title,v=>{s.title=v;save()}))),h('div',{style:{flex:'1',minWidth:'220px'}},field('Spanish title',textIn('sy-titleEs',s.titleEs,v=>{s.titleEs=v;save()},'Optional')))),
+    field('Cover picture',mediaEditor(cover,{sound:false})),field('Pages',pages),
+    h('button',{class:'btn',onclick:()=>{const p={text:'',textEs:'',sym:'⭐',img:null,snd:null};s.pages.push(p);save();editPage(s,p)}},'＋ Add a page')),
+    [del,h('button',{class:'btn primary',onclick:()=>{s.sym=cover.sym;s.img=cover.img;save();render();openGrownUp('stories')}},'Done')])}
+function editPage(s,p){const d={...p};const ta=(id,val,fn,ph)=>{const t=h('textarea',{class:'text',id,placeholder:ph||null,rows:'3'});t.value=val||'';t.oninput=()=>fn(t.value);return t};
+  openModal('Edit page',h('div',{class:'gbody'},field('What the page says',ta('pg-text',d.text,v=>d.text=v,'One short sentence works best.')),field('Spanish',ta('pg-textEs',d.textEs,v=>d.textEs=v,'Optional')),
+    mediaEditor(d,{testText:()=>pgText(d)}),h('p',{class:'fhint'},'Record yourself reading the page so she hears a familiar voice.')),
+    [h('button',{class:'btn',onclick:()=>editStory(s)},'Cancel'),h('button',{class:'btn primary',onclick:()=>{Object.assign(p,{text:d.text.trim(),textEs:(d.textEs||'').trim(),sym:d.sym,img:d.img,snd:d.snd});save();editStory(s)}},'Save page')])}
+
+/* communication log panel */
+function logReport(days){const s=logSummary(days);const lines=[`${S.settings.name}: communication summary, last ${days} days (to ${today()})`,
+  `Words and phrases tapped: ${s.taps}`,`Messages spoken with "say it": ${s.sent}`,`Different words used: ${s.top.length}`,'',
+  'Most used:',...s.top.slice(0,25).map(([w,c])=>`  ${w}: ${c}`),'','By day (taps / messages):',...s.days.filter(d=>d[1]||d[2]).map(([d,t,m])=>`  ${d}: ${t} / ${m}`),'',
+  'Recent messages:',...S.recent.slice(0,15).map(r=>`  ${new Date(r.t).toLocaleString()}: ${r.text}`)];return lines.join('\n')}
+function logPanel(){let days=7;const box=h('div',{class:'gbody'});
+  const paint=()=>{const s=logSummary(days);
+    box.replaceChildren(seg([[7,'Last 7 days'],[30,'Last 30 days']],days,v=>{days=v;paint()}),
+      h('div',{class:'stats'},...[[s.taps,'words tapped'],[s.sent,'messages spoken'],[s.top.length,'different words']].map(([n,l])=>h('div',{class:'stat'},h('b',{},String(n)),h('span',{},l)))),
+      s.top.length?h('table',{class:'prog'},h('thead',{},h('tr',{},h('th',{},'Word or phrase'),h('th',{},'Times'))),h('tbody',{},...s.top.slice(0,15).map(([w,c])=>h('tr',{},h('td',{},w),h('td',{},String(c)))))):h('p',{class:'fhint'},'Nothing logged yet. Every word she taps is counted here.'),
+      S.recent.length?field('Recent messages',h('div',{class:'gbody'},...S.recent.slice(0,8).map(r=>h('div',{class:'listrow'},h('span',{class:'grow'},r.text),h('span',{class:'fhint'},new Date(r.t).toLocaleDateString()))))):null,
+      h('div',{class:'row'},h('button',{class:'btn primary',onclick:e=>copyReport(e.currentTarget,days)},'Copy report for her therapist'),(()=>{const c=h('button',{class:'btn danger'},'Hold to clear log');holdable(c,1500,()=>{S.log={};S.recent=[];save();paint()});return c})()),
+      h('p',{class:'fhint'},'The log counts taps only. It stays on this iPad. Paste the report into an email or her therapy notes.'))};
+  paint();return box}
+function copyReport(btn,days){const text=logReport(days);const show=()=>{const t=h('textarea',{class:'text report',id:'g-report'});t.value=text;btn.parentNode.after(t);t.focus();t.select()};
+  try{navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied ✓'},show)}catch(e){show()}}
+
+/* ---------- backup ---------- */
+const blobToData=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
+function dataToBlob(d){const[head,b64]=d.split(',');const mime=(head.match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const bin=atob(b64);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new Blob([u],{type:mime})}
+async function exportBackup(stat){stat.textContent='Preparing…';const media={};for(const k of mediaKeys()){const b=await DB.get('media',k);if(b)media[k]=await blobToData(b)}
+  const blob=new Blob([JSON.stringify({app:'litas-voice',v:2,saved:new Date().toISOString(),state:S,media})],{type:'application/json'});
+  const a=h('a',{href:URL.createObjectURL(blob),download:`${S.settings.name}-voice-backup-${today()}.json`});document.body.append(a);a.click();a.remove();
+  stat.textContent='Backup file created. If nothing downloaded, open the app from its own web address and try again.'}
+async function importBackup(file,stat){try{const o=JSON.parse(await file.text());if(o.app!=='litas-voice'||!o.state)throw new Error('bad');
+  for(const[k,d]of Object.entries(o.media||{})){const b=dataToBlob(d);await DB.put('media',k,b);if(urls[k])URL.revokeObjectURL(urls[k]);urls[k]=URL.createObjectURL(b)}
+  S=migrate(o.state);save();applySettings();closeModal();render();renderMsg()}catch(e){stat.textContent='That file is not a backup from this app. Choose the .json file you downloaded.'}}
+function migrate(st){const d=defaults();if(!st||!st.buttons||!st.boards||!st.boards.home)return d;
+  st.settings={...d.settings,...(st.settings||{})};st.settings.tabs={...d.settings.tabs,...(st.settings.tabs||{})};
+  ['schedule','songs','gallery','stories','recent'].forEach(k=>{if(!Array.isArray(st[k]))st[k]=d[k]});
+  st.firstThen=st.firstThen||d.firstThen;st.progress=st.progress||{};st.log=st.log||{};st.levels={...d.levels,...(st.levels||{})};
+  /* add new default boards (with fresh ids) that older saves don't have */
+  for(const[k,bd]of Object.entries(d.boards)){if(st.boards[k]){if(!st.boards[k].nameEs)st.boards[k].nameEs=bd.nameEs;continue}
+    st.boards[k]={name:bd.name,nameEs:bd.nameEs,items:bd.items.map(id=>{const nid=uid('d');st.buttons[nid]={...d.buttons[id]};return nid})}}
+  /* fill Spanish for words that match the defaults */
+  const esMap={};Object.values(d.buttons).forEach(b=>{const k=b.label.toLowerCase();if(!esMap[k])esMap[k]=b});
+  Object.values(st.buttons).forEach(b=>{const m=esMap[(b.label||'').toLowerCase()];if(b.labelEs==null)b.labelEs=m?m.labelEs:'';if(b.sayEs==null)b.sayEs=m&&m.say===b.say?m.sayEs:''});
+  const esSched={};d.schedule.forEach(s=>esSched[s.label]=s.labelEs);st.schedule.forEach(s=>{if(s.labelEs==null)s.labelEs=esSched[s.label]||''});
+  st.v=2;return st}
+
+/* ---------- boot ---------- */
+applySettings();render();renderMsg();
+addEventListener('resize',()=>{clearTimeout(window._rz);window._rz=setTimeout(()=>{if(UI.tab==='art')sizeArt();else if(['talk','feel','learn'].includes(UI.tab))render()},150)});
+(async()=>{await DB.open();try{const saved=await DB.get('kv','state');if(saved)S=migrate(saved);else save()}catch(e){}
+  await loadMedia();applySettings();render();renderMsg()})();
+</script>
+
 </body>
 </html>
